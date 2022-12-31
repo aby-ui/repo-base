@@ -64,10 +64,6 @@ for i=1, GetNumClasses() do
     _G['U1'..eng] = _G['U1'..eng] or loc
 end
 
-if QueueStatusMinimapButton then
-    QueueStatusMinimapButton:SetFrameStrata("HIGH")  --TODO:abyui10
-end
-
 --按ESC时, AceConfigDialog先关闭, 并阻止界面窗口和爱不易关闭
 hooksecurefunc("StaticPopup_EscapePressed", function()
     if LibStub("AceConfigDialog-3.0"):CloseAll() then
@@ -549,13 +545,14 @@ CoreDependCall("Blizzard_AuctionHouseUI", function()
         local itemLocation = self:GetItem();
         if itemLocation then
             local firstSearchResult = C_AuctionHouse.GetCommoditySearchResultInfo(C_Item.GetItemID(itemLocation), 1);
-            if firstSearchResult and self:GetUnitPrice() == firstSearchResult.unitPrice then
-                if firstSearchResult.quantity <= 3 then
-                    local sr2 = C_AuctionHouse.GetCommoditySearchResultInfo(C_Item.GetItemID(itemLocation), 2);
-                    if sr2 and sr2.unitPrice >  firstSearchResult.unitPrice * 1.1 then
-                        self:GetCommoditiesSellList():SetSelectedEntry(sr2);
-                        U1Message(format("%s %s(卖家:|cffff0000%s|r)疑似钓鱼价，已为您避开", C_Item.GetItemLink(itemLocation) or "拍卖品", GetMoneyString(firstSearchResult.unitPrice), firstSearchResult.owners[1] or UNKNOWN))
-                    end
+            local secondResult = C_AuctionHouse.GetCommoditySearchResultInfo(C_Item.GetItemID(itemLocation), 2);
+            if firstSearchResult and secondResult and self:GetUnitPrice() == firstSearchResult.unitPrice then
+                if firstSearchResult.quantity <= 3 and secondResult.unitPrice > firstSearchResult.unitPrice * 1.1 then
+                    self:GetCommoditiesSellList():SetSelectedEntry(secondResult);
+                    U1Message(format("%s %s(卖家:|cffff0000%s|r)疑似钓鱼价，已为您避开", C_Item.GetItemLink(itemLocation) or "拍卖品", GetMoneyString(firstSearchResult.unitPrice), firstSearchResult.owners[1] or UNKNOWN))
+                elseif secondResult.unitPrice > firstSearchResult.unitPrice * 1.25 then
+                    self:GetCommoditiesSellList():SetSelectedEntry(secondResult);
+                    U1Message(format("%s %s第一档价格过低，自动选择第二档 %s", C_Item.GetItemLink(itemLocation) or "拍卖品", GetMoneyString(firstSearchResult.unitPrice), GetMoneyString(secondResult.unitPrice)))
                 end
             end
         end

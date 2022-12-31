@@ -1,5 +1,5 @@
 ## Interface: 100002
-## Version: 10.0.11-14-ge4b9363
+## Version: 10.0.14-5-g193b1b5
 ## Title:|cffffe00a<|r|cffff7d0aDBM|r|cffffe00a>|r |cff69ccf0World Bosses (Dragonflight)|r
 ## Title-esES:|cffffe00a<|r|cffff7d0aDBM|r|cffffe00a>|r |cff69ccf0Jefes de Mundo (Dragonflight)|r
 ## Title-esMX:|cffffe00a<|r|cffff7d0aDBM|r|cffffe00a>|r |cff69ccf0Jefes de Mundo (Dragonflight)|r
@@ -23,7 +23,7 @@
 ## X-DBM-Mod-Name-zhTW: 世界首領 (巨龍崛起)
 ## X-DBM-Mod-World-Boss: 1
 ## X-DBM-Mod-Sort: 210
-## X-DBM-Mod-MapID: 2574
+## X-DBM-Mod-MapID: 2574, 2444
 ## X-DBM-Mod-LoadCID: 193534, 193535, 193532, 193533
 ## X-DBM-Mod-MinCoreRevision: 17286
 ## X-DBM-Mod-MinExpansion: 9

@@ -52,6 +52,9 @@ local requiredBuffs = {
     [104] = "BS", -- Guardian
     [105] = "AB", -- Restoration
 
+    [1467] = "AB", -- Devastation
+    [1468] = "AB", -- Preservation
+
     [253] = "BS", -- Beast Mastery
     [254] = "BS", -- Marksmanship
     [255] = "BS", -- Survival

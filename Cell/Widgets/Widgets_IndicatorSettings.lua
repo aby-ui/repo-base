@@ -886,6 +886,102 @@ local function CreateSetting_Format(parent)
     return widget
 end
 
+local function CreateSetting_DurationVisibility(parent)
+    local widget
+
+    if not settingWidgets["durationVisibility"] then
+        widget = addon:CreateFrame("CellIndicatorSettings_DurationVisibility", parent, 240, 50)
+        settingWidgets["durationVisibility"] = widget
+
+        widget.durationVisibility = addon:CreateDropdown(widget, 200)
+        widget.durationVisibility:SetPoint("TOPLEFT", 5, -20)
+        widget.durationVisibility:SetItems({
+            {
+                ["text"] = L["Never"],
+                ["value"] = false,
+                ["onClick"] = function()
+                    widget.func(false)
+                end,
+            },
+            {
+                ["text"] = L["Always"].." ("..L["hide icon animation"]..")",
+                ["value"] = true,
+                ["onClick"] = function()
+                    widget.func(true)
+                end,
+            },
+            {
+                ["text"] = L["Always"],
+                ["value"] = 0,
+                ["onClick"] = function()
+                    widget.func(0)
+                end,
+            },
+            {
+                ["text"] = "< 75%",
+                ["value"] = 0.75,
+                ["onClick"] = function()
+                    widget.func(0.75)
+                end,
+            },
+            {
+                ["text"] = "< 50%",
+                ["value"] = 0.5,
+                ["onClick"] = function()
+                    widget.func(0.5)
+                end,
+            },
+            {
+                ["text"] = "< 25%",
+                ["value"] = 0.25,
+                ["onClick"] = function()
+                    widget.func(0.25)
+                end,
+            },
+            {
+                ["text"] = "< 15 "..L["sec"],
+                ["value"] = 15,
+                ["onClick"] = function()
+                    widget.func(15)
+                end,
+            },
+            {
+                ["text"] = "< 10 "..L["sec"],
+                ["value"] = 10,
+                ["onClick"] = function()
+                    widget.func(10)
+                end,
+            },
+            {
+                ["text"] = "< 5 "..L["sec"],
+                ["value"] = 5,
+                ["onClick"] = function()
+                    widget.func(5)
+                end,
+            },
+        })
+
+        widget.orientationText = widget:CreateFontString(nil, "OVERLAY", font_name)
+        widget.orientationText:SetText(L["showDuration"])
+        widget.orientationText:SetPoint("BOTTOMLEFT", widget.durationVisibility, "TOPLEFT", 0, 1)
+
+        -- associate db
+        function widget:SetFunc(func)
+            widget.func = func
+        end
+        
+        -- show db value
+        function widget:SetDBValue(durationVisibility)
+            widget.durationVisibility:SetSelectedValue(durationVisibility)
+        end
+    else
+        widget = settingWidgets["durationVisibility"]
+    end
+
+    widget:Show()
+    return widget
+end
+
 local function CreateSetting_Orientation(parent)
     local widget
 
@@ -4147,6 +4243,8 @@ function addon:CreateIndicatorSettings(parent, settingsTable)
             tinsert(widgetsTable, CreateSetting_Num(parent))
         elseif setting == "format" then
             tinsert(widgetsTable, CreateSetting_Format(parent))
+        elseif setting == "durationVisibility" then
+            tinsert(widgetsTable, CreateSetting_DurationVisibility(parent))
         elseif setting == "orientation" then
             tinsert(widgetsTable, CreateSetting_Orientation(parent))
         elseif setting == "barOrientation" then

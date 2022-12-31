@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2095, "DBM-Party-BfA", 2, 1001)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20220116042005")
+mod:SetRevision("20221230020308")
 mod:SetCreatureID(126983)
 mod:SetEncounterID(2096)
 
@@ -41,7 +41,7 @@ end
 
 function mod:SPELL_AURA_APPLIED(args)
 	local spellId = args.spellId
-	if spellId == 194966 and args:IsDestTypePlayer() then
+	if spellId == 257314 and args:IsDestTypePlayer() then
 		if args:IsPlayer() then
 			specWarnBlackPowder:Show()
 			specWarnBlackPowder:Play("justrun")

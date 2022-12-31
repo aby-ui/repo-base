@@ -97,9 +97,19 @@ end
 
 local Item = Class('Item', Requirement)
 
-function Item:Initialize(id, count)
-    self.id, self.count = id, count
+-- Quality (optional - added in Dragnflight):
+-- 1 = Bronze 1 diamond
+-- 2 = Silver 2 diamonds
+-- 3 = Gold 3 diamonds
+-- 4 = Diamond 4 diamonds
+-- 5 = Orange 1 large diamond
+function Item:Initialize(id, count, quality)
+    self.id, self.count, self.quality = id, count, quality
     self.text = string.format('{item:%d}', self.id)
+    if self.quality ~= nil then
+        self.text = self.text ..
+                        C_Texture.GetCraftingReagentQualityChatIcon(self.quality)
+    end
     if self.count and self.count > 1 then
         self.text = self.text .. ' x' .. self.count
     end

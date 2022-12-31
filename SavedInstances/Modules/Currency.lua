@@ -168,6 +168,7 @@ for _, tbl in pairs(specialCurrency) do
 end
 
 function Module:OnEnable()
+  self:RegisterEvent("PLAYER_MONEY", "UpdateCurrency")
   self:RegisterBucketEvent("CURRENCY_DISPLAY_UPDATE", 0.25, "UpdateCurrency")
   self:RegisterEvent("BAG_UPDATE", "UpdateCurrencyItem")
 end

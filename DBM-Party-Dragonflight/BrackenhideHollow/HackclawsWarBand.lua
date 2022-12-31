@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2471, "DBM-Party-Dragonflight", 1, 1196)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20221206015003")
+mod:SetRevision("20221230022007")
 mod:SetCreatureID(186122, 186124, 186125)
 mod:SetEncounterID(2570)
 --mod:SetUsedIcons(1, 2, 3)
@@ -65,7 +65,7 @@ local specWarnGreaterHealingRapids				= mod:NewSpecialWarningInterrupt(377950, "
 --local specWarnGTFO							= mod:NewSpecialWarningGTFO(340324, nil, nil, nil, 1, 8)
 
 local timerHexrickTotemCD						= mod:NewCDTimer(35, 381470, nil, nil, nil, 1, nil, DBM_COMMON_L.DAMAGE_ICON)
-local timerGreaterHealingRapidsCD				= mod:NewCDTimer(22.2, 381470, nil, nil, nil, 4, nil, DBM_COMMON_L.INTERRUPT_ICON)
+local timerGreaterHealingRapidsCD				= mod:NewCDTimer(22.2, 377950, nil, nil, nil, 4, nil, DBM_COMMON_L.INTERRUPT_ICON)
 
 --mod:AddRangeFrameOption("8")
 --mod:AddInfoFrameOption(361651, true)

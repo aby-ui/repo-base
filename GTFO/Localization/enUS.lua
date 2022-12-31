@@ -103,4 +103,7 @@ GTFOLocal =
 	UI_CustomSoundsHeader = "Override existing sound alerts",
 	UI_Reset = "Reset",
 	UI_ResetCustomSounds = "Reset this sound to use the default sound.",
+	-- 5.0
+	UI_CustomSounds_Set = "Custom sound for |cFFFFFFFF%s|r alert set.",
+	UI_CustomSounds_Removed = "Custom sound for |cFFFFFFFF%s|r alert is now set to default.",
 }

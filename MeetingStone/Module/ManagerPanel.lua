@@ -32,7 +32,7 @@ function ManagerPanel:OnInitialize()
 
     local ApplicantListBlocker = Addon:GetClass('Cover'):New(self) do
         ApplicantListBlocker:SetPoint('TOPLEFT', 219, 0)
-        ApplicantListBlocker:SetPoint('BOTTOMRIGHT')
+        ApplicantListBlocker:SetPoint('BOTTOMRIGHT', -20, 0)
         ApplicantListBlocker:SetStyle('LINE')
         ApplicantListBlocker:Hide()
     end

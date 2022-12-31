@@ -573,11 +573,12 @@ GTFO.SpellID["152800"] = {
 
 GTFO.SpellID["153692"] = {
 	--desc = "Necrotic Pitch (Bonemaw)";
-	sound = 1;
+	sound = 2;
 };
 
 GTFO.SpellID["154469"] = {
 	--desc = "Ritual of Bones (Ner'zhul)";
+	applicationOnly = true;
 	sound = 1;
 };
 

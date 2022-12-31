@@ -1,7 +1,7 @@
 ## Interface: 100002
 ## Title: Masque_CleanUI
 ## Author: Seharad
-## Version: 9.1.1
+## Version: 10.0.0
 ## Notes: Masque Skin for the CleanUI look and feel
 ## Notes-zhTW: Masque的CleanUI皮膚。
 ## Notes-zhCN: Masque的CleanUI皮肤。

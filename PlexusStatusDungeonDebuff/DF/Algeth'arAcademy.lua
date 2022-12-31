@@ -36,3 +36,4 @@ GridStatusRaidDebuff:DebuffId(zoneid, 376997, 303, 5, 5, true) -- Savage Peck
 
 GridStatusRaidDebuff:BossNameId(zoneid, 400, "Echo of Doragosa")
 GridStatusRaidDebuff:DebuffId(zoneid, 374350, 401, 5, 5, true) -- Energy Bomb
+GridStatusRaidDebuff:DebuffId(zoneid, 389011, 402, 6, 6, true, true) -- Overwhelming Power

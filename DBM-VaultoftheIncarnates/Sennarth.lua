@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2482, "DBM-VaultoftheIncarnates", nil, 1200)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20221217130029")
+mod:SetRevision("20221228072238")
 mod:SetCreatureID(187967)
 mod:SetEncounterID(2592)
 mod:SetUsedIcons(1, 2, 3)
@@ -73,7 +73,7 @@ mod:AddSetIconOption("SetIconOnWeb", 372082, true, false, {1, 2, 3})
 mod:AddTimerLine(DBM:EJ_GetSectionInfo(24898))
 local warnFrostbreathArachnid						= mod:NewSpellAnnounce("ej24899", 2)
 
-local specWarnFreezingBreath						= mod:NewSpecialWarningDefensive(374112, nil, nil, nil, 1, 2)
+local specWarnFreezingBreath						= mod:NewSpecialWarningDodge(374112, nil, nil, nil, 1, 2)
 
 local timerFreezingBreathCD							= mod:NewCDTimer(11.1, 374112, nil, "Tank", nil, 5, nil, DBM_COMMON_L.TANK_ICON)
 --Stage Two: Cold Peak
@@ -311,9 +311,9 @@ function mod:SPELL_CAST_START(args)
 			timerGossamerBurstCD:Start(timer, self.vb.burstCount+1)
 		end
 	elseif spellId == 374112 then
-		if self:IsTanking("player", nil, nil, nil, args.sourceGUID) then
+		if self:IsTanking("player", nil, nil, true, args.sourceGUID) then
 			specWarnFreezingBreath:Show()
-			specWarnFreezingBreath:Play("defensive")
+			specWarnFreezingBreath:Play("shockwave")
 		end
 		timerFreezingBreathCD:Start(nil, args.sourceGUID)
 	elseif spellId == 372539 then
@@ -428,7 +428,7 @@ function mod:SPELL_AURA_APPLIED(args)
 		end
 	elseif spellId == 372044 or spellId == 374104 then--Hard version, Easy version
 		warnWrappedInWebs:CombinedShow(0.5, args.destName)
-	elseif spellId == 385083 and not args:IsPlayer() and not DBM:UnitDebuff("player", spellId) then
+	elseif spellId == 385083 and not args:IsPlayer() and (args.amount or 1) > 4 and not DBM:UnitDebuff("player", spellId) then
 		specWarnWebBlast:Show(args.destName)
 		specWarnWebBlast:Play("tauntboss")
 	end

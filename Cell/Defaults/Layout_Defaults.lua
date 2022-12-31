@@ -110,7 +110,7 @@ Cell.defaults.layout = {
             ["font"] = {"Cell ".._G.DEFAULT, 10, "Shadow"},
             ["color"] = {1, 1, 1},
             ["format"] = "percentage",
-            ["hideFull"] = true,
+            ["hideIfEmptyOrFull"] = true,
         }, -- 3
         {
             ["name"] = "Health Thresholds",

@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(1488, "DBM-Party-Legion", 4, 721)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20221217213243")
+mod:SetRevision("20221226072844")
 mod:SetCreatureID(95675)
 mod:SetEncounterID(1808)
 mod:SetHotfixNoticeRev(20221127000000)
@@ -12,7 +12,7 @@ mod:RegisterCombat("combat")
 mod:RegisterEventsInCombat(
 	"SPELL_CAST_START 193659 193668 193826 194112",
 	"SPELL_CAST_SUCCESS 193659",
-	"SPELL_AURA_APPLIED 202711",
+	"SPELL_AURA_APPLIED 193783",
 	"SPELL_AURA_REMOVED 193826",
 	"SPELL_PERIODIC_DAMAGE 193702",
 	"SPELL_PERIODIC_MISSED 193702"
@@ -22,11 +22,12 @@ mod:RegisterEvents(
 )
 
 --TODO, longer/more pulls, a timer sequence may be better than on fly timer correction.
+--TODO, Fix Savage blade, which sometimes doesn't reset after ragnarok?
 --[[
 (ability.id = 193659 or ability.id = 193668 or ability.id = 193826 or ability.id = 194112) and type = "begincast"
  or type = "dungeonencounterstart" or type = "dungeonencounterend"
 --]]
-local warnAegis						= mod:NewTargetNoFilterAnnounce(202711, 1)
+local warnAegis						= mod:NewTargetNoFilterAnnounce(193783, 1)
 local warnFelblazeRush				= mod:NewTargetAnnounce(193659, 2)
 local warnClaimAegis				= mod:NewSpellAnnounce(194112, 2)
 
@@ -82,7 +83,7 @@ function mod:SPELL_CAST_START(args)
 		specWarnRagnarok:Show(SHIELDSLOT)
 		specWarnRagnarok:Play("findshield")
 		timerRushCD:Restart(12)
-		timerSavageBladeCD:Restart(29.9)
+--		timerSavageBladeCD:Restart(29.9)--Needs New Review
 	elseif spellId == 194112 then
 		warnClaimAegis:Show()
 	end
@@ -96,7 +97,7 @@ end
 
 function mod:SPELL_AURA_APPLIED(args)
 	local spellId = args.spellId
-	if spellId == 202711 and args:IsDestTypePlayer() then
+	if spellId == 193783 and args:IsDestTypePlayer() then
 		warnAegis:Show(args.destName)
 	end
 end

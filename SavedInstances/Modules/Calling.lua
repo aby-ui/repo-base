@@ -40,6 +40,8 @@ function Module:COVENANT_CALLINGS_UPDATED(_, callings)
 
   -- set all slot completed and set expiredTime
   local nextReset = SI:GetNextDailyResetTime()
+  if not nextReset then return end -- near reset or failing to get
+
   for i = 1, 3 do
     if not t.Calling[i] then t.Calling[i] = {} end
     t.Calling[i].isCompleted = true

@@ -1,6 +1,6 @@
 ## Interface: 100002
 ## Title: ToyPlus
-## Version: 1.8
+## Version: 1.8.1
 ## Author: distnz
 ## SavedVariables: ToyPlusDB
 ## Notes: Launcher for your favourite toys.

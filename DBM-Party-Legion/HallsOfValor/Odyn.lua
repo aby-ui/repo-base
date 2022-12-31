@@ -1,10 +1,11 @@
 local mod	= DBM:NewMod(1489, "DBM-Party-Legion", 4, 721)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20221128001010")
+mod:SetRevision("20221228064846")
 mod:SetCreatureID(95676)
 mod:SetEncounterID(1809)
-mod:SetHotfixNoticeRev(20221127000000)
+mod:SetHotfixNoticeRev(20221228000000)
+mod:SetMinSyncRevision(20221228000000)
 
 mod:RegisterCombat("combat")
 
@@ -13,6 +14,9 @@ mod:RegisterEventsInCombat(
 	"SPELL_CAST_SUCCESS 197961",
 	"SPELL_AURA_APPLIED 197963 197964 197965 197966 197967",
 	"UNIT_SPELLCAST_SUCCEEDED boss1"
+)
+mod:RegisterEvents(
+	"CHAT_MSG_MONSTER_YELL"
 )
 
 --http://legion.wowhead.com/icons/name:boss_odunrunes_
@@ -32,6 +36,7 @@ local specWarnRunicBrand			= mod:NewSpecialWarningMoveTo(197961, nil, nil, nil, 
 local specWarnAdd					= mod:NewSpecialWarningSwitch(201221, "-Healer", nil, nil, 1, 2)
 local specWarnSurge					= mod:NewSpecialWarningInterrupt(198750, "HasInterrupt", nil, nil, 1, 2)
 
+local timerRP						= mod:NewRPTimer(28.5)
 --local timerSpearCD					= mod:NewCDTimer(8, 198077, nil, nil, nil, 3)--More data needed
 local timerTempestCD				= mod:NewCDCountTimer(56, 198263, nil, nil, nil, 2, nil, DBM_COMMON_L.DEADLY_ICON)--More data needed
 local timerShatterSpearsCD			= mod:NewCDTimer(56, 198077, nil, nil, nil, 2)
@@ -139,5 +144,20 @@ function mod:UNIT_SPELLCAST_SUCCEEDED(uId, _, spellId)
 		specWarnAdd:Show()
 		specWarnAdd:Play("killmob")
 		timerAddCD:Start()
+	end
+end
+
+--"<1368.18 21:44:20> [CHAT_MSG_MONSTER_YELL] Most impressive! I never thought I would meet anyone who could match the Valarjar's strength... and yet here you stand.#Odyn###Odyn##0#0##0#1600#nil#0#false#false#false#false", -- [6314]
+--About 3 seconds to trigger gossip, since RP is for when gossip becomes available
+--"<1399.95 21:44:52> [DBM_Debug] StartCombat called by : ENCOUNTER_START. LastInstanceMapID is 1477#nil", -- [6329]
+function mod:CHAT_MSG_MONSTER_YELL(msg)
+	if (msg == L.OdynRP or msg:find(L.OdynRP)) then
+		self:SendSync("OdynRP")--Syncing to help unlocalized clients
+	end
+end
+
+function mod:OnSync(msg, targetname)
+	if msg == "OdynRP" and self:AntiSpam(10, 2) then
+		timerRP:Start()
 	end
 end

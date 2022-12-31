@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(1487, "DBM-Party-Legion", 4, 721)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20221217223900")
+mod:SetRevision("20221225234319")
 mod:SetCreatureID(95674, 99868)--First engage, Second engage
 mod:SetEncounterID(1807)
 mod:DisableEEKillDetection()--ENCOUNTER_END fires a wipe when fenryr casts stealth and runs to new location (P2)
@@ -26,14 +26,14 @@ mod:RegisterEventsInCombat(
 local warnLeap							= mod:NewTargetAnnounce(197556, 2)
 local warnPhase2						= mod:NewPhaseAnnounce(2, 2, nil, nil, nil, nil, nil, 2)
 local warnFixate						= mod:NewTargetAnnounce(196838, 2)
+local warnFixateEnded					= mod:NewEndAnnounce(196838, 1)
 local warnClawFrenzy					= mod:NewSpellAnnounce(196512, 3, nil, nil, 2)
 
 local specWarnLeap						= mod:NewSpecialWarningMoveAway(197556, nil, nil, nil, 1, 2)
 local yellLeap							= mod:NewYell(197556)
 local specWarnHowl						= mod:NewSpecialWarningCast(196543, "SpellCaster", nil, nil, 1, 2)
 local specWarnFixate					= mod:NewSpecialWarningRun(196838, nil, nil, nil, 4, 2)
-local specWarnFixateOver				= mod:NewSpecialWarningEnd(196838, nil, nil, nil, 1)
-local specWarnWolves					= mod:NewSpecialWarningSwitch("ej12600", "Tank")
+local specWarnWolves					= mod:NewSpecialWarningSwitch("ej12600", "Tank", nil, nil, 1, 2)
 
 local timerLeapCD						= mod:NewCDTimer(31, 197556, nil, nil, nil, 3)--31-36
 --local timerClawFrenzyCD					= mod:NewCDTimer(9.7, 196512, nil, "Tank", nil, 5, nil, DBM_COMMON_L.TANK_ICON)--it is 10 sec, but is spell queued half the time it's not very accurate to enable
@@ -102,6 +102,7 @@ function mod:SPELL_CAST_SUCCESS(args)
 		warnClawFrenzy:Show()
 	elseif spellId == 207707 and self:AntiSpam(2, 1) then--Wolves spawning out of stealth
 		specWarnWolves:Show()
+		specWarnWolves:Play("killmob")
 		timerWolvesCD:Start()
 	end
 end
@@ -137,7 +138,7 @@ function mod:SPELL_AURA_REMOVED(args)
 	if spellId == 197556 and args:IsPlayer() and self.Options.RangeFrame then
 		DBM.RangeCheck:Hide()
 	elseif spellId == 196838 and args:IsPlayer() then
-		specWarnFixateOver:Show()
+		warnFixateEnded:Show()
 	end
 end
 

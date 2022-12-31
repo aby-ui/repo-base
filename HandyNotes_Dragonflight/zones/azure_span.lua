@@ -110,14 +110,16 @@ map.nodes[13584855] = Rare({
     }
 }) -- Bisquius
 
--- map.nodes[] = Rare({
---     id = 193178,
---     quest = 69858,
---     rewards = {
---         Achievement({id = 16678, criteria = 56122}),
---         Transmog({item = , slot = L['']}) -- Name
---     }
--- }) -- Blightfur
+map.nodes[13432270] = Rare({
+    id = 193178,
+    quest = 74058,
+    note = L['in_small_cave'] .. ' ' .. L['blightfur_note'],
+    rewards = {
+        Achievement({id = 16678, criteria = 56122}),
+        DC.RenewedProtoDrake.FinnedTail
+        -- Transmog({item = , slot = L['']}) -- Name
+    }
+}) -- Blightfur
 
 map.nodes[14053096] = RareElite({
     id = 197353,
@@ -201,14 +203,16 @@ map.nodes[64992995] = Rare({
     }
 }) -- Frigidpelt Den Mother
 
--- map.nodes[] = Rare({
---     id = 191356,
---     quest = 67148,
---     rewards = {
---         Achievement({id = 16678, criteria = 56101}),
---         Transmog({item = , slot = L['']}) -- Name
---     }
--- }) -- Frostpaw
+map.nodes[58264391] = Rare({
+    id = 191356,
+    quest = 73877,
+    note = L['frostpaw_note'],
+    rewards = {
+        Achievement({id = 16678, criteria = 56101})
+        -- Transmog({item = , slot = L['']}) -- Name
+    },
+    pois = {POI({58664339})}
+}) -- Frostpaw
 
 map.nodes[14083747] = RareElite({
     id = 197354,
@@ -300,14 +304,21 @@ map.nodes[20584943] = Rare({
     pois = {POI({34023076, 34933000})} -- Entrance
 }) -- Notfar the Unbearable
 
--- map.nodes[] = Rare({
---     id = 197371,
---     quest = nil,
---     rewards = {
---         Achievement({id = 16678, criteria = 56129}),
---         Transmog({item = , slot = L['']}) -- Name
---     }
--- }) -- Ravenous Tundra Bear
+map.nodes[58813260] = Rare({
+    id = 197371,
+    quest = {73891, 74080},
+    label = L['large_lunker_sighting'],
+    note = L['large_lunker_sighting_note'],
+    rewards = {
+        Achievement({
+            id = 16678,
+            criteria = {
+                {id = 56129, quest = 73891}, -- Ravenous Tundra Bear
+                {id = 56116, quest = 74080} -- Snufflegust
+            }
+        })
+    }
+}) -- Lunker Rares
 
 -- map.nodes[] = Rare({
 --     id = 193693,
@@ -340,15 +351,6 @@ map.nodes[10863229] = RareElite({
         DC.CliffsideWylderdrake.Ears
     }
 }) -- Snarglebone
-
--- map.nodes[] = Rare({
---     id = 193706,
---     quest = nil,
---     rewards = {
---         Achievement({id = 16678, criteria = 56116}),
---         Transmog({item = , slot = L['']}) -- Name
---     }
--- }) -- Snufflegust
 
 map.nodes[55033405] = RareElite({
     id = 193238,
@@ -460,6 +462,7 @@ map.nodes[17254144] = Rare({
 map.nodes[36723247] = Rare({
     id = 192749,
     quest = 72846, -- 67173
+    note = L['sharpfang_note'],
     rewards = {
         Transmog({item = 200283, slot = L['leather']}), -- Gnoll-Gnawed Breeches
         Transmog({item = 200266, slot = L['crossbow']}), -- Gnollish Chewtoy Launcher
@@ -491,7 +494,7 @@ map.nodes[53934372] = Treasure({
     note = L['in_small_cave'] .. ' ' .. L['gnoll_fiend_flail_note'],
     requires = {
         ns.requirement.Quest(72709), -- Funding a Treasure Hunt
-        ns.requirement.Quest(72709, '{item:199066}') -- Letter of Caution
+        ns.requirement.Quest(70535, '{item:199066}') -- Letter of Caution
     },
     rewards = {
         Achievement({id = 16300, criteria = 54805}),
@@ -666,7 +669,7 @@ map.nodes[46202390] = PT.Inscription({
 
 map.nodes[53146614] = PT.Blacksmithing({
     id = 201011,
-    quest = nil,
+    quest = 70314,
     note = L['pt_smith_spelltouched_tongs_note'],
     requires = {
         ns.requirement.Profession(186), ns.requirement.Profession(164, 2822, 25)
@@ -826,9 +829,12 @@ map.nodes[65732814] = LeyLine({
 
 map.nodes[13503833] = Disturbeddirt({note = L['in_small_cave']})
 map.nodes[19214047] = Disturbeddirt()
+map.nodes[19225097] = Disturbeddirt()
 map.nodes[23716772] = Disturbeddirt()
+map.nodes[29872621] = Disturbeddirt()
 map.nodes[33704685] = Disturbeddirt()
 map.nodes[34234591] = Disturbeddirt()
+map.nodes[50284428] = Disturbeddirt()
 map.nodes[57775352] = Disturbeddirt()
 map.nodes[65193151] = Disturbeddirt()
 map.nodes[65516163] = Disturbeddirt()

@@ -85,8 +85,11 @@ L['options_icons_legendary_album_desc'] = 'Display legendary character locations
 ------------------------------- THE AZURE SPAN --------------------------------
 -------------------------------------------------------------------------------
 
+L['blightfur_note'] = 'Talk to {npc:193633} to summon the rare.'
 L['brackenhide_rare_note'] = 'These rares spawn in a set rotation of {npc:197344} > {npc:197353} > {npc:197354} > {npc:197356} on a 10 minute timer.'
 L['fisherman_tinnak_note'] = 'Collect |cFFFFFD00Broken Fishing Pole|r, |cFFFFFD00Torn Fishing Net|r and |cFFFFFD00Old Harpoon|r to spawn the rare.'
+L['frostpaw_note'] = 'After taking the |cFFFFFD00Wooden Hammer|r, you have 20 seconds to hit the |cFFFFFD00Whack a Gnoll|r on the |cFFFFFD00Tree Stump|r, and spawn the rare.'
+L['sharpfang_note'] = 'Help {npc:192747} defeat {npc:192748s} to spawn the rare.'
 L['spellwrought_snowman_note'] = 'Collect 10x {npc:193424} and bring them to {npc:193242}.'
 L['trilvarus_loreweaver_note'] = 'Collect a |cFFFFFD00Singing Fragment|r to get {spell:382076} and use the |cFFFFFD00Uncharded Focus|r to spawn the rare.'
 
@@ -159,7 +162,9 @@ L['mysterious_wand_note'] = 'Pick up the |cFFFFFD00Crystal Key|r and place it in
 ------------------------------ OHN'AHRAN PLAINS -------------------------------
 -------------------------------------------------------------------------------
 
+L['eaglemaster_niraak_note'] = 'Kill nearby {npc:186295s} and {npc:186299s} to spawn the rare.'
 L['hunter_of_the_deep_note'] = 'Click on the weapon rack and shoot fish until the rare spawns.'
+L['porta_the_overgrown_note'] = 'Can be found {item:194426} at the bottom of the lake of |cFFFFFD00Mirror of the Sky|r in west side. Spread 5x {item:194426} at {npc:191953} to spawn the rare.'
 L['scaleseeker_mezeri_note'] = 'Offer {item:194681} to {npc:193224} and follow her until she reveals the rare.'
 L['shade_of_grief_note'] = 'Click the {npc:193166} to spawn the rare.'
 L['windscale_the_stormborn_note'] = 'Kill the {npc:192367s} channeling into the {npc:192357}.'
@@ -192,11 +197,11 @@ L['lizi_note_day3'] = 'Collect 10x {item:194966} fished from any waters in the |
 L['lizi_note_day4'] = 'Collect 20x {item:192636} from mammoths in |cFFFFFD00Ohn\'ahran Plains|r.'
 L['lizi_note_day5'] = 'Accept {quest:71195} from {npc:190014} and get 1x {item:200598} from {npc:190015} in a tent south of |cFFFFFD00Ohn\'iri Springs|r.'
 
-L['ohnahra_note_start'] = 'Complete the Initiate\'s Day Out storyline starting with {quest:65901} then {npc:190022} will appear in |cFFFFFD00Ohn\'iri Springs|r behind a Windsage hut.\n\nGather the following materials:'
+L['ohnahra_note_start'] = 'Complete the daily questline {quest:71196} for {item:192799} in |cFFFFFD00Ohn\'iri Springs|r. Accept the quest {quest:72512} from {npc:190022} behind a Windsage hut in |cFFFFFD00Ohn\'iri Springs|r.\n\nGather the following materials:'
 L['ohnahra_note_item1'] = 'Collect 3x {item:201929} from {npc:186151}, the final boss of the |cFFFFFD00Nokhud Offensive|r dungeon. Not a 100% drop.'
 L['ohnahra_note_item2'] = 'Purchase 1x {item:201323} from {npc:196707} for 50x {currency:2003} and 1x {item:194562}.\n{item:194562} can be looted from Time-Lost mobs in |cFFFFFD00Thaldrazsus|r.'
 L['ohnahra_note_item3'] = 'Purchase 1x {item:191507} from the Auction House. (Alchemists can purchase {item:191588} from {npc:196707} starting at Renown 22)'
-L['ohnahra_note_end'] = 'Once you have all materials, return to {npc:190022} and accept {quest:72512}. Go to {npc:194796} to turn in the quest and receive your mount.'
+L['ohnahra_note_end'] = 'Once you have all materials, turn in the quest at {npc:194796} and receive your mount.'
 
 L['bakar_note'] = 'Pet the dog!'
 L['bakar_ellam_note'] = 'If enough players pet this dog, she will lead you to her treasure.'
@@ -215,6 +220,11 @@ L['options_icons_dreamguard_desc'] = 'Display  the location of Dreamguards for {
 L['khadin_note'] = 'Exchange {item:191784} for profession knowledge.'
 L['the_great_swog_note'] = 'Exchange {item:199338}, {item:199339} and {item:199340} for {item:202102}.'
 L['hunt_instructor_basku_note'] = 'Exchange {item:200093} for |cFFFFFD00Maruuk Centaur|r reputation.'
+L['elder_yusa_note'] = 'Target {npc:192818} and ' .. ns.color.Orange('/hungry') .. ' to obtain the cooking recipe.'
+L['initiate_kittileg_note'] = 'Complete {quest:66226} to obtain the toy!'
+
+L['quackers_duck_trap_kit'] = 'To summon {npc:192557} you first need the {item:194740} which you can find in a nearby camp.\n\nTo make it a {item:194712} you need the following materials:'
+L['quackers_spawn'] = 'Next you need to catch a duck with the {item:194712}, you will find some near the nest. Now you can use {item:194739} at the {npc:192581} to summon {npc:192557}.'
 
 -------------------------------------------------------------------------------
 --------------------------------- THALDRASZUS ---------------------------------
@@ -223,6 +233,7 @@ L['hunt_instructor_basku_note'] = 'Exchange {item:200093} for |cFFFFFD00Maruuk C
 L['ancient_protector_note'] = 'Kill nearby {npc:193244} to get {item:197708}. Combine 5 {item:197708} to create a {item:197733} and use it to activate nearby Titanic Reactors.'
 L['blightpaw_note'] = 'Talk to {npc:193222} nearby and agree to help him.'
 L['corrupted_proto_dragon_note'] = 'Inspect the |cFFFFFD00Corrupted Dragon Egg|r to spawn the rare.'
+L['lord_epochbrgl_note'] = 'Click {npc:193257} to spawn the rare.'
 L['weeping_vilomah_note'] = 'Talk to {npc:193206} to summon the rare.'
 L['woofang_note'] = 'Pet {npc:193156} to spawn the rare.'
 
@@ -264,6 +275,7 @@ L['options_icons_new_perspective_desc'] = 'Vista locations for the {achievement:
 L['ruby_feast_gourmand'] = 'Every day, a random guest chef serves up different dishes and drinks.'
 
 L['sorotis_note'] = 'Exchange {item:199906} for |cFFFFFD00Valdrakken Accord|r reputation.'
+L['lillian_brightmoon_note'] = 'Exchange {item:201412} for |cFFFFFD00Dragonscale Expedition|r reputation.'
 
 -------------------------------------------------------------------------------
 ------------------------------ THE WAKING SHORE -------------------------------

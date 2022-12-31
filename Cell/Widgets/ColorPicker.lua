@@ -129,7 +129,7 @@ local function CreateEB(label, width, height, isNumeric, group)
             
         else -- hex
             local text = strtrim(hexEB:GetText())
-            print(text, hexEB.oldText)
+            -- print(text, hexEB.oldText)
             if strlen(text) ~= 6 or not strmatch(text, "^[0-9a-fA-F]+$") then
                 hexEB:SetText(hexEB.oldText)
             end

@@ -3,7 +3,7 @@ local L		= mod:GetLocalizedStrings()
 
 mod.statTypes = "normal,heroic,mythic,challenge,timewalker"
 
-mod:SetRevision("20221127051031")
+mod:SetRevision("20221225234319")
 mod:SetCreatureID(76407)
 mod:SetEncounterID(1682)
 
@@ -50,7 +50,7 @@ end
 function mod:OnCombatStart(delay)
 	--timerOmenOfDeathCD:Start(8.5-delay)
 	timerRitualOfBonesCD:Start(20-delay)
-	specWarnRitualOfBones:ScheduleVoice(18-delay, "specialsoon")
+--	specWarnRitualOfBones:ScheduleVoice(18-delay, "specialsoon")
 end
 
 function mod:SPELL_CAST_START(args)
@@ -72,7 +72,8 @@ end
 function mod:UNIT_SPELLCAST_SUCCEEDED(uId, _, spellId)
 	if spellId == 154671 then
 		specWarnRitualOfBones:Show()
-		specWarnRitualOfBones:ScheduleVoice(48.5, "specialsoon")
+		specWarnRitualOfBones:Play("specialsoon")
+--		specWarnRitualOfBones:ScheduleVoice(48.5, "specialsoon")
 		timerRitualOfBonesCD:Start()
 	elseif spellId == 177691 then
 		self:BossTargetScanner(76407, "OmenOfDeathTarget", 0.04, 15)

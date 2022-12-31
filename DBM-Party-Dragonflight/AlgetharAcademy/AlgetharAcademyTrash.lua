@@ -1,8 +1,10 @@
 local mod	= DBM:NewMod("AlgetharAcademyTrash", "DBM-Party-Dragonflight", 5)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20221203231852")
+mod:SetRevision("20221230025544")
 --mod:SetModelID(47785)
+mod:SetZone(2526)
+
 mod.isTrashMod = true
 
 mod:RegisterEvents(
@@ -10,7 +12,8 @@ mod:RegisterEvents(
 	"SPELL_CAST_SUCCESS 390915",
 	"SPELL_AURA_APPLIED 388984 387843",
 --	"SPELL_AURA_APPLIED_DOSE 339528",
-	"SPELL_AURA_REMOVED 387843"
+	"SPELL_AURA_REMOVED 387843",
+	"GOSSIP_SHOW"
 )
 
 --TODO: add https://www.wowhead.com/spell=386026/surge ?
@@ -35,6 +38,8 @@ local yellAstralBombFades						= mod:NewShortFadesYell(387843)
 --local yellConcentrateAnimaFades				= mod:NewShortFadesYell(339525)
 --local specWarnSharedSuffering					= mod:NewSpecialWarningYou(339607, nil, nil, nil, 1, 2)
 --local specWarnDirgefromBelow					= mod:NewSpecialWarningInterrupt(310839, "HasInterrupt", nil, nil, 1, 2)
+
+mod:AddBoolOption("AGBuffs", true)
 
 --local playerName = UnitName("player")
 
@@ -98,7 +103,7 @@ function mod:SPELL_AURA_APPLIED(args)
 			yellnViciousAmbush:Yell()
 		end
 	elseif spellId == 387843 then
-		warnAstralBombTargets:Show(args.destName)
+		warnAstralBombTargets:CombinedShow(1, args.destName)
 		if args:IsPlayer() then
 			specWarnAstralBomb:Show()
 			specWarnAstralBomb:Play("runout")
@@ -113,5 +118,17 @@ function mod:SPELL_AURA_REMOVED(args)
 	local spellId = args.spellId
 	if spellId == 387843 and args:IsPlayer() then
 		yellAstralBombFades:Cancel()
+	end
+end
+
+function mod:GOSSIP_SHOW()
+	local table = C_GossipInfo.GetOptions()
+	if table[1] and table[1].gossipOptionID then
+		local gossipOptionID = table[1].gossipOptionID
+		DBM:Debug("GOSSIP_SHOW triggered with a gossip ID of: "..gossipOptionID)
+		--Black, Bronze, Blue, Red, Green
+		if self.Options.AGBuffs and (gossipOptionID == 107065 or gossipOptionID == 107081 or gossipOptionID == 107082 or gossipOptionID == 107088 or gossipOptionID == 107083) then -- Buffs
+			C_GossipInfo.SelectOption(gossipOptionID)
+		end
 	end
 end

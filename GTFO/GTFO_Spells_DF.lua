@@ -145,6 +145,28 @@ GTFO.SpellID["394073"] = {
   sound = 1;
 };
 
+GTFO.SpellID["369690"] = {
+  --desc = "Molten Trail (Cauldronbearer Blakor)";
+  sound = 1;
+};
+
+GTFO.SpellID["390295"] = {
+  --desc = "Arc Expulsion (Strunraan)";
+  sound = 1;
+};
+
+GTFO.SpellID["388459"] = {
+  --desc = "Glaciate (Cobalt Assembly)";
+  applicationOnly = true;
+  sound = 1;
+};
+
+GTFO.SpellID["388379"] = {
+  --desc = "Glaciate (Cobalt Assembly)";
+  applicationOnly = true;
+  sound = 1;
+};
+
 
 --- *******************
 --- * Ruby Life Pools *
@@ -554,6 +576,11 @@ GTFO.SpellID["398200"] = {
   sound = 1;
 };
 
+GTFO.SpellID["396544"] = {
+  --desc = "Charred Ground (Magmas)";
+  sound = 1;
+};
+
 GTFO.SpellID["371514"] = {
   --desc = "Scorched Ground (Embar)";
   soundFunction = function() 
@@ -611,7 +638,6 @@ GTFO.SpellID["376851"] = {
   --desc = "Aerial Buffet (Dathea)";
   tankSound = 1;
   sound = 0;
-  test = true;
 };
 
 GTFO.SpellID["374554"] = {
@@ -625,16 +651,21 @@ GTFO.SpellID["390747"] = {
   test = true;
 };
 
+GTFO.SpellID["377662"] = {
+  --desc = "Static Field (Raszageth)";
+  sound = 2;
+  negatingDebuffSpellID = 377612 -- Hurricane Wing
+};
+
 GTFO.SpellID["388115"] = {
   --desc = "Lightning Devastation (Raszageth)";
+  applicationOnly = true;
   sound = 1;
-  test = true;
 };
 
 GTFO.SpellID["395929"] = {
   --desc = "Storm's Spite (Raging Storm)";
   sound = 1;
-  test = true;
 };
 
 GTFO.SpellID["395278"] = {
@@ -644,5 +675,36 @@ GTFO.SpellID["395278"] = {
   ignoreSelfInflicted = true;
 };
 
+GTFO.SpellID["391711"] = {
+  --desc = "Lethal Current (Thundering Ravager)";
+  sound = 4;
+  negatingDebuffSpellID = 391696;
+};
+
+GTFO.SpellID["375883"] = {
+  --desc = "Greatstaff's Wrath (Broodkeeper Diurna)";
+  sound = 1;
+};
+
+GTFO.SpellID["379419"] = {
+  --desc = "Empowered Greatstaff's Wrath (Broodkeeper Diurna)";
+  sound = 1;
+};
+
+GTFO.SpellID["377597"] = {
+  --desc = "Lightning Breath (Raszageth)";
+  sound = 1;
+};
+
+GTFO.SpellID["394583"] = {
+  --desc = "Scattered Charge (Raszageth)";
+  applicationOnly = true;
+  sound = 4;
+};
+
+GTFO.SpellID["392196"] = {
+  --desc = "Scattered Charge (Raszageth)";
+  sound = 4;
+};
 
 end

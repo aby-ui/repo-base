@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2512, "DBM-Party-Dragonflight", 5, 1201)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20221206015003")
+mod:SetRevision("20221228074525")
 mod:SetCreatureID(186951)
 mod:SetEncounterID(2563)
 --mod:SetUsedIcons(1, 2, 3)
@@ -23,8 +23,13 @@ mod:RegisterEventsInCombat(
 	"UNIT_DIED"
 --	"UNIT_SPELLCAST_SUCCEEDED boss1"
 )
+mod:RegisterEvents(
+	"CHAT_MSG_MONSTER_SAY"
+)
 
+--TODO, add RP timer, almost had it but OS crashed and lost entire nights worth of transcriptor logs. Maybe next week!
 --TODO, Branch Out target scan? it says "at a location" not "at a player"
+--TODO, recheck and fix barkbreaker since alternating timer failed in my run
 --TODO, do stuff with Splinterbark/Abunance mythic mechanic? Seems self explanatory. You get a bleedd on spawn, and clear it on death with target goal to be "don't ignore adds"
 --[[
 (ability.id = 388923 or ability.id = 388623 or ability.id = 396640 or ability.id = 388544) and type = "begincast"
@@ -41,6 +46,7 @@ local specWarnHealingTouch						= mod:NewSpecialWarningInterrupt(396640, "HasInt
 local specWarnBarkbreaker						= mod:NewSpecialWarningDefensive(388544, nil, nil, nil, 1, 2)
 --local specWarnGTFO							= mod:NewSpecialWarningGTFO(340324, nil, nil, nil, 1, 8)
 
+local timerRP									= mod:NewRPTimer(17)
 local timerGerminateCD							= mod:NewCDCountTimer(29.1, 388796, nil, nil, nil, 3)
 local timerBurstForthCD							= mod:NewCDTimer(49.8, 388923, nil, nil, nil, 2, nil, DBM_COMMON_L.HEALER_ICON)--Assumed it's on same cycle as branch out, CD not confirmed
 local timerBranchOutCD							= mod:NewCDTimer(49.8, 388623, nil, nil, nil, 3)
@@ -104,12 +110,12 @@ function mod:SPELL_CAST_START(args)
 		end
 	elseif spellId == 388544 then
 		self.vb.barkCount = self.vb.barkCount + 1
-		--4.6, 30.3, 18.2, 29.2
-		if self.vb.germinateCount % 2 == 0 then
+		--4.6, 30.3, 18.2, 29.2 (Pattern does not always hold, needs review)
+--		if self.vb.germinateCount % 2 == 0 then
 			timerBarkbreakerCD:Start(18.2, self.vb.barkCount+1)
-		else
-			timerBarkbreakerCD:Start(29.2, self.vb.barkCount+1)
-		end
+--		else
+--			timerBarkbreakerCD:Start(29.2, self.vb.barkCount+1)
+--		end
 		if self:IsTanking("player", "boss1", nil, true) then
 			specWarnBarkbreaker:Show()
 			specWarnBarkbreaker:Play("defensive")
@@ -194,3 +200,17 @@ function mod:UNIT_SPELLCAST_SUCCEEDED(uId, _, spellId)
 	end
 end
 --]]
+
+--<38.95 21:51:16> [CHAT_MSG_MONSTER_SAY] Perfect, we are just about--wait, Ichistrasz! There is too much life magic! What are you doing?#Professor Mystakria###Omegal##0#0##0#3723#nil#0#fa
+--<56.01 21:51:33> [DBM_Debug] ENCOUNTER_START event fired: 2563 Overgrown Ancient 8 5#nil", -- [250]
+function mod:CHAT_MSG_MONSTER_YELL(msg)
+	if (msg == L.TreeRP or msg:find(L.TreeRP)) then
+		self:SendSync("TreeRP")--Syncing to help unlocalized clients
+	end
+end
+
+function mod:OnSync(msg, targetname)
+	if msg == "TreeRP" and self:AntiSpam(10, 2) then
+		timerRP:Start()
+	end
+end

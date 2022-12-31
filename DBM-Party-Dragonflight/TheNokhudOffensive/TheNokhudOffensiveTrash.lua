@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod("TheNokhudOffensiveTrash", "DBM-Party-Dragonflight", 3)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20221205064214")
+mod:SetRevision("20221226070201")
 --mod:SetModelID(47785)
 mod.isTrashMod = true
 
@@ -58,7 +58,7 @@ function mod:SPELL_CAST_START(args)
 		specWarnDeathBoltVolley:Show(args.sourceName)
 		specWarnDeathBoltVolley:Play("kickcast")
 	elseif spellId == 373395 then
-		if self:CheckInterruptFilter(args.sourceGUID, false, true) then
+		if self.Options.SpecWarn373395interrupt and self:CheckInterruptFilter(args.sourceGUID, false, true) then
 			specWarnBloodcurdlingShout:Show(args.sourceName)
 			specWarnBloodcurdlingShout:Play("kickcast")
 		elseif self:AntiSpam(3, 5) then

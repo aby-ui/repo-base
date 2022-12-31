@@ -1647,6 +1647,45 @@ function F:Revise()
         end
     end
 
+    -- r152-release
+    if CellDB["revise"] and dbRevision < 152 then
+        if Cell.isRetail then
+            local found1, found2
+            for _, t in pairs(CellDB["consumables"]) do
+                if t[1] == 370511 then found1 = true end
+                if t[1] == 371024 then found2 = true end
+            end
+            if not found1 then
+                tinsert(CellDB["consumables"], {
+                    370511, -- 振奋治疗药水
+                    {"A", {1, 0.1, 0.1}},
+                })
+            end
+            if not found2 then
+                tinsert(CellDB["consumables"], {
+                    371024, -- 元素强能药水
+                    {"C3", {1, 1, 0}},
+                })
+            end
+            Cell.vars.consumables = I:ConvertConsumables(CellDB["consumables"])
+
+            -- 英灵殿
+            if not F:TContains(CellDB["targetedSpellsList"], 193659) then -- 邪炽冲刺
+                tinsert(CellDB["targetedSpellsList"], 193659)
+            end
+        end
+
+        for _, layout in pairs(CellDB["layouts"]) do
+            local nameText = Cell.defaults.indicatorIndices.healthText
+            if layout["indicators"][nameText] and layout["indicators"][nameText]["indicatorName"] == "nameText" then
+                if type(layout["indicators"][nameText]["hideFull"]) == "boolean" then
+                    layout["indicators"][nameText]["hideIfEmptyOrFull"] = layout["indicators"][nameText]["hideFull"]
+                    layout["indicators"][nameText]["hideFull"] = nil
+                end
+            end
+        end
+    end
+
     CellDB["revise"] = Cell.version
     if Cell.isWrath then
         CellCharacterDB["revise"] = Cell.version

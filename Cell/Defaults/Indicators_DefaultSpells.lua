@@ -177,7 +177,7 @@ end
 -------------------------------------------------
 -- externalCooldowns
 -------------------------------------------------
-local externalCooldowns = {
+local externalNames = {
     -- death knight
     51052, -- 反魔法领域
 
@@ -205,7 +205,6 @@ local externalCooldowns = {
     204018, -- 破咒祝福
     31821, -- 光环掌握
     210256, -- 庇护祝福
-    228050, -- 圣盾术 (被遗忘的女王护卫)
     -- 211210, -- 提尔的保护
     -- 216328, -- 光之优雅
 
@@ -230,28 +229,27 @@ local externalCooldowns = {
     3411, -- 援护
     213871, -- 护卫
 }
+externalNames = F:ConvertSpellTable(externalNames, true)
 
-local externals = {}
-for _, id in pairs(externalCooldowns) do
-    externals[GetSpellInfo(id)] = true
-end
-externalCooldowns = F:Copy(externals)
+local externalIDs = {
+    228050, -- 圣盾术 (被遗忘的女王护卫)
+}
 
+-- customs
+local customExternalNames = {}
 function I:UpdateCustomExternals(t)
-    -- reset
-    externalCooldowns = F:Copy(externals)
-    -- insert
+    wipe(customExternalNames)
     for _, id in pairs(t) do
         local name = GetSpellInfo(id)
         if name then
-            externalCooldowns[name] = true
+            customExternalNames[name] = true
         end
     end
 end
 
 local UnitIsUnit = UnitIsUnit
 local bos = GetSpellInfo(6940) -- 牺牲祝福
-function I:IsExternalCooldown(name, source, target)
+function I:IsExternalCooldown(name, id, source, target)
     if name == bos then
         if source and target then
             -- NOTE: hide bos on caster
@@ -260,14 +258,14 @@ function I:IsExternalCooldown(name, source, target)
             return true
         end
     else
-        return externalCooldowns[name]
+        return externalNames[name] or externalIDs[id] or customExternalNames[name]
     end
 end
 
 -------------------------------------------------
 -- defensiveCooldowns
 -------------------------------------------------
-local defensiveCooldowns = {
+local defensiveNames = {
     -- death knight
     48707, -- 反魔法护罩
     48792, -- 冰封之韧
@@ -341,31 +339,26 @@ local defensiveCooldowns = {
     118038, -- 剑在人在
     184364, -- 狂怒回复
 }
+defensiveNames = F:ConvertSpellTable(defensiveNames, true)
 
-local defensiveCooldownIDs = {
+local defensiveIDs = {
     [113862] = true, -- Greater Invisibility - 强化隐形术
 }
 
-local defensives = {}
-for _, id in pairs(defensiveCooldowns) do
-    defensives[GetSpellInfo(id)] = true
-end
-defensiveCooldowns = F:Copy(defensives)
-
+-- customs
+local customDefensives = {}
 function I:UpdateCustomDefensives(t)
-    -- reset
-    defensiveCooldowns = F:Copy(defensives)
-    -- insert
+    wipe(customDefensives)
     for _, id in pairs(t) do
         local name = GetSpellInfo(id)
         if name then
-            defensiveCooldowns[name] = true
+            customDefensives[name] = true
         end
     end
 end
     
-function I:IsDefensiveCooldown(nameOrID)
-    return defensiveCooldowns[nameOrID] or defensiveCooldownIDs[nameOrID]
+function I:IsDefensiveCooldown(name, id)
+    return defensiveNames[name] or defensiveIDs[id] or customDefensives[name]
 end
 
 -------------------------------------------------
@@ -394,7 +387,7 @@ local tankActiveMitigations = {
 
 local tankActiveMitigationNames = {
     -- death knight
-    F:GetClassColorStr("DEATHKNIGHT")..GetSpellInfo(77535).."|r", -- 鲜血护盾
+    -- F:GetClassColorStr("DEATHKNIGHT")..GetSpellInfo(77535).."|r", -- 鲜血护盾
     F:GetClassColorStr("DEATHKNIGHT")..GetSpellInfo(195181).."|r", -- 白骨之盾
 
     -- demon hunter
@@ -741,6 +734,7 @@ local targetedSpells = {
     -- Legion ----------------------
     -- 英灵殿
     193092, -- 放血扫击
+    193659, -- 邪炽冲刺
 
     -- Shadowlands -----------------
     320788, -- 冻结之缚
@@ -789,13 +783,21 @@ local consumables = {
         {"A", {0.4, 1, 0}},
     },
     {
-        359867, -- 宇宙治疗药水
+        370511, -- 振奋治疗药水
         {"A", {1, 0.1, 0.1}},
     },
     {
-        307192, -- 灵魂治疗药水
-        {"A", {1, 0.1, 0.1}},
+        371024, -- 元素强能药水
+        {"C3", {1, 1, 0}},
     },
+    -- {
+    --     359867, -- 宇宙治疗药水
+    --     {"A", {1, 0.1, 0.1}},
+    -- },
+    -- {
+    --     307192, -- 灵魂治疗药水
+    --     {"A", {1, 0.1, 0.1}},
+    -- },
 }
 
 

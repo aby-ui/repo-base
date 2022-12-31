@@ -440,6 +440,16 @@ U1PLUG["CosHelper"] = function()
     local npccheck = {}
     local NoMore = false
     local tarIndex = 1
+    local names = {
+        ["105117"] = "药瓶",
+        ["105157"] = "导管",
+        ["106110"] = "卷轴",
+        ["106112"] = "伤员",
+        ["106113"] = "雕像",
+        ["105831"] = "宝典",
+        ["105215"] = "垃圾",
+        ["106108"] = "玫瑰茶",
+    }
     local function CoShelper(tooltip)
         if NoMore then
             if IsShiftKeyDown() ~= true then
@@ -463,7 +473,7 @@ U1PLUG["CosHelper"] = function()
             elseif npcid == "106113" then line = "珠宝,采矿 [引小BOSS]" --Lifesized Nightborne Statue
             elseif npcid == "105831" then line = "圣骑,牧师 [减伤]" --Infernal Tome
             elseif npcid == "105249" then line = "烹饪800,熊猫人 [提升血量]" --Nightshade Refreshments
-            elseif npcid == "105215" then line = "猎人,锻造 [引小BOSS并直接杀死]" --Discarded Junk
+            elseif npcid == "105215" then line = "猎人,锻造 [引小BOSS]" --Discarded Junk
             elseif npcid == "106024" then line = "法师,附魔,精灵 [增加伤害]" --Magical Lantern
             elseif npcid == "106108" then line = "死骑,武僧 [回复能力]" -- Starlight Rose Brew
             else return
@@ -473,8 +483,8 @@ U1PLUG["CosHelper"] = function()
                 npccheck[npcid] = true
             end
             if npccheck[npcid] or IsShiftKeyDown() then
-                SendChatMessage("【爱不易】"..GetUnitName(unit)..": "..line ,"PARTY" ,nil ,"1");
-                SetRaidTarget(unit, tarIndex)
+                SendChatMessage((names[npcid] or GetUnitName(unit))..":"..line ,"PARTY" ,nil ,"1");
+                --SetRaidTarget(unit, tarIndex)
                 tarIndex=tarIndex+1
                 if tarIndex == 9 then tarIndex = 1 end;
                 npccheck[npcid] = false

@@ -535,7 +535,7 @@ function F:ConvertTable(t)
 end
 
 local GetSpellInfo = GetSpellInfo
-function F:ConvertAurasTable(t, convertIdToName)
+function F:ConvertSpellTable(t, convertIdToName)
     if not convertIdToName then
         return F:ConvertTable(t)
     end

@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2488, "DBM-Party-Dragonflight", 7, 1202)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20221127034408")
+mod:SetRevision("20221226072844")
 mod:SetCreatureID(188252)
 mod:SetEncounterID(2609)
 --mod:SetUsedIcons(1, 2, 3)
@@ -78,7 +78,7 @@ function mod:SPELL_CAST_START(args)
 		timerChillstormCD:Start()
 	elseif spellId == 396044 then
 		specWarnHailbombs:Show()
-		specWarnHailbombs:Play("shockwave")
+		specWarnHailbombs:Play("watchstep")
 		timerHailbombsCD:Start()
 	elseif spellId == 373046 then
 		specWarnAwakenWhelps:Show()

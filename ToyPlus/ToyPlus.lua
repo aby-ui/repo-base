@@ -334,7 +334,7 @@ function ToyPlus:ToysUpdated(itemID)
 	local toyPopout = _G["ToyPlus_Popout"]
 	self:RefreshToys()
 	if toyFrame then ToyPlus:RefreshIcons(); ToyPlus:ToggleRows() end
-	if toyPopout then ToyPlus:RefreshList(0, false, _G["ToyPlus_Popout_SearchBox"]:GetText()) end
+	if toyPopout and itemID then ToyPlus:RefreshList(0, false, _G["ToyPlus_Popout_SearchBox"]:GetText()) end
 	LibQTip:Release(ToyPlus.tooltip)
 	ToyPlus.tooltip = nil
 	for i = 1, #ToyPlusToyDB.toyName do
@@ -547,7 +547,7 @@ function ToyPlus:ShowList()
 			end
 		end)
 		local scrFra = CreateFrame("ScrollFrame", "ToyPlus_ScrollFrame", toyPopout)
-		scrFra:SetPoint("TOPLEFT", 2, -27)--edited
+		scrFra:SetPoint("TOPLEFT", 2, -27)
 		scrFra:SetPoint("BOTTOMRIGHT", -2, 2)
 		toyPopout.scrollframe = scrFra
 		local scrBar = CreateFrame("Slider", "ToyPlus_Slider", scrFra, "UIPanelScrollBarTemplate")

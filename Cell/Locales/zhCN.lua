@@ -446,10 +446,12 @@ L["Border"] = "边框"
 L["Alpha"] = "透明度"
 L["Max Icons"] = "最大显示数量"
 L["Format"] = "格式"
-L["hideFull"] = "当血量满时隐藏"
+L["hideIfEmptyOrFull"] = "当死亡或血量满时隐藏"
 L["Color"] = "颜色"
 L["Remaining Time <"] = "剩余时间 <"
 L["sec"] = "秒"
+L["Always"] = "总是"
+L["hide icon animation"] = "隐藏图标动画"
 L["Anchor To"] = "定位到"
 L["Health Bar"] = "血条"
 L["Entire"] = "整体"
@@ -472,7 +474,7 @@ L["castByMe"] = "只显示我施放的增益"
 L["trackByName"] = "匹配法术名称"
 L["showDuration"] = "显示持续时间文本"
 L["showStack"] = "显示层数文本"
-L["Show duration text instead of icon animation"] = "用持续时间文本取代图标动画"
+-- L["Show duration text instead of icon animation"] = "用持续时间文本取代图标动画"
 L["enableHighlight"] = "高亮单位按钮"
 L["onlyShowTopGlow"] = "仅为优先级最高的减益显示发光效果"
 L["circledStackNums"] = "用带圈数字显示层数"
@@ -606,6 +608,12 @@ L["Changelogs"] = "更新记录"
 L["Click to view recent changelogs"] = "点击查看近期更新记录"
 L["Click to view older changelogs"] = "点击查看远古更新记录"
 L["CHANGELOGS"] = [[
+    <h1>r152-release (Dec 29, 2022, 19:40 GMT+8)</h1>
+    <p>* 更新副本减益。</p>
+    <p>* 更新持续时间文本的相关选项（如果你使用了相关代码片段，需要自行手动更新）。</p>
+    <p>* 修复增益检查。</p>
+    <br/>
+
     <h1>r151-release (Dec 17, 2022, 10:18 GMT+8)</h1>
     <p>* 更新副本减益：化身巨龙牢窟。</p>
     <p>* 修复唤魔师的距离检查。</p>

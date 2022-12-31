@@ -140,7 +140,8 @@ L:SetMiscLocalization({
 L= DBM:GetModLocalization(1489)
 
 L:SetMiscLocalization({
-	tempestModeMessage		=	"Not tempest sequence: %s. Rechecking in 8 seconds."
+	tempestModeMessage		= "Not tempest sequence: %s. Rechecking in 8 seconds.",
+	OdynRP					= "Most impressive! I never thought I would meet anyone who could match the Valarjar's strength... and yet here you stand."
 })
 
 -----------------------
@@ -150,6 +151,11 @@ L = DBM:GetModLocalization("HoVTrash")
 
 L:SetGeneralLocalization({
 	name =	"Halls of Valor Trash"
+})
+
+L:SetOptionLocalization({
+	AGSkovaldTrash	= "Auto select gossip to start fight when interacting with 4 elites before Skovald",
+	AGStartOdyn		= "Auto select gossip to start fight when interacting with Odyn"
 })
 
 -----------------------
@@ -243,6 +249,10 @@ L= DBM:GetModLocalization(1719)
 -----------------------
 L= DBM:GetModLocalization(1720)
 
+L:SetMiscLocalization({
+	MelRP		= "Must you leave so soon, Grand Magistrix?"
+})
+
 -----------------------
 --Court of Stars Trash
 -----------------------
@@ -253,60 +263,17 @@ L:SetGeneralLocalization({
 })
 
 L:SetOptionLocalization({
-	SpyHelper	= "Help identify the spy",
-	SendToChat	= "Also send hints to chat (requires above option enabled)"
+	AGBoat			= "Auto select gossip to summon boat when interacting with lantern",
+	AGDisguise		= "Auto select gossip to activate disguise when interacting with Ly'leth Lunastre",
+	SpyHelper		= "Help identify the spy by automatically scanning gossip when interacting with Chatty Rumormonger npcs and displaying it on infoframe (also syncs to other DBM/BWs users)",
+	SpyHelperClose	= "Auto close gossip window after 0.3 second (delay allows other mods or WAs to have time to scan gossip)",
+	SendToChat2		= "Also send hints to chat (requires above option enabled)"
 })
 
 L:SetMiscLocalization({
-	Gloves1		= "There's a rumor that the spy always wears gloves.",
-	Gloves2		= "I heard the spy carefully hides their hands.",
-	Gloves3		= "I heard the spy always dons gloves.",
-	Gloves4		= "Someone said the spy wears gloves to cover obvious scars.",
-	NoGloves1	= "There's a rumor that the spy never has gloves on.",
-	NoGloves2	= "You know... I found an extra pair of gloves in the back room. The spy is likely to be bare handed somewhere around here.",
-	NoGloves3	= "I heard the spy dislikes wearing gloves.",
-	NoGloves4	= "I heard the spy avoids having gloves on, in case some quick actions are needed.",
-	Cape1		= "Someone mentioned the spy came in earlier wearing a cape.",
-	Cape2		= "I heard the spy enjoys wearing capes.",
-	NoCape1		= "I heard the spy dislikes capes and refuses to wear one.",
-	NoCape2		= "I heard that the spy left their cape in the palace before coming here.",
-	LightVest1	= "The spy definitely prefers the style of light colored vests.",
-	LightVest2	= "I heard that the spy is wearing a lighter vest to tonight's party.",
-	LightVest3	= "People are saying the spy is not wearing a darker vest tonight.",
-	DarkVest1	= "The spy definitely prefers darker clothing.",
-	DarkVest2	= "I heard the spy's vest is a dark, rich shade this very night.",
-	DarkVest3	= "The spy enjoys darker colored vests... like the night.",
-	DarkVest4	= "Rumor has it the spy is avoiding light colored clothing to try and blend in more.",
-	Female1		= "They say that the spy is here and she's quite the sight to behold.",
-	Female2		= "I hear some woman has been constantly asking about the district...",
-	Female3		= "Someone's been saying that our new guest isn't male.",
-	Female4		= "A guest saw both her and Elisande arrive together earlier.",
-	Male1		= "I heard somewhere that the spy isn't female.",
-	Male2		= "I heard the spy is here and he's very good looking.",
-	Male3		= "A guest said she saw him entering the manor alongside the Grand Magistrix.",
-	Male4		= "One of the musicians said he would not stop asking questions about the district.",
-	ShortSleeve1= "I heard the spy wears short sleeves to keep their arms unencumbered.",
-	ShortSleeve2= "Someone told me the spy hates wearing long sleeves.",
-	ShortSleeve3= "A friend of mine said she saw the outfit the spy was wearing. It did not have long sleeves.",
-	ShortSleeve4= "I heard the spy enjoys the cool air and is not wearing long sleeves tonight.",
-	LongSleeve1 = "I heard the spy's outfit has long sleeves tonight.",
-	LongSleeve2 = "Someone said the spy is covering up their arms with long sleeves tonight.",
-	LongSleeve3 = "I just barely caught a glimpse of the spy's long sleeves earlier in the evening.",
-	LongSleeve4 = "A friend of mine mentioned the spy has long sleeves on.",
-	Potions1	= "I heard the spy brought along potions, I wonder why?",
-	Potions2	= "I didn't tell you this... but the spy is masquerading as an alchemist and carrying potions at the belt.",
-	Potions3	= "I'm pretty sure the spy has potions at the belt.",
-	Potions4	= "I heard the spy brought along some potions... just in case.",
-	NoPotions1	= "I heared the spy is not carrying any potions around.",
-	NoPotions2	= "A musician told me she saw the spy throw away their last potion and no longer has any left.",
-	Book1		= "I heard the spy always has a book of written secrets at the belt.",
-	Book2		= "Rumor has is the spy loves to read and always carries around at least one book.",
-	Pouch1		= "I heard the spy carries a magical pouch around at all times.",
-	Pouch2		= "A friend said the spy loves gold and a belt pouch filled with it.",
-	Pouch3		= "I heard the spy's belt pouch is filled with gold to show off extravagance.",
-	Pouch4		= "I heard the spy's belt pouch is lined with fancy threading.",
 	Found		= "Now now, let's not be hasty",
 	--
+	CluesFound	= "Clues Found: %d/5",
 	Gloves		= "gloves",
 	NoGloves	= "no gloves",
 	Cape		= "cape",
@@ -320,7 +287,9 @@ L:SetMiscLocalization({
 	Potions		= "potions",
 	NoPotions	= "no potions",
 	Book		= "book",
-	Pouch		= "pouch"
+	Pouch		= "pouch",
+
+	SpyFound 	= "Spy has been found by %s"
 })
 
 

@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod("RubyLifePoolsTrash", "DBM-Party-Dragonflight", 7)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20221217223900")
+mod:SetRevision("20221229182648")
 --mod:SetModelID(47785)
 mod.isTrashMod = true
 
@@ -55,7 +55,7 @@ end
 
 function mod:SPELL_CAST_START(args)
 	local spellId = args.spellId
-	if spellId == 310780 and self:AntiSpam(3, 6) then
+	if spellId == 372087 and self:AntiSpam(3, 6) then
 		warnBlazingRush:Show()
 	elseif spellId == 391726 then
 		if self:AntiSpam(3, 2) then

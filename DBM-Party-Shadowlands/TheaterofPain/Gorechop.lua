@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2401, "DBM-Party-Shadowlands", 6, 1187)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20220803233609")
+mod:SetRevision("20221230022007")
 mod:SetCreatureID(162317)
 mod:SetEncounterID(2365)
 
@@ -48,15 +48,6 @@ function mod:SPELL_CAST_START(args)
 		timerTenderizingSmashCD:Start()
 	end
 end
-
---[[
-function mod:SPELL_AURA_APPLIED(args)
-	local spellId = args.spellId
-	if spellId == 194966 then
-
-	end
-end
---]]
 
 function mod:SPELL_PERIODIC_DAMAGE(_, _, _, _, destGUID, _, _, _, spellId, spellName)
 	if spellId == 323130 and destGUID == UnitGUID("player") and self:AntiSpam(2, 2) then

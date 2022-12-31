@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(1485, "DBM-Party-Legion", 4, 721)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20221220093407")
+mod:SetRevision("20221226072844")
 mod:SetCreatureID(94960)
 mod:SetEncounterID(1805)
 mod:SetHotfixNoticeRev(20221127000000)
@@ -24,7 +24,7 @@ local warnBreath					= mod:NewCountAnnounce(188404, 4)
 local warnDancingBlade				= mod:NewCountAnnounce(193235, 3)
 local warnSweep						= mod:NewSpellAnnounce(193092, 2, nil, "Tank")
 
-local specWarnHornOfValor			= mod:NewSpecialWarningSoon(188404, nil, nil, nil, 2, 2)
+local specWarnHornOfValor			= mod:NewSpecialWarningSpell(191284, nil, nil, nil, 2, 2)
 local specWarnDancingBlade			= mod:NewSpecialWarningGTFO(193235, nil, nil, nil, 1, 8)
 --local yellDancingBlade				= mod:NewYell(193235)
 
@@ -58,7 +58,7 @@ function mod:SPELL_CAST_START(args)
 		if self.vb.bladeCount % 2 == 0 then
 			timerDancingBladeCD:Start(11.2)
 		else
-			timerDancingBladeCD:Start(32.5)
+			timerDancingBladeCD:Start(31.1)
 		end
 	elseif spellId == 188404 then
 		self.vb.breathCount = self.vb.breathCount + 1
@@ -68,14 +68,6 @@ function mod:SPELL_CAST_START(args)
 		end
 	elseif spellId == 193092 then
 		warnSweep:Show()
-	end
-end
-
-function mod:SPELL_CAST_START(args)
-	local spellId = args.spellId
-	if spellId == 188404 and self:AntiSpam(5, 2) then
-		warnBreath:Show()
-		warnBreath:Play("watchstep")
 	end
 end
 

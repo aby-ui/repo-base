@@ -439,14 +439,14 @@ Module.TrackedQuest = {
   {
     name = L["The World Awaits"],
     weekly = true,
-    quest = 62631,
-    relatedQuest = {62631},
+    quest = 72728,
+    relatedQuest = {72728},
   },
   {
     name = L["Emissary of War"],
     weekly = true,
-    quest = 62638,
-    relatedQuest = {62638},
+    quest = 72722,
+    relatedQuest = {72722},
   },
   -- Patterns Within Patterns
   {
@@ -463,6 +463,18 @@ Module.TrackedQuest = {
     showFunc = DragonflightRenownShow,
     resetFunc = DragonflightRenownReset,
     tooltipKey = 'ShowDragonflightRenownTooltip',
+  },
+  {
+    name = L["Aiding the Accord"],
+    weekly = true,
+    quest = 70750,
+    relatedQuest = {70750},
+  },
+  {
+    name = L["Community Feast"],
+    weekly = true,
+    quest = 70893,
+    relatedQuest = {70893},
   },
 }
 

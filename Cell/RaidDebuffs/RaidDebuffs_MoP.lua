@@ -2,7 +2,7 @@
 -- File: RaidDebuffs_MoP.lua
 -- Author: enderneko (enderneko-dev@outlook.com)
 -- File Created: 2022/08/05 16:10:47 +0800
--- Last Modified: 2022/12/12 06:33:13 +0800
+-- Last Modified: 2022/12/28 23:01:14 +0800
 --]]
 
 local _, Cell = ...
@@ -217,9 +217,11 @@ local debuffs = {
 
     [313] = { -- 青龙寺
         ["general"] = {
+            395859, -- 游荡尖啸
             395872, -- 昏呆独白
             397899, -- 扫堂腿
             397911, -- 毁灭之触
+            396007, -- 恶意啄击
             114803, -- 投掷火炬
             396093, -- 野蛮飞跃
             397914, -- 污染迷雾

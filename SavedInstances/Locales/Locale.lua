@@ -35,6 +35,7 @@ Ld["Abbreviate Mythic keystone dungeon names"] = "Abbreviate Mythic keystone dun
 Ld["Account"] = "Account"
 Ld["Account Summary"] = "Account Summary"
 Ld["AD"] = "AD"
+Ld["Aiding the Accord"] = "Aiding the Accord"
 Ld["Always show"] = "Always show"
 Ld["Amathet Reliquary"] = "Amathet Reliquary"
 Ld["Ambered Coffer"] = "Ambered Coffer"
@@ -63,6 +64,7 @@ Ld["Combine Emissaries"] = "Combine Emissaries"
 Ld["Combine emissaries of same expansion"] = "Combine emissaries of same expansion"
 Ld["Combine LFR"] = "Combine LFR"
 Ld["Combine World Bosses"] = "Combine World Bosses"
+Ld["Community Feast"] = "Community Feast"
 Ld["Connected Realms"] = "Connected Realms"
 Ld["COS"] = "COS"
 Ld["Covenant"] = "Covenant"
@@ -77,6 +79,7 @@ Ld["Disable mouseover"] = "Disable mouseover"
 Ld["Disable tooltip display on icon mouseover"] = "Disable tooltip display on icon mouseover"
 Ld["Display instances in order of recommended level from lowest to highest"] = "Display instances in order of recommended level from lowest to highest"
 Ld["Display instances with space inserted between categories"] = "Display instances with space inserted between categories"
+Ld["Disturbed Dirt / Expedition Scout's Pack"] = "Disturbed Dirt / Expedition Scout's Pack"
 Ld["Doomwalker"] = "Doomwalker"
 Ld["DOS"] = "DOS"
 Ld["Dragon of Nightmare"] = "Dragon of Nightmare"
@@ -277,6 +280,8 @@ La["Account"] = "Compte"
 La["Account Summary"] = "Résumé du compte"
 --[[Translation missing --]]
 La["AD"] = "AD"
+--[[Translation missing --]]
+La["Aiding the Accord"] = "Aiding the Accord"
 La["Always show"] = "Toujours afficher"
 La["Amathet Reliquary"] = "Reliquaire amathet"
 La["Ambered Coffer"] = "Coffre ambré"
@@ -307,6 +312,8 @@ La["Combine Emissaries"] = "Combiner les émissaires"
 La["Combine emissaries of same expansion"] = "Combiner les émissaires d'une même extension."
 La["Combine LFR"] = "Fusionner les RdR"
 La["Combine World Bosses"] = "Fusionner les boss extérieurs"
+--[[Translation missing --]]
+La["Community Feast"] = "Community Feast"
 La["Connected Realms"] = "Royaumes connectés"
 --[[Translation missing --]]
 La["COS"] = "COS"
@@ -324,6 +331,8 @@ La["Disable mouseover"] = "Désactiver le survol avec la souris"
 La["Disable tooltip display on icon mouseover"] = "Désactive l'affichage de l'infobulle lors du survol de la souris."
 La["Display instances in order of recommended level from lowest to highest"] = "Affiche les instances dans l'ordre du niveau recommandé le plus bas au plus élevé."
 La["Display instances with space inserted between categories"] = "Affiche les instances avec un espace entre les catégories."
+--[[Translation missing --]]
+La["Disturbed Dirt / Expedition Scout's Pack"] = "Disturbed Dirt / Expedition Scout's Pack"
 --[[Translation missing --]]
 La["Doomwalker"] = "Doomwalker"
 La["DOS"] = "DOS"
@@ -565,6 +574,8 @@ La["Account"] = "Account"
 La["Account Summary"] = "Accountübersicht"
 --[[Translation missing --]]
 La["AD"] = "AD"
+--[[Translation missing --]]
+La["Aiding the Accord"] = "Aiding the Accord"
 La["Always show"] = "Immer anzeigen"
 La["Amathet Reliquary"] = "Reliquiar der Amathet"
 La["Ambered Coffer"] = "Bernbesetzte Kiste"
@@ -596,6 +607,8 @@ La["Combine Emissaries"] = "Kombiniere Abgesandte"
 La["Combine emissaries of same expansion"] = "Kombiniert die Abgesandten der selben Erweiterung"
 La["Combine LFR"] = "LFR/Flex zusammenfassen"
 La["Combine World Bosses"] = "Weltbosse zusammenfassen"
+--[[Translation missing --]]
+La["Community Feast"] = "Community Feast"
 La["Connected Realms"] = "Verknüpfte Realms"
 --[[Translation missing --]]
 La["COS"] = "COS"
@@ -612,6 +625,8 @@ La["Disable mouseover"] = "Mouseover deaktivieren"
 La["Disable tooltip display on icon mouseover"] = "Deaktiviert die Anzeige des Tooltips bei Zeigen auf Icons mit der Maus"
 La["Display instances in order of recommended level from lowest to highest"] = "Instanzen nach vorgeschlagenem Level anzeigen, beginnend mit der niedrigsten zur höchsten Instanz"
 La["Display instances with space inserted between categories"] = "Instanzen mit einem Freiraum zwischen den verschiedenen Kategorien anzeigen"
+--[[Translation missing --]]
+La["Disturbed Dirt / Expedition Scout's Pack"] = "Disturbed Dirt / Expedition Scout's Pack"
 La["Doomwalker"] = "Verdammniswandler"
 La["DOS"] = "DOS"
 La["Dragon of Nightmare"] = "Drache des Albtraums"
@@ -847,6 +862,8 @@ La["Abbreviate Mythic keystone dungeon names"] = "신화 쐐기돌 던전 이름
 La["Account"] = "계정"
 La["Account Summary"] = "계정 요약"
 La["AD"] = "아탈"
+--[[Translation missing --]]
+La["Aiding the Accord"] = "Aiding the Accord"
 La["Always show"] = "항상 표시"
 La["Amathet Reliquary"] = "아마셋 성물함"
 La["Ambered Coffer"] = "호박석 박힌 함"
@@ -875,6 +892,8 @@ La["Combine Emissaries"] = "사절퀘 모음"
 La["Combine emissaries of same expansion"] = "확팩별 사절퀘 모음"
 La["Combine LFR"] = "공찾/탄공 합침"
 La["Combine World Bosses"] = "야외 보스 합침"
+--[[Translation missing --]]
+La["Community Feast"] = "Community Feast"
 La["Connected Realms"] = "연동 서버"
 La["COS"] = "별궁"
 La["Covenant"] = "성약의 단"
@@ -889,6 +908,8 @@ La["Disable mouseover"] = "마우스오버 사용안함"
 La["Disable tooltip display on icon mouseover"] = "아이콘 마우스 오버시 툴팁 표시 안함"
 La["Display instances in order of recommended level from lowest to highest"] = "권장 레벨이 낮은 것부터 높은 순으로 인던을 표시합니다."
 La["Display instances with space inserted between categories"] = "카테고리 사이에 공백을 삽입하여 인스턴스를 표시합니다."
+--[[Translation missing --]]
+La["Disturbed Dirt / Expedition Scout's Pack"] = "Disturbed Dirt / Expedition Scout's Pack"
 La["Doomwalker"] = "파멸의 절단기"
 La["DOS"] = "저편"
 La["Dragon of Nightmare"] = "악몽의 용"
@@ -1091,6 +1112,8 @@ La["Account"] = "Cuenta"
 La["Account Summary"] = "Resumen de Cuenta"
 --[[Translation missing --]]
 La["AD"] = "AD"
+--[[Translation missing --]]
+La["Aiding the Accord"] = "Aiding the Accord"
 La["Always show"] = "Mostrar siempre"
 --[[Translation missing --]]
 La["Amathet Reliquary"] = "Amathet Reliquary"
@@ -1132,6 +1155,8 @@ La["Combine Emissaries"] = "Combine Emissaries"
 La["Combine emissaries of same expansion"] = "Combine emissaries of same expansion"
 La["Combine LFR"] = "Combinar BDB"
 La["Combine World Bosses"] = "Combinar Jefes del Mundo"
+--[[Translation missing --]]
+La["Community Feast"] = "Community Feast"
 La["Connected Realms"] = "Reinos Conectados"
 --[[Translation missing --]]
 La["COS"] = "COS"
@@ -1153,6 +1178,8 @@ La["Disable mouseover"] = "Deshabilitar tooltip"
 La["Disable tooltip display on icon mouseover"] = "Deshabilita el marco al pasar el ratón sobre el ícono"
 La["Display instances in order of recommended level from lowest to highest"] = "Mostrar instancias en orden de nivel recomendado de menor a mayor"
 La["Display instances with space inserted between categories"] = "Mostrar instancias con espacio entre categorías"
+--[[Translation missing --]]
+La["Disturbed Dirt / Expedition Scout's Pack"] = "Disturbed Dirt / Expedition Scout's Pack"
 --[[Translation missing --]]
 La["Doomwalker"] = "Doomwalker"
 --[[Translation missing --]]
@@ -1452,6 +1479,8 @@ La["Abbreviate Mythic keystone dungeon names"] = "Сократить назва�
 La["Account"] = "Аккаунт"
 La["Account Summary"] = "Общая сводка по аккаунту"
 La["AD"] = "АТАЛ"
+--[[Translation missing --]]
+La["Aiding the Accord"] = "Aiding the Accord"
 La["Always show"] = "Всегда отображать"
 La["Amathet Reliquary"] = "Реликварий аматетов"
 La["Ambered Coffer"] = "Покрытый янтарем сундук"
@@ -1480,6 +1509,8 @@ La["Combine Emissaries"] = "Объединить эмиссаров"
 La["Combine emissaries of same expansion"] = "Объединить эмиссаров одного и того же дополнения"
 La["Combine LFR"] = "Объединять СПР (LFR)"
 La["Combine World Bosses"] = "Объединять мировых босcов"
+--[[Translation missing --]]
+La["Community Feast"] = "Community Feast"
 La["Connected Realms"] = "Соединенные сервера"
 La["COS"] = "КЗ"
 La["Covenant"] = "Ковенант"
@@ -1494,6 +1525,8 @@ La["Disable mouseover"] = "Откл. отобр. по наведению"
 La["Disable tooltip display on icon mouseover"] = "Отключить отображение подсказки по наведению на иконку"
 La["Display instances in order of recommended level from lowest to highest"] = "Отображать подземелья в порядке рекомендуемого уровня от самого низкого до самого высокого"
 La["Display instances with space inserted between categories"] = "Показывать подземелья с промежутком между категориями"
+--[[Translation missing --]]
+La["Disturbed Dirt / Expedition Scout's Pack"] = "Disturbed Dirt / Expedition Scout's Pack"
 La["Doomwalker"] = "Судьболом"
 La["DOS"] = "ТС"
 La["Dragon of Nightmare"] = "Драконы Кошмара"
@@ -1705,6 +1738,8 @@ La["Abbreviate Mythic keystone dungeon names"] = "显示史诗钥石的简称"
 La["Account"] = "账号"
 La["Account Summary"] = "账号总览"
 La["AD"] = "阿塔"
+--[[Translation missing --]]
+La["Aiding the Accord"] = "Aiding the Accord"
 La["Always show"] = "总是显示"
 La["Amathet Reliquary"] = "阿玛赛特圣箱"
 La["Ambered Coffer"] = "琥珀制成的箱子"
@@ -1733,6 +1768,8 @@ La["Combine Emissaries"] = "合并大使任务"
 La["Combine emissaries of same expansion"] = "合并同一个资料片的大使任务"
 La["Combine LFR"] = "合并显示随机团本"
 La["Combine World Bosses"] = "合并世界首领"
+--[[Translation missing --]]
+La["Community Feast"] = "Community Feast"
 La["Connected Realms"] = "已合并服务器"
 La["COS"] = "群星"
 La["Covenant"] = "盟约"
@@ -1747,6 +1784,7 @@ La["Disable mouseover"] = "禁用鼠标提示"
 La["Disable tooltip display on icon mouseover"] = "禁止当鼠标移动到插件图标上时显示提示信息"
 La["Display instances in order of recommended level from lowest to highest"] = "依照建议的等级从低到高显示副本"
 La["Display instances with space inserted between categories"] = "在分类之间显示间距"
+La["Disturbed Dirt / Expedition Scout's Pack"] = "翻动过的泥土 / 探险队斥候的背包"
 La["Doomwalker"] = "末日行者"
 La["DOS"] = "彼界"
 La["Dragon of Nightmare"] = "梦魇之龙"
@@ -1947,6 +1985,8 @@ La["Account"] = "Cuenta"
 La["Account Summary"] = "Resumen de la cuenta"
 --[[Translation missing --]]
 La["AD"] = "AD"
+--[[Translation missing --]]
+La["Aiding the Accord"] = "Aiding the Accord"
 La["Always show"] = "Mostrar siempre"
 --[[Translation missing --]]
 La["Amathet Reliquary"] = "Amathet Reliquary"
@@ -1982,6 +2022,8 @@ La["Combine Emissaries"] = "Combinar emisarios"
 La["Combine emissaries of same expansion"] = "Combinar emisarios de la misma expansión"
 La["Combine LFR"] = "Combinar BdG"
 La["Combine World Bosses"] = "Combinar jefes del mundo"
+--[[Translation missing --]]
+La["Community Feast"] = "Community Feast"
 La["Connected Realms"] = "Reinos conectados"
 --[[Translation missing --]]
 La["COS"] = "COS"
@@ -1999,6 +2041,8 @@ La["Disable mouseover"] = "Deshabilitar tooltip"
 La["Disable tooltip display on icon mouseover"] = "Deshabilita el tooltip al pasar el ratón por encima del icono"
 La["Display instances in order of recommended level from lowest to highest"] = "Mostrar instancias en orden de nivel recomendado de menor a mayor"
 La["Display instances with space inserted between categories"] = "Mostrar instancias con espacio entre categorías"
+--[[Translation missing --]]
+La["Disturbed Dirt / Expedition Scout's Pack"] = "Disturbed Dirt / Expedition Scout's Pack"
 --[[Translation missing --]]
 La["Doomwalker"] = "Doomwalker"
 La["DOS"] = "EOL (DOS)"
@@ -2255,6 +2299,8 @@ La["Account"] = "帳號"
 La["Account Summary"] = "帳號統計"
 --[[Translation missing --]]
 La["AD"] = "AD"
+--[[Translation missing --]]
+La["Aiding the Accord"] = "Aiding the Accord"
 La["Always show"] = "永遠顯示"
 La["Amathet Reliquary"] = "阿瑪賽特聖匣"
 --[[Translation missing --]]
@@ -2286,6 +2332,8 @@ La["Combine Emissaries"] = "合併特使"
 La["Combine emissaries of same expansion"] = "合併同資料片的特使"
 La["Combine LFR"] = "合併隨機團隊"
 La["Combine World Bosses"] = "合併世界首領"
+--[[Translation missing --]]
+La["Community Feast"] = "Community Feast"
 La["Connected Realms"] = "連結伺服器"
 La["COS"] = "眾星"
 La["Covenant"] = "誓盟"
@@ -2300,6 +2348,8 @@ La["Disable mouseover"] = "停用滑鼠提示"
 La["Disable tooltip display on icon mouseover"] = "滑鼠指向圖示時不要顯示滑鼠提示"
 La["Display instances in order of recommended level from lowest to highest"] = "依照建議的等級從低到高顯示副本"
 La["Display instances with space inserted between categories"] = "顯示副本並在分類之間加上間距"
+--[[Translation missing --]]
+La["Disturbed Dirt / Expedition Scout's Pack"] = "Disturbed Dirt / Expedition Scout's Pack"
 La["Doomwalker"] = "末日行者"
 La["DOS"] = "彼界"
 La["Dragon of Nightmare"] = "夢魘之龍"
@@ -2519,6 +2569,8 @@ La["Account"] = "Conta"
 La["Account Summary"] = "Sumário da conta"
 --[[Translation missing --]]
 La["AD"] = "AD"
+--[[Translation missing --]]
+La["Aiding the Accord"] = "Aiding the Accord"
 La["Always show"] = "Mostrar sempre"
 --[[Translation missing --]]
 La["Amathet Reliquary"] = "Amathet Reliquary"
@@ -2560,6 +2612,8 @@ La["Combine Emissaries"] = "Combine Emissaries"
 La["Combine emissaries of same expansion"] = "Combine emissaries of same expansion"
 La["Combine LFR"] = "Combinar LdR"
 La["Combine World Bosses"] = "Agrupar chefes mundiais"
+--[[Translation missing --]]
+La["Community Feast"] = "Community Feast"
 La["Connected Realms"] = "Reinos conectados"
 --[[Translation missing --]]
 La["COS"] = "COS"
@@ -2579,6 +2633,8 @@ La["Disable mouseover"] = "Desativar mouseover"
 La["Disable tooltip display on icon mouseover"] = "Desabilitar exibição de ajuda ao passar o mouse no ícone"
 La["Display instances in order of recommended level from lowest to highest"] = "Exibir instâncias em ordem de nível recomendado menor para o maior"
 La["Display instances with space inserted between categories"] = "Exibir instâncias com espaço inserido entre as categorias"
+--[[Translation missing --]]
+La["Disturbed Dirt / Expedition Scout's Pack"] = "Disturbed Dirt / Expedition Scout's Pack"
 --[[Translation missing --]]
 La["Doomwalker"] = "Doomwalker"
 --[[Translation missing --]]
@@ -2871,6 +2927,8 @@ La["Account"] = "Account"
 La["Account Summary"] = "Riepilogo dell'account"
 --[[Translation missing --]]
 La["AD"] = "AD"
+--[[Translation missing --]]
+La["Aiding the Accord"] = "Aiding the Accord"
 La["Always show"] = "Mostra sempre"
 --[[Translation missing --]]
 La["Amathet Reliquary"] = "Amathet Reliquary"
@@ -2911,6 +2969,8 @@ La["Combine Emissaries"] = "Combine Emissaries"
 La["Combine emissaries of same expansion"] = "Combine emissaries of same expansion"
 La["Combine LFR"] = "Unisci le riceche spedizioni"
 La["Combine World Bosses"] = "Unisci i boss mondiali"
+--[[Translation missing --]]
+La["Community Feast"] = "Community Feast"
 La["Connected Realms"] = "Reami connessi"
 --[[Translation missing --]]
 La["COS"] = "COS"
@@ -2931,6 +2991,8 @@ La["Disable mouseover"] = "Disabilita movimento del mouse"
 La["Disable tooltip display on icon mouseover"] = "Disattiva i tooltip quando vai sull'icona"
 La["Display instances in order of recommended level from lowest to highest"] = "Mostra istanze in ordine del livello raccomandato dal piu' basso al piu' alto"
 La["Display instances with space inserted between categories"] = "Mostra le istanze con uno spazio tra le varie categorie"
+--[[Translation missing --]]
+La["Disturbed Dirt / Expedition Scout's Pack"] = "Disturbed Dirt / Expedition Scout's Pack"
 --[[Translation missing --]]
 La["Doomwalker"] = "Doomwalker"
 --[[Translation missing --]]

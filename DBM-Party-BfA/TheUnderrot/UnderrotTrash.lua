@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod("UnderrotTrash", "DBM-Party-BfA", 8)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20201116014239")
+mod:SetRevision("20221230022007")
 --mod:SetModelID(47785)
 
 mod.isTrashMod = true
@@ -12,8 +12,6 @@ mod:RegisterEvents(
 	"SPELL_AURA_APPLIED 265568 266107",
 	"SPELL_CAST_SUCCESS 265523"
 )
-
---local warnSoulEchoes				= mod:NewTargetAnnounce(194966, 2)
 
 --local yellArrowBarrage			= mod:NewYell(200343)
 local specWarnMaddeningGaze			= mod:NewSpecialWarningDodge(272609, nil, nil, nil, 2, 2)

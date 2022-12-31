@@ -104,5 +104,10 @@ GTFO.IgnoreScan["396212"] = true; -- Chilling Presence
 GTFO.IgnoreScan["396201"] = true; -- Blistering Presence
 GTFO.IgnoreScan["384637"] = true; -- Raging Winds
 GTFO.IgnoreScan["388290"] = true; -- Cyclone
-
-
+GTFO.IgnoreScan["375889"] = true; -- Greatstaff of the Broodkeeper
+GTFO.IgnoreScan["381349"] = true; -- Greatstaff of the Broodkeeper
+GTFO.IgnoreScan["381250"] = true; -- Electric Lash
+GTFO.IgnoreScan["381251"] = true; -- Electric Lash
+GTFO.IgnoreScan["382541"] = true; -- Surge
+GTFO.IgnoreScan["391282"] = true; -- Crackling Energy
+GTFO.IgnoreScan["387333"] = true; -- Storm Surge

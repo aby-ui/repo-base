@@ -1,5 +1,5 @@
 ## Interface: 100002
-## Version: v9.4.7
+## Version: v9.5.0
 ## Title: PlexusStatusDungeonDebuff
 ## Notes: Complete Debuff List Up To BfA
 ## Author: Doadin

@@ -129,8 +129,8 @@ local function UpdateIndicators(layout, indicatorName, setting, value, value2)
             -- if t["castByMe"] ~= nil then
             --     indicatorCustoms[t["indicatorName"]] = t["castByMe"]
             -- end
-            if t["hideFull"] ~= nil then
-                indicatorCustoms[t["indicatorName"]] = t["hideFull"]
+            if t["hideIfEmptyOrFull"] ~= nil then
+                indicatorCustoms[t["indicatorName"]] = t["hideIfEmptyOrFull"]
             end
             if t["onlyShowTopGlow"] ~= nil then
                 indicatorCustoms[t["indicatorName"]] = t["onlyShowTopGlow"]
@@ -223,7 +223,7 @@ local function UpdateIndicators(layout, indicatorName, setting, value, value2)
                     indicator:ShowIcons(t["showDispelTypeIcons"])
                 end
                 -- update duration
-                if type(t["showDuration"]) == "boolean" then
+                if type(t["showDuration"]) == "boolean" or type(t["showDuration"]) == "number" then
                     indicator:ShowDuration(t["showDuration"])
                 end
                 -- update stack
@@ -478,12 +478,17 @@ local function UpdateIndicators(layout, indicatorName, setting, value, value2)
             F:IterateAllUnitButtons(function(b)
                 B.UpdateHealth(b)
             end, true)
+        elseif setting == "showDuration" then
+            F:IterateAllUnitButtons(function(b)
+                b.indicators[indicatorName]:ShowDuration(value)
+                UnitButton_UpdateAuras(b)
+            end, true)
         elseif setting == "checkbutton" then
             if value == "showGroupNumber" then
                 F:IterateAllUnitButtons(function(b)
                     b.indicators[indicatorName]:ShowGroupNumber(value2)
                 end, true)
-            elseif value == "hideFull" then
+            elseif value == "hideIfEmptyOrFull" then
                 --! 血量文字指示器需要立即被刷新
                 indicatorCustoms[indicatorName] = value2
                 F:IterateAllUnitButtons(function(b)
@@ -492,11 +497,6 @@ local function UpdateIndicators(layout, indicatorName, setting, value, value2)
             elseif value == "showDispelTypeIcons" then
                 F:IterateAllUnitButtons(function(b)
                     b.indicators[indicatorName]:ShowIcons(value2)
-                    UnitButton_UpdateAuras(b)
-                end, true)
-            elseif value == "showDuration" then
-                F:IterateAllUnitButtons(function(b)
-                    b.indicators[indicatorName]:ShowDuration(value2)
                     UnitButton_UpdateAuras(b)
                 end, true)
             elseif value == "showStack" then
@@ -964,21 +964,21 @@ local function UnitButton_UpdateBuffs(self)
             buffs_cache_count[unit][auraInstanceID] = count
         
             -- defensiveCooldowns
-            if enabledIndicators["defensiveCooldowns"] and (I:IsDefensiveCooldown(name) or I:IsDefensiveCooldown(spellId)) and defensiveFound < indicatorNums["defensiveCooldowns"] then
+            if enabledIndicators["defensiveCooldowns"] and I:IsDefensiveCooldown(name, spellId) and defensiveFound < indicatorNums["defensiveCooldowns"] then
                 defensiveFound = defensiveFound + 1
                 -- start, duration, debuffType, texture, count, refreshing
                 self.indicators.defensiveCooldowns[defensiveFound]:SetCooldown(start, duration, nil, icon, count, refreshing)
             end
 
             -- externalCooldowns
-            if enabledIndicators["externalCooldowns"] and I:IsExternalCooldown(name, source, unit) and externalFound < indicatorNums["externalCooldowns"] then
+            if enabledIndicators["externalCooldowns"] and I:IsExternalCooldown(name, spellId, source, unit) and externalFound < indicatorNums["externalCooldowns"] then
                 externalFound = externalFound + 1
                 -- start, duration, debuffType, texture, count, refreshing
                 self.indicators.externalCooldowns[externalFound]:SetCooldown(start, duration, nil, icon, count, refreshing)
             end
 
             -- allCooldowns
-            if enabledIndicators["allCooldowns"] and (I:IsExternalCooldown(name, source, unit) or I:IsDefensiveCooldown(name) or I:IsDefensiveCooldown(spellId)) and allFound < indicatorNums["allCooldowns"] then
+            if enabledIndicators["allCooldowns"] and (I:IsExternalCooldown(name, spellId, source, unit) or I:IsDefensiveCooldown(name, spellId)) and allFound < indicatorNums["allCooldowns"] then
                 allFound = allFound + 1
                 -- start, duration, debuffType, texture, count, refreshing
                 self.indicators.allCooldowns[allFound]:SetCooldown(start, duration, nil, icon, count, refreshing)
@@ -1213,7 +1213,7 @@ local function UpdateUnitHealthState(self, diff)
     end
 
     if enabledIndicators["healthText"] and healthMax ~= 0 then
-        if health == healthMax then
+        if health == healthMax or self.state.isDeadOrGhost then
             if not indicatorCustoms["healthText"] then
                 self.indicators.healthText:SetHealth(health, healthMax)
                 self.indicators.healthText:Show()

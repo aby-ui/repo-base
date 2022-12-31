@@ -225,14 +225,42 @@ local function BarIcon_SetCooldown(frame, start, duration, debuffType, texture, 
         frame.duration:Hide()
         frame:SetScript("OnUpdate", nil)
     else
-        if frame.showDuration then
+        local threshold
+        if frame.showDuration == true then
             frame.cooldown:Hide()
             frame.duration:Show()
+            -- update threshold
+            threshold = duration
+        else -- false or number
+            -- init bar values
+            frame.cooldown:SetMinMaxValues(0, duration)
+            frame.cooldown:SetValue(GetTime()-start)
+            frame.cooldown:Show()
+            -- update threshold and duration visibility
+            if not frame.showDuration then
+                frame.duration:Hide()
+            elseif frame.showDuration == 0 then
+                threshold = duration
+                frame.duration:Show()
+            elseif frame.showDuration >= 1 then
+                threshold = frame.showDuration
+                frame.duration:Show()
+            else -- < 1
+                threshold = frame.showDuration * duration
+                frame.duration:Show()
+            end
+        end
 
+        if frame.showDuration then
             local fmt
             frame:SetScript("OnUpdate", function()
                 local remain = duration-(GetTime()-start)
                 if remain < 0 then remain = 0 end
+
+                if remain > threshold then
+                    frame.duration:SetText("")
+                    return
+                end
 
                 -- color
                 if Cell.vars.iconDurationColors then
@@ -264,12 +292,6 @@ local function BarIcon_SetCooldown(frame, start, duration, debuffType, texture, 
 
                 frame.duration:SetFormattedText(fmt, remain)
             end)
-        else
-            -- init bar values
-            frame.cooldown:SetMinMaxValues(0, duration)
-            frame.cooldown:SetValue(GetTime()-start)
-            frame.cooldown:Show()
-            frame.duration:Hide()
         end
     end
 

@@ -8,49 +8,74 @@ local tullaRange = _G.tullaRange
 local ColorSelector = Addon.Classy:New('Frame')
 Addon.ColorSelector = ColorSelector
 
-local ColorSliders = {'Red', 'Green', 'Blue'}
+local ColorChannels = {'Red', 'Green', 'Blue', 'Opacity'}
 
-function ColorSelector:New(colorState, parent)
-    local f = self:Bind(CreateFrame('Frame', parent:GetName() .. '_' .. colorState, parent))
+function ColorSelector:New(state, parent)
+    local result = self:Bind(CreateFrame('Frame', '$parentEditor_' .. state, parent))
 
-    local t = f:CreateFontString(nil, 'BACKGROUND', 'GameFontHighlightLarge')
-    t:SetPoint('BOTTOMLEFT', f, 'TOPLEFT', 4, 2)
-    t:SetText(L[colorState])
-    f.text = t
+    local heading = result:CreateFontString(nil, 'BACKGROUND', 'GameFontHighlightLarge')
+    heading:SetJustifyH('LEFT')
+    heading:SetPoint('TOPLEFT')
+    heading:SetText(L[state])
+    heading:SetWidth(120)
+    result.text = heading
 
-    local preview = f:CreateTexture(nil, 'ARTWORK')
-    preview:SetPoint('RIGHT', -16, 0)
-    preview:SetSize(96, 96)
-    f.preview = preview
+    local preview = result:CreateTexture(nil, 'ARTWORK')
+    preview:SetPoint('LEFT')
+    preview:SetSize(104, 104)
+    result.preview = preview
 
     -- color sliders
     local sliders = {}
-    for colorIndex, colorName in ipairs(ColorSliders) do
-        local slider = Addon.Slider:New(L[colorName], f, 0, 100, 1)
+    for i, color in ipairs(ColorChannels) do
+        local slider = Addon.Slider:New(L[color], result, 0, 100, 1)
 
         slider.SetSavedValue = function(_, value)
-            tullaRange.sets[colorState][colorIndex] = math.floor(value + 0.5) / 100
-            tullaRange:UpdateButtonStates(true)
+            tullaRange.sets[state][i] = math.floor(value + 0.5) / 100
+            preview:SetVertexColor(tullaRange:GetColor(state))
 
-            preview:SetVertexColor(tullaRange:GetColor(colorState))
+            tullaRange:UpdateButtonStates()
         end
 
         slider.GetSavedValue = function()
-            return tullaRange.sets[colorState][colorIndex] * 100
+            return tullaRange.sets[state][i] * 100
         end
 
-        if colorIndex > 1 then
-            slider:SetPoint('TOPLEFT', sliders[colorIndex - 1], 'BOTTOMLEFT', 0, -24)
+        if i > 1 then
+            slider:SetPoint('TOPLEFT', sliders[i - 1], 'BOTTOMLEFT', 0, -24)
+            slider:SetPoint('RIGHT')
         else
-            slider:SetPoint('BOTTOMLEFT', t, 'BOTTOMLEFT', 8, -40)
+            slider:SetPoint('TOPLEFT', heading, 'TOPRIGHT', 8, -16)
+            slider:SetPoint('RIGHT')
         end
 
-        table.insert(sliders, slider)
+        sliders[i] = slider
     end
 
-    f.sliders = sliders
+    result.sliders = sliders
 
-    return f
+    local desaturate = CreateFrame('CheckButton', '$parentDesaturate', result, 'InterfaceOptionsCheckButtonTemplate')
+    desaturate.Text:SetText(L.Desaturate)
+
+    desaturate:SetScript("OnShow", function(checkbox)
+        local desaturated = tullaRange.sets[state].desaturate and true
+
+        checkbox:SetChecked(desaturated)
+        checkbox:GetParent().preview:SetDesaturated(desaturated)
+    end)
+
+    desaturate:SetScript("OnClick", function(checkbox)
+        local desaturated = checkbox:GetChecked() and true
+
+        checkbox:GetParent().preview:SetDesaturated(desaturated)
+        tullaRange.sets[state].desaturate = desaturated
+
+        tullaRange:UpdateButtonStates()
+    end)
+
+    desaturate:SetPoint('BOTTOMLEFT')
+
+    return result
 end
 
 do

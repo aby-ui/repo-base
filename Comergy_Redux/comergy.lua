@@ -282,6 +282,7 @@ function ResizeEnergyBars()
         else
             energyBars[i]:SetStatusBarTexture(energyBars[i]:CreateTexture(nil, "ARTWORK"))
         end
+        if energyBars[i].curValue[1] == 0 then energyBars[i]:GetStatusBarTexture():Hide() end --:SetWidth(0)会变成255, 奇怪的问题
 
         if (Comergy_Settings.VerticalBars) then
             left, bottom = bottom, left

@@ -23,14 +23,14 @@ GTFO = {
 		SoundChannel = "Master"; -- Sound channel to play on
 		IgnoreOptions = { };
 		TrivialDamagePercent = 2; -- Minimum % of HP lost required for an alert to be trivial
-		SoundOverrides = { }; -- Override table for GTFO sounds
+		SoundOverrides = { "", "", "", "" }; -- Override table for GTFO sounds
 	};
-	Version = "4.70.4"; -- Version number (text format)
+	Version = "5.0"; -- Version number (text format)
 	VersionNumber = 0; -- Numeric version number for checking out-of-date clients (placeholder until client is detected)
-	RetailVersionNumber = 47004; -- Numeric version number for checking out-of-date clients (retail)
-	ClassicVersionNumber = 47000; -- Numeric version number for checking out-of-date clients (Vanilla classic)
-	BurningCrusadeVersionNumber = 47000; -- Numeric version number for checking out-of-date clients (TBC classic)
-	WrathVersionNumber = 47000; -- Numeric version number for checking out-of-date clients (Wrath classic)
+	RetailVersionNumber = 50000; -- Numeric version number for checking out-of-date clients (retail)
+	ClassicVersionNumber = 50000; -- Numeric version number for checking out-of-date clients (Vanilla classic)
+	BurningCrusadeVersionNumber = 50000; -- Numeric version number for checking out-of-date clients (TBC classic)
+	WrathVersionNumber = 50000; -- Numeric version number for checking out-of-date clients (Wrath classic)
 	DataLogging = nil; -- Indicate whether or not the addon needs to run the datalogging function (for hooking)
 	DataCode = "4"; -- Saved Variable versioning, change this value to force a reset to default
 	CanTank = nil; -- The active character is capable of tanking
@@ -186,7 +186,7 @@ function GTFO_OnEvent(self, event, ...)
 			TrivialDamagePercent = GTFOData.TrivialDamagePercent or GTFO.DefaultSettings.TrivialDamagePercent;
 			SoundChannel = GTFOData.SoundChannel or GTFO.DefaultSettings.SoundChannel;
 			IgnoreOptions = { };
-			SoundOverrides = { };
+			SoundOverrides = { "", "", "", "" };
 		};
 		
 		-- Load spell ignore options (player set)
@@ -210,7 +210,7 @@ function GTFO_OnEvent(self, event, ...)
 		
 		if (GTFOData.SoundOverrides) then
 			for key, option in pairs(GTFOData.SoundOverrides) do
-				GTFO.Settings.SoundOverrides[key] = GTFOData.SoundOverrides[key];
+				GTFO.Settings.SoundOverrides[key] = GTFOData.SoundOverrides[key] or "";
 			end
 		end
 
@@ -820,6 +820,16 @@ function GTFO_Command(arg1)
 		GTFO_Command_Test(3);
 	elseif (Command == "TEST4") then
 		GTFO_Command_Test(4);
+	elseif (Command == "CUSTOM") then
+		GTFO_Command_SetCustomSound(1, Description);
+	elseif (Command == "CUSTOM1") then
+		GTFO_Command_SetCustomSound(1, Description);
+	elseif (Command == "CUSTOM2") then
+		GTFO_Command_SetCustomSound(2, Description);
+	elseif (Command == "CUSTOM3") then
+		GTFO_Command_SetCustomSound(3, Description);
+	elseif (Command == "CUSTOM4") then
+		GTFO_Command_SetCustomSound(4, Description);
 	elseif (Command == "NOVERSION") then
 		GTFO_Command_VersionReminder();
 	elseif (Command == "DATA") then
@@ -863,6 +873,43 @@ function GTFO_Command_Test(iSound)
 			GTFO_ChatPrint(GTFOLocal.TestSound_FriendlyFire);
 		else
 			GTFO_ChatPrint(GTFOLocal.TestSound_FriendlyFireMuted);		
+		end
+	end
+end
+
+function GTFO_Command_SetCustomSound(iSound, sSound)
+	GTFO.Settings.SoundOverrides[iSound] = tostring(sSound or "");
+	if (iSound == 1) then
+		if (GTFO.Settings.SoundOverrides[iSound] == "") then
+			GTFO_Option_HighReset();
+		else
+			GTFO_ChatPrint(string.format(GTFOLocal.UI_CustomSounds_Set, GTFOLocal.AlertType_High));
+			GTFO_SaveSettings();
+			GTFO_Option_HighTest();
+		end
+	elseif (iSound == 2) then
+		if (GTFO.Settings.SoundOverrides[iSound] == "") then
+			GTFO_Option_LowReset();
+		else
+			GTFO_ChatPrint(string.format(GTFOLocal.UI_CustomSounds_Set, GTFOLocal.AlertType_Low));
+			GTFO_SaveSettings();
+			GTFO_Option_LowTest();
+		end
+	elseif (iSound == 3) then
+		if (GTFO.Settings.SoundOverrides[iSound] == "") then
+			GTFO_Option_FailReset();
+		else
+			GTFO_ChatPrint(string.format(GTFOLocal.UI_CustomSounds_Set, GTFOLocal.AlertType_Fail));
+			GTFO_SaveSettings();
+			GTFO_Option_FailTest();
+		end
+	elseif (iSound == 4) then
+		if (GTFO.Settings.SoundOverrides[iSound] == "") then
+			GTFO_Option_FriendlyFireReset();
+		else
+			GTFO_ChatPrint(string.format(GTFOLocal.UI_CustomSounds_Set, GTFOLocal.AlertType_FriendlyFire));
+			GTFO_SaveSettings();
+			GTFO_Option_FriendlyFireTest();
 		end
 	end
 end
@@ -981,42 +1028,43 @@ function GTFO_PlaySound(iSound, bOverride, bForceVibrate)
 		elseif (GTFO.Settings.UnmuteMode and GTFO.SoundTimes[iSound] and not bOverride) then
 			GTFO_UnmuteSound(GTFO.SoundTimes[iSound], soundChannel);
 		end
-		if (GTFO.Settings.SoundOverrides[iSound]) then
-			if (tonumber(GTFO.Settings.SoundOverrides[iSound])) then
-				PlaySound(GTFO.Settings.SoundOverrides[iSound], soundChannel);
-			else
-				PlaySoundFile(GTFO.Settings.SoundOverrides[iSound], soundChannel);
-			end
+		
+		local overrideSound = tostring(GTFO.Settings.SoundOverrides[iSound] or "");
+		if (overrideSound ~= "") then
+			GTFO_PlaySoundFile(GTFO.Settings.SoundOverrides[iSound], soundChannel);
 		else
-			PlaySoundFile(GTFO.Sounds[iSound], soundChannel);
+			GTFO_PlaySoundFile(GTFO.Sounds[iSound], soundChannel);
 		end
 		
+		-- Play 2 times if the volume is at louder
 		if (GTFO.Settings.Volume >= 4) then
-			if (GTFO.Settings.SoundOverrides[iSound]) then
-				if (tonumber(GTFO.Settings.SoundOverrides[iSound])) then
-					PlaySound(GTFO.Settings.SoundOverrides[iSound], soundChannel);
-				else
-					PlaySoundFile(GTFO.Settings.SoundOverrides[iSound], soundChannel);
-				end
+			if (overrideSound ~= "") then
+				GTFO_PlaySoundFile(GTFO.Settings.SoundOverrides[iSound], soundChannel);
 			else
-				PlaySoundFile(GTFO.Sounds[iSound], soundChannel);
+				GTFO_PlaySoundFile(GTFO.Sounds[iSound], soundChannel);
 			end
 		end
+		
+		-- Play 3 times if the volume is at max
 		if (GTFO.Settings.Volume >= 5) then
-			if (GTFO.Settings.SoundOverrides[iSound]) then
-				if (tonumber(GTFO.Settings.SoundOverrides[iSound])) then
-					PlaySound(GTFO.Settings.SoundOverrides[iSound], soundChannel);
-				else
-					PlaySoundFile(GTFO.Settings.SoundOverrides[iSound], soundChannel);
-				end
+			if (overrideSound ~= "") then
+				GTFO_PlaySoundFile(GTFO.Settings.SoundOverrides[iSound], soundChannel);
 			else
-				PlaySoundFile(GTFO.Sounds[iSound], soundChannel);
+				GTFO_PlaySoundFile(GTFO.Sounds[iSound], soundChannel);
 			end
 		end
 	end
 	GTFO_DisplayAura(iSound);
 	if (bForceVibrate == true or (bForceVibrate == nil and GTFO.Settings.EnableVibration)) then
 		GTFO_Vibrate(iSound);
+	end
+end
+
+function GTFO_PlaySoundFile(sFile, sChannel)
+	local willPlay, handle = PlaySoundFile(sFile, sChannel);
+	if (willPlay) then
+		-- Stop the sound automatically after 3 seconds in case someone trolls you with a 10 minute song
+		GTFO_AddEvent("Sound"..handle, 3, function() StopSound(handle, 250); end);
 	end
 end
 
@@ -1098,6 +1146,30 @@ function GTFO_RenderOptions()
 		FriendlyFireTestButton.tooltip = GTFOLocal.UI_TestDescription;
 		FriendlyFireTestButton:SetScript("OnClick",GTFO_Option_FriendlyFireTest);
 		getglobal(FriendlyFireTestButton:GetName().."Text"):SetText(GTFOLocal.UI_Test);
+
+		local HighResetButton = CreateFrame("Button", "GTFO_HighResetButton", ConfigurationPanel, "UIPanelButtonTemplate");
+		HighResetButton:SetPoint("TOPLEFT", 360, -65);
+		HighResetButton.tooltip = GTFOLocal.UI_ResetCustomSounds;
+		HighResetButton:SetScript("OnClick",GTFO_Option_HighReset);
+		getglobal(HighResetButton:GetName().."Text"):SetText(GTFOLocal.UI_Reset);
+
+		local LowResetButton = CreateFrame("Button", "GTFO_LowResetButton", ConfigurationPanel, "UIPanelButtonTemplate");
+		LowResetButton:SetPoint("TOPLEFT", 360, -95);
+		LowResetButton.tooltip = GTFOLocal.UI_ResetCustomSounds;
+		LowResetButton:SetScript("OnClick",GTFO_Option_LowReset);
+		getglobal(LowResetButton:GetName().."Text"):SetText(GTFOLocal.UI_Reset);
+
+		local FailResetButton = CreateFrame("Button", "GTFO_FailResetButton", ConfigurationPanel, "UIPanelButtonTemplate");
+		FailResetButton:SetPoint("TOPLEFT", 360, -125);
+		FailResetButton.tooltip = GTFOLocal.UI_ResetCustomSounds;
+		FailResetButton:SetScript("OnClick",GTFO_Option_FailReset);
+		getglobal(FailResetButton:GetName().."Text"):SetText(GTFOLocal.UI_Reset);
+
+		local FriendlyFireResetButton = CreateFrame("Button", "GTFO_FriendlyFireResetButton", ConfigurationPanel, "UIPanelButtonTemplate");
+		FriendlyFireResetButton:SetPoint("TOPLEFT", 360, -155);
+		FriendlyFireResetButton.tooltip = GTFOLocal.UI_ResetCustomSounds;
+		FriendlyFireResetButton:SetScript("OnClick",GTFO_Option_FriendlyFireReset);
+		getglobal(FriendlyFireResetButton:GetName().."Text"):SetText(GTFOLocal.UI_Reset);
 
 		local VolumeText = ConfigurationPanel:CreateFontString("GTFO_VolumeText","ARTWORK","GameFontNormal");
 		VolumeText:SetPoint("TOPLEFT", 170, -195);
@@ -1259,6 +1331,30 @@ function GTFO_RenderOptions()
 		FriendlyFireTestButton.tooltip = GTFOLocal.UI_TestDescription;
 		FriendlyFireTestButton:SetScript("OnClick",GTFO_Option_FriendlyFireTest);
 		getglobal(FriendlyFireTestButton:GetName().."Text"):SetText(GTFOLocal.UI_Test);
+
+		local HighResetButton = CreateFrame("Button", "GTFO_HighResetButton", ConfigurationPanel, "OptionsButtonTemplate");
+		HighResetButton:SetPoint("TOPLEFT", 400, -65);
+		HighResetButton.tooltip = GTFOLocal.UI_ResetCustomSounds;
+		HighResetButton:SetScript("OnClick",GTFO_Option_HighReset);
+		getglobal(HighResetButton:GetName().."Text"):SetText(GTFOLocal.UI_Reset);
+
+		local LowResetButton = CreateFrame("Button", "GTFO_LowResetButton", ConfigurationPanel, "OptionsButtonTemplate");
+		LowResetButton:SetPoint("TOPLEFT", 400, -95);
+		LowResetButton.tooltip = GTFOLocal.UI_ResetCustomSounds;
+		LowResetButton:SetScript("OnClick",GTFO_Option_LowReset);
+		getglobal(LowResetButton:GetName().."Text"):SetText(GTFOLocal.UI_Reset);
+
+		local FailResetButton = CreateFrame("Button", "GTFO_FailResetButton", ConfigurationPanel, "OptionsButtonTemplate");
+		FailResetButton:SetPoint("TOPLEFT", 400, -125);
+		FailResetButton.tooltip = GTFOLocal.UI_ResetCustomSounds;
+		FailResetButton:SetScript("OnClick",GTFO_Option_FailReset);
+		getglobal(FailResetButton:GetName().."Text"):SetText(GTFOLocal.UI_Reset);
+
+		local FriendlyFireResetButton = CreateFrame("Button", "GTFO_FriendlyFireResetButton", ConfigurationPanel, "OptionsButtonTemplate");
+		FriendlyFireResetButton:SetPoint("TOPLEFT", 400, -155);
+		FriendlyFireResetButton.tooltip = GTFOLocal.UI_ResetCustomSounds;
+		FriendlyFireResetButton:SetScript("OnClick",GTFO_Option_FriendlyFireReset);
+		getglobal(FriendlyFireResetButton:GetName().."Text"):SetText(GTFOLocal.UI_Reset);
 
 		local VolumeText = ConfigurationPanel:CreateFontString("GTFO_VolumeText","ARTWORK","GameFontNormal");
 		VolumeText:SetPoint("TOPLEFT", 170, -195);
@@ -1550,6 +1646,34 @@ end
 
 function GTFO_Option_FriendlyFireTest()
 	GTFO_PlaySound(4, true, getglobal("GTFO_VibrationButton"):GetChecked());
+end
+
+function GTFO_Option_HighReset()
+	GTFO.Settings.SoundOverrides[1] = "";
+	GTFO_SaveSettings();
+	GTFO_Option_HighTest();
+	GTFO_ChatPrint(string.format(GTFOLocal.UI_CustomSounds_Removed, GTFOLocal.AlertType_High));
+end
+
+function GTFO_Option_LowReset()
+	GTFO.Settings.SoundOverrides[2] = "";
+	GTFO_SaveSettings();
+	GTFO_Option_LowTest();
+	GTFO_ChatPrint(string.format(GTFOLocal.UI_CustomSounds_Removed, GTFOLocal.AlertType_Low));
+end
+
+function GTFO_Option_FailReset()
+	GTFO.Settings.SoundOverrides[3] = "";
+	GTFO_SaveSettings();
+	GTFO_Option_FailTest();
+	GTFO_ChatPrint(string.format(GTFOLocal.UI_CustomSounds_Removed, GTFOLocal.AlertType_Fail));
+end
+
+function GTFO_Option_FriendlyFireReset()
+	GTFO.Settings.SoundOverrides[4] = "";
+	GTFO_SaveSettings();
+	GTFO_Option_FriendlyFireTest();
+	GTFO_ChatPrint(string.format(GTFOLocal.UI_CustomSounds_Removed, GTFOLocal.AlertType_FriendlyFire));
 end
 
 -- Get a list of all the people in your group/raid using GTFO and their version numbers
@@ -1944,10 +2068,29 @@ function GTFO_SaveSettings()
 			GTFOData.IgnoreOptions[key] = GTFO.Settings.IgnoreOptions[key];
 		end
 	end
-	GTFOData.SoundOverrides = { };
+	GTFOData.SoundOverrides = { "", "", "", "" };
+	getglobal("GTFO_HighResetButton"):Hide();
+	getglobal("GTFO_LowResetButton"):Hide();
+	getglobal("GTFO_FailResetButton"):Hide();
+	getglobal("GTFO_FriendlyFireResetButton"):Hide();
+
 	if (GTFO.Settings.SoundOverrides) then
 		for key, option in pairs(GTFO.Settings.SoundOverrides) do
-			GTFOData.SoundOverrides[key] = GTFO.Settings.SoundOverrides[key];
+			GTFOData.SoundOverrides[key] = GTFO.Settings.SoundOverrides[key] or "";
+			if (GTFOData.SoundOverrides[key] ~= "") then
+				if (key == 1) then
+					getglobal("GTFO_HighResetButton"):Show();
+				end
+				if (key == 2) then
+					getglobal("GTFO_LowResetButton"):Show();
+				end
+				if (key == 3) then
+					getglobal("GTFO_FailResetButton"):Show();
+				end
+				if (key == 4) then
+					getglobal("GTFO_FriendlyFireResetButton"):Show();
+				end
+			end			
 		end
 	end
 

@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2127, "DBM-Party-BfA", 10, 1001)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20220116042005")
+mod:SetRevision("20221230022007")
 mod:SetCreatureID(131863)
 mod:SetEncounterID(2115)
 
@@ -25,8 +25,6 @@ local specWarnGTFO					= mod:NewSpecialWarningGTFO(264698, nil, nil, nil, 1, 8)
 --local timerServantCD				= mod:NewNextTimer(13, 264931, nil, nil, nil, 1, nil, DBM_COMMON_L.DAMAGE_ICON)
 --local timerTenderizeCD				= mod:NewNextTimer(29.2, 264923, nil, nil, nil, 3)--Timer for first in each set of 3
 local timerRottenExpulsionCD		= mod:NewCDTimer(14.6, 264694, nil, nil, nil, 3)--14.6--26 (health based?)
-
---mod:AddRangeFrameOption(5, 194966)
 
 mod.vb.tenderizeCount = 0
 
