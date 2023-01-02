@@ -22,3 +22,6 @@ Assets_Mainline.xml
 
 Source\Manifest.xml
 Source_Mainline\Manifest.xml
+
+## Title-zhCN: |cff880303[爱不易]|r Auctionator 拍卖小助手
+## X-Vendor: AbyUI
