@@ -77,9 +77,11 @@ local function travelParentObject(parent, target)
     end
     for k, v in pairs(parent) do
         if type(v) == "table" and not searched[v] then
-            local childKey = travelParentObject(v, target)
-            if childKey then
-                return getTableKey(k) .. childKey
+            if k ~= "Delegate" then
+                local childKey = travelParentObject(v, target)
+                if childKey then
+                    return getTableKey(k) .. childKey
+                end
             end
         end
     end

@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2512, "DBM-Party-Dragonflight", 5, 1201)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20221228074525")
+mod:SetRevision("20230101033858")
 mod:SetCreatureID(186951)
 mod:SetEncounterID(2563)
 --mod:SetUsedIcons(1, 2, 3)
@@ -203,7 +203,7 @@ end
 
 --<38.95 21:51:16> [CHAT_MSG_MONSTER_SAY] Perfect, we are just about--wait, Ichistrasz! There is too much life magic! What are you doing?#Professor Mystakria###Omegal##0#0##0#3723#nil#0#fa
 --<56.01 21:51:33> [DBM_Debug] ENCOUNTER_START event fired: 2563 Overgrown Ancient 8 5#nil", -- [250]
-function mod:CHAT_MSG_MONSTER_YELL(msg)
+function mod:CHAT_MSG_MONSTER_SAY(msg)
 	if (msg == L.TreeRP or msg:find(L.TreeRP)) then
 		self:SendSync("TreeRP")--Syncing to help unlocalized clients
 	end

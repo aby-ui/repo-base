@@ -376,8 +376,8 @@ hooksecurefunc ("ClickWorldMapActionButton", function()
 end)
 
 WorldMapFrame:HookScript ("OnHide", function()
-	if (WorldQuestTracker.RefreshTrackerWidgets) then
-		C_Timer.After (0.2, WorldQuestTracker.RefreshTrackerWidgets)
+	if (WorldQuestTracker.RefreshTrackerWidgets) then  --[string "@WorldQuestTracker/WorldQuestTracker_Core.lua"]:379: in function <WorldQuestTracker/WorldQuestTracker_Core.lua:378>
+		C_Timer.After (0.2, WorldQuestTracker.RefreshTrackerWidgets) --2452x bad argument #2 to '?' (Usage: C_Timer.After(seconds, callback)) --WorldQuestTracker.RefreshTrackerWidgets is nil?
 	end
 end)
 
@@ -2140,8 +2140,14 @@ WorldQuestTracker.OnToggleWorldMap = function(self)
 
 				--sort the reputation by faction id when not using show by zone
 				if (not isShowingByZone and not isSortByTime) then
+
+					--debug:
+					--print()
+
 					if (anchor.anchorType == "reputation_token") then
-						table.sort(anchor.Widgets, function(widget1, widget2) return widget1.FactionID < widget2.FactionID end)
+						table.sort(anchor.Widgets, function(widget1, widget2)
+							return widget1.FactionID < widget2.FactionID --attempt to compare nil with number
+						end)
 					end
 				end
 
@@ -2422,107 +2428,110 @@ WorldQuestTracker.OnToggleWorldMap = function(self)
 				--for factionID, factionInfo in pairs (WorldQuestTracker.MapData.ReputationByFaction [playerFaction]) do
 				for factionID, _ in pairs (WorldQuestTracker.MapData.AllFactionIds) do --creates one button for each faction registered
 					if (type (factionID) == "number") then
+						local factionName = GetFactionInfoByID(factionID)
+						if (factionName) then
+							local factionButton = DF:CreateButton (factionAnchor, worldSummary.OnSelectFaction, 24, 25, "", factionButtonIndex)
 
-						local factionButton = DF:CreateButton (factionAnchor, worldSummary.OnSelectFaction, 24, 25, "", factionButtonIndex)
+							--animations
+							factionButton.OnEnterAnimation = DF:CreateAnimationHub (factionButton, function() end, function() end)
+							local anim = WorldQuestTracker:CreateAnimation (factionButton.OnEnterAnimation, "Scale", 1, WQT_ANIMATION_SPEED, 1, 1, 1.1, 1.1, "center", 0, 0)
+							anim:SetEndDelay (60) --this fixes the animation going back to 1 after it finishes
 
-						--animations
-						factionButton.OnEnterAnimation = DF:CreateAnimationHub (factionButton, function() end, function() end)
-						local anim = WorldQuestTracker:CreateAnimation (factionButton.OnEnterAnimation, "Scale", 1, WQT_ANIMATION_SPEED, 1, 1, 1.1, 1.1, "center", 0, 0)
-						anim:SetEndDelay (60) --this fixes the animation going back to 1 after it finishes
+							factionButton.OnLeaveAnimation = DF:CreateAnimationHub (factionButton, function() end, function() end)
+							WorldQuestTracker:CreateAnimation (factionButton.OnLeaveAnimation, "Scale", 2, WQT_ANIMATION_SPEED, 1.1, 1.1, 1, 1, "center", 0, 0)
 
-						factionButton.OnLeaveAnimation = DF:CreateAnimationHub (factionButton, function() end, function() end)
-						WorldQuestTracker:CreateAnimation (factionButton.OnLeaveAnimation, "Scale", 2, WQT_ANIMATION_SPEED, 1.1, 1.1, 1, 1, "center", 0, 0)
+							--button widgets
+							--factionButton:SetTemplate (DF:GetTemplate ("button", "OPTIONS_BUTTON_TEMPLATE"))
+							factionButton:HookScript ("OnEnter", buttonOnEnter)
+							factionButton:HookScript ("OnLeave", buttonOnLeave)
 
-						--button widgets
-						--factionButton:SetTemplate (DF:GetTemplate ("button", "OPTIONS_BUTTON_TEMPLATE"))
-						factionButton:HookScript ("OnEnter", buttonOnEnter)
-						factionButton:HookScript ("OnLeave", buttonOnLeave)
-						factionButton.FactionID = factionID
-						factionButton.AmountQuests = 0
-						factionAnchor.WidgetsByFactionID [factionID] = factionButton
-						factionButton.Index = factionButtonIndex
+							factionButton.FactionID = factionID
+							factionButton.AmountQuests = 0
+							factionAnchor.WidgetsByFactionID [factionID] = factionButton
+							factionButton.Index = factionButtonIndex
 
-						DF:CreateBorder (factionButton.widget, 0.85, 0, 0)
+							DF:CreateBorder (factionButton.widget, 0.85, 0, 0)
 
-						factionButton.OverlayFrame = CreateFrame ("frame", nil, factionButton.widget, "BackdropTemplate")
-						factionButton.OverlayFrame:SetFrameLevel(factionButton:GetFrameLevel()+1)
-						factionButton.OverlayFrame:SetAllPoints()
-						DF:CreateBorder (factionButton.OverlayFrame, 1, 0, 0)
-						factionButton.OverlayFrame:SetBorderColor (1, .85, 0)
-						factionButton.OverlayFrame:SetBorderAlpha (.843, .1, .05)
+							factionButton.OverlayFrame = CreateFrame ("frame", nil, factionButton.widget, "BackdropTemplate")
+							factionButton.OverlayFrame:SetFrameLevel(factionButton:GetFrameLevel()+1)
+							factionButton.OverlayFrame:SetAllPoints()
+							DF:CreateBorder (factionButton.OverlayFrame, 1, 0, 0)
+							factionButton.OverlayFrame:SetBorderColor (1, .85, 0)
+							factionButton.OverlayFrame:SetBorderAlpha (.843, .1, .05)
 
-						local paragonRewardIcon = factionButton:CreateTexture(nil, "overlay")
-						paragonRewardIcon:SetTexture([[Interface\GossipFrame\VendorGossipIcon]])
-						paragonRewardIcon:SetPoint("topright", factionButton.widget, "topright", 6, 10)
+							local paragonRewardIcon = factionButton:CreateTexture(nil, "overlay")
+							paragonRewardIcon:SetTexture([[Interface\GossipFrame\VendorGossipIcon]])
+							paragonRewardIcon:SetPoint("topright", factionButton.widget, "topright", 6, 10)
 
-						local glowTexture = factionButton:CreateTexture(nil, "overlay")
-						glowTexture:SetTexture([[Interface\PETBATTLES\PetBattle-SelectedPetGlow]])
-						glowTexture:SetSize(32, 32)
-						glowTexture:SetPoint("center", paragonRewardIcon, "center")
-						factionButton.glowTexture = glowTexture
+							local glowTexture = factionButton:CreateTexture(nil, "overlay")
+							glowTexture:SetTexture([[Interface\PETBATTLES\PetBattle-SelectedPetGlow]])
+							glowTexture:SetSize(32, 32)
+							glowTexture:SetPoint("center", paragonRewardIcon, "center")
+							factionButton.glowTexture = glowTexture
 
-						paragonRewardIcon.glowAnimation = DF:CreateAnimationHub (glowTexture, function() end, function() end)
-						WorldQuestTracker:CreateAnimation(paragonRewardIcon.glowAnimation, "Alpha", 1, 0.750, 0.4, 1)
-						WorldQuestTracker:CreateAnimation(paragonRewardIcon.glowAnimation, "Alpha", 2, 0.750, 1, 0.4)
-						paragonRewardIcon.glowAnimation:SetLooping ("REPEAT")
+							paragonRewardIcon.glowAnimation = DF:CreateAnimationHub (glowTexture, function() end, function() end)
+							WorldQuestTracker:CreateAnimation(paragonRewardIcon.glowAnimation, "Alpha", 1, 0.750, 0.4, 1)
+							WorldQuestTracker:CreateAnimation(paragonRewardIcon.glowAnimation, "Alpha", 2, 0.750, 1, 0.4)
+							paragonRewardIcon.glowAnimation:SetLooping ("REPEAT")
 
-						paragonRewardIcon.anim = paragonRewardIcon.glowAnimation
+							paragonRewardIcon.anim = paragonRewardIcon.glowAnimation
 
-						paragonRewardIcon:SetDrawLayer("overlay", 6)
-						glowTexture:SetDrawLayer("overlay", 5)
+							paragonRewardIcon:SetDrawLayer("overlay", 6)
+							glowTexture:SetDrawLayer("overlay", 5)
 
-						paragonRewardIcon:Hide()
-						factionButton.paragonRewardIcon = paragonRewardIcon
+							paragonRewardIcon:Hide()
+							factionButton.paragonRewardIcon = paragonRewardIcon
 
-						local selectedBorder = factionButton:CreateTexture(nil, "overlay")
-						selectedBorder:SetPoint("center")
-						selectedBorder:SetTexture([[Interface\Artifacts\Artifacts]])
-						selectedBorder:SetTexCoord(137/1024, 195/1024, 920/1024, 978/1024)
-						selectedBorder:SetBlendMode("BLEND")
-						selectedBorder:SetSize(28, 28)
-						selectedBorder:SetAlpha(0)
-						factionButton.SelectedBorder = selectedBorder
+							local selectedBorder = factionButton:CreateTexture(nil, "overlay")
+							selectedBorder:SetPoint("center")
+							selectedBorder:SetTexture([[Interface\Artifacts\Artifacts]])
+							selectedBorder:SetTexCoord(137/1024, 195/1024, 920/1024, 978/1024)
+							selectedBorder:SetBlendMode("BLEND")
+							selectedBorder:SetSize(28, 28)
+							selectedBorder:SetAlpha(0)
+							factionButton.SelectedBorder = selectedBorder
 
-						local factionIcon = factionButton:CreateTexture(nil, "artwork")
-						factionIcon:SetPoint("topleft", factionButton.widget, "topleft", 0, 0)
-						factionIcon:SetPoint("bottomright", factionButton.widget, "bottomright", 0, 0)
-						factionIcon:SetTexture(WorldQuestTracker.MapData.FactionIcons [factionID])
-						factionIcon:SetTexCoord(.1, .9, .1, .96)
-						factionButton.Icon = factionIcon
+							local factionIcon = factionButton:CreateTexture(nil, "artwork")
+							factionIcon:SetPoint("topleft", factionButton.widget, "topleft", 0, 0)
+							factionIcon:SetPoint("bottomright", factionButton.widget, "bottomright", 0, 0)
+							factionIcon:SetTexture(WorldQuestTracker.MapData.FactionIcons [factionID])
+							factionIcon:SetTexCoord(.1, .9, .1, .96)
+							factionButton.Icon = factionIcon
 
-						--add a highlight effect
-						local factionIconHighlight = factionButton:CreateTexture(nil, "highlight")
-						factionIconHighlight:SetPoint("topleft", factionButton.widget, "topleft", 0, 0)
-						factionIconHighlight:SetPoint("bottomright", factionButton.widget, "bottomright", 0, 0)
-						factionIconHighlight:SetTexture(WorldQuestTracker.MapData.FactionIcons [factionID])
-						factionIconHighlight:SetTexCoord(.1, .9, .1, .96)
-						factionIconHighlight:SetBlendMode("ADD")
-						factionIconHighlight:SetAlpha(.5)
+							--add a highlight effect
+							local factionIconHighlight = factionButton:CreateTexture(nil, "highlight")
+							factionIconHighlight:SetPoint("topleft", factionButton.widget, "topleft", 0, 0)
+							factionIconHighlight:SetPoint("bottomright", factionButton.widget, "bottomright", 0, 0)
+							factionIconHighlight:SetTexture(WorldQuestTracker.MapData.FactionIcons [factionID])
+							factionIconHighlight:SetTexCoord(.1, .9, .1, .96)
+							factionIconHighlight:SetBlendMode("ADD")
+							factionIconHighlight:SetAlpha(.5)
 
-						--local amountQuestsBackground = factionButton:CreateTexture(nil, "artwork")
-						--amountQuestsBackground:SetPoint("bottom", factionIcon, "top", 0, 0)
-						--amountQuestsBackground:SetTexture([[Interface\AddOns\WorldQuestTracker\media\background_blackgradientT]])
-						--amountQuestsBackground:SetSize(34, 12)
-						--amountQuestsBackground:SetAlpha(.5)
-						--amountQuestsBackground:Hide()
+							--local amountQuestsBackground = factionButton:CreateTexture(nil, "artwork")
+							--amountQuestsBackground:SetPoint("bottom", factionIcon, "top", 0, 0)
+							--amountQuestsBackground:SetTexture([[Interface\AddOns\WorldQuestTracker\media\background_blackgradientT]])
+							--amountQuestsBackground:SetSize(34, 12)
+							--amountQuestsBackground:SetAlpha(.5)
+							--amountQuestsBackground:Hide()
 
-						local amountQuestsBackground2 = factionButton:CreateTexture(nil, "artwork", nil, 3)
-						--amountQuestsBackground2:SetPoint("bottomright", factionIcon, "bottomright", 0, 0)
-						amountQuestsBackground2:SetPoint("bottomleft", factionIcon, "bottomleft", 0, 0)
-						amountQuestsBackground2:SetColorTexture(0, 0, 0, 1)
-						amountQuestsBackground2:SetSize(10, 10)
+							local amountQuestsBackground2 = factionButton:CreateTexture(nil, "artwork", nil, 3)
+							--amountQuestsBackground2:SetPoint("bottomright", factionIcon, "bottomright", 0, 0)
+							amountQuestsBackground2:SetPoint("bottomleft", factionIcon, "bottomleft", 0, 0)
+							amountQuestsBackground2:SetColorTexture(0, 0, 0, 1)
+							amountQuestsBackground2:SetSize(10, 10)
 
-						local amountQuests = factionButton:CreateFontString (nil, "overlay", "GameFontNormal", nil, 4)
-						amountQuests:SetPoint("center", amountQuestsBackground2, "center", 0, 0)
-						amountQuests:SetDrawLayer("overlay", 6)
-						amountQuests:SetAlpha(.832)
-						WorldQuestTracker:SetFontSize (amountQuests, 10)
-						factionButton.Text = amountQuests
-						factionButton.Text:SetText ("")
+							local amountQuests = factionButton:CreateFontString (nil, "overlay", "GameFontNormal", nil, 4)
+							amountQuests:SetPoint("center", amountQuestsBackground2, "center", 0, 0)
+							amountQuests:SetDrawLayer("overlay", 6)
+							amountQuests:SetAlpha(.832)
+							WorldQuestTracker:SetFontSize (amountQuests, 10)
+							factionButton.Text = amountQuests
+							factionButton.Text:SetText ("")
 
-						tinsert (worldSummary.FactionIDs, factionID)
-						tinsert (factionAnchor.Widgets, factionButton)
-						factionButtonIndex = factionButtonIndex + 1
+							tinsert (worldSummary.FactionIDs, factionID)
+							tinsert (factionAnchor.Widgets, factionButton)
+							factionButtonIndex = factionButtonIndex + 1
+						end
 					end
 				end
 

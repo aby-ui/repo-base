@@ -8,7 +8,7 @@
 ## X-Curse-Project-ID: 100610
 ## X-Wago-ID: lQNlrEKe
 
-## Version: v10.0.2.458-Retail
+## Version: v10.0.2.460-Retail
 
 
 #@no-lib-strip@
@@ -25,6 +25,7 @@ WorldQuestTracker_Initialize.lua
 WorldQuestTracker_IDs.lua
 
 WorldQuestTracker.lua
+WorldQuestTracker_Tracker.lua
 
 WorldQuestTracker_Core.lua
 
@@ -34,7 +35,6 @@ WorldQuestTracker_GroupFinder.lua
 WorldQuestTracker_RareFinder.lua
 WorldQuestTracker_ZoneMap.lua
 WorldQuestTracker_WorldMap.lua
-WorldQuestTracker_Tracker.lua
 WorldQuestTracker_Taxi.lua
 
 WorldQuestTrackerMixin.xml

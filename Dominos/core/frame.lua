@@ -431,6 +431,10 @@ local function isFlyoutFocus(flyout, owner)
 end
 
 local function isFocus(frame)
+    if frame:IsForbidden() then
+        return false
+    end
+
     local focus = GetMouseFocus()
 
     -- not focused on a particular frame, check to see if the mouse is over

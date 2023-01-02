@@ -95,6 +95,11 @@ for i = 2, NUM_ACTIONBAR_PAGES do
     addState('page', ('page%d'):format(i), ('[bar:%d]'):format(i), _G['BINDING_NAME_ACTIONPAGE' .. i])
 end
 
+-- dragonriding
+if Addon:IsBuild("retail") then
+    addState('class', 'dragonriding', '[bonusbar:5]', GENERIC_TRAIT_FRAME_DRAGONRIDING_TITLE)
+end
+
 -- class
 local class = UnitClassBase('player')
 local race = select(2, UnitRace('player'))
@@ -127,6 +132,12 @@ if class == 'DRUID' then
             -- swift flight form
             addFormState('class', 'flight', 40120)
         end
+    end
+elseif class == 'DEATHKNIGHT' then
+    if Addon:IsBuild('wrath') then
+        addFormState('class', 'blood', 48266)
+        addFormState('class', 'frost', 48263)
+        addFormState('class', 'unholy', 48265)
     end
 elseif class == 'EVOKER' then
     addState('class', 'soar', '[bonusbar:1]', GetSpellInfo(369536))
@@ -185,10 +196,6 @@ elseif class == 'WARRIOR' then
         addState('class', 'defensive', '[bonusbar:2]', GetSpellInfo(71))
         addState('class', 'berserker', '[bonusbar:3]', GetSpellInfo(2458))
     end
-end
-
-if Addon:IsBuild("retail") then
-    addState('class', 'dragonriding', '[bonusbar:5]', GENERIC_TRAIT_FRAME_DRAGONRIDING_TITLE)
 end
 
 -- race

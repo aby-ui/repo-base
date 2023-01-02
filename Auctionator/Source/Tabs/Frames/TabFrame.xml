@@ -1,0 +1,18 @@
+<Ui xmlns="http://www.blizzard.com/wow/ui/">
+  <Frame
+    name="AuctionatorTabFrameTemplate"
+    virtual="true"
+    inherits="AuctionatorInsetTemplate"
+  >
+  <!-- Note that inheriting frames need to set their own parentKey!
+
+       The Selling and Cancelling tabs do not inherit from this, as they need custom InsetFrames
+   -->
+    <Anchors>
+      <Anchor point="LEFT" x="4"/>
+      <Anchor point="RIGHT" x="-4"/>
+      <Anchor point="BOTTOM" y="27" />
+      <Anchor point="TOP" y="-103"/>
+    </Anchors>
+  </Frame>
+</Ui>

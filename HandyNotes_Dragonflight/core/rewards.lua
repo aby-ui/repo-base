@@ -361,7 +361,7 @@ function Pet:Initialize(attrs)
         Reward.Initialize(self, attrs)
         local name, icon = C_PetJournal.GetPetInfoBySpeciesID(self.id)
         self.itemIcon = icon
-        self.itemLink = '|cff1eff00[' .. name .. ']|r'
+        self.itemLink = ns.color.Green(name)
     end
 end
 

@@ -286,3 +286,13 @@ U1RegisterAddon("AbyAuctionFavoritesSavior", {
     icon = [[Interface\Icons\INV_WorseRobot]],
     author = "|cffcd1a1c[爱不易原创]|r",
 });
+
+U1RegisterAddon("AbyCraftSkillPreview", {
+    title = "配方技能预览",
+    defaultEnable = 1,
+    load = "LOGIN",
+    tags = { TAG_TRADING, TAG_GOOD },
+    icon = 4554442,
+    author = "|cffcd1a1c[爱不易原创]|r",
+});
+

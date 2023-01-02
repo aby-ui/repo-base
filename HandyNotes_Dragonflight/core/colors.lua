@@ -20,6 +20,7 @@ ns.COLORS = {
     White = 'FFFFFFFF',
     Yellow = 'FFFFFF00',
     --------------------
+    Heirloom = 'FF00CCFF',
     NPC = 'FFFFFD00',
     Spell = 'FF71D5FF'
 }

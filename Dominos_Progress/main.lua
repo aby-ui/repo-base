@@ -24,6 +24,11 @@ function ProgressBarModule:OnEnable()
 	-- reputation events
 	self:RegisterEvent("UPDATE_FACTION")
 
+	if C_Reputation and C_Reputation.GetMajorFactionData then
+		self:RegisterEvent("MAJOR_FACTION_RENOWN_LEVEL_CHANGED", "UpdateAllBars")
+		self:RegisterEvent("MAJOR_FACTION_UNLOCKED", "UpdateAllBars")
+	end
+
 	-- honor events
 	if Addon.HonorBar then
 		self:RegisterEvent("HONOR_LEVEL_UPDATE")

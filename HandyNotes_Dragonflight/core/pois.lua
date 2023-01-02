@@ -37,6 +37,8 @@ function POI:Initialize(attrs)
     -- normalize table values
     self.quest = ns.AsTable(self.quest)
     self.questDeps = ns.AsTable(self.questDeps)
+
+    if self.color then self.r, self.g, self.b = ns.HEXtoRGBA(self.color) end
 end
 
 function POI:IsCompleted()
@@ -148,7 +150,9 @@ end
 
 function Path:Draw(pin, type, xy1, xy2)
     local t = ResetPin(pin)
-    t:SetVertexColor(unpack({ns:GetColorOpt('path_color')}))
+    local color = {ns:GetColorOpt('path_color')}
+    if self.color then color = {self.r, self.g, self.b} end
+    t:SetVertexColor(unpack(color))
     t:SetTexture(type)
 
     -- constant size for minimaps, variable size for world maps

@@ -5,6 +5,10 @@ local theme
 if Addon:IsBuild("retail") then
     -- reserved for if I want to retheme buttons in Dragonflight
     theme = function(button)
+        if button.SlotArt and button.SlotArt:IsShown() then
+            button.SlotArt:Hide()
+            button.SlotBackground:Show()
+        end
     end
 -- classic theming
 else

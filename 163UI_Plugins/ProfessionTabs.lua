@@ -62,7 +62,7 @@ local function ResetTabs(object)
 	tabs[object].index = 0
 end
 
-local function UpdateTab(object, name, rank, texture)
+local function UpdateTab(object, name, rank, texture, spellId)
 	local index = tabs[object].index + 1
 	local tab = tabs[object][index] or CreateFrame("CheckButton", nil, object, "SpellBookSkillLineTabTemplate SecureActionButtonTemplate") 
 	
@@ -73,7 +73,7 @@ local function UpdateTab(object, name, rank, texture)
 	tab:SetPoint("TOPLEFT", anchor, "TOPRIGHT", anchor == ATSWFrame and -32 or 0, 16 + -44 * index)
 	tab:SetNormalTexture(texture)
 	tab:SetAttribute("type", "spell")
-	tab:SetAttribute("spell", name)
+	tab:SetAttribute("spell", spellId and tostring(spellId) or name) --必须用字符串, SECURE_ACTIONS.spell
 	tab:RegisterForClicks("AnyUp", "AnyDown")
 	tab:Show()
 
@@ -102,12 +102,12 @@ local function HandleProfession(object, professionID)
 		if defaults[skillID] then
 			for index = 1, numAbilities do
 				if defaults[skillID][index] then
-					local name = GetSpellBookItemName(offset + index, "profession")
+					local name, _, spellId = GetSpellBookItemName(offset + index, "profession")
 					local rank = GetProfessionRank(currentSkill)
 					local texture = GetSpellBookItemTexture(offset + index, "profession")
 					
 					if name and rank and texture then
-						UpdateTab(object, name, rank, texture)
+						UpdateTab(object, name, rank, texture, spellId)
 					end
 				end
 			end

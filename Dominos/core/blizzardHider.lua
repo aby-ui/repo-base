@@ -51,7 +51,6 @@ apply(banish,
     "MultiBar6",
     "MultiBar7",
     "PossessActionBar",
-    "StanceBar",
     "MainMenuBarVehicleLeaveButton"
 )
 
@@ -64,7 +63,6 @@ apply(unregisterEvents,
     "MultiBar6",
     "MultiBar7",
     "PossessActionBar",
-    "StanceBar",
     "MainMenuBarVehicleLeaveButton"
 )
 
@@ -77,12 +75,5 @@ apply(disableActionButtons,
     "MultiBar5",
     "MultiBar6",
     "MultiBar7",
-    "PossessActionBar",
-    "StanceBar"
+    "PossessActionBar"
 )
-
--- disable some action bar controller updates that we probably don't need
-ActionBarController:UnregisterEvent("UPDATE_SHAPESHIFT_FORM")
-ActionBarController:UnregisterEvent("UPDATE_SHAPESHIFT_FORMS")
-ActionBarController:UnregisterEvent("UPDATE_SHAPESHIFT_USABLE")
-ActionBarController:UnregisterEvent('UPDATE_POSSESS_BAR')

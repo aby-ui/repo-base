@@ -215,8 +215,6 @@ function WorldQuestTracker:OnInit()
 	
 	C_Timer.After (3, save_player_name)
 	C_Timer.After (10, save_player_name)
-	C_Timer.After (11, WorldQuestTracker.RequestRares)
-	C_Timer.After (12, WorldQuestTracker.CheckForOldRareFinderData)
 	
 	local canLoad = C_QuestLog.IsQuestFlaggedCompleted(WORLD_QUESTS_AVAILABLE_QUEST_ID)
 	

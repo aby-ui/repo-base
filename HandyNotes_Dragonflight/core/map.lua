@@ -162,6 +162,15 @@ function Map:Prepare()
             node._prepared = true
         end
     end
+
+    -- Sort groups by type, order and name
+    table.sort(self.groups, function(a, b)
+        if a.type ~= b.type then return a.type < b.type end
+        if a.order ~= b.order then return a.order < b.order end
+        local alabel = ns.RenderLinks(a.label, true)
+        local blabel = ns.RenderLinks(b.label, true)
+        return alabel < blabel
+    end)
 end
 
 function Map:SetFocus(node, coord, state, hover)

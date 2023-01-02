@@ -255,21 +255,22 @@ L:SetOptionLocalization({
 
 L:SetMiscLocalization({
 	Found			= "喂喂，",
-	--
-	Gloves		= "手套",
-	NoGloves	= "沒有手套",
-	Cape		= "斗篷",
-	Nocape		= "沒有斗蓬",
-	LightVest	= "淺色上衣",
-	DarkVest	= "深色上衣",
-	Female		= "女性",
-	Male		= "男性",
-	ShortSleeve = "短袖",
-	LongSleeve	= "長袖",
-	Potions		= "藥水瓶",
-	NoPotions	= "無藥水瓶",
-	Book		= "書本",
-	Pouch		= "腰袋"
+	--Add translationss, but keep english termss for cross language groups since these post to chat
+	--Format "localized / english"
+	Gloves		= "手套 / gloves",
+	NoGloves	= "沒有手套 / no gloves",
+	Cape		= "斗篷 / cape",
+	Nocape		= "沒有斗蓬 / no cape",
+	LightVest	= "淺色上衣 / light vest",
+	DarkVest	= "深色上衣 / dark vest",
+	Female		= "女性 / female",
+	Male		= "男性 / male",
+	ShortSleeve = "短袖 / short sleeve",
+	LongSleeve	= "長袖 / long sleeve",
+	Potions		= "藥水瓶 / potions",
+	NoPotions	= "無藥水瓶 / no potions",
+	Book		= "書本 / book",
+	Pouch		= "腰袋 / pouch"
 })
 
 -----------------------

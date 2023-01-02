@@ -36,6 +36,7 @@ Ld["Account"] = "Account"
 Ld["Account Summary"] = "Account Summary"
 Ld["AD"] = "AD"
 Ld["Aiding the Accord"] = "Aiding the Accord"
+Ld["Air Core"] = "Air Core"
 Ld["Always show"] = "Always show"
 Ld["Amathet Reliquary"] = "Amathet Reliquary"
 Ld["Ambered Coffer"] = "Ambered Coffer"
@@ -88,6 +89,7 @@ Ld["Dragonflight Renown"] = "Dragonflight Renown"
 Ld["Dragonflight Transmute"] = "Dragonflight Transmute"
 Ld["Dump quest debugging information"] = "Dump quest debugging information"
 Ld["Dump time debugging information"] = "Dump time debugging information"
+Ld["Earth Core"] = "Earth Core"
 Ld["Emissary Missing"] = "Emissary Missing"
 Ld["Emissary of War"] = "Emissary of War"
 Ld["Emissary Quests"] = "Emissary Quests"
@@ -99,6 +101,7 @@ Ld["Export"] = "Export"
 Ld["Extended Lockout - Not yet saved"] = "Extended Lockout - Not yet saved"
 Ld["Facets of Research"] = "Facets of Research"
 Ld["FH"] = "FH"
+Ld["Fire Core"] = "Fire Core"
 Ld["Fit to screen"] = "Fit to screen"
 Ld["Flex"] = "Flex"
 Ld["Format large numbers"] = "Format large numbers"
@@ -111,6 +114,7 @@ Ld["Full Clear No Masks"] = "Full Clear No Masks"
 Ld["GD"] = "GD"
 Ld["General settings"] = "General settings"
 Ld["GMBT"] = "GMBT"
+Ld["Grand Hunt"] = "Grand Hunt"
 Ld["Grand Hunts: Mythic Reward"] = "Grand Hunts: Mythic Reward"
 Ld["Grand Hunts: Rare Reward"] = "Grand Hunts: Rare Reward"
 Ld["Grand Hunts: Uncommon Reward"] = "Grand Hunts: Uncommon Reward"
@@ -246,6 +250,8 @@ Ld["Trade skills"] = "Trade skills"
 Ld["Transmute"] = "Transmute"
 Ld["Trial of Elements"] = "Trial of Elements"
 Ld["Trial of Flood"] = "Trial of Flood"
+Ld["Trial of the Elements"] = "Trial of the Elements"
+Ld["Trial of the Flood"] = "Trial of the Flood"
 Ld["Type"] = "Type"
 Ld["UNDR"] = "UNDR"
 Ld["UPPR"] = "UPPR"
@@ -256,6 +262,7 @@ Ld["VOTW"] = "VOTW"
 Ld["Warfronts"] = "Warfronts"
 Ld["Warn about instance limit"] = "Warn about instance limit"
 Ld["Warning: You've entered about %i instances recently and are approaching the %i instance per hour limit for your account. More instances should be available in %s."] = "Warning: You've entered about %i instances recently and are approaching the %i instance per hour limit for your account. More instances should be available in %s."
+Ld["Water Core"] = "Water Core"
 Ld["Weekly Quests"] = "Weekly Quests"
 Ld["Wild Transmute"] = "Wild Transmute"
 Ld["WM"] = "WM"
@@ -282,6 +289,8 @@ La["Account Summary"] = "Résumé du compte"
 La["AD"] = "AD"
 --[[Translation missing --]]
 La["Aiding the Accord"] = "Aiding the Accord"
+--[[Translation missing --]]
+La["Air Core"] = "Air Core"
 La["Always show"] = "Toujours afficher"
 La["Amathet Reliquary"] = "Reliquaire amathet"
 La["Ambered Coffer"] = "Coffre ambré"
@@ -345,6 +354,8 @@ La["Dragonflight Renown"] = "Dragonflight Renown"
 La["Dragonflight Transmute"] = "Dragonflight Transmute"
 La["Dump quest debugging information"] = "lister les informations de débogage des quêtes"
 La["Dump time debugging information"] = "lister les informations de débogage du temps"
+--[[Translation missing --]]
+La["Earth Core"] = "Earth Core"
 La["Emissary Missing"] = "Émissaire manquant"
 --[[Translation missing --]]
 La["Emissary of War"] = "Emissary of War"
@@ -359,6 +370,8 @@ La["Extended Lockout - Not yet saved"] = "Verrouillage étendu - Pas encore sauv
 La["Facets of Research"] = "Facettes de recherche"
 --[[Translation missing --]]
 La["FH"] = "FH"
+--[[Translation missing --]]
+La["Fire Core"] = "Fire Core"
 La["Fit to screen"] = "Ajuster à la taille de l'écran"
 La["Flex"] = "Dynamique"
 La["Format large numbers"] = "Formater les grands nombres"
@@ -373,6 +386,8 @@ La["GD"] = "GD"
 La["General settings"] = "Options générales"
 --[[Translation missing --]]
 La["GMBT"] = "GMBT"
+--[[Translation missing --]]
+La["Grand Hunt"] = "Grand Hunt"
 --[[Translation missing --]]
 La["Grand Hunts: Mythic Reward"] = "Grand Hunts: Mythic Reward"
 --[[Translation missing --]]
@@ -535,6 +550,10 @@ La["Transmute"] = "Transmutation"
 La["Trial of Elements"] = "Trial of Elements"
 --[[Translation missing --]]
 La["Trial of Flood"] = "Trial of Flood"
+--[[Translation missing --]]
+La["Trial of the Elements"] = "Trial of the Elements"
+--[[Translation missing --]]
+La["Trial of the Flood"] = "Trial of the Flood"
 La["Type"] = "Type"
 --[[Translation missing --]]
 La["UNDR"] = "UNDR"
@@ -548,6 +567,8 @@ La["VOTW"] = "VOTW"
 La["Warfronts"] = "Fronts de guerre"
 La["Warn about instance limit"] = "Alerte sur la limite d'instance"
 La["Warning: You've entered about %i instances recently and are approaching the %i instance per hour limit for your account. More instances should be available in %s."] = "Attention : vous êtes entré dans %i instances récemment et approchez la limite de %i instances par heure pour ce compte. Plus d'instances seront disponibles dans environ %s."
+--[[Translation missing --]]
+La["Water Core"] = "Water Core"
 La["Weekly Quests"] = "Quêtes hebdomadaires"
 La["Wild Transmute"] = "Transmutation sauvage"
 --[[Translation missing --]]
@@ -576,6 +597,8 @@ La["Account Summary"] = "Accountübersicht"
 La["AD"] = "AD"
 --[[Translation missing --]]
 La["Aiding the Accord"] = "Aiding the Accord"
+--[[Translation missing --]]
+La["Air Core"] = "Air Core"
 La["Always show"] = "Immer anzeigen"
 La["Amathet Reliquary"] = "Reliquiar der Amathet"
 La["Ambered Coffer"] = "Bernbesetzte Kiste"
@@ -638,6 +661,8 @@ La["Dragonflight Renown"] = "Dragonflight Renown"
 La["Dragonflight Transmute"] = "Dragonflight Transmute"
 La["Dump quest debugging information"] = "Quest Debugging Information"
 La["Dump time debugging information"] = "Zeit Debugging Informationen"
+--[[Translation missing --]]
+La["Earth Core"] = "Earth Core"
 La["Emissary Missing"] = "Abgesandte Truhe fehlt"
 La["Emissary of War"] = "Abgesandter des Krieges"
 La["Emissary Quests"] = "Abgesandtenquests"
@@ -651,6 +676,8 @@ La["Extended Lockout - Not yet saved"] = "Verlängerte IDs – noch nicht gesich
 La["Facets of Research"] = "Forschungsfacetten"
 --[[Translation missing --]]
 La["FH"] = "FH"
+--[[Translation missing --]]
+La["Fire Core"] = "Fire Core"
 La["Fit to screen"] = "An Bildschirm anpassen"
 La["Flex"] = "Flex"
 La["Format large numbers"] = "Große Zahlen formatieren"
@@ -665,6 +692,8 @@ La["GD"] = "GD"
 La["General settings"] = "Allgemeine Einstellungen"
 --[[Translation missing --]]
 La["GMBT"] = "GMBT"
+--[[Translation missing --]]
+La["Grand Hunt"] = "Grand Hunt"
 --[[Translation missing --]]
 La["Grand Hunts: Mythic Reward"] = "Grand Hunts: Mythic Reward"
 --[[Translation missing --]]
@@ -825,6 +854,10 @@ La["Transmute"] = "Transmutieren"
 La["Trial of Elements"] = "Trial of Elements"
 --[[Translation missing --]]
 La["Trial of Flood"] = "Trial of Flood"
+--[[Translation missing --]]
+La["Trial of the Elements"] = "Trial of the Elements"
+--[[Translation missing --]]
+La["Trial of the Flood"] = "Trial of the Flood"
 La["Type"] = "Wert"
 --[[Translation missing --]]
 La["UNDR"] = "UNDR"
@@ -838,6 +871,8 @@ La["VOTW"] = "VOTW"
 La["Warfronts"] = "Kriegsfronten"
 La["Warn about instance limit"] = "Vor Instanzlimit warnen"
 La["Warning: You've entered about %i instances recently and are approaching the %i instance per hour limit for your account. More instances should be available in %s."] = "Achtung: Du hast kürzlich %i Instanzen betreten und näherst Dich dem Limit von %i Instanzen pro Stunde für Deinen Account. Weitere Instanzen sollten in %s verfügbar sein."
+--[[Translation missing --]]
+La["Water Core"] = "Water Core"
 La["Weekly Quests"] = "Wöchentliche Quests"
 La["Wild Transmute"] = "Wilde Transmutation"
 --[[Translation missing --]]
@@ -862,8 +897,8 @@ La["Abbreviate Mythic keystone dungeon names"] = "신화 쐐기돌 던전 이름
 La["Account"] = "계정"
 La["Account Summary"] = "계정 요약"
 La["AD"] = "아탈"
---[[Translation missing --]]
-La["Aiding the Accord"] = "Aiding the Accord"
+La["Aiding the Accord"] = "협의회 지원"
+La["Air Core"] = "바람의 핵"
 La["Always show"] = "항상 표시"
 La["Amathet Reliquary"] = "아마셋 성물함"
 La["Ambered Coffer"] = "호박석 박힌 함"
@@ -892,8 +927,7 @@ La["Combine Emissaries"] = "사절퀘 모음"
 La["Combine emissaries of same expansion"] = "확팩별 사절퀘 모음"
 La["Combine LFR"] = "공찾/탄공 합침"
 La["Combine World Bosses"] = "야외 보스 합침"
---[[Translation missing --]]
-La["Community Feast"] = "Community Feast"
+La["Community Feast"] = "공동체 잔치"
 La["Connected Realms"] = "연동 서버"
 La["COS"] = "별궁"
 La["Covenant"] = "성약의 단"
@@ -908,8 +942,7 @@ La["Disable mouseover"] = "마우스오버 사용안함"
 La["Disable tooltip display on icon mouseover"] = "아이콘 마우스 오버시 툴팁 표시 안함"
 La["Display instances in order of recommended level from lowest to highest"] = "권장 레벨이 낮은 것부터 높은 순으로 인던을 표시합니다."
 La["Display instances with space inserted between categories"] = "카테고리 사이에 공백을 삽입하여 인스턴스를 표시합니다."
---[[Translation missing --]]
-La["Disturbed Dirt / Expedition Scout's Pack"] = "Disturbed Dirt / Expedition Scout's Pack"
+La["Disturbed Dirt / Expedition Scout's Pack"] = "흙 / 정찰병 짐"
 La["Doomwalker"] = "파멸의 절단기"
 La["DOS"] = "저편"
 La["Dragon of Nightmare"] = "악몽의 용"
@@ -918,6 +951,7 @@ La["Dragonflight Renown"] = "용군단 영예"
 La["Dragonflight Transmute"] = "용군단 변환식"
 La["Dump quest debugging information"] = "퀘스트 디버그 정보 덤프하기"
 La["Dump time debugging information"] = "시간 디버깅 정보 덤프하기"
+La["Earth Core"] = "대지 핵"
 La["Emissary Missing"] = "사절 없음"
 La["Emissary of War"] = "전쟁의 사절"
 La["Emissary Quests"] = "사절 퀘스트"
@@ -929,6 +963,7 @@ La["Export"] = "내보내기"
 La["Extended Lockout - Not yet saved"] = "연장된 귀속 - 아직 저장 안됨"
 La["Facets of Research"] = "연구용 다면체"
 La["FH"] = "자유지대"
+La["Fire Core"] = "화염의 핵"
 La["Fit to screen"] = "화면에 맞춤"
 La["Flex"] = "탄력적 공격대"
 La["Format large numbers"] = "천 단위 구분자(,) 사용 여부"
@@ -941,6 +976,7 @@ La["Full Clear No Masks"] = "0가면 5상"
 La["GD"] = "정비소"
 La["General settings"] = "일반 설정"
 La["GMBT"] = "타자:소레아"
+La["Grand Hunt"] = "사냥의 제전"
 La["Grand Hunts: Mythic Reward"] = "사냥의 제전: 보라상자"
 La["Grand Hunts: Rare Reward"] = "사냥의 제전: 파란상자"
 La["Grand Hunts: Uncommon Reward"] = "사냥의 제전: 흰색상자"
@@ -1076,6 +1112,8 @@ La["Trade skills"] = "전문 기술"
 La["Transmute"] = "변환"
 La["Trial of Elements"] = "정령의 시험"
 La["Trial of Flood"] = "홍수의 시험"
+La["Trial of the Elements"] = "정령의 시험"
+La["Trial of the Flood"] = "홍수의 시험"
 La["Type"] = "유형"
 La["UNDR"] = "썩굴"
 La["UPPR"] = "카라잔:상층"
@@ -1086,6 +1124,7 @@ La["VOTW"] = "금고"
 La["Warfronts"] = "격전지"
 La["Warn about instance limit"] = "인스턴스 제한 경고"
 La["Warning: You've entered about %i instances recently and are approaching the %i instance per hour limit for your account. More instances should be available in %s."] = "경고 : 최근 %i 개의 인스턴스에 입장하였고, 귀하의 계정에 대해 시간 당 제한된 %i 개의 인스턴스에 근접하고 있습니다. 더 많은 인스턴스는 %s 후에 이용가능합니다."
+La["Water Core"] = "물의 핵"
 La["Weekly Quests"] = "주간 퀘스트"
 La["Wild Transmute"] = "거친 변환"
 La["WM"] = "웨이.저택"
@@ -1114,6 +1153,8 @@ La["Account Summary"] = "Resumen de Cuenta"
 La["AD"] = "AD"
 --[[Translation missing --]]
 La["Aiding the Accord"] = "Aiding the Accord"
+--[[Translation missing --]]
+La["Air Core"] = "Air Core"
 La["Always show"] = "Mostrar siempre"
 --[[Translation missing --]]
 La["Amathet Reliquary"] = "Amathet Reliquary"
@@ -1195,6 +1236,8 @@ La["Dragonflight Transmute"] = "Dragonflight Transmute"
 La["Dump quest debugging information"] = "Deshacerse de la información de depuración de misiones"
 La["Dump time debugging information"] = "Deshacerse de la información de depuración de tiempo"
 --[[Translation missing --]]
+La["Earth Core"] = "Earth Core"
+--[[Translation missing --]]
 La["Emissary Missing"] = "Emissary Missing"
 --[[Translation missing --]]
 La["Emissary of War"] = "Emissary of War"
@@ -1212,6 +1255,8 @@ La["Extended Lockout - Not yet saved"] = "Registro extendido - no se ha guardado
 La["Facets of Research"] = "Facetas de investigación"
 --[[Translation missing --]]
 La["FH"] = "FH"
+--[[Translation missing --]]
+La["Fire Core"] = "Fire Core"
 La["Fit to screen"] = "Ajustar a Pantalla"
 La["Flex"] = "Flexible"
 La["Format large numbers"] = "Formatear números extensos"
@@ -1232,6 +1277,8 @@ La["GD"] = "GD"
 La["General settings"] = "Opciones generales"
 --[[Translation missing --]]
 La["GMBT"] = "GMBT"
+--[[Translation missing --]]
+La["Grand Hunt"] = "Grand Hunt"
 --[[Translation missing --]]
 La["Grand Hunts: Mythic Reward"] = "Grand Hunts: Mythic Reward"
 --[[Translation missing --]]
@@ -1436,6 +1483,10 @@ La["Transmute"] = "Transmutar"
 La["Trial of Elements"] = "Trial of Elements"
 --[[Translation missing --]]
 La["Trial of Flood"] = "Trial of Flood"
+--[[Translation missing --]]
+La["Trial of the Elements"] = "Trial of the Elements"
+--[[Translation missing --]]
+La["Trial of the Flood"] = "Trial of the Flood"
 La["Type"] = "Tipo"
 --[[Translation missing --]]
 La["UNDR"] = "UNDR"
@@ -1453,6 +1504,8 @@ La["Warfronts"] = "Warfronts"
 --[[Translation missing --]]
 La["Warn about instance limit"] = "Warn about instance limit"
 La["Warning: You've entered about %i instances recently and are approaching the %i instance per hour limit for your account. More instances should be available in %s."] = "Advertencia: Has entrado en %i instancias recientemente, y estás acercando al límite de %i instancias por hora para tu cuenta. Más instancias estarán disponibles después de %s."
+--[[Translation missing --]]
+La["Water Core"] = "Water Core"
 La["Weekly Quests"] = "Misiones semanales"
 La["Wild Transmute"] = "Transmutación Salvaje"
 --[[Translation missing --]]
@@ -1481,6 +1534,8 @@ La["Account Summary"] = "Общая сводка по аккаунту"
 La["AD"] = "АТАЛ"
 --[[Translation missing --]]
 La["Aiding the Accord"] = "Aiding the Accord"
+--[[Translation missing --]]
+La["Air Core"] = "Air Core"
 La["Always show"] = "Всегда отображать"
 La["Amathet Reliquary"] = "Реликварий аматетов"
 La["Ambered Coffer"] = "Покрытый янтарем сундук"
@@ -1538,6 +1593,8 @@ La["Dragonflight Renown"] = "Dragonflight Renown"
 La["Dragonflight Transmute"] = "Dragonflight Transmute"
 La["Dump quest debugging information"] = "Сохранить отладочную информацию квеста в файле"
 La["Dump time debugging information"] = "Вывести информацию о времени для отладки"
+--[[Translation missing --]]
+La["Earth Core"] = "Earth Core"
 La["Emissary Missing"] = "Посланники отсутствуют"
 La["Emissary of War"] = "Посланник войны"
 La["Emissary Quests"] = "Задания Посланников"
@@ -1549,6 +1606,8 @@ La["Export"] = "Экспорт"
 La["Extended Lockout - Not yet saved"] = "Продление сохранения - ещё не сохранено"
 La["Facets of Research"] = "Грань исследования (ювелирное дело)"
 La["FH"] = "ГАВАНЬ"
+--[[Translation missing --]]
+La["Fire Core"] = "Fire Core"
 La["Fit to screen"] = "Подогнать под размер экрана"
 La["Flex"] = "Гибкий"
 La["Format large numbers"] = "Формат больших чисел"
@@ -1561,6 +1620,8 @@ La["Full Clear No Masks"] = "Полный проход без масок"
 La["GD"] = "ДЕПО"
 La["General settings"] = "Общие настройки"
 La["GMBT"] = "ГАМБИТ"
+--[[Translation missing --]]
+La["Grand Hunt"] = "Grand Hunt"
 --[[Translation missing --]]
 La["Grand Hunts: Mythic Reward"] = "Grand Hunts: Mythic Reward"
 --[[Translation missing --]]
@@ -1707,6 +1768,10 @@ La["Transmute"] = "Трансмутация (алхимия)"
 La["Trial of Elements"] = "Trial of Elements"
 --[[Translation missing --]]
 La["Trial of Flood"] = "Trial of Flood"
+--[[Translation missing --]]
+La["Trial of the Elements"] = "Trial of the Elements"
+--[[Translation missing --]]
+La["Trial of the Flood"] = "Trial of the Flood"
 La["Type"] = "Тип"
 La["UNDR"] = "ПОДГН"
 La["UPPR"] = "ВЕРХ"
@@ -1717,6 +1782,8 @@ La["VOTW"] = "КС"
 La["Warfronts"] = "Фронты"
 La["Warn about instance limit"] = "Предупреждать о пределе подземелий"
 La["Warning: You've entered about %i instances recently and are approaching the %i instance per hour limit for your account. More instances should be available in %s."] = "Внимание! За последнее время Вы вошли в %i подземелий и приближаетесь к ограничению в \"%i подземелий в час\" для Вашего аккаунта. Новые подземелья будут доступны через %s."
+--[[Translation missing --]]
+La["Water Core"] = "Water Core"
 La["Weekly Quests"] = "Еженедельные задания"
 La["Wild Transmute"] = "Дикая трансмутация"
 La["WM"] = "УУ"
@@ -1738,8 +1805,8 @@ La["Abbreviate Mythic keystone dungeon names"] = "显示史诗钥石的简称"
 La["Account"] = "账号"
 La["Account Summary"] = "账号总览"
 La["AD"] = "阿塔"
---[[Translation missing --]]
-La["Aiding the Accord"] = "Aiding the Accord"
+La["Aiding the Accord"] = "援助联军"
+La["Air Core"] = "原始空气核心"
 La["Always show"] = "总是显示"
 La["Amathet Reliquary"] = "阿玛赛特圣箱"
 La["Ambered Coffer"] = "琥珀制成的箱子"
@@ -1768,8 +1835,7 @@ La["Combine Emissaries"] = "合并大使任务"
 La["Combine emissaries of same expansion"] = "合并同一个资料片的大使任务"
 La["Combine LFR"] = "合并显示随机团本"
 La["Combine World Bosses"] = "合并世界首领"
---[[Translation missing --]]
-La["Community Feast"] = "Community Feast"
+La["Community Feast"] = "社区盛宴"
 La["Connected Realms"] = "已合并服务器"
 La["COS"] = "群星"
 La["Covenant"] = "盟约"
@@ -1793,6 +1859,7 @@ La["Dragonflight Renown"] = "巨龙时代名望"
 La["Dragonflight Transmute"] = "巨龙转化"
 La["Dump quest debugging information"] = "打印任务调试信息"
 La["Dump time debugging information"] = "打印时间调试信息"
+La["Earth Core"] = "原始大地核心"
 La["Emissary Missing"] = "大使任务缺失"
 La["Emissary of War"] = "战争的使者"
 La["Emissary Quests"] = "大使任务"
@@ -1804,6 +1871,7 @@ La["Export"] = "导出"
 La["Extended Lockout - Not yet saved"] = "已延长锁定 - 还未被储存"
 La["Facets of Research"] = "探索棱镜"
 La["FH"] = "自由镇"
+La["Fire Core"] = "原始火焰核心"
 La["Fit to screen"] = "适应屏幕大小"
 La["Flex"] = "弹性"
 La["Format large numbers"] = "格式化大数字"
@@ -1816,6 +1884,7 @@ La["Full Clear No Masks"] = "五箱"
 La["GD"] = "车站"
 La["General settings"] = "综合"
 La["GMBT"] = "宏图"
+La["Grand Hunt"] = "洪荒狩猎"
 La["Grand Hunts: Mythic Reward"] = "洪荒狩猎：史诗奖励"
 La["Grand Hunts: Rare Reward"] = "洪荒狩猎：精良奖励"
 La["Grand Hunts: Uncommon Reward"] = "洪荒狩猎：优秀奖励"
@@ -1951,6 +2020,8 @@ La["Trade skills"] = "商业技能"
 La["Transmute"] = "转化"
 La["Trial of Elements"] = "元素试炼"
 La["Trial of Flood"] = "洪水试炼"
+La["Trial of the Elements"] = "元素试炼"
+La["Trial of the Flood"] = "洪水试炼"
 La["Type"] = "类型"
 La["UNDR"] = "孢林"
 La["UPPR"] = "卡上"
@@ -1961,6 +2032,7 @@ La["VOTW"] = "地窟"
 La["Warfronts"] = "战争前线"
 La["Warn about instance limit"] = "达到副本进入限制时警告"
 La["Warning: You've entered about %i instances recently and are approaching the %i instance per hour limit for your account. More instances should be available in %s."] = "警告：你最近已经进入 %i 次副本，并且已经接近账号每小时 %i 次的进入限制，更多的副本可以在 %s 后允许进入。"
+La["Water Core"] = "原始流水核心"
 La["Weekly Quests"] = "周常任务"
 La["Wild Transmute"] = "狂野转化"
 La["WM"] = "庄园"
@@ -1987,6 +2059,8 @@ La["Account Summary"] = "Resumen de la cuenta"
 La["AD"] = "AD"
 --[[Translation missing --]]
 La["Aiding the Accord"] = "Aiding the Accord"
+--[[Translation missing --]]
+La["Air Core"] = "Air Core"
 La["Always show"] = "Mostrar siempre"
 --[[Translation missing --]]
 La["Amathet Reliquary"] = "Amathet Reliquary"
@@ -2057,6 +2131,8 @@ La["Dragonflight Transmute"] = "Dragonflight Transmute"
 La["Dump quest debugging information"] = "Volcar información de depuración de misión"
 La["Dump time debugging information"] = "Volcar información de depuración de tiempo"
 --[[Translation missing --]]
+La["Earth Core"] = "Earth Core"
+--[[Translation missing --]]
 La["Emissary Missing"] = "Emissary Missing"
 --[[Translation missing --]]
 La["Emissary of War"] = "Emissary of War"
@@ -2073,6 +2149,8 @@ La["Extended Lockout - Not yet saved"] = "Registro extendido - no se ha guardado
 La["Facets of Research"] = "Facetas de investigación"
 --[[Translation missing --]]
 La["FH"] = "FH"
+--[[Translation missing --]]
+La["Fire Core"] = "Fire Core"
 La["Fit to screen"] = "Ajustar a pantalla"
 La["Flex"] = "Flexible"
 La["Format large numbers"] = "Dar formato a números grandes"
@@ -2087,6 +2165,8 @@ La["GD"] = "GD"
 La["General settings"] = "Opciones generales"
 --[[Translation missing --]]
 La["GMBT"] = "GMBT"
+--[[Translation missing --]]
+La["Grand Hunt"] = "Grand Hunt"
 --[[Translation missing --]]
 La["Grand Hunts: Mythic Reward"] = "Grand Hunts: Mythic Reward"
 --[[Translation missing --]]
@@ -2259,6 +2339,10 @@ La["Transmute"] = "Transmutar"
 La["Trial of Elements"] = "Trial of Elements"
 --[[Translation missing --]]
 La["Trial of Flood"] = "Trial of Flood"
+--[[Translation missing --]]
+La["Trial of the Elements"] = "Trial of the Elements"
+--[[Translation missing --]]
+La["Trial of the Flood"] = "Trial of the Flood"
 La["Type"] = "Tipo"
 --[[Translation missing --]]
 La["UNDR"] = "UNDR"
@@ -2272,6 +2356,8 @@ La["VOTW"] = "VOTW"
 La["Warfronts"] = "Frentes de guerra"
 La["Warn about instance limit"] = "Advertencia sobre límite de instancias"
 La["Warning: You've entered about %i instances recently and are approaching the %i instance per hour limit for your account. More instances should be available in %s."] = "Advertencia: Has entrado en %i estancias recientemente, y te estás acercando al límite de %i estancias por hora para tu cuenta. Tendrás más disponibles después de %s."
+--[[Translation missing --]]
+La["Water Core"] = "Water Core"
 La["Weekly Quests"] = "Misiones semanales"
 La["Wild Transmute"] = "Transmutación Salvaje"
 --[[Translation missing --]]
@@ -2291,16 +2377,16 @@ elseif locale == "zhTW" then
 La["|cffffff00Left-click|r to detach tooltip"] = "|cffffff00左鍵|r 分離滑鼠提示"
 La["|cffffff00Middle-click|r to show Blizzard's Raid Information"] = "|cffffff00中鍵|r 顯示暴雪的團隊資訊"
 La["|cffffff00Right-click|r to configure SavedInstances"] = "|cffffff00右鍵|r 設定 SavedInstances"
---[[Translation missing --]]
-La["AA"] = "AA"
+La["AA"] = "學院"
 La["Abbreviate keystones"] = "簡短鑰石名稱"
 La["Abbreviate Mythic keystone dungeon names"] = "傳奇鑰石的地城名稱使用簡稱"
 La["Account"] = "帳號"
 La["Account Summary"] = "帳號統計"
 --[[Translation missing --]]
 La["AD"] = "AD"
+La["Aiding the Accord"] = "支援協調者"
 --[[Translation missing --]]
-La["Aiding the Accord"] = "Aiding the Accord"
+La["Air Core"] = "Air Core"
 La["Always show"] = "永遠顯示"
 La["Amathet Reliquary"] = "阿瑪賽特聖匣"
 --[[Translation missing --]]
@@ -2332,8 +2418,7 @@ La["Combine Emissaries"] = "合併特使"
 La["Combine emissaries of same expansion"] = "合併同資料片的特使"
 La["Combine LFR"] = "合併隨機團隊"
 La["Combine World Bosses"] = "合併世界首領"
---[[Translation missing --]]
-La["Community Feast"] = "Community Feast"
+La["Community Feast"] = "集體盛宴"
 La["Connected Realms"] = "連結伺服器"
 La["COS"] = "眾星"
 La["Covenant"] = "誓盟"
@@ -2358,6 +2443,8 @@ La["Dragonflight Renown"] = "巨龍崛起名望"
 La["Dragonflight Transmute"] = "巨龍崛起變化"
 La["Dump quest debugging information"] = "傾印任務偵錯資訊"
 La["Dump time debugging information"] = "傾印時間偵錯資訊"
+--[[Translation missing --]]
+La["Earth Core"] = "Earth Core"
 La["Emissary Missing"] = "沒有特使"
 La["Emissary of War"] = "戰爭使者"
 La["Emissary Quests"] = "特使任務"
@@ -2370,6 +2457,8 @@ La["Extended Lockout - Not yet saved"] = "進度即將到期 - 尚未儲存"
 La["Facets of Research"] = "研究切面"
 --[[Translation missing --]]
 La["FH"] = "FH"
+--[[Translation missing --]]
+La["Fire Core"] = "Fire Core"
 La["Fit to screen"] = "不超出畫面"
 La["Flex"] = "彈性"
 La["Format large numbers"] = "格式化大數目"
@@ -2382,6 +2471,8 @@ La["Full Clear No Masks"] = "全清 無面具"
 La["GD"] = "車站"
 La["General settings"] = "一般設定"
 La["GMBT"] = "險招"
+--[[Translation missing --]]
+La["Grand Hunt"] = "Grand Hunt"
 La["Grand Hunts: Mythic Reward"] = "大狩獵：傳奇獎勵"
 La["Grand Hunts: Rare Reward"] = "大狩獵：稀有獎勵"
 La["Grand Hunts: Uncommon Reward"] = "大狩獵：精良獎勵"
@@ -2449,12 +2540,10 @@ La["Recover Dailies"] = "恢復每日"
 La["Report instance resets to group"] = "重置副本時通報團隊"
 La["Reset Characters"] = "重置角色"
 La["Reverse ordering"] = "反向排序"
---[[Translation missing --]]
-La["RLP"] = "RLP"
+La["RLP"] = "晶紅"
 La["Roll Bonus"] = "使用額外骰子"
 La["Row Highlight"] = "顯著標示橫列"
---[[Translation missing --]]
-La["SBG"] = "SBG"
+La["SBG"] = "影月"
 La["SD"] = "血紅"
 --[[Translation missing --]]
 La["SEAT"] = "SEAT"
@@ -2487,8 +2576,7 @@ La["Show When"] = "何時顯示"
 La["Show when completed"] = "當完成時顯示"
 La["Show when saved"] = "已保存時顯示"
 La["Show/Hide the SavedInstances tooltip"] = "顯示/隱藏 SavedInstances 滑鼠提示"
---[[Translation missing --]]
-La["SIEGE"] = "SIEGE"
+La["SIEGE"] = "攻打龍禍要塞"
 La["Siege on Dragonbane Keep"] = "攻打龍禍要塞"
 La["Similarly, the words KILLED and TOTAL will be substituted with the number of bosses killed and total in the lockout."] = "同樣的，「KILLED」和「TOTAL」字樣也會被替換為首領已擊殺與總數的數字。"
 La["Single category name"] = "單一分類名稱"
@@ -2514,10 +2602,8 @@ La["This should only be used for characters who have been renamed or deleted, as
 La["Time /played"] = "已遊玩時間"
 La["Time Left"] = "剩餘時間"
 La["Timeworn Mythic Keystone"] = "時光漫遊傳奇鑰石"
---[[Translation missing --]]
-La["TJS"] = "TJS"
---[[Translation missing --]]
-La["TNO"] = "TNO"
+La["TJS"] = "玉蛟"
+La["TNO"] = "諾庫德"
 La["Tooltip Scale"] = "滑鼠提示縮放大小"
 La["TOP"] = "劇場"
 La["Torghast"] = "托迦司"
@@ -2530,10 +2616,12 @@ La["Track Timeworn Mythic keystone acquisition"] = "追蹤時光漫遊傳奇鑰�
 La["Trade Skill Cooldowns"] = "專業技能冷卻時間"
 La["Trade skills"] = "專業技能"
 La["Transmute"] = "轉化"
+La["Trial of Elements"] = "元素的試煉"
+La["Trial of Flood"] = "洪流的試煉"
 --[[Translation missing --]]
-La["Trial of Elements"] = "Trial of Elements"
+La["Trial of the Elements"] = "Trial of the Elements"
 --[[Translation missing --]]
-La["Trial of Flood"] = "Trial of Flood"
+La["Trial of the Flood"] = "Trial of the Flood"
 La["Type"] = "類型"
 --[[Translation missing --]]
 La["UNDR"] = "UNDR"
@@ -2545,6 +2633,8 @@ La["VOTW"] = "看守"
 La["Warfronts"] = "戰爭前線"
 La["Warn about instance limit"] = "警告副本限制"
 La["Warning: You've entered about %i instances recently and are approaching the %i instance per hour limit for your account. More instances should be available in %s."] = "警告：你最近已經進入副本 %i 次，並且已經接近每小時 %i 次的帳號進入限制。 %s 後允許進入更多副本。"
+--[[Translation missing --]]
+La["Water Core"] = "Water Core"
 La["Weekly Quests"] = "每週任務"
 La["Wild Transmute"] = "狂野塑形"
 --[[Translation missing --]]
@@ -2571,6 +2661,8 @@ La["Account Summary"] = "Sumário da conta"
 La["AD"] = "AD"
 --[[Translation missing --]]
 La["Aiding the Accord"] = "Aiding the Accord"
+--[[Translation missing --]]
+La["Air Core"] = "Air Core"
 La["Always show"] = "Mostrar sempre"
 --[[Translation missing --]]
 La["Amathet Reliquary"] = "Amathet Reliquary"
@@ -2650,6 +2742,8 @@ La["Dragonflight Transmute"] = "Dragonflight Transmute"
 --[[Translation missing --]]
 La["Dump quest debugging information"] = "Dump quest debugging information"
 La["Dump time debugging information"] = "Gerar informações de tempo de depuração"
+--[[Translation missing --]]
+La["Earth Core"] = "Earth Core"
 La["Emissary Missing"] = "Emissários Faltando"
 La["Emissary of War"] = "Emissário de Guerra"
 La["Emissary Quests"] = "Missões de emissário"
@@ -2663,6 +2757,8 @@ La["Extended Lockout - Not yet saved"] = "Bloqueiar de Extensão - Ainda não sa
 La["Facets of Research"] = "Facetas da Pesquisa"
 --[[Translation missing --]]
 La["FH"] = "FH"
+--[[Translation missing --]]
+La["Fire Core"] = "Fire Core"
 La["Fit to screen"] = "Ajustar à tela"
 La["Flex"] = "Flexível"
 La["Format large numbers"] = "Formatar números grandes"
@@ -2677,6 +2773,8 @@ La["GD"] = "GD"
 La["General settings"] = "Configurações Gerais"
 --[[Translation missing --]]
 La["GMBT"] = "GMBT"
+--[[Translation missing --]]
+La["Grand Hunt"] = "Grand Hunt"
 --[[Translation missing --]]
 La["Grand Hunts: Mythic Reward"] = "Grand Hunts: Mythic Reward"
 --[[Translation missing --]]
@@ -2880,6 +2978,10 @@ La["Transmute"] = "Transmutação"
 La["Trial of Elements"] = "Trial of Elements"
 --[[Translation missing --]]
 La["Trial of Flood"] = "Trial of Flood"
+--[[Translation missing --]]
+La["Trial of the Elements"] = "Trial of the Elements"
+--[[Translation missing --]]
+La["Trial of the Flood"] = "Trial of the Flood"
 La["Type"] = "Tipo"
 --[[Translation missing --]]
 La["UNDR"] = "UNDR"
@@ -2896,6 +2998,8 @@ La["Warfronts"] = "Fronts de Guerra"
 --[[Translation missing --]]
 La["Warn about instance limit"] = "Warn about instance limit"
 La["Warning: You've entered about %i instances recently and are approaching the %i instance per hour limit for your account. More instances should be available in %s."] = "Atenção: Você entrou em cerca de%i Instância e esta se aproximando de %i , limite por hora para a sua conta. Mais instâncias devem estar disponíveis em %s."
+--[[Translation missing --]]
+La["Water Core"] = "Water Core"
 La["Weekly Quests"] = "Missões Semanais"
 --[[Translation missing --]]
 La["Wild Transmute"] = "Wild Transmute"
@@ -2929,6 +3033,8 @@ La["Account Summary"] = "Riepilogo dell'account"
 La["AD"] = "AD"
 --[[Translation missing --]]
 La["Aiding the Accord"] = "Aiding the Accord"
+--[[Translation missing --]]
+La["Air Core"] = "Air Core"
 La["Always show"] = "Mostra sempre"
 --[[Translation missing --]]
 La["Amathet Reliquary"] = "Amathet Reliquary"
@@ -3008,6 +3114,8 @@ La["Dragonflight Transmute"] = "Dragonflight Transmute"
 La["Dump quest debugging information"] = "Dump quest debugging information"
 La["Dump time debugging information"] = "Inserisci l'orario nelle informazioni di debug"
 --[[Translation missing --]]
+La["Earth Core"] = "Earth Core"
+--[[Translation missing --]]
 La["Emissary Missing"] = "Emissary Missing"
 --[[Translation missing --]]
 La["Emissary of War"] = "Emissary of War"
@@ -3025,6 +3133,8 @@ La["Extended Lockout - Not yet saved"] = "Salvataggio esteso - non ancora salvat
 La["Facets of Research"] = "Preziosi da Ricerca"
 --[[Translation missing --]]
 La["FH"] = "FH"
+--[[Translation missing --]]
+La["Fire Core"] = "Fire Core"
 La["Fit to screen"] = "Adatta allo schermo"
 La["Flex"] = "Flex"
 La["Format large numbers"] = "Adatta i numeri grandi"
@@ -3045,6 +3155,8 @@ La["GD"] = "GD"
 La["General settings"] = "Opzioni generali"
 --[[Translation missing --]]
 La["GMBT"] = "GMBT"
+--[[Translation missing --]]
+La["Grand Hunt"] = "Grand Hunt"
 --[[Translation missing --]]
 La["Grand Hunts: Mythic Reward"] = "Grand Hunts: Mythic Reward"
 --[[Translation missing --]]
@@ -3246,6 +3358,10 @@ La["Transmute"] = "Trasmutazioni"
 La["Trial of Elements"] = "Trial of Elements"
 --[[Translation missing --]]
 La["Trial of Flood"] = "Trial of Flood"
+--[[Translation missing --]]
+La["Trial of the Elements"] = "Trial of the Elements"
+--[[Translation missing --]]
+La["Trial of the Flood"] = "Trial of the Flood"
 La["Type"] = "Tipo"
 --[[Translation missing --]]
 La["UNDR"] = "UNDR"
@@ -3262,6 +3378,8 @@ La["Warfronts"] = "Fronti di Guerra"
 --[[Translation missing --]]
 La["Warn about instance limit"] = "Warn about instance limit"
 La["Warning: You've entered about %i instances recently and are approaching the %i instance per hour limit for your account. More instances should be available in %s."] = "Attenzione: Sei entrato in circa %i istanze, recentemente e ti stai avvicinando al limite orario di %i istanze per account. Altre istanze saranno disponibili in %s."
+--[[Translation missing --]]
+La["Water Core"] = "Water Core"
 La["Weekly Quests"] = "Missioni settimanali"
 La["Wild Transmute"] = "Trasmutazione selvaggia"
 --[[Translation missing --]]

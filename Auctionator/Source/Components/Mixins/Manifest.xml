@@ -1,0 +1,21 @@
+<Ui xmlns="http://www.blizzard.com/wow/ui/">
+  <Script file="Tooltip.lua"/>
+
+  <Script file="TitleFrame.lua"/>
+
+  <Script file="CheckBox.lua"/>
+  <Script file="RadioButton.lua"/>
+  <Script file="RadioButtonGroup.lua"/>
+  <Script file="HorizontalRadioButtonGroup.lua"/>
+  <Script file="NumericInputBox.lua"/>
+  <Script file="TextInput.lua"/>
+  <Script file="CopyAndPasteBox.lua"/>
+  <Script file="MinMaxRange.lua"/>
+  <Script file="FilterKeySelector.lua"/>
+  <Script file="ResetButton.lua"/>
+  <Script file="DropDown.lua"/>
+  <Script file="KeyBinding.lua"/>
+
+  <Script file="Heading.lua"/>
+  <Script file="SubHeading.lua"/>
+</Ui>

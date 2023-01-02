@@ -169,6 +169,19 @@ end
 local BagBarModule = Addon:NewModule('BagBar', 'AceEvent-3.0')
 
 function BagBarModule:OnInitialize()
+    -- use our own handlign for the blizzard bag bar
+    if MainMenuBarManager then
+        EventRegistry:UnregisterCallback("MainMenuBarManager.OnExpandChanged", MainMenuBarManager)
+        EventRegistry:UnegisterFrameEventAndCallback("VARIABLES_LOADED", MainMenuBarManager)
+    elseif BagsBar then
+        EventRegistry:UnregisterCallback("MainMenuBarManager.OnExpandChanged", BagsBar)
+        hooksecurefunc(BagsBar, "Layout", function() self:LayoutBagBar() end)
+    end
+
+    if BagBarExpandToggle then
+        BagBarExpandToggle:Hide()
+    end
+
     self:RegisterButton('CharacterReagentBag0Slot')
 
     for slot = (NUM_BAG_SLOTS - 1), 0, -1 do
@@ -181,10 +194,7 @@ function BagBarModule:OnInitialize()
     self.RegisterKeyRingButton = nil
     self.RegisterButton = nil
 
-    if MainMenuBarManager then
-        EventRegistry:UnregisterCallback("MainMenuBarManager.OnExpandChanged", MainMenuBarManager)
-        EventRegistry:UnegisterFrameEventAndCallback("VARIABLES_LOADED", MainMenuBarManager)
-    end
+    self:RegisterEvent("PLAYER_REGEN_ENABLED", "LayoutBagBar")
 end
 
 function BagBarModule:OnEnable()
@@ -210,6 +220,19 @@ function BagBarModule:Unload()
         self.frame:Free()
         self.frame = nil
     end
+end
+
+function BagBarModule:LayoutBagBar()
+    if InCombatLockdown() then
+        self.needsUpdate = true
+        return
+    end
+
+    if self.frame then
+        self.frame:Layout()
+    end
+
+    self.needsUpdate = nil
 end
 
 if Addon:IsBuild("retail") then

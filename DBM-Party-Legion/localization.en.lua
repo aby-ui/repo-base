@@ -272,7 +272,8 @@ L:SetOptionLocalization({
 
 L:SetMiscLocalization({
 	Found		= "Now now, let's not be hasty",
-	--
+	--Add translationss, but keep english termss for cross language groups since these post to chat
+	--Format "localized / english"
 	CluesFound	= "Clues Found: %d/5",
 	Gloves		= "gloves",
 	NoGloves	= "no gloves",

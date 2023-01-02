@@ -1337,9 +1337,12 @@ function SI:UpdateToonData()
     if ti.pvpdesert and (ti.pvpdesert < now) then ti.pvpdesert = nil end
     ti.Quests = ti.Quests or {}
   end
-  local IL,ILe = GetAverageItemLevel()
+  local IL,ILe,ILPvp = GetAverageItemLevel()
   if IL and tonumber(IL) and tonumber(IL) > 0 then -- can fail during logout
     t.IL, t.ILe = tonumber(IL), tonumber(ILe)
+  end
+  if ILPvp and tonumber(ILPvp) > 0 then
+    t.ILPvp = tonumber(ILPvp)
   end
   t.Arena2v2rating = tonumber(GetPersonalRatedInfo(1), 10) or t.Arena2v2rating
   t.Arena3v3rating = tonumber(GetPersonalRatedInfo(2), 10) or t.Arena3v3rating
@@ -1621,6 +1624,7 @@ hoverTooltip.ShowToonTooltip = function (cell, arg, ...)
     indicatortip:AddLine(COMBAT_XP_GAIN, format("%.0f%% + %.0f%%", t.XP / t.MaxXP * 100, percent))
   end
   indicatortip:AddLine(STAT_AVERAGE_ITEM_LEVEL,("%d "):format(t.IL or 0)..STAT_AVERAGE_ITEM_LEVEL_EQUIPPED:format(t.ILe or 0))
+  indicatortip:AddLine(LFG_LIST_ITEM_LEVEL_INSTR_PVP_SHORT,("%d"):format(t.ILPvp or 0))
   if t.Covenant and t.Covenant > 0 then
     local data = C_Covenants.GetCovenantData(t.Covenant)
     local name = data and data.name
@@ -2514,6 +2518,43 @@ hoverTooltip.ShowDragonflightRenownTooltip = function (cell, arg, ...)
   finishIndicator()
 end
 
+hoverTooltip.ShowGrandHuntTooltip = function (cell, arg, ...)
+  -- Should be in Module Progress
+  local toon, index = unpack(arg)
+  local t = SI.db.Toons[toon]
+  if not t or not t.Progress or not t.Progress[index] then return end
+  if not t or not t.Quests then return end
+  openIndicator(2, "LEFT", "RIGHT")
+
+  local P = SI:GetModule("Progress")
+  local totalDone = 0
+  for _, questID in ipairs(P.TrackedQuest[index].relatedQuest) do
+    if t.Progress[index][questID] then
+      totalDone = totalDone + 1
+    end
+  end
+
+  local toonstr = (db.Tooltip.ShowServer and toon) or strsplit(' ', toon)
+
+  indicatortip:AddHeader(ClassColorise(t.Class, toonstr), string.format("%d/%d", totalDone, #P.TrackedQuest[index].relatedQuest))
+
+  local naming = {
+    MAW_BUFF_QUALITY_STRING_EPIC,
+    MAW_BUFF_QUALITY_STRING_RARE,
+    MAW_BUFF_QUALITY_STRING_UNCOMMON,
+  }
+  local IDs = P.TrackedQuest[index].relatedQuest
+
+  for i, questID in ipairs(IDs) do
+    indicatortip:AddLine(
+      naming[i],
+      t.Progress[index][questID] and REDFONT .. ALREADY_LOOTED .. FONTEND or GREENFONT .. AVAILABLE .. FONTEND
+    )
+  end
+
+  finishIndicator()
+end
+
 hoverTooltip.ShowKeyReportTarget = function (cell, arg, ...)
   openIndicator(2, "LEFT", "RIGHT")
   indicatortip:AddHeader(GOLDFONT..L["Keystone report target"]..FONTEND, SI.db.Tooltip.KeystoneReportTarget)
@@ -2542,7 +2583,7 @@ end
 function SI:OnInitialize()
   local versionString = GetAddOnMetadata("SavedInstances", "version")
   --[==[@debug@
-  if versionString == "10.0.5" then
+  if versionString == "10.0.5-8-g4f74de5" then
     versionString = "Dev"
   end
   --@end-debug@]==]

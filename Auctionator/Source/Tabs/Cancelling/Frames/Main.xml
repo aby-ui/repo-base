@@ -1,0 +1,95 @@
+<Ui xmlns="http://www.blizzard.com/wow/ui/">
+  <Frame
+    name="AuctionatorCancellingTabFrameNoRefreshTemplate"
+    virtual="true"
+    parentKey="AuctionatorCancellingFrame"
+    mixin="AuctionatorCancellingFrameMixin"
+    hidden="true"
+  >
+    <Scripts>
+      <OnLoad method="OnLoad" />
+    </Scripts>
+
+    <Anchors>
+      <Anchor point="TOP"/>
+      <Anchor point="LEFT" x="4"/>
+      <Anchor point="BOTTOMRIGHT" relativePoint="BOTTOMRIGHT" x="-4" y="27" />
+    </Anchors>
+
+    <Frames>
+      <EditBox parentKey="SearchFilter" autoFocus="false" historyLines="1" bytes="64" inherits="SearchBoxTemplate">
+        <Size x="250" y="22"/>
+        <Anchors>
+          <Anchor point="TOPLEFT" relativePoint="TOPLEFT" relativeKey="$parent" x="65" y="-46"/>
+        </Anchors>
+      </EditBox>
+
+      <Frame parentKey="DataProvider" mixin="AuctionatorCancellingDataProviderMixin">
+        <Scripts>
+          <OnLoad method="OnLoad"/>
+          <OnShow method="OnShow"/>
+          <OnHide method="OnHide"/>
+          <OnEvent method="OnEvent"/>
+          <OnUpdate method="OnUpdate"/>
+        </Scripts>
+      </Frame>
+
+      <Frame parentKey="ResultsListing" inherits="AuctionatorResultsListingTemplate">
+        <Anchors>
+          <Anchor point="TOPLEFT" relativeKey="$parent" relativePoint="TOPLEFT" x="4" y="-79"/>
+          <Anchor point="BOTTOMRIGHT" relativeKey="$parent" relativePoint="BOTTOMRIGHT" x="-20" />
+        </Anchors>
+      </Frame>
+
+      <Frame parentKey="HistoricalPriceInset" inherits="AuctionatorInsetTemplate">
+        <Anchors>
+          <Anchor point="TOPLEFT" relativeKey="$parent.ResultsListing" relativePoint="TOPLEFT" x="-5" y="-25"/>
+          <Anchor point="BOTTOMRIGHT" relativeKey="$parent.ResultsListing" relativePoint="BOTTOMRIGHT" y="2"/>
+        </Anchors>
+      </Frame>
+
+      <Frame mixin="AuctionatorUndercutScanMixin">
+        <Scripts>
+          <OnLoad method="OnLoad"/>
+          <OnShow method="OnShow" />
+          <OnHide method="OnHide" />
+          <OnEvent method="OnEvent"/>
+        </Scripts>
+
+        <Anchors>
+          <Anchor point="TOP" relativeKey="$parent.ResultsListing" relativePoint="BOTTOM"/>
+          <Anchor point="BOTTOMRIGHT" relativePoint="BOTTOMRIGHT" x="-8" />
+        </Anchors>
+
+        <Frames>
+          <Button inherits="UIPanelDynamicResizeButtonTemplate" text="AUCTIONATOR_L_CANCEL_UNDERCUT" parentKey="CancelNextButton" name="AuctionatorCancelUndercutButton">
+            <Anchors>
+              <Anchor point="TOPRIGHT" x="3" />
+            </Anchors>
+            <Scripts>
+              <OnClick>self:GetParent():CancelNextAuction()</OnClick>
+            </Scripts>
+          </Button>
+
+          <Button inherits="UIPanelDynamicResizeButtonTemplate" text="AUCTIONATOR_L_UNDERCUT_SCAN" parentKey="StartScanButton">
+            <Anchors>
+              <Anchor point="TOPRIGHT" relativeKey="$parent.CancelNextButton" relativePoint="TOPLEFT" x="3"/>
+            </Anchors>
+            <Scripts>
+              <OnClick>self:GetParent():StartScan()</OnClick>
+            </Scripts>
+          </Button>
+        </Frames>
+      </Frame>
+    </Frames>
+    <Layers>
+      <Layer>
+        <FontString parentKey="Total" inherits="GameFontHighlight" text="">
+          <Anchors>
+            <Anchor point="TOPLEFT" relativePoint="TOPRIGHT" relativeKey="$parent.SearchFilter" x="15" y="-5"/>
+          </Anchors>
+        </FontString>
+      </Layer>
+    </Layers>
+  </Frame>
+</Ui>

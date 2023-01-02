@@ -15,6 +15,8 @@ local Achievement = ns.reward.Achievement
 local Currency = ns.reward.Currency
 local Item = ns.reward.Item
 local Mount = ns.reward.Mount
+local Pet = ns.reward.Pet
+local Spacer = ns.reward.Spacer
 local Transmog = ns.reward.Transmog
 
 -------------------------------------------------------------------------------
@@ -25,42 +27,143 @@ ns.expansion = 10
 ----------------------------------- GROUPS ------------------------------------
 -------------------------------------------------------------------------------
 
-ns.groups.ANCESTOR = Group('ancestor', 135946, {defaults = ns.GROUP_HIDDEN})
-ns.groups.BAKAR = Group('bakar', 930453, {defaults = ns.GROUP_HIDDEN})
-ns.groups.CHISELED_RECORD = Group('chiseled_record', 134455,
-    {defaults = ns.GROUP_HIDDEN})
-ns.groups.DISTURBED_DIRT = Group('disturbed_dirt', 1060570,
-    {defaults = ns.GROUP_HIDDEN})
-ns.groups.MAGICBOUND_CHEST = Group('magicbound_chest', 'chest_tl',
-    {defaults = ns.GROUP_HIDDEN})
-ns.groups.DRAGONRACE =
-    Group('dragonrace', 1100022, {defaults = ns.GROUP_HIDDEN})
-ns.groups.DRAGON_GLYPH = Group('dragon_glyph', 4728198)
-ns.groups.DREAMGUARD = Group('dreamguard', 341763, {defaults = ns.GROUP_HIDDEN})
-ns.groups.DUCKLINGS = Group('ducklings', 4048818, {defaults = ns.GROUP_HIDDEN})
-ns.groups.FLAG = Group('flag', 1723999, {defaults = ns.GROUP_HIDDEN})
-ns.groups.FRAGMENT = Group('fragment', 134908, {defaults = ns.GROUP_HIDDEN})
-ns.groups.HEMET_NESINGWARY_JR = Group('hemet_nesingwary_jr', 236444,
-    {defaults = ns.GROUP_HIDDEN})
-ns.groups.KITE = Group('kite', 133837, {defaults = ns.GROUP_HIDDEN})
-ns.groups.LEYLINE = Group('leyline', 1033908, {defaults = ns.GROUP_HIDDEN})
-ns.groups.LEGENDARY_ALBUM = Group('legendary_album', 1109168,
-    {defaults = ns.GROUP_HIDDEN})
-ns.groups.NEW_PERSPECTIVE = Group('new_perspective', 1109100,
-    {defaults = ns.GROUP_HIDDEN})
-ns.groups.PROFESSION_TREASURES = Group('profession_treasures', 4620676,
-    {defaults = ns.GROUP_HIDDEN})
-ns.groups.SCOUT_PACK =
-    Group('scout_pack', 4562583, {defaults = ns.GROUP_HIDDEN})
-ns.groups.SPECIALTIES = Group('specialties', 651585,
-    {defaults = ns.GROUP_HIDDEN})
-ns.groups.SQUIRRELS = Group('squirrels', 237182, {defaults = ns.GROUP_HIDDEN})
-ns.groups.STORIES = Group('stories', 4549126, {defaults = ns.GROUP_HIDDEN})
-ns.groups.PRETTY_NEAT = Group('pretty_neat', 133707,
-    {defaults = ns.GROUP_HIDDEN})
-ns.groups.GRAND_THEFT_MAMMOTH = Group('grand_theft_mammoth', 4034836,
-    {defaults = ns.GROUP_HIDDEN})
-ns.groups.SAFARI = Group('safari', 4048818, {defaults = ns.GROUP_HIDDEN})
+ns.groups.DISTURBED_DIRT = Group('disturbed_dirt', 1060570, {
+    defaults = ns.GROUP_HIDDEN,
+    type = ns.group_types.EXPANSION
+})
+
+ns.groups.DRAGON_GLYPH = Group('dragon_glyph', 4728198, {
+    defaults = ns.GROUP_HIDDEN,
+    type = ns.group_types.EXPANSION
+})
+
+ns.groups.DRAGONRACE = Group('dragonrace', 1100022, {
+    defaults = ns.GROUP_HIDDEN,
+    type = ns.group_types.EXPANSION
+})
+
+ns.groups.ELEMENTAL_STORM = Group('elemental_storm', 538566, {
+    defaults = ns.GROUP_HIDDEN,
+    type = ns.group_types.EXPANSION
+})
+
+ns.groups.MAGICBOUND_CHEST = Group('magicbound_chest', 'chest_tl', {
+    defaults = ns.GROUP_HIDDEN,
+    type = ns.group_types.EXPANSION
+})
+
+ns.groups.PROFESSION_TREASURES = Group('profession_treasures', 4620676, {
+    defaults = ns.GROUP_HIDDEN,
+    type = ns.group_types.EXPANSION
+})
+
+ns.groups.SCOUT_PACK = Group('scout_pack', 4562583, {
+    defaults = ns.GROUP_HIDDEN,
+    type = ns.group_types.EXPANSION
+})
+
+ns.groups.SIGNAL_TRANSMITTER = Group('signal_transmitter', 4548860, {
+    defaults = ns.GROUP_HIDDEN,
+    type = ns.group_types.EXPANSION,
+
+    -- Only display group for engineering players
+    IsEnabled = function(self)
+        if not ns.PlayerHasProfession(202) then return false end
+        return Group.IsEnabled(self)
+    end
+})
+
+-------------------------------------------------------------------------------
+
+ns.groups.ANCESTOR = Group('ancestor', 135946, {
+    defaults = ns.GROUP_HIDDEN,
+    type = ns.group_types.ACHIEVEMENT
+})
+
+ns.groups.BAKAR = Group('bakar', 930453, {
+    defaults = ns.GROUP_HIDDEN,
+    type = ns.group_types.ACHIEVEMENT
+})
+
+ns.groups.CHISELED_RECORD = Group('chiseled_record', 134455, {
+    defaults = ns.GROUP_HIDDEN,
+    type = ns.group_types.ACHIEVEMENT
+})
+
+ns.groups.DREAMGUARD = Group('dreamguard', 341763, {
+    defaults = ns.GROUP_HIDDEN,
+    type = ns.group_types.ACHIEVEMENT
+})
+
+ns.groups.DUCKLINGS = Group('ducklings', 4048818, {
+    defaults = ns.GROUP_HIDDEN,
+    type = ns.group_types.ACHIEVEMENT
+})
+
+ns.groups.FLAG = Group('flag', 1723999, {
+    defaults = ns.GROUP_HIDDEN,
+    type = ns.group_types.ACHIEVEMENT
+})
+
+ns.groups.FRAGMENT = Group('fragment', 134908, {
+    defaults = ns.GROUP_HIDDEN,
+    type = ns.group_types.ACHIEVEMENT
+})
+
+ns.groups.GRAND_THEFT_MAMMOTH = Group('grand_theft_mammoth', 4034836, {
+    defaults = ns.GROUP_HIDDEN,
+    type = ns.group_types.ACHIEVEMENT
+})
+
+ns.groups.HEMET_NESINGWARY_JR = Group('hemet_nesingwary_jr', 236444, {
+    defaults = ns.GROUP_HIDDEN,
+    type = ns.group_types.ACHIEVEMENT
+})
+
+ns.groups.KITE = Group('kite', 133837, {
+    defaults = ns.GROUP_HIDDEN,
+    type = ns.group_types.ACHIEVEMENT
+})
+
+ns.groups.LEGENDARY_ALBUM = Group('legendary_album', 1109168, {
+    defaults = ns.GROUP_HIDDEN,
+    type = ns.group_types.ACHIEVEMENT
+})
+
+ns.groups.LEYLINE = Group('leyline', 1033908, {
+    defaults = ns.GROUP_HIDDEN,
+    type = ns.group_types.ACHIEVEMENT
+})
+
+ns.groups.NEW_PERSPECTIVE = Group('new_perspective', 1109100, {
+    defaults = ns.GROUP_HIDDEN,
+    type = ns.group_types.ACHIEVEMENT
+})
+
+ns.groups.PRETTY_NEAT = Group('pretty_neat', 133707, {
+    defaults = ns.GROUP_HIDDEN,
+    type = ns.group_types.ACHIEVEMENT
+})
+
+ns.groups.SAFARI = Group('safari', 4048818, {
+    defaults = ns.GROUP_HIDDEN,
+    type = ns.group_types.ACHIEVEMENT
+})
+
+ns.groups.SPECIALTIES = Group('specialties', 651585, {
+    defaults = ns.GROUP_HIDDEN,
+    type = ns.group_types.ACHIEVEMENT
+})
+
+ns.groups.SQUIRRELS = Group('squirrels', 237182, {
+    defaults = ns.GROUP_HIDDEN,
+    type = ns.group_types.ACHIEVEMENT
+})
+
+ns.groups.STORIES = Group('stories', 4549126, {
+    defaults = ns.GROUP_HIDDEN,
+    type = ns.group_types.ACHIEVEMENT
+})
 
 -------------------------------------------------------------------------------
 --------------------------------- ELITE RARES ---------------------------------
@@ -68,7 +171,7 @@ ns.groups.SAFARI = Group('safari', 4048818, {defaults = ns.GROUP_HIDDEN})
 
 local RareElite = Class('RareElite', Rare, {
     rlabel = '(' .. ns.color.Gray(L['elite']) .. ')',
-    sublabel = L['elite_loot_385']
+    sublabel = L['elite_loot_higher_ilvl']
 })
 
 ns.node.RareElite = RareElite
@@ -287,6 +390,30 @@ local Flag = Class('Flag', Collectible, {
 ns.node.Flag = Flag
 
 -------------------------------------------------------------------------------
+------------------ WYRMHOLE GENERATOR - SIGNAL TRANSMITTER --------------------
+-------------------------------------------------------------------------------
+
+local SignalTransmitter = Class('SignalTransmitter', Collectible, {
+    label = L['signal_transmitter_label'],
+    icon = 4548860,
+    note = L['signal_transmitter_note'],
+    group = ns.groups.SIGNAL_TRANSMITTER,
+    requires = {
+        ns.requirement.Profession(202, 2827), -- DF Engineering
+        ns.requirement.Toy(198156) -- Wyrmhole Generator
+    },
+    IsEnabled = function(self)
+        if not ns.PlayerHasProfession(202) then return false end
+        return ns.node.Item.IsEnabled(self)
+    end,
+    IsCompleted = function(self)
+        return C_QuestLog.IsQuestFlaggedCompleted(self.quest[1])
+    end
+}) -- Wyrmhole Generator Signal Transmitter
+
+ns.node.SignalTransmitter = SignalTransmitter
+
+-------------------------------------------------------------------------------
 ---------------------------- FRAGMENTS OF HISTORY -----------------------------
 -------------------------------------------------------------------------------
 
@@ -486,3 +613,408 @@ local Safari = Class('Safari', Collectible,
     {icon = 'paw_g', group = ns.groups.SAFARI}) -- Dragon Isles Safari
 
 ns.node.Safari = Safari
+
+-------------------------------------------------------------------------------
+------------------------------ ELEMENTAL STORMS -------------------------------
+-------------------------------------------------------------------------------
+
+local ELEMENTAL_STORM_AREA_POIS = {
+    [7221] = 'thunderstorm',
+    [7222] = 'sandstorm',
+    [7223] = 'firestorm',
+    [7224] = 'snowstorm',
+    [7225] = 'thunderstorm',
+    [7226] = 'sandstorm',
+    [7227] = 'firestorm',
+    [7228] = 'snowstorm',
+    [7229] = 'thunderstorm',
+    [7230] = 'sandstorm',
+    [7231] = 'firestorm',
+    [7232] = 'snowstorm',
+    [7233] = 'thunderstorm',
+    [7234] = 'sandstorm',
+    [7235] = 'firestorm',
+    [7236] = 'snowstorm',
+    [7237] = 'thunderstorm',
+    [7238] = 'sandstorm',
+    [7239] = 'firestorm',
+    [7240] = 'snowstorm',
+    [7241] = 'thunderstorm',
+    [7242] = 'sandstorm',
+    [7243] = 'firestorm',
+    [7244] = 'snowstorm',
+    [7245] = 'thunderstorm',
+    [7246] = 'sandstorm',
+    [7247] = 'firestorm',
+    [7248] = 'snowstorm',
+    [7249] = 'thunderstorm',
+    [7250] = 'sandstorm',
+    [7251] = 'firestorm',
+    [7252] = 'snowstorm',
+    [7253] = 'thunderstorm',
+    [7254] = 'sandstorm',
+    [7255] = 'firestorm',
+    [7256] = 'snowstorm',
+    [7257] = 'thunderstorm',
+    [7258] = 'sandstorm',
+    [7259] = 'firestorm',
+    [7260] = 'snowstorm',
+    [7298] = 'thunderstorm',
+    [7299] = 'sandstorm',
+    [7300] = 'firestorm',
+    [7301] = 'snowstorm'
+}
+
+-- vv ------------------------------------------------------------------------- TO-DO: SHOULD I SIMPLIFY THIS TABLE TO ONLY USE ACHIEVEMENT ID
+-- vv ------------------------------------------------------------------------- AND THEN HANDLE BUILDING ACHIEVEMENT() IN THE ACTUAL CODE?
+
+local ELEMENTAL_STORM_MOB_ACHIVEMENTS = {
+    ['all'] = Achievement({
+        id = 16500,
+        criteria = {
+            id = 1,
+            qty = true,
+            suffix = L['elemental_overflow_obtained_suffix']
+        }
+    }), -- Elemental Overload
+    [2022] = {
+        ['thunderstorm'] = Achievement({
+            id = 16463,
+            criteria = {
+                id = 1,
+                qty = true,
+                suffix = L['empowered_mobs_killed_suffix']
+            }
+        }), -- Thunderstorms in the Waking Shores
+        ['sandstorm'] = Achievement({
+            id = 16465,
+            criteria = {
+                id = 1,
+                qty = true,
+                suffix = L['empowered_mobs_killed_suffix']
+            }
+        }), -- Sandstorms in the Waking Shores
+        ['firestorm'] = Achievement({
+            id = 16466,
+            criteria = {
+                id = 1,
+                qty = true,
+                suffix = L['empowered_mobs_killed_suffix']
+            }
+        }), -- Firestorms in the Waking Shores
+        ['snowstorm'] = Achievement({
+            id = 16467,
+            criteria = {
+                id = 1,
+                qty = true,
+                suffix = L['empowered_mobs_killed_suffix']
+            }
+        }) -- Snowstorms in the Waking Shores
+    }, -- Waking Shores
+    [2023] = {
+        ['thunderstorm'] = Achievement({
+            id = 16475,
+            criteria = {
+                id = 1,
+                qty = true,
+                suffix = L['empowered_mobs_killed_suffix']
+            }
+        }), -- Thunderstorms in the Ohnahran Plains
+        ['sandstorm'] = Achievement({
+            id = 16477,
+            criteria = {
+                id = 1,
+                qty = true,
+                suffix = L['empowered_mobs_killed_suffix']
+            }
+        }), -- Sandstorms in the Ohnahran Plains
+        ['firestorm'] = Achievement({
+            id = 16478,
+            criteria = {
+                id = 1,
+                qty = true,
+                suffix = L['empowered_mobs_killed_suffix']
+            }
+        }), -- Firestorms in the Ohnahran Plains
+        ['snowstorm'] = Achievement({
+            id = 16479,
+            criteria = {
+                id = 1,
+                qty = true,
+                suffix = L['empowered_mobs_killed_suffix']
+            }
+        }) -- Snowstorms in the Ohnahran Plains
+    }, -- Ohn'ahran Plains
+    [2024] = {
+        ['thunderstorm'] = Achievement({
+            id = 16480,
+            criteria = {
+                id = 1,
+                qty = true,
+                suffix = L['empowered_mobs_killed_suffix']
+            }
+        }), -- Thunderstorms in the Azure Span
+        ['sandstorm'] = Achievement({
+            id = 16481,
+            criteria = {
+                id = 1,
+                qty = true,
+                suffix = L['empowered_mobs_killed_suffix']
+            }
+        }), -- Sandstorms in the Azure Span
+        ['firestorm'] = Achievement({
+            id = 16482,
+            criteria = {
+                id = 1,
+                qty = true,
+                suffix = L['empowered_mobs_killed_suffix']
+            }
+        }), -- Firestorms in the Azure Span
+        ['snowstorm'] = Achievement({
+            id = 16483,
+            criteria = {
+                id = 1,
+                qty = true,
+                suffix = L['empowered_mobs_killed_suffix']
+            }
+        }) -- Snowstorms in the Azure Span
+    }, -- Azure Span
+    [2025] = {
+        ['thunderstorm'] = Achievement({
+            id = 16485,
+            criteria = {
+                id = 1,
+                qty = true,
+                suffix = L['empowered_mobs_killed_suffix']
+            }
+        }), -- Thunderstorms in Thaldraszus
+        ['sandstorm'] = Achievement({
+            id = 16486,
+            criteria = {
+                id = 1,
+                qty = true,
+                suffix = L['empowered_mobs_killed_suffix']
+            }
+        }), -- Sandstorms in Thaldraszus
+        ['firestorm'] = Achievement({
+            id = 16487,
+            criteria = {
+                id = 1,
+                qty = true,
+                suffix = L['empowered_mobs_killed_suffix']
+            }
+        }), -- Firestorms in Thaldraszus
+        ['snowstorm'] = Achievement({
+            id = 16488,
+            criteria = {
+                id = 1,
+                qty = true,
+                suffix = L['empowered_mobs_killed_suffix']
+            }
+        }) -- Snowstorms in Thaldraszus
+    }, -- Thaldraszus
+    [2085] = {
+        ['thunderstorm'] = Achievement({
+            id = 16485,
+            criteria = {
+                id = 1,
+                qty = true,
+                suffix = L['empowered_mobs_killed_suffix']
+            }
+        }), -- Thunderstorms in Thaldraszus
+        ['sandstorm'] = Achievement({
+            id = 16486,
+            criteria = {
+                id = 1,
+                qty = true,
+                suffix = L['empowered_mobs_killed_suffix']
+            }
+        }), -- Sandstorms in Thaldraszus
+        ['firestorm'] = Achievement({
+            id = 16487,
+            criteria = {
+                id = 1,
+                qty = true,
+                suffix = L['empowered_mobs_killed_suffix']
+            }
+        }), -- Firestorms in Thaldraszus
+        ['snowstorm'] = Achievement({
+            id = 16488,
+            criteria = {
+                id = 1,
+                qty = true,
+                suffix = L['empowered_mobs_killed_suffix']
+            }
+        }) -- Snowstorms in Thaldraszus
+    } -- The Primalist Future
+}
+
+local ELEMENTAL_STORM_BOSS_ACHIEVEMENTS = {
+    ['all'] = Achievement({
+        id = 16461,
+        criteria = {
+            55461, -- Infernum
+            55462, -- Crystalus
+            55463, -- Bouldron
+            55464, -- Karantun
+            55465, -- Neela Firebane
+            55466, -- Rouen Icewind
+            55467, -- Zurgaz Corebreaker
+            55468, -- Pipspark Thundersnap
+            55469, -- Grizzlerock
+            55470, -- Voraazka
+            55471, -- Kain Firebrand
+            55472, -- Maeleera
+            55473, -- Fieraan
+            55474, -- Leerain
+            55475, -- Gaelzion
+            55476, -- Gravlion
+            55477, -- Emblazion
+            55478 -- Frozion
+        } -- Stormed Off
+    }),
+    ['thunderstorm'] = Achievement({
+        id = 16461,
+        criteria = {55464, 55468, 55470, 55475}
+    }), -- Stormed Off (Thunderstorm bosses only)
+    ['sandstorm'] = Achievement({
+        id = 16461,
+        criteria = {55463, 55467, 55469, 55476}
+    }), -- Stormed Off (Sandstorm bosses only)
+    ['firestorm'] = Achievement({
+        id = 16461,
+        criteria = {55461, 55465, 55471, 55477}
+    }), -- Stormed Off (Firestorm bosses only)
+    ['snowstorm'] = Achievement({
+        id = 16461,
+        criteria = {55462, 55466, 55472, 55473, 55474, 55478}
+    }) -- Stormed Off (Snowstorm bosses only)
+}
+
+local ELEMENTAL_STORM_PET_REWARDS = {
+    ['thunderstorm'] = Pet({
+        item = 200263,
+        id = 3310,
+        note = L['elemental_storm_thunderstorm']
+    }), -- Echo of the Heights
+    ['sandstorm'] = Pet({
+        item = 200183,
+        id = 3355,
+        note = L['elemental_storm_sandstorm']
+    }), -- Echo of the Cave
+    ['firestorm'] = Pet({
+        item = 200255,
+        id = 3289,
+        note = L['elemental_storm_firestorm']
+    }), -- Echo of the Inferno
+    ['snowstorm'] = Pet({
+        item = 200260,
+        id = 3299,
+        note = L['elemental_storm_snowstorm']
+    }) -- Echo of the Depths
+}
+
+-- vv ------------------------------------------------------------------------- TO-DO: UPDATE ITEMS TO NEW RECIPE REWARDS VIA IONEY
+
+local ELEMENTAL_STORM_FORMULA_REWARDS = {
+    ['all'] = Item({item = 194641}), -- Design: Elemental Lariat
+    ['thunderstorm'] = Item({
+        item = 200911,
+        note = L['elemental_storm_thunderstorm']
+    }), -- Formula: Illusion: Primal Air
+    ['sandstorm'] = Item({item = 200912, note = L['elemental_storm_sandstorm']}), -- Formula: Illusion: Primal Earth
+    ['firestorm'] = Item({item = 200913, note = L['elemental_storm_firestorm']}), -- Formula: Illusion: Primal Fire
+    ['snowstorm'] = Item({item = 200914, note = L['elemental_storm_snowstorm']}) -- Formula: Illusion: Primal Frost
+}
+
+-- GENERIC ELEMENTAL STORM NODE -----------------------------------------------
+--
+-- This node will be added at all Element Storm coordinates where there
+-- currently is NOT an Elemental Storm happening.
+--
+-- It will show zone-specific achievements and rewards shared between all four
+-- storm types (pets and recipes) because any storm could spawn there.
+--
+-- General elemental storm nodes will never display at the same location of a
+-- storm that is currently happening (see below).
+
+local ElementalStorm = Class('ElementalStorm', Collectible, {
+    icon = 538566,
+    group = ns.groups.ELEMENTAL_STORM,
+    IsEnabled = function(self)
+        local activePOIs = C_AreaPoiInfo.GetAreaPOIForMap(self.mapID)
+        local possiblePOIs = self.areaPOIs
+        for a = 1, #activePOIs do
+            for p = 1, #possiblePOIs do
+                if activePOIs[a] == possiblePOIs[p] then
+                    return false
+                end
+            end
+        end
+        return true
+    end
+})
+
+function ElementalStorm.getters:rewards()
+    return {
+        ELEMENTAL_STORM_MOB_ACHIVEMENTS['all'], -- Elemental Overload
+        Spacer(), ELEMENTAL_STORM_MOB_ACHIVEMENTS[self.mapID]['thunderstorm'], -- Thunderstorms in...
+        ELEMENTAL_STORM_MOB_ACHIVEMENTS[self.mapID]['sandstorm'], -- Sandstorms in...
+        ELEMENTAL_STORM_MOB_ACHIVEMENTS[self.mapID]['firestorm'], -- Firestorms in...
+        ELEMENTAL_STORM_MOB_ACHIVEMENTS[self.mapID]['snowstorm'], -- Snowstorms in...
+        Spacer(), ELEMENTAL_STORM_BOSS_ACHIEVEMENTS['all'], -- Stormed Off
+        ELEMENTAL_STORM_PET_REWARDS['thunderstorm'], -- Echo of the Heights
+        ELEMENTAL_STORM_PET_REWARDS['sandstorm'], -- Echo of the Cave
+        ELEMENTAL_STORM_PET_REWARDS['firestorm'], -- Echo of the Inferno
+        ELEMENTAL_STORM_PET_REWARDS['snowstorm'], -- Echo of the Depths
+        Spacer(), ELEMENTAL_STORM_FORMULA_REWARDS['all'], -- Design: Elemental Lariat
+        ELEMENTAL_STORM_FORMULA_REWARDS['thunderstorm'], -- Formula: Illusion: Primal Air
+        ELEMENTAL_STORM_FORMULA_REWARDS['sandstorm'], -- Formula: Illusion: Primal Earth
+        ELEMENTAL_STORM_FORMULA_REWARDS['firestorm'], -- Formula: Illusion: Primal Fire
+        ELEMENTAL_STORM_FORMULA_REWARDS['snowstorm'] -- Formula: Illusion: Primal Frost
+    }
+end
+
+ns.node.ElementalStorm = ElementalStorm
+
+-- SPECIFIC ELEMENTAL STORM TOOLTIP EDITOR ------------------------------------
+--
+-- This code will add specific rewards to the tooltip of an Elemental Storm
+-- that is currently happening.
+--
+-- It will show zone-specific AND storm-specific achievements, pets, and recipe
+-- rewards.
+--
+-- General elemental storm nodes will never display at the same location of a
+-- storm that is currently happening (see above).
+--
+-- Additionally, if the Elemental Storms group checkbox is unchecked in the
+-- World Map button then the tooltip will not be affected. This is an
+-- improvement from my Shadowlands integration and should be used for Sentinax
+-- locations in Legion.
+
+hooksecurefunc(AreaPOIPinMixin, 'TryShowTooltip', function(self)
+    if self and self.areaPoiID then
+        if ELEMENTAL_STORM_AREA_POIS[self.areaPoiID] ~= nil then
+            local mapID = self:GetMap().mapID
+            local type = ELEMENTAL_STORM_AREA_POIS[self.areaPoiID]
+            if ns.groups.ELEMENTAL_STORM:GetDisplay(ns.maps[mapID]) then
+                local rewards = {
+                    ELEMENTAL_STORM_MOB_ACHIVEMENTS['all'], -- Elemental Overload
+                    ELEMENTAL_STORM_MOB_ACHIVEMENTS[mapID][type], -- (Example: Thunderstorms in Thaldraszus)
+                    ELEMENTAL_STORM_BOSS_ACHIEVEMENTS[type], -- Stormed Off (Storm type only)
+                    Spacer(), ELEMENTAL_STORM_PET_REWARDS[type], -- Echo of the...
+                    ELEMENTAL_STORM_FORMULA_REWARDS['all'], -- Design: Elemental Lariat
+                    ELEMENTAL_STORM_FORMULA_REWARDS[type] -- Formula: Illusion Primal...
+                }
+                GameTooltip:AddLine(' ') -- add blank line before rewards
+                for i, reward in ipairs(rewards) do
+                    if reward:IsEnabled() then
+                        reward:Render(GameTooltip)
+                    end
+                end
+                GameTooltip:Show()
+            end
+        end
+    end
+end)

@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2509, "DBM-Party-Dragonflight", 5, 1201)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20221204033441")
+mod:SetRevision("20230101045544")
 mod:SetCreatureID(194181)
 mod:SetEncounterID(2562)
 --mod:SetUsedIcons(1, 2, 3)
@@ -21,6 +21,9 @@ mod:RegisterEventsInCombat(
 	"SPELL_PERIODIC_MISSED 386201",
 	"SPELL_ENERGIZE 386088"
 --	"UNIT_SPELLCAST_SUCCEEDED boss1"
+)
+mod:RegisterEvents(
+	"CHAT_MSG_MONSTER_SAY"
 )
 
 --TODO, find a log where orb actually hits boss to see affect on all timers, not just fissure
@@ -42,6 +45,7 @@ local yellManaBombFades							= mod:NewShortFadesYell(386181)
 local specWarnArcaneExpulsion					= mod:NewSpecialWarningDefensive(385958, nil, nil, nil, 1, 2)
 local specWarnGTFO								= mod:NewSpecialWarningGTFO(386201, nil, nil, nil, 1, 8)
 
+local timerRP									= mod:NewRPTimer(19.8)
 local timerArcaneOrbsCD							= mod:NewCDCountTimer(16.8, 385974, nil, nil, nil, 5)
 local timerArcaneFissureCD						= mod:NewCDTimer(40.7, 388537, nil, nil, nil, 3)
 local timerManaBombsCD							= mod:NewCDCountTimer(19.4, 386173, nil, nil, nil, 3)
@@ -169,6 +173,23 @@ function mod:SPELL_ENERGIZE(_, _, _, _, destGUID, _, _, _, spellId, _, _, amount
 		else
 			timerArcaneFissureCD:Stop()
 		end
+	end
+end
+
+
+--"<35.27 21:00:04> [CHAT_MSG_MONSTER_SAY] Ah! Here we are! Ahem--long ago, members of the blue dragonflight accidentally overloaded an arcane elemental and created a powerful construct named Vexamus that quickly started to wreak havoc!#Professor Maxdormu
+--"<55.05 21:00:23> [ENCOUNTER_START] 2562#Vexamus#8#5", -- [268]
+--<38.95 21:51:16> [CHAT_MSG_MONSTER_SAY] Perfect, we are just about--wait, Ichistrasz! There is too much life magic! What are you doing?#Professor Mystakria###Omegal##0#0##0#3723#nil#0#fa
+--<56.01 21:51:33> [DBM_Debug] ENCOUNTER_START event fired: 2563 Overgrown Ancient 8 5#nil", -- [250]
+function mod:CHAT_MSG_MONSTER_SAY(msg)
+	if (msg == L.VexRP or msg:find(L.VexRP)) then
+		self:SendSync("VexRP")--Syncing to help unlocalized clients
+	end
+end
+
+function mod:OnSync(msg, targetname)
+	if msg == "VexRP" and self:AntiSpam(10, 2) then
+		timerRP:Start()
 	end
 end
 

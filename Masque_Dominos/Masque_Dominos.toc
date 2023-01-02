@@ -10,7 +10,7 @@
 ## Notes-ruRU: Скин Dominos для Masque.
 ## Notes-zhTW: Masque的Dominos皮膚。
 
-## Version: 10.0.2
+## Version: 7313c43
 ## Author: StormFX, Tuller
 ## Dependencies: Masque
 

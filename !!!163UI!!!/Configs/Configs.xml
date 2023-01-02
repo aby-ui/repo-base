@@ -27,7 +27,6 @@
     <Include file="..\..\BlizzMove\CfgBlizzMove.lua"/>
     <Include file="..\..\CanIMogIt\CfgCanIMogIt.lua"/>
     <Include file="..\..\CastDelayBar\CfgCastDelayBar.lua"/>
-    <Include file="..\..\ChatFilter\CfgChatFilter.lua"/>
     <Include file="..\..\ChocolateBar\CfgChocolateBar.lua"/>
     <Include file="..\..\Comergy_Redux\CfgComergy_Redux.lua"/>
     <Include file="..\..\CompactRaid\CfgCompactRaid.lua"/>
@@ -40,16 +39,13 @@
     <Include file="..\..\Dominos\CfgDominos.lua"/>
     <Include file="..\..\DressingSlots\CfgDressingSlots.lua"/>
     <Include file="..\..\DuowanChat\CfgDuowanChat.lua"/>
-    <Include file="..\..\EN_UnitFrames\CfgEN_UnitFrames.lua"/>
     <Include file="..\..\Ellipsis\CfgEllipsis.lua"/>
     <Include file="..\..\ErrorFilter\CfgErrorFilter.lua"/>
     <Include file="..\..\EventAlertMod\CfgEventAlertMod.lua"/>
     <Include file="..\..\MRT\CfgMRT.lua"/>
     <Include file="..\..\ExtraActionBar\CfgExtraActionBar.lua"/>
     <Include file="..\..\Fizzle\CfgFizzle.lua"/>
-    <Include file="..\..\FriendsMenuXP\CfgFriendsMenuXP.lua"/>
     <Include file="..\..\GTFO\CfgGTFO.lua"/>
-    <Include file="..\..\GarrisonMissionManager\CfgGarrisonMissionManager.lua"/>
     <Include file="..\..\GatherMate2\CfgGatherMate2.lua"/>
     <Include file="..\..\GearHUD\CfgGearHUD.lua"/>
     <Include file="..\..\GearManagerEx\CfgGearManagerEx.lua"/>
@@ -93,7 +89,6 @@
     <Include file="..\..\TomTom\CfgTomTom.lua"/>
     <Include file="..\..\ToyPlus\CfgToyPlus.lua"/>
     <Include file="..\..\TradeLog\CfgTradeLog.lua"/>
-    <Include file="..\..\TradeskillInfo\CfgTradeskillInfo.lua"/>
     <Include file="..\..\TrinketMenu\CfgTrinketMenu.lua"/>
     <Include file="..\..\TrufiGCD\CfgTrufiGCD.lua"/>
     <Include file="..\..\WeakAuras\CfgWeakAuras.lua"/>
@@ -114,8 +109,7 @@
     <Include file="..\..\MythicDungeonTools\CfgMythicDungeonTools.lua"/>
     <Include file="..\..\Details\CfgDetails.lua"/>
     <Include file="..\..\RareScanner\CfgRareScanner.lua"/>
-    <Include file="..\..\RECrystallize\CfgRECrystallize.lua"/>
-    <Include file="..\..\SwitchSwitch\CfgSwitchSwitch.lua"/>
+    <Include file="..\..\Auctionator\CfgAuctionator.lua"/>
     <Include file="..\..\VenturePlan\CfgVenturePlan.lua"/>
     <Include file="..\..\OmniCD\CfgOmniCD.lua"/>
     <Include file="..\..\ZerethMortisPuzzleHelper\CfgZerethMortisPuzzleHelper.lua"/>

@@ -196,7 +196,7 @@ U1PLUG["ExaltedPlus"] = function()
         if reputationInfo and reputationInfo.friendshipFactionID > 0 then
             local output = "%s%s的声望提高了%s（%s%d/%d）"
             local curr = reputationInfo.standing - (reputationInfo.reactionThreshold or 0)
-            local cap = reputationInfo.nextThreshold - (reputationInfo.reactionThreshold or 0)
+            local cap = (reputationInfo.nextThreshold or 0) - (reputationInfo.reactionThreshold or 0)
             local change = tonumber(added) or diff or 0
             change = change > 0 and change .. "点" or ""
             local rankText = ""

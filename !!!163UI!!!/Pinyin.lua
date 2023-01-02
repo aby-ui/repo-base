@@ -271,4 +271,6 @@ U1.PINYIN={
     ['统御碎片助手']={'tongyusuipianzhushou','tyspzs'},
     ['源锁解谜助手']={'yuansuojiemizhushou','ysjmzs'},
 	['阿迪背包整合']={'adibeibaozhenghe','adbbzh'},
+	['配方技能预览']={'peifangjinengyulan','pfjnyl'},
+	['拍卖小助手']={'paimaixiaozhushou','pmxzs'},
 }

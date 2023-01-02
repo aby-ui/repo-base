@@ -263,21 +263,22 @@ L:SetOptionLocalization({
 
 L:SetMiscLocalization({ --神坑
 	Found		= "喂喂，别急着下结论", --给s大大疯狂打电话
-	--
-	Gloves		= "手套",
-	NoGloves	= "没手套",
-	Cape		= "斗篷",
-	Nocape		= "没斗篷",
-	LightVest	= "浅色上衣",
-	DarkVest	= "深色上衣",
-	Female		= "女性",
-	Male		= "男性",
-	ShortSleeve = "短袖",
-	LongSleeve	= "长袖",
-	Potions		= "腰上药水",
-	NoPotions	= "没有药水",
-	Book		= "带书",
-	Pouch		= "挂腰包"
+	--Add translationss, but keep english termss for cross language groups since these post to chat
+	--Format "localized / english"
+	Gloves		= "手套 / gloves",
+	NoGloves	= "没手套 / no gloves",
+	Cape		= "斗篷 / cape",
+	Nocape		= "没斗篷 / no cape",
+	LightVest	= "浅色上衣 / light vest",
+	DarkVest	= "深色上衣 / dark vest",
+	Female		= "女性 / female",
+	Male		= "男性 / male",
+	ShortSleeve = "短袖 / short sleeve",
+	LongSleeve	= "长袖 / long sleeve",
+	Potions		= "腰上药水 / potions",
+	NoPotions	= "没有药水 / no potions",
+	Book		= "带书 / book",
+	Pouch		= "挂腰包 / pouch"
 })
 
 -----------------------

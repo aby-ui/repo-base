@@ -85,47 +85,100 @@ function WorldMapOptionsButtonMixin:Refresh()
     end
 end
 
+function WorldMapOptionsButtonMixin:AddGroupButton(group, level)
+    local map = ns.maps[self:GetParent():GetMapID()]
+    local icon, iconLink = group.icon
+
+    if group.name == 'misc' then
+        -- find an icon from the misc nodes in the map
+        for coord, node in pairs(map.nodes) do
+            if node.group == group then
+                icon = node.icon
+                break
+            end
+        end
+    end
+
+    if type(icon) == 'number' then
+        iconLink = ns.GetIconLink(icon, 12, 1, 0) .. ' '
+    else
+        iconLink = ns.GetIconLink(icon, 16)
+    end
+
+    LibDD:UIDropDownMenu_AddButton({
+        text = iconLink .. ' ' .. ns.RenderLinks(group.label, true),
+        isNotRadio = true,
+        keepShownOnClick = true,
+        hasArrow = true,
+        value = group,
+        checked = group:GetDisplay(map.id),
+        arg1 = group,
+        func = function(button, group)
+            group:SetDisplay(button.checked, map.id)
+        end
+    }, level)
+end
+
+function WorldMapOptionsButtonMixin:AddGroupOptions(group, level)
+    local map = ns.maps[self:GetParent():GetMapID()]
+
+    self.GroupDesc.Text:SetText(ns.RenderLinks(group.desc))
+    LibDD:UIDropDownMenu_AddButton({customFrame = self.GroupDesc}, level)
+    LibDD:UIDropDownMenu_AddButton({notClickable = true, notCheckable = true},
+        level)
+
+    Custom_UIDropDownMenu_AddSlider({
+        text = L['options_opacity'],
+        min = 0,
+        max = 1,
+        step = 0.01,
+        value = group:GetAlpha(map.id),
+        frame = self.AlphaOption,
+        percentage = true,
+        func = function(v) group:SetAlpha(v, map.id) end
+    }, level)
+
+    Custom_UIDropDownMenu_AddSlider({
+        text = L['options_scale'],
+        min = 0.3,
+        max = 3,
+        step = 0.05,
+        value = group:GetScale(map.id),
+        frame = self.ScaleOption,
+        func = function(v) group:SetScale(v, map.id) end
+    }, level)
+end
+
 function WorldMapOptionsButtonMixin:InitializeDropDown(level)
-    local map, icon, iconLink = ns.maps[self:GetParent():GetMapID()]
+    local map = ns.maps[self:GetParent():GetMapID()]
 
     if level == 1 then
-        LibDD:UIDropDownMenu_AddButton({
-            isTitle = true,
-            notCheckable = true,
-            text = WORLD_MAP_FILTER_TITLE
-        })
-
+        local current_group_type = nil
+        local achievements_menu_added = false
         for i, group in ipairs(map.groups) do
+
+            -- Add a separator each time the group type changes
+            if current_group_type ~= nil and current_group_type ~= group.type then
+                LibDD:UIDropDownMenu_AddSeparator()
+            end
+            current_group_type = group.type
+
             if group:IsEnabled() and group:HasEnabledNodes(map) then
-                icon = group.icon
-                if group.name == 'misc' then
-                    -- find an icon from the misc nodes in the map
-                    for coord, node in pairs(map.nodes) do
-                        if node.group == group then
-                            icon = node.icon
-                            break
-                        end
-                    end
+                if group.type == ns.group_types.ACHIEVEMENT and
+                    not achievements_menu_added then
+                    LibDD:UIDropDownMenu_AddButton({
+                        text = ns.GetIconLink(236671, 12, 1, 0) .. '  ' ..
+                            ACHIEVEMENTS,
+                        isNotRadio = true,
+                        notCheckable = true,
+                        keepShownOnClick = true,
+                        hasArrow = true,
+                        value = 'achievements'
+                    })
+                    achievements_menu_added = true
+                elseif group.type ~= ns.group_types.ACHIEVEMENT then
+                    self:AddGroupButton(group, 1)
                 end
-
-                if type(icon) == 'number' then
-                    iconLink = ns.GetIconLink(icon, 12, 1, 0) .. ' '
-                else
-                    iconLink = ns.GetIconLink(icon, 16)
-                end
-
-                LibDD:UIDropDownMenu_AddButton({
-                    text = iconLink .. ' ' .. ns.RenderLinks(group.label, true),
-                    isNotRadio = true,
-                    keepShownOnClick = true,
-                    hasArrow = true,
-                    value = group,
-                    checked = group:GetDisplay(map.id),
-                    arg1 = group,
-                    func = function(button, group)
-                        group:SetDisplay(button.checked, map.id)
-                    end
-                })
             end
         end
 
@@ -184,7 +237,14 @@ function WorldMapOptionsButtonMixin:InitializeDropDown(level)
             end
         })
     elseif level == 2 then
-        if L_UIDROPDOWNMENU_MENU_VALUE == 'rewards' then
+        if L_UIDROPDOWNMENU_MENU_VALUE == 'achievements' then
+            for i, group in ipairs(map.groups) do
+                if group.type == ns.group_types.ACHIEVEMENT and
+                    group:IsEnabled() and group:HasEnabledNodes(map) then
+                    self:AddGroupButton(group, 2)
+                end
+            end
+        elseif L_UIDROPDOWNMENU_MENU_VALUE == 'rewards' then
             for i, type in ipairs({
                 'mount', 'pet', 'toy', 'transmog', 'all_transmog'
             }) do
@@ -199,36 +259,11 @@ function WorldMapOptionsButtonMixin:InitializeDropDown(level)
                 }, 2)
             end
         else
-            -- Get correct map ID to query/set options for
-            local group = L_UIDROPDOWNMENU_MENU_VALUE
-
-            self.GroupDesc.Text:SetText(ns.RenderLinks(group.desc))
-            LibDD:UIDropDownMenu_AddButton({customFrame = self.GroupDesc}, 2)
-            LibDD:UIDropDownMenu_AddButton({
-                notClickable = true,
-                notCheckable = true
-            }, 2)
-
-            Custom_UIDropDownMenu_AddSlider({
-                text = L['options_opacity'],
-                min = 0,
-                max = 1,
-                step = 0.01,
-                value = group:GetAlpha(map.id),
-                frame = self.AlphaOption,
-                percentage = true,
-                func = function(v) group:SetAlpha(v, map.id) end
-            }, 2)
-
-            Custom_UIDropDownMenu_AddSlider({
-                text = L['options_scale'],
-                min = 0.3,
-                max = 3,
-                step = 0.05,
-                value = group:GetScale(map.id),
-                frame = self.ScaleOption,
-                func = function(v) group:SetScale(v, map.id) end
-            }, 2)
+            -- add opacity/scale menu for non-achievements
+            self:AddGroupOptions(L_UIDROPDOWNMENU_MENU_VALUE, 2)
         end
+    elseif level == 3 then
+        -- add opacity/scale menu for achievements
+        self:AddGroupOptions(L_UIDROPDOWNMENU_MENU_VALUE, 3)
     end
 end

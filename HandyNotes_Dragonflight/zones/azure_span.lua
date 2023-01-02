@@ -15,6 +15,7 @@ local Treasure = ns.node.Treasure
 local Disturbeddirt = ns.node.Disturbeddirt
 local Dragonglyph = ns.node.Dragonglyph
 local Dragonrace = ns.node.Dragonrace
+local ElementalStorm = ns.node.ElementalStorm
 local Flag = ns.node.Flag
 local Fragment = ns.node.Fragment
 local LegendaryCharacter = ns.node.LegendaryCharacter
@@ -25,6 +26,7 @@ local PT = ns.node.ProfessionTreasures
 local RareElite = ns.node.RareElite
 local Safari = ns.node.Safari
 local Scoutpack = ns.node.Scoutpack
+local SignalTransmitter = ns.node.SignalTransmitter
 local Squirrel = ns.node.Squirrel
 
 local Achievement = ns.reward.Achievement
@@ -679,7 +681,7 @@ map.nodes[53146614] = PT.Blacksmithing({
 
 map.nodes[57504130] = PT.Leatherworking({
     id = 198683,
-    quest = nil,
+    quest = 70286,
     note = L['pt_leath_treated_hides_note']
 }) -- Treated Hides
 
@@ -748,6 +750,14 @@ map.nodes[46142498] = Flag({quest = 71218})
 map.nodes[63084867] = Flag({quest = 71220})
 map.nodes[74844324] = Flag({quest = 71221})
 map.nodes[77431837] = Flag({quest = 71217})
+
+-------------------------------------------------------------------------------
+------------------ WYRMHOLE GENERATOR - SIGNAL TRANSMITTER --------------------
+-------------------------------------------------------------------------------
+
+map.nodes[71054788] = SignalTransmitter({quest = 70581}) -- Camp Nowhere
+map.nodes[45766525] = SignalTransmitter({quest = 70580}) -- Azure Archives
+map.nodes[27562645] = SignalTransmitter({quest = 70579}) -- Brakenhide Hollow
 
 -------------------------------------------------------------------------------
 ---------------------------- FRAGMENTS OF HISTORY -----------------------------
@@ -1193,6 +1203,30 @@ map.nodes[34204160] = Safari({
         })
     }
 }) -- Vorquin Runt
+
+-------------------------------------------------------------------------------
+------------------------ ELEMENTAL STORMS: AZURE SPAN -------------------------
+-------------------------------------------------------------------------------
+
+map.nodes[11983718] = ElementalStorm({
+    label = format('%s: %s', L['elemental_storm'],
+        L['elemental_storm_brakenhide_hollow']),
+    mapID = map.id,
+    areaPOIs = {7229, 7230, 7231, 7232}
+}) -- Elemental Storm: Brakenhide Hollow
+
+map.nodes[47372200] = ElementalStorm({
+    label = format('%s: %s', L['elemental_storm'],
+        L['elemental_storm_cobalt_assembly']),
+    mapID = map.id,
+    areaPOIs = {7233, 7234, 7235, 7236}
+}) -- Elemental Storm: Cobalt Assembly
+
+map.nodes[58506660] = ElementalStorm({
+    label = format('%s: %s', L['elemental_storm'], L['elemental_storm_imbu']),
+    mapID = map.id,
+    areaPOIs = {7237, 7238, 7239, 7240}
+}) -- Elemental Storm: Imbu
 
 -------------------------------------------------------------------------------
 -------------------------------- MISCELLANEOUS --------------------------------

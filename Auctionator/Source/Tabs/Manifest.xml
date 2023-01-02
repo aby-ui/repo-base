@@ -1,0 +1,12 @@
+<!-- Tabs directory manifest -->
+<Ui xmlns="http://www.blizzard.com/wow/ui/">
+  <Include file="DataProviders\Manifest.xml" />
+  <Include file="ResultsListing\Manifest.xml" />
+
+  <Include file="Frames\Manifest.xml"/>
+
+  <Include file="Shopping\Manifest.xml" />
+  <Include file="Selling\Manifest.xml" />
+  <Include file="Cancelling\Manifest.xml" />
+  <Include file="Auctionator\Manifest.xml"/>
+</Ui>

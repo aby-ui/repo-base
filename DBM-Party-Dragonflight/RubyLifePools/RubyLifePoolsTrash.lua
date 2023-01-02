@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod("RubyLifePoolsTrash", "DBM-Party-Dragonflight", 7)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20221229182648")
+mod:SetRevision("20230101231943")
 --mod:SetModelID(47785)
 mod.isTrashMod = true
 
@@ -15,7 +15,6 @@ mod:RegisterEvents(
 --TODO, can Blazing Rush be target scanned? upgrade to special announce?
 --Lady's Trash, minus bottled anima, which will need a unit event to detect it looks like
 local warnLivingBomb						= mod:NewTargetAnnounce(373693, 3)
-local warnBlazingRush						= mod:NewCastAnnounce(372087, 3)
 local warnBurnout							= mod:NewCastAnnounce(373614, 4)
 local warnRollingThunder					= mod:NewTargetNoFilterAnnounce(392641, 3)
 
@@ -25,6 +24,7 @@ local specWarnTempestStormshield			= mod:NewSpecialWarningSwitch(391050, nil, ni
 local specWarnLivingBomb					= mod:NewSpecialWarningMoveAway(373693, nil, nil, nil, 1, 2)
 local yellLivingBomb						= mod:NewShortYell(373693)
 local yellLivingBombFades					= mod:NewShortFadesYell(373693)
+local specWarnBlazingRush					= mod:NewSpecialWarningDodge(372087, nil, nil, nil, 2, 2)
 local specWarnStormBreath					= mod:NewSpecialWarningDodge(391726, nil, nil, nil, 2, 2)
 local yellStormBreath						= mod:NewShortYell(391726)
 local specWarnFlameBreath					= mod:NewSpecialWarningDodge(391723, nil, nil, nil, 2, 2)
@@ -55,8 +55,9 @@ end
 
 function mod:SPELL_CAST_START(args)
 	local spellId = args.spellId
-	if spellId == 372087 and self:AntiSpam(3, 6) then
-		warnBlazingRush:Show()
+	if spellId == 372087 and self:AntiSpam(3, 2) then
+		specWarnBlazingRush:Show()
+		specWarnBlazingRush:Play("chargemove")
 	elseif spellId == 391726 then
 		if self:AntiSpam(3, 2) then
 			specWarnStormBreath:Show()

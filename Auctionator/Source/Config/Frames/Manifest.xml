@@ -1,0 +1,5 @@
+<Ui xmlns="http://www.blizzard.com/wow/ui/">
+  <Include file="Shopping.xml"/>
+  <Include file="Profile.xml"/>
+  <Include file="Advanced.xml"/>
+</Ui>

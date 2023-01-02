@@ -149,7 +149,12 @@ L:SetGeneralLocalization({
 -----------------------
 -- Vexamus --
 -----------------------
---L= DBM:GetModLocalization(2509)
+L= DBM:GetModLocalization(2509)
+
+L:SetMiscLocalization({
+	VexRP		= "Ah! Here we are! Ahem--long ago, members of the blue dragonflight accidentally overloaded an arcane elemental and created a powerful construct named Vexamus that quickly started to wreak havoc!"
+})
+
 
 -----------------------
 -- Overgrown Ancient --

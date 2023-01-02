@@ -20,6 +20,13 @@ if not IsFactionParagon then
     end
 end
 
+local IsMajorFaction = C_Reputation and C_Reputation.IsMajorFaction
+if not IsMajorFaction then
+    IsMajorFaction = function()
+        return false
+    end
+end
+
 function ReputationBar:Init()
     self:Update()
 end
@@ -43,6 +50,13 @@ function ReputationBar:Update()
         colorIndex = PARAGON_FACTION_COLOR_INDEX
         description = L.Paragon
         capped = false
+    elseif IsMajorFaction(factionID) then
+        local majorFactionData = C_MajorFactions.GetMajorFactionData(factionID)
+        min, max, value = 0, majorFactionData.renownLevelThreshold, majorFactionData.renownReputationEarned
+        capped = C_MajorFactions.HasMaximumRenown(factionID);
+        value = capped and majorFactionData.renownLevelThreshold or majorFactionData.renownReputationEarned or 0;
+        colorDirect = BLUE_FONT_COLOR
+        description = RENOWN_LEVEL_LABEL .. majorFactionData.renownLevel;
     else
         local info = GetFriendshipReputation(factionID)
         local friendID, friendRep, _, _, _, _, friendTextLevel, friendThreshold, nextFriendThreshold = info.friendshipFactionID, info.standing, nil, nil, nil, nil, info.reaction, info.reactionThreshold, info.nextThreshold
@@ -57,13 +71,6 @@ function ReputationBar:Update()
 
             colorIndex = FRIEND_FACTION_COLOR_INDEX
             description = friendTextLevel
-        elseif C_Reputation.IsMajorFaction(factionID) then
-            local majorFactionData = C_MajorFactions.GetMajorFactionData(factionID); --2510
-            min, max, value = 0, majorFactionData.renownLevelThreshold, majorFactionData.renownReputationEarned
-            capped = C_MajorFactions.HasMaximumRenown(factionID);
-            value = capped and majorFactionData.renownLevelThreshold or majorFactionData.renownReputationEarned or 0;
-            colorDirect = BLUE_FONT_COLOR
-            description = RENOWN_LEVEL_LABEL .. majorFactionData.renownLevel;
         else
             if reaction == MAX_REPUTATION_REACTION then
                 min, max, value = 0, 1, 1

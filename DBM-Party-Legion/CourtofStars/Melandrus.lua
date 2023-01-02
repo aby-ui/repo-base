@@ -3,7 +3,7 @@ local L		= mod:GetLocalizedStrings()
 
 mod.statTypes = "heroic,mythic,challenge"
 
-mod:SetRevision("20221230014343")
+mod:SetRevision("20230101033858")
 mod:SetCreatureID(104218)
 mod:SetEncounterID(1870)
 mod:SetHotfixNoticeRev(20221127000000)
@@ -83,7 +83,7 @@ end
 
 --"<13.69 20:34:35> [CHAT_MSG_MONSTER_SAY] Must you leave so soon, Grand Magistrix?#Advisor Melandrus###Omegal##0#0##0#343#nil#0#false#false#false#false", -- [4]
 --"<46.59 20:35:08> [ENCOUNTER_START] 1870#Advisor Melandrus#23#5", -- [18]
-function mod:CHAT_MSG_MONSTER_YELL(msg)
+function mod:CHAT_MSG_MONSTER_SAY(msg)
 	if (msg == L.MelRP or msg:find(L.MelRP)) then
 		self:SendSync("MelRP")--Syncing to help unlocalized clients
 	end

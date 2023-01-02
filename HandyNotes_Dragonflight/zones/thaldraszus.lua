@@ -15,6 +15,7 @@ local Treasure = ns.node.Treasure
 local Disturbeddirt = ns.node.Disturbeddirt
 local Dragonglyph = ns.node.Dragonglyph
 local Dragonrace = ns.node.Dragonrace
+local ElementalStorm = ns.node.ElementalStorm
 local Flag = ns.node.Flag
 local Fragment = ns.node.Fragment
 local LegendaryCharacter = ns.node.LegendaryCharacter
@@ -25,11 +26,13 @@ local PT = ns.node.ProfessionTreasures
 local RareElite = ns.node.RareElite
 local Safari = ns.node.Safari
 local Scoutpack = ns.node.Scoutpack
+local SignalTransmitter = ns.node.SignalTransmitter
 local Squirrel = ns.node.Squirrel
 
 local Achievement = ns.reward.Achievement
 local Currency = ns.reward.Currency
 local Item = ns.reward.Item
+local Mount = ns.reward.Mount
 local Pet = ns.reward.Pet
 local Toy = ns.reward.Toy
 local Transmog = ns.reward.Transmog
@@ -432,7 +435,7 @@ map.nodes[56274924] = PetBattle({
 
 map.nodes[52208050] = PT.Blacksmithing({
     id = 201006,
-    quest = nil,
+    quest = 70311,
     note = L['pt_smith_draconic_flux_note']
 }) -- Draconic Flux
 
@@ -456,7 +459,7 @@ map.nodes[56304120] = PT.Inscription({
 
 map.nodes[56803050] = PT.Leatherworking({
     id = 198690,
-    quest = nil,
+    quest = 70294,
     note = L['pt_leath_decayed_scales_note']
 }) -- Decayed Scales
 
@@ -498,7 +501,7 @@ map.nodes[60407970] = PT.Tailoring({
 
 val.nodes[13206368] = PT.Inscription({
     id = 198669,
-    quest = nil,
+    quest = 70281,
     parent = map.id,
     note = L['pt_script_how_to_train_your_whelpling_note']
 }) -- How to Train Your Whelpling
@@ -558,6 +561,14 @@ map.nodes[65727498] = Flag({quest = 71223})
 map.nodes[64635672] = Flag({quest = 71224})
 
 -------------------------------------------------------------------------------
+------------------ WYRMHOLE GENERATOR - SIGNAL TRANSMITTER --------------------
+-------------------------------------------------------------------------------
+
+map.nodes[70304430] = SignalTransmitter({quest = 70584}) -- Vault of the Incarnates
+map.nodes[63677710] = SignalTransmitter({quest = 70585}) -- Temporal Conflux
+map.nodes[50745566] = SignalTransmitter({quest = 70583}) -- Tyrhold Reservoir
+
+-------------------------------------------------------------------------------
 ---------------------------- FRAGMENTS OF HISTORY -----------------------------
 -------------------------------------------------------------------------------
 
@@ -581,9 +592,14 @@ map.nodes[57126460] = Fragment({
 ------------------------------- DISTURBED DIRT --------------------------------
 -------------------------------------------------------------------------------
 
+map.nodes[32447309] = Disturbeddirt()
 map.nodes[34006488] = Disturbeddirt()
+map.nodes[34546598] = Disturbeddirt()
 map.nodes[34646179] = Disturbeddirt()
 map.nodes[35406995] = Disturbeddirt()
+map.nodes[35586764] = Disturbeddirt()
+map.nodes[35687143] = Disturbeddirt()
+map.nodes[37426853] = Disturbeddirt()
 map.nodes[37667615] = Disturbeddirt()
 map.nodes[38188192] = Disturbeddirt()
 map.nodes[39058408] = Disturbeddirt()
@@ -1014,6 +1030,54 @@ map.nodes[44006480] = Safari({
         })
     }
 }) -- Vorquin Runt
+
+-------------------------------------------------------------------------------
+------------------------ ELEMENTAL STORMS: THALDRASZUS ------------------------
+-------------------------------------------------------------------------------
+
+map.nodes[59005879] = ElementalStorm({
+    label = format('%s: %s', L['elemental_storm'], L['elemental_storm_tyrhold']),
+    mapID = map.id,
+    areaPOIs = {7245, 7246, 7247, 7248}
+}) -- Elemental Storm: Tyrhold
+
+map.nodes[59938224] = ElementalStorm({
+    label = format('%s: %s', L['elemental_storm'],
+        L['elemental_storm_primalist_future']),
+    mapID = map.id,
+    areaPOIs = {7298, 7299, 7300, 7301}
+}) -- Elemental Storm: Primalist Future
+
+tpf.nodes[57404187] = ElementalStorm({
+    label = format('%s: %s', L['elemental_storm'],
+        L['elemental_storm_primalist_tomorrow']),
+    mapID = tpf.id,
+    areaPOIs = {7241, 7242, 7243, 7244}
+}) -- Elemental Storm: Primalist Tomorrow
+
+-- ELEMENTAL STORM VENDOR -----------------------------------------------------
+
+local Mythressa = Class('Mythressa', NPC, {
+    id = 196516,
+    icon = 538566,
+    group = ns.groups.ELEMENTAL_STORM,
+    parent = map.id,
+    rewards = {
+        Achievement({id = 16502}), -- Storming the Runway
+        Pet({item = 200173, id = 3287, note = 'x1000'}), -- Ghostflame
+        Pet({item = 200114, id = 3282, note = 'x1000'}), -- Stormie
+        Mount({item = 192775, id = 1622, note = 'x2000'}) -- Stormhide Salamanther
+    }
+}) -- Mythressa <Apprentice Primal Researcher>
+
+function Mythressa.getters:note()
+    local noteStart = L['elemental_storm_mythressa_note_start']
+    local currency = C_CurrencyInfo.GetCurrencyInfo(2118).quantity -- Elemental Overflow
+    local noteEnd = format(L['elemental_storm_mythressa_note_end'], currency)
+    return noteStart .. '\n\n' .. noteEnd
+end
+
+val.nodes[38113773] = Mythressa()
 
 -------------------------------------------------------------------------------
 -------------------------------- MISCELLANEOUS --------------------------------

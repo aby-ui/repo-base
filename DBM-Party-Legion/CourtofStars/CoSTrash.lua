@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod("CoSTrash", "DBM-Party-Legion", 7)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20221230014343")
+mod:SetRevision("20230101182735")
 --mod:SetModelID(47785)
 mod:SetOOCBWComms()
 mod:SetMinSyncRevision(20221228000000)
@@ -9,6 +9,13 @@ mod:SetZone(1571)
 
 mod.isTrashMod = true
 
+--LW solution, unregister/reregister other addons/WA frames from GOSSIP_SHOW
+--This is to prevent things like https://wago.io/M+Timer/114 from breaking clue helper do to advancing
+--dialog before we get a chance to read gossipID
+local frames = {GetFramesRegisteredForEvent("GOSSIP_SHOW")}
+for i = 1, #frames do
+	frames[i]:UnregisterEvent("GOSSIP_SHOW")
+end
 mod:RegisterEvents(
 	"SPELL_CAST_START 209027 212031 209485 209410 209413 211470 211464 209404 209495 225100 211299 209378 397892 397897 207979 212784",
 	"SPELL_AURA_APPLIED 209033 209512 397907 373552",
@@ -16,9 +23,11 @@ mod:RegisterEvents(
 	"CHAT_MSG_MONSTER_SAY",
 	"GOSSIP_SHOW"
 )
+for i = 1, #frames do
+	frames[i]:RegisterEvent("GOSSIP_SHOW")
+end
 
 --TODO, at least 1-2 more GTFOs I forgot names of
---TODO, verify if Disintegration beam is interruptable at 207980 or 207981
 --TODO, target scan https://www.wowhead.com/beta/spell=397897/crushing-leap ?
 --TODO, few more auto gossips
 --Buffs/Utility (professions and classs perks)
@@ -232,6 +241,9 @@ do
 					hints[clue] = true
 					self:SendSync("CoS", clue)
 					callUpdate()
+					--Still required to advance dialog or demon hunters can't use spectral sight
+					--We try to delay it by .1 so other mods can still parse gossip ID in theory
+					C_Timer.After(0.1, function() C_GossipInfo.SelectOption(gossipOptionID) end)
 				end
 				if self.Options.SpyHelperClose then
 					--Delay used so DBM doesn't prevent other mods or WAs from parsing data
@@ -252,8 +264,8 @@ do
 		elseif msg == "Finished" then
 			self:ResetGossipState()
 			if clue then
-				local targetname = DBM:GetUnitFullName(clue)
-				DBM:AddMsg(L.SpyFound:format(targetname), nil, true)
+				local targetname = DBM:GetUnitFullName(clue) or clue
+				DBM:AddMsg(L.SpyFound:format(targetname))
 			end
 		end
 	end

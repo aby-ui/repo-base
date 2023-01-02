@@ -1,8 +1,0 @@
-<Bindings>
-	<Binding name="TOGGLE_TRADESKILLINFO" header="TRADESKILLINFO" category="ADDONS">
-		TradeskillInfo:UI_Toggle()
-	</Binding>
-	<Binding name="TOGGLE_TRADESKILLINFOCONFIG" category="ADDONS">
-		TradeskillInfo:ConfigShow()
-	</Binding>
-</Bindings>

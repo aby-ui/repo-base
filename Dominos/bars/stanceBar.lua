@@ -1,4 +1,5 @@
-if not StanceBar then return end
+local BlizzardStanceBar = _G.StanceBar
+if not BlizzardStanceBar then return end
 
 --------------------------------------------------------------------------------
 -- Stance bar
@@ -27,42 +28,6 @@ if not ({
 })[UnitClassBase('player')] then
     return
 end
-
---------------------------------------------------------------------------------
--- Button setup
---------------------------------------------------------------------------------
-
-local function stanceButton_OnCreate(button)
-    -- tag with the default stance button
-    button.commandName = ('SHAPESHIFTBUTTON%d'):format(button:GetID())
-
-    -- turn off cooldown edges
-    button.cooldown:SetDrawEdge(false)
-
-    -- turn off constant usability updates
-    button:SetScript("OnUpdate", nil)
-
-    -- register mouse clicks
-    button:EnableMouseWheel(true)
-
-    -- apply hooks for quick binding
-    Addon.BindableButton:AddQuickBindingSupport(button)
-end
-
-local function getOrCreateStanceButton(id)
-    local name = ('%sStanceButton%d'):format(AddonName, id)
-
-    local button = _G[name]
-
-    if not button then
-        button = CreateFrame('CheckButton', name, nil, 'StanceButtonTemplate', id)
-
-        stanceButton_OnCreate(button)
-    end
-
-    return button
-end
-
 --------------------------------------------------------------------------------
 -- Bar setup
 --------------------------------------------------------------------------------
@@ -89,7 +54,7 @@ function StanceBar:NumButtons()
 end
 
 function StanceBar:AcquireButton(index)
-    return getOrCreateStanceButton(index)
+    return BlizzardStanceBar.actionButtons[index]
 end
 
 function StanceBar:OnAttachButton(button)
@@ -105,33 +70,6 @@ function StanceBar:OnDetachButton(button)
     Addon:GetModule('Tooltips'):Unregister(button)
 end
 
-function StanceBar:UpdateActions()
-	for i, button in pairs(self.buttons) do
-        local texture, isActive, isCastable = GetShapeshiftFormInfo(i)
-
-        button:SetAlpha(texture and 1 or 0)
-
-        local icon = button.icon
-
-        icon:SetTexture(texture)
-
-        if isCastable then
-            icon:SetVertexColor(1.0, 1.0, 1.0)
-        else
-            icon:SetVertexColor(0.4, 0.4, 0.4)
-        end
-
-        local start, duration, enable = GetShapeshiftFormCooldown(i)
-        if enable and enable ~= 0 and start > 0 and duration > 0 then
-            button.cooldown:SetCooldown(start, duration)
-        else
-            button.cooldown:Clear()
-        end
-
-        button:SetChecked(isActive and true)
-    end
-end
-
 -- export
 Addon.StanceBar = StanceBar
 
@@ -142,13 +80,15 @@ Addon.StanceBar = StanceBar
 local StanceBarModule = Addon:NewModule('StanceBar', 'AceEvent-3.0')
 
 function StanceBarModule:Load()
+    if not self.loaded then
+        self:OnFirstLoad()
+        self.loaded = true
+    end
+
     self.bar = StanceBar:New()
 
     self:RegisterEvent("PLAYER_ENTERING_WORLD", 'UpdateNumForms')
     self:RegisterEvent("PLAYER_REGEN_ENABLED", 'UpdateNumForms')
-    self:RegisterEvent("UPDATE_SHAPESHIFT_FORM", 'UpdateStanceButtons')
-    self:RegisterEvent("UPDATE_SHAPESHIFT_USABLE", 'UpdateStanceButtons')
-    self:RegisterEvent("UPDATE_SHAPESHIFT_COOLDOWN", 'UpdateStanceButtons')
 end
 
 function StanceBarModule:Unload()
@@ -159,17 +99,30 @@ function StanceBarModule:Unload()
     end
 end
 
+function StanceBarModule:OnFirstLoad()
+    -- hide the existing stance bar
+    BlizzardStanceBar:SetParent(Addon.ShadowUIParent)
+
+    -- wipe buttons and spacers to avoid layout updates from the stock ui
+    table.wipe(BlizzardStanceBar.buttonsAndSpacers)
+
+    for _, button in pairs(BlizzardStanceBar.actionButtons) do
+        -- turn off cooldown edges
+        button.cooldown:SetDrawEdge(false)
+
+        -- turn off constant usability updates
+        button:SetScript("OnUpdate", nil)
+
+        -- register mouse clicks
+        button:EnableMouseWheel(true)
+
+        -- apply hooks for quick binding
+        Addon.BindableButton:AddQuickBindingSupport(button)
+    end
+end
+
 function StanceBarModule:UpdateNumForms()
     if not InCombatLockdown() then
         self.bar:UpdateNumButtons()
     end
-
-    self:UpdateStanceButtons()
 end
-
-StanceBarModule.UpdateStanceButtons = Addon:Defer(function(self)
-    local bar = self.bar
-    if bar then
-        bar:UpdateActions()
-    end
-end, 0.01, StanceBarModule)

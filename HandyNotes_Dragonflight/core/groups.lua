@@ -27,6 +27,9 @@ function Group:Initialize(name, icon, attrs)
 
     if attrs then for k, v in pairs(attrs) do self[k] = v end end
 
+    self.type = self.type or ns.group_types.EXPANSION
+    self.order = self.order or 1
+
     self.alphaArg = 'icon_alpha_' .. self.name
     self.scaleArg = 'icon_scale_' .. self.name
     self.displayArg = 'icon_display_' .. self.name
@@ -94,10 +97,37 @@ ns.GROUP_HIDDEN = {display = false}
 ns.GROUP_HIDDEN75 = {alpha = 0.75, display = false}
 ns.GROUP_ALPHA75 = {alpha = 0.75}
 
+ns.group_types = {
+    -- Standard groups that apply to all zones in all expansions (rares, treasures,
+    -- pet battles, etc).
+    STANDARD = 1,
+
+    -- Groups that are specific to a zone or expansion, such as dragon riding glyphs,
+    -- disturbed dirts, expedition scout packs or magic-bound chests for Dragonflight.
+    EXPANSION = 2,
+
+    -- Groups that are intended to help complete a specific achievement. These will go
+    -- into a sub-menu so the main menu does not grow too large.
+    ACHIEVEMENT = 3,
+
+    -- Any other groups that do not fall into the above categories
+    OTHER = 4
+}
+
 ns.groups = {
-    PETBATTLE = Group('pet_battles', 'paw_y'),
-    QUEST = Group('quests', 'quest_ay'),
-    RARE = Group('rares', 'skull_w', {defaults = ns.GROUP_ALPHA75}),
-    TREASURE = Group('treasures', 'chest_gy', {defaults = ns.GROUP_ALPHA75}),
-    MISC = Group('misc', 454046)
+    RARE = Group('rares', 'skull_w', {
+        defaults = ns.GROUP_ALPHA75,
+        type = ns.group_types.STANDARD,
+        order = 1
+    }),
+    TREASURE = Group('treasures', 'chest_gy', {
+        defaults = ns.GROUP_ALPHA75,
+        type = ns.group_types.STANDARD,
+        order = 2
+    }),
+    PETBATTLE = Group('pet_battles', 'paw_y',
+        {type = ns.group_types.STANDARD, order = 3}),
+    QUEST = Group('quests', 'quest_ay',
+        {type = ns.group_types.STANDARD, order = 4}),
+    MISC = Group('misc', 454046, {type = ns.group_types.STANDARD, order = 5})
 }
