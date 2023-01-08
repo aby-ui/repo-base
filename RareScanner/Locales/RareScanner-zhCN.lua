@@ -1079,7 +1079,6 @@ if AL then
 	AL["NOTE_RUNE_CONSTRUCTS_CONTAINERS"] = "你需要禁用该区域周围的3个[造物符文]（地板和墙壁上的瓷砖）。当禁用最后一个时解锁宝箱。"
 	AL["NOTE_STOLEN_ANIMA_VESSEL"] = "RareScanner 无法提示此宝箱。你需要从 [档案员罗-遂尔] 处购买一个 [训练有素的跃足兽运送者] 并用它来召唤一个跃足兽（没有它你无法看见宝箱）。"
 	AL["NOTE_STOLEN_ANIMA_VESSEL_RIFT"] = "RareScanner 无法提示此宝箱。你需要从 [档案员罗-遂尔] 处购买一个 [训练有素的跃足兽运送者] 并用它来召唤一个跃足兽（没有它你无法看见宝箱）。在刻希亚的[裂隙传送门]使用[修复的裂隙钥匙]进入[裂隙]，然后一路走到这里才能看见。"
-	AL["NOTE_STORM_EVENTS"] = "它只在风暴事件发生时才会出现。"
 	AL["NOTE_SWELLING_TEAR_NPCS"] = "只在事件[涌胀裂隙]激活时出现。"
 	AL["NOTE_TEMPLE_COURAGE"] = "勇气神庙"
 	AL["NOTE_THEATER_PAIN"] = "伤逝剧场"

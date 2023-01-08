@@ -72,28 +72,28 @@ do
 		return [[Interface\AddOns\Details\images\icons2]], unpack(roles [role])
 	end
 
-	function _detalhes:GetClassIcon (class)
-
-		local c
-
+	function _detalhes:GetClassIcon(class)
 		if (self.classe) then
-			c = self.classe
+			class = self.classe
 		elseif (type(class) == "table" and class.classe) then
-			c = class.classe
+			class = class.classe
 		elseif (type(class) == "string") then
-			c = class
+			class = class
 		else
-			c = "UNKNOW"
+			class = "UNKNOW"
 		end
 
-		if (c == "UNKNOW") then
+		if (class == "UNKNOW") then
 			return [[Interface\LFGFRAME\LFGROLE_BW]], 0.25, 0.5, 0, 1
-		elseif (c == "UNGROUPPLAYER") then
+
+		elseif (class == "UNGROUPPLAYER") then
 			return [[Interface\ICONS\Achievement_Character_Orc_Male]], 0, 1, 0, 1
-		elseif (c == "PET") then
+
+		elseif (class == "PET") then
 			return [[Interface\AddOns\Details\images\classes_small]], 0.25, 0.49609375, 0.75, 1
+
 		else
-			return [[Interface\AddOns\Details\images\classes_small]], unpack(_detalhes.class_coords [c])
+			return [[Interface\AddOns\Details\images\classes_small]], unpack(_detalhes.class_coords[class])
 		end
 	end
 

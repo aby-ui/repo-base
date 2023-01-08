@@ -1,13 +1,13 @@
 -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 --global name declaration
-
+--local _StartDebugTime = debugprofilestop() print(debugprofilestop() - _StartDebugTime)
 		_ = nil
 		_G._detalhes = LibStub("AceAddon-3.0"):NewAddon("_detalhes", "AceTimer-3.0", "AceComm-3.0", "AceSerializer-3.0", "NickTag-1.0")
 		local addonName, Details222 = ...
 		local version, build, date, tocversion = GetBuildInfo()
 
-		_detalhes.build_counter = 10337
-		_detalhes.alpha_build_counter = 10337 --if this is higher than the regular counter, use it instead
+		_detalhes.build_counter = 10403
+		_detalhes.alpha_build_counter = 10403 --if this is higher than the regular counter, use it instead
 		_detalhes.dont_open_news = true
 		_detalhes.game_version = version
 		_detalhes.userversion = version .. " " .. _detalhes.build_counter
@@ -57,25 +57,23 @@
 		Details222.PlayerBreakdown = {
 			DamageSpellsCache = {}
 		}
-
 		--namespace color
 		Details222.ColorScheme = {
 			["gradient-background"] = {0.1215, 0.1176, 0.1294, 0.8},
 		}
-
 		function Details222.ColorScheme.GetColorFor(colorScheme)
 			return Details222.ColorScheme[colorScheme]
 		end
-
 		--namespace for damage spells (spellTable)
 		Details222.DamageSpells = {}
-
-
 		--namespace for texture
 		Details222.Textures = {}
-
 		--namespace for pet
 		Details222.Pets = {}
+		Details222.MythicPlus = {}
+		Details222.EJCache = {}
+		Details222.Segments = {}
+		Details222.Tables = {}
 
 -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 --initialization stuff
@@ -89,6 +87,31 @@ do
 	local Loc = _G.LibStub("AceLocale-3.0"):GetLocale( "Details" )
 
 	local news = {
+		{"v10.0.2.10333.147", "Jan 04th, 2023"},
+
+		"Enemy Cast (non-interrupted) now is shown in the death log.",
+		"Damage Done by Blessing of Winter and Summer now counts torward the paladin.",
+		"Tooltips for Mythic Dungeon segments in the segments menu, now brings more information about the combat.",
+		"List of Potions updated (Jooooo)",
+		"Priest Spirit of Redemption now shows in the Death Log breakdown.",
+		"/keystone doesn't show the player realm anymore",
+		"When importing a profile, the confirmation box (asking a name for the new profile) got a check box to opt-out of importing Code.",
+		"Major fixes for Guild Sync and Statistics window: /details stats",
+		"Raid Check (plugin): Added M+ Score and fixed the flask usage.",
+		"Streamer (plugin): Fixed the plugin window hidding after login.",
+		"Fixed Evoker and several other cooldowns which wasn't showing in the cooldown usage display.",
+		"Fixed a small freeze that was happening when hovering over the segments menu.",
+		"Fixed some slash commands not working for deDE localization.",
+		"Fixed Rogue Akaari's Soul not getting detected properly during combat (Flamanis).",
+		"Fixed the sorting columns on /keystone panel which key stone level wasn't sorting correctly (Benjamin H.).",
+		"Fix for Fire Elemental on Wrath (Flamanis).",
+		"Fixed Evoker bug where empowered abilities wasn't showing in overall data (Flamanis).",
+		"Fixed an error when Details! attempted to use Ghost Frame in Wrath, but Ghost frame doesn't exists on that expansion (Flamanis).",
+		"Fixed spec detection for some specs on retail (Flamanis).",
+		"Fixed ToC for Compare2, how it also works on Wrath (Flamanis).",
+		"Fixed an issue with buff and debuff uptime sometimes not closing properly after the combat.",
+
+
 		{"v10.0.2.10333.147", "Nov 18th, 2022"},
 		"Added two checkboxes for Merge Pet and Player spell on the Breakdown window.",
 		"Added uptime for Hunter's Pet Frenzy Buff, it now show in the 'Auras' tab in the Breakdown Window.",
@@ -997,4 +1020,90 @@ if (select(4, GetBuildInfo()) >= 100000) then
 			StaticPopup1.button2:Click()
 		end
 	end)
+end
+
+Details222.ClassCache = {}
+Details222.ClassCache.ByName = {}
+Details222.ClassCache.ByGUID = {}
+
+function Details222.ClassCache.GetClass(value)
+	local className = Details222.ClassCache.ByName[value] or Details222.ClassCache.ByGUID[value]
+	if (className) then
+		return className
+	end
+
+	local _, unitClass = UnitClass(value)
+	return unitClass
+end
+
+function Details222.ClassCache.MakeCache()
+	--iterage among all segments in the container history, get the damage container and get the actor list, check if the actor is a player and if it is, get the class and store it in the cache
+	for _, combatObject in ipairs(Details.tabela_historico.tabelas) do
+		for _, actorObject in combatObject:GetContainer(DETAILS_ATTRIBUTE_DAMAGE):ListActors() do
+			if (actorObject:IsPlayer()) then
+				local actorName = actorObject.nome
+				local actorClass = actorObject.classe
+				local actorGUID = actorObject.serial
+				Details222.ClassCache.ByName[actorName] = actorClass
+				Details222.ClassCache.ByGUID[actorGUID] = actorClass
+			end
+		end
+	end
+end
+
+Details222.UnitIdCache = {}
+Details222.UnitIdCache.Raid = {
+	[1] = "raid1",
+	[2] = "raid2",
+	[3] = "raid3",
+	[4] = "raid4",
+	[5] = "raid5",
+	[6] = "raid6",
+	[7] = "raid7",
+	[8] = "raid8",
+	[9] = "raid9",
+	[10] = "raid10",
+	[11] = "raid11",
+	[12] = "raid12",
+	[13] = "raid13",
+	[14] = "raid14",
+	[15] = "raid15",
+	[16] = "raid16",
+	[17] = "raid17",
+	[18] = "raid18",
+	[19] = "raid19",
+	[20] = "raid20",
+	[21] = "raid21",
+	[22] = "raid22",
+	[23] = "raid23",
+	[24] = "raid24",
+	[25] = "raid25",
+	[26] = "raid26",
+	[27] = "raid27",
+	[28] = "raid28",
+	[29] = "raid29",
+	[30] = "raid30",
+	[31] = "raid31",
+	[32] = "raid32",
+	[33] = "raid33",
+	[34] = "raid34",
+	[35] = "raid35",
+	[36] = "raid36",
+	[37] = "raid37",
+	[38] = "raid38",
+	[39] = "raid39",
+	[40] = "raid40",
+}
+
+Details222.UnitIdCache.Party = {
+	[1] = "party1",
+	[2] = "party2",
+	[3] = "party3",
+	[4] = "party4",
+}
+
+function Details222.Tables.MakeWeakTable(mode)
+	local newTable = {}
+	setmetatable(newTable, {__mode = mode or "v"})
+	return newTable
 end

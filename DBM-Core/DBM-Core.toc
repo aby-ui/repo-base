@@ -21,7 +21,7 @@
 ## LoadOnDemand: 0
 ## DefaultState: enabled
 ## Author: MysticalOS, QartemisT
-## Version: 7c6b7d4
+## Version: e8c6754
 ## X-Website: https://deadlybossmods.com
 
 Libs\LibLatency\LibLatency.xml

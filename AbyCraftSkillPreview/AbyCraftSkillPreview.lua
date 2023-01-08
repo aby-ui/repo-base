@@ -1,4 +1,5 @@
-local FrameName = ...
+local FrameName, private = ...
+local L = private.L
 
 local function getPreviewFrame()
     return _G[FrameName]
@@ -53,7 +54,7 @@ local function updateSkillPoint(changeEditBox)
         end
     end
 
-    ct.toggle.text:SetText("数量不符")
+    ct.toggle.text:SetText(L["Quantity Mismatch"])
     if allEqual then
         local self = ct.form
         --@see Blizzard_ProfessionsRecipeSchematicForm.lua ProfessionsRecipeSchematicFormMixin:GetRecipeOperationInfo()
@@ -68,7 +69,7 @@ local function updateSkillPoint(changeEditBox)
                 else
                     opInfo = C_TradeSkillUI.GetCraftingOperationInfo(recipeInfo.recipeID, craftingReagents, self.transaction:GetAllocationItemGUID());
                 end
-                ct.toggle.text:SetFormattedText("预估技能 |cff00ff00%d", opInfo.baseSkill + opInfo.bonusSkill)
+                ct.toggle.text:SetFormattedText("%s |cff00ff00%d|r", L["Estimate Skill"], opInfo.baseSkill + opInfo.bonusSkill)
             end
         end
     end
@@ -79,19 +80,45 @@ local function togglePreview(hideToggle)
     ct.toggle:SetShown(not hideToggle)
     local show = ct.toggle:GetChecked() and not hideToggle
     ct:SetShown(show)
-    ct.toggle.text:SetFont(ct.toggle.text:GetFont(), show and 24 or 15, "")
+    ct.toggle.text:SetFont(ct.toggle.text:GetFont(), show and L.TitleFontSize or 15, "")
     if show then
         updateSkillPoint()
     else
-        ct.toggle.text:SetText("模拟材料品质")
+        ct.toggle.text:SetText(L["Try Reagents"])
     end
     if ct.form then
         local slots = ct.form.reagentSlots
         slots = slots and slots[Enum.CraftingReagentType.Basic]
         for i, slot in ipairs(slots or {}) do
-            slot.Name:SetAlpha(ct.edits and ct.edits[i][1]:IsVisible() and 0 or 1)
+            local alpha = ct.edits and ct.edits[i][1]:IsVisible() and 0 or 1
+            slot.Name:SetAlpha(alpha)
+            slot.Checkmark:SetAlpha(alpha)
         end
     end
+end
+
+local function createEdit(ct, i, j)
+    local edit = CreateFrame("EditBox", nil, ct, "NumericInputSpinnerTemplate")
+    ct.edits[i][j] = edit
+    edit:SetScript("OnEnter", function(self)
+        if self.itemID then
+            GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
+            GameTooltip:SetItemByID(self.itemID);
+            GameTooltip:Show();
+        end
+    end)
+    edit:SetScript("OnLeave", function()
+        GameTooltip:Hide();
+    end)
+    edit:SetOnValueChangedCallback(updateSkillPoint)
+    edit.DecrementButton:ClearAllPoints() edit.DecrementButton:SetPoint("TOPLEFT", edit, "BOTTOMLEFT", -7, 2)
+    edit.IncrementButton:ClearAllPoints() edit.IncrementButton:SetPoint("TOPRIGHT", edit, "BOTTOMRIGHT", 3, 2)
+    if j == 3 then
+        edit.numText = edit:CreateFontString()
+        edit.numText:SetFontObject(ChatFontSmall)
+        edit.numText:SetPoint("TOPLEFT", edit, "TOPRIGHT", 5, -4)
+    end
+    return edit
 end
 
 local function setup()
@@ -101,12 +128,17 @@ local function setup()
     ct.toggle:SetScript("OnClick", function() togglePreview() end)
     ct.toggle:SetScript("OnEnter", function(self)
         GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
-        GameTooltip:SetText("说明")
-        GameTooltip:AddLine("本功能由warbaby(爱不易)原创开发")
-        GameTooltip:AddLine("用于查看不同品质的材料对配方技能的影响")
-        GameTooltip:AddLine("注意：不包括卓然洞悉等附加的技能")
-        GameTooltip:AddLine("制作时一定要看右侧<制作详情>中的实际技能，如因插件错误导致损失，恕不负责。", nil, nil, nil, true)
-        GameTooltip:Show();
+        if Locale_zhCN then
+            GameTooltip:SetText("说明")
+            GameTooltip:AddLine("本功能由warbaby(爱不易)原创开发")
+            GameTooltip:AddLine("用于查看不同品质的材料对配方技能的影响")
+            GameTooltip:AddLine("注意：不包括卓然洞悉等附加的技能")
+            GameTooltip:AddLine("制作时一定要看右侧<制作详情>中的实际技能，如因插件错误导致损失，恕不负责。", nil, nil, nil, true)
+        else
+            GameTooltip:SetText(FrameName)
+            GameTooltip:AddDoubleLine(" ", "by warbaby")
+        end
+            GameTooltip:Show();
     end)
     ct.toggle:SetScript("OnLeave", function()
         GameTooltip:Hide();
@@ -127,11 +159,13 @@ local function setup()
         ct.maxLevel:SetPoint("TOPLEFT", 85, -12)
 
         ------ 不相干的一个功能 ------
-        local maxTrivialLevel = self.currentRecipeInfo and self.currentRecipeInfo.maxTrivialLevel
-        if maxTrivialLevel and maxTrivialLevel > 0 then
-            ct.maxLevel:SetFormattedText("（技能提升上限：|cff00ff00%d|r）", maxTrivialLevel)
-        else
-            ct.maxLevel:SetText("")
+        if Locale_zhCN then
+            local maxTrivialLevel = self.currentRecipeInfo and self.currentRecipeInfo.maxTrivialLevel
+            if maxTrivialLevel and maxTrivialLevel > 0 then
+                ct.maxLevel:SetFormattedText("（技能提升上限：|cff00ff00%d|r）", maxTrivialLevel)
+            else
+                ct.maxLevel:SetText("")
+            end
         end
         ---------------------------
 
@@ -144,29 +178,7 @@ local function setup()
             local schema = slot:GetReagentSlotSchematic()
             edits[i] = edits[i] or {}
             for j = 1, 3 do
-                local edit = edits[i][j]
-                if not edit then
-                    edit = CreateFrame("EditBox", nil, ct, "NumericInputSpinnerTemplate")
-                    edit:SetScript("OnEnter", function(self)
-                        if self.itemID then
-                            GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
-                            GameTooltip:SetItemByID(self.itemID);
-                            GameTooltip:Show();
-                        end
-                    end)
-                    edit:SetScript("OnLeave", function()
-                        GameTooltip:Hide();
-                    end)
-                    edit:SetOnValueChangedCallback(updateSkillPoint)
-                    edits[i][j] = edit
-                    edit.DecrementButton:ClearAllPoints() edit.DecrementButton:SetPoint("TOPLEFT", edit, "BOTTOMLEFT", -7, 2)
-                    edit.IncrementButton:ClearAllPoints() edit.IncrementButton:SetPoint("TOPRIGHT", edit, "BOTTOMRIGHT", 3, 2)
-                    if j == 3 then
-                        edit.numText = edit:CreateFontString()
-                        edit.numText:SetFontObject(ChatFontSmall)
-                        edit.numText:SetPoint("TOPLEFT", edit, "TOPRIGHT", 5, -4)
-                    end
-                end
+                local edit = edits[i][j] or createEdit(ct, i, j)
                 if j == 1 then
                     edit:SetPoint("TopLeft", slot.Button, "TopRight", 18, -1)
                 else
@@ -184,7 +196,6 @@ local function setup()
                     edit.itemID = schema.reagents[j].itemID
                 end
             end
-            slot.Name:SetAlpha(edits[i][1]:IsShown() and 0 or 1)
 
             local numText = edits[i][3].numText
             numText.quantity = schema.quantityRequired

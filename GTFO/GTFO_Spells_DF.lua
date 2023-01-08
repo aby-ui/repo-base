@@ -33,7 +33,12 @@ GTFO.SpellID["390326"] = {
 
 GTFO.SpellID["372339"] = {
   --desc = "Lava";
-  sound = 1;
+  soundFunction = function() 
+	if (GTFO.Settings.IgnoreOptions and GTFO.Settings.IgnoreOptions["Lava"]) then
+		return 0;
+	end
+	return 1;
+  end;
 };
 
 GTFO.SpellID["393577"] = {
@@ -104,9 +109,22 @@ GTFO.SpellID["393467"] = {
   sound = 1;
 };
 
-GTFO.SpellID["377840"] = {
-  --desc = "Temporal Shock (Eon's Fringe)";
-  sound = 2;
+GTFO.SpellID["377853"] = {
+  --desc = "Unstable Time (Eon's Fringe)";
+  applicationOnly = true;
+  soundFunction = function() 
+	local stacks = GTFO_DebuffStackCount("player", 377853);
+	if (UnitOnTaxi("player")) then
+		-- Don't alert when flying through this area on a flight path
+		return 0;
+	elseif (stacks > 45) then
+		-- Get teleported out at 49 stacks (98% movement reduction)
+		return 1;
+	elseif (stacks == 1 or stacks % 10 == 0 or stacks >= 40) then
+		-- Getting close to being teleported out
+		return 2;
+	end
+  end;
 };
 
 GTFO.SpellID["385355"] = {
@@ -167,6 +185,15 @@ GTFO.SpellID["388379"] = {
   sound = 1;
 };
 
+GTFO.SpellID["377838"] = {
+  --desc = "Slowing Sands";
+  sound = 1;
+};
+
+GTFO.SpellID["393562"] = {
+  --desc = "Lava Pool (Zhurtan the Riverboiler)";
+  sound = 1; -- Ground AOE spawned by a mob, not be ignored like other "lava pools"
+};
 
 --- *******************
 --- * Ruby Life Pools *
@@ -228,6 +255,17 @@ GTFO.SpellID["373973"] = {
 
 GTFO.SpellID["372820"] = {
   --desc = "Scorched Earth (Kokia Blazehoof)";
+  sound = 1;
+};
+
+GTFO.SpellID["392019"] = {
+  --desc = "Magma Eruption (Bazual)";
+  applicationOnly = true;
+  sound = 1;
+};
+
+GTFO.SpellID["389366"] = {
+  --desc = "Magma Eruption (Bazual)";
   sound = 1;
 };
 
@@ -566,6 +604,12 @@ GTFO.SpellID["392563"] = {
   tankSound = 0;
 };
 
+GTFO.SpellID["393784"] = {
+  --desc = "Magma Breath (Iskakx)";
+  sound = 1;
+  tankSound = 0;
+};
+
 GTFO.SpellID["382458"] = {
   --desc = "Resonant Aftermath (Terros)";
   sound = 1;
@@ -688,6 +732,22 @@ GTFO.SpellID["375883"] = {
 
 GTFO.SpellID["379419"] = {
   --desc = "Empowered Greatstaff's Wrath (Broodkeeper Diurna)";
+  sound = 1;
+};
+
+GTFO.SpellID["375883"] = {
+  --desc = "Greatstaff's Wrath (Broodkeeper Diurna)";
+  sound = 1;
+};
+
+GTFO.SpellID["375873"] = {
+  --desc = "Wildfire (Broodkeeper Diurna)";
+  sound = 1;
+  spellType = "SPELL_AURA_REFRESH"; -- Only alert when refreshing, being hit more than once
+};
+
+GTFO.SpellID["375578"] = {
+  --desc = "Flame Sentry (Dragonspawn Flamebender)";
   sound = 1;
 };
 

@@ -22,9 +22,9 @@
 ## Title: AdiBags
 ## Notes: Adirelle's bag addon.
 ## Author: Adirelle
-## Version: v1.9.50
+## Version: v1.9.54
 ## SavedVariables: AdiBagsDB
-## X-Date: 2022-11-29T20:50:44Z
+## X-Date: 2023-01-06T7:20:18Z
 ## X-License: GPL v3
 ## OptionalDeps: LibStub, CallbackHandler-1.0, Ace3, LibSharedMedia-3.0, Scrap, BrainDead, SyLevel
 #@alpha@

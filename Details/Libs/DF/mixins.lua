@@ -343,6 +343,9 @@ detailsFramework.PayloadMixin = {
 	end,
 }
 
+---mixin to use with DetailsFramework:Mixin(table, detailsFramework.ScriptHookMixin)
+---
+---@class DetailsFramework.ScriptHookMixin
 detailsFramework.ScriptHookMixin = {
 	RunHooksForWidget = function(self, event, ...)
 		local hooks = self.HookList[event]
@@ -412,7 +415,13 @@ detailsFramework.ScriptHookMixin = {
 	end,
 }
 
+---mixin to use with DetailsFramework:Mixin(table, detailsFramework.SortFunctions)
+---add methods to be used on scrollframes
+---@class DetailsFramework.ScrollBoxFunctions
 detailsFramework.ScrollBoxFunctions = {
+	---refresh the scrollbox by resetting all lines created with :CreateLine(), then calling the refresh_func which was set at :CreateScrollBox()
+	---@param self table
+	---@return table
 	Refresh = function(self)
 		--hide all frames and tag as not in use
 		self._LinesInUse = 0
@@ -427,8 +436,10 @@ detailsFramework.ScrollBoxFunctions = {
 			offset = self:GetOffsetFaux()
 		end
 
+		--call the refresh function
 		detailsFramework:CoreDispatch((self:GetName() or "ScrollBox") .. ":Refresh()", self.refresh_func, self, self.data, offset, self.LineAmount)
 
+		--hide all frames that are not in use
 		for index, frame in ipairs(self.Frames) do
 			if (not frame._InUse) then
 				frame:Hide()
@@ -468,10 +479,15 @@ detailsFramework.ScrollBoxFunctions = {
 		return true
 	end,
 
+	---create a line within the scrollbox
+	---@param self table is the scrollbox
+	---@param func function|nil function to create the line object, this function will receive the line index as argument and return a table with the line object
+	---@return table line object (table)
 	CreateLine = function(self, func)
 		if (not func) then
 			func = self.CreateLineFunc
 		end
+
 		local okay, newLine = pcall(func, self, #self.Frames+1)
 		if (okay) then
 			if (not newLine) then
@@ -676,18 +692,31 @@ local SortByMemberReverse = function(t1, t2)
 	return t1[SortMember] < t2[SortMember]
 end
 
+---mixin to use with DetailsFramework:Mixin(table, detailsFramework.SortFunctions)
+---adds the method Sort() to a table, this method can be used to sort another table by a member, can't sort itself
+---@class DetailsFramework.SortFunctions
 detailsFramework.SortFunctions = {
-	Sort = function(self, thisTable, memberName, isReverse)
-		SortMember = memberName
-		if (not isReverse) then
-			table.sort(thisTable, SortByMember)
+	---sort a table by a member
+	---@param self table
+	---@param tThisTable table
+	---@param sMemberName string
+	---@param bIsReverse boolean
+	Sort = function(self, tThisTable, sMemberName, bIsReverse)
+		SortMember = sMemberName
+		if (not bIsReverse) then
+			table.sort(tThisTable, SortByMember)
 		else
-			table.sort(thisTable, SortByMemberReverse)
+			table.sort(tThisTable, SortByMemberReverse)
 		end
 	end
 }
 
+---mixin to use with DetailsFramework:Mixin(table, detailsFramework.DataMixin)
+---add 'data' to a table, this table can be used to store data for the object
+---@class DetailsFramework.DataMixin
 detailsFramework.DataMixin = {
+	---initialize the data table
+	---@param self table
 	DataConstructor = function(self)
 		self._dataInfo = {
 			data = {},
@@ -696,18 +725,28 @@ detailsFramework.DataMixin = {
 		}
 	end,
 
+	---when data is changed, functions registered with this function will be called
+	---@param self table
+	---@param func function
+	---@param ... unknown
 	AddDataChangeCallback = function(self, func, ...)
 		assert(type(func) == "function", "invalid function for AddDataChangeCallback.")
 		local allCallbacks = self._dataInfo.callbacks
 		allCallbacks[func] = {...}
 	end,
 
+	---remove a previous registered callback function
+	---@param self table
+	---@param func function
 	RemoveDataChangeCallback = function(self, func)
 		assert(type(func) == "function", "invalid function for RemoveDataChangeCallback.")
 		local allCallbacks = self._dataInfo.callbacks
 		allCallbacks[func] = nil
 	end,
 
+	---set the data table
+	---@param self table
+	---@param data table
 	SetData = function(self, data)
 		assert(type(data) == "table", "invalid table for SetData.")
 		self._dataInfo.data = data
@@ -719,10 +758,15 @@ detailsFramework.DataMixin = {
 		end
 	end,
 
+	---get the data table
+	---@param self table
 	GetData = function(self)
 		return self._dataInfo.data
 	end,
 
+	---get the next value from the data table
+	---@param self table
+	---@return any
 	GetDataNextValue = function(self)
 		local currentValue = self._dataInfo.dataCurrentIndex
 		local value = self:GetData()[currentValue]
@@ -730,24 +774,36 @@ detailsFramework.DataMixin = {
 		return value
 	end,
 
+	---reset the data index, making GetDataNextValue() return the first value again
 	ResetDataIndex = function(self)
 		self._dataInfo.dataCurrentIndex = 1
 	end,
 
+	---get the size of the data table
+	---@param self table
+	---@return number
 	GetDataSize = function(self)
 		return #self:GetData()
 	end,
 
+	---get the first value from the data table
+	---@param self table
+	---@return any
 	GetDataFirstValue = function(self)
 		return self:GetData()[1]
 	end,
 
+	---get the last value from the data table
+	---@param self table
+	---@return any
 	GetDataLastValue = function(self)
 		local data = self:GetData()
 		return data[#data]
 	end,
 
-	--if the value stored is number, return the min and max values
+	---get the min and max values from the data table, if the value stored is number, return the min and max values
+	---@param self table
+	---@return number, number
 	GetDataMinMaxValues = function(self)
 		local minDataValue = 0
 		local maxDataValue = 0
@@ -766,7 +822,10 @@ detailsFramework.DataMixin = {
 		return minDataValue, maxDataValue
 	end,
 
-	--when data uses sub tables, get the min max values from a specific index or key
+	---when data uses sub tables, get the min max values from a specific index or key, if the value stored is number, return the min and max values
+	---@param self table
+	---@param key string
+	---@return number, number
 	GetDataMinMaxValueFromSubTable = function(self, key)
 		local minDataValue = 0
 		local maxDataValue = 0
@@ -786,6 +845,9 @@ detailsFramework.DataMixin = {
 	end,
 }
 
+---mixin to use with DetailsFramework:Mixin(table, detailsFramework.ValueMixin)
+---add support to min value and max value into a table or object
+---@class DetailsFramework.ValueMixin
 detailsFramework.ValueMixin = {
 	ValueConstructor = function(self)
 		self.minValue = 0

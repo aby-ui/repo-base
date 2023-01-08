@@ -1,8 +1,11 @@
 ## Interface: 100002
-## Title: |cff880303[爱不易]|r AbyUI 材料品质预览
-## Notes: 在制作界面中可以选择没有的材料，查看使用对应品质材料时的配方技能点数
-## Author: warbaby(爱不易)
-## Version: 2023.01.02
+## Title: AbyCraftSkillPreview
+## Notes: Freely choose reagents for your crafting recipe, and preview the estimate skill.
+## Title-zhCN: |cff880303[爱不易]|r AbyUI 材料品质预览
+## Notes-zhCN: 在制作界面中可以选择没有的材料，查看使用对应品质材料时的配方技能点数
+## Author: warbaby
+## Version: 2023.01.06
 ## X-Vendor: AbyUI
 
+locales.lua
 AbyCraftSkillPreview.lua

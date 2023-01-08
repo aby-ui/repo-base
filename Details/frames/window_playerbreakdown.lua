@@ -3025,6 +3025,10 @@ function gump:CriaJanelaInfo()
 			if (miscActor and miscActor.buff_uptime_spells) then
 				for spellID, spellObject in pairs(miscActor.buff_uptime_spells._ActorTable) do
 					local spellName, _, spellIcon = GetSpellInfo(spellID)
+					if (not spellObject.uptime) then
+						--print(_GetSpellInfo(spellID))
+						--dumpt(spellObject)
+					end
 					tinsert(newAuraTable, {spellIcon, spellName, spellObject.uptime, spellObject.appliedamt, spellObject.refreshamt, spellObject.uptime/combatTime*100, spellID = spellID})
 				end
 			end

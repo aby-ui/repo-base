@@ -7,13 +7,13 @@ function Details:OnCombatPhaseChanged()
 
     local current_combat = Details:GetCurrentCombat()
     local current_phase = current_combat.PhaseData [#current_combat.PhaseData][1]
-    
+
     local phase_damage_container = current_combat.PhaseData.damage [current_phase]
     local phase_healing_container = current_combat.PhaseData.heal [current_phase]
-    
+
     local phase_damage_section = current_combat.PhaseData.damage_section
     local phase_healing_section = current_combat.PhaseData.heal_section
-    
+
     if (not phase_damage_container) then
         phase_damage_container = {}
         current_combat.PhaseData.damage [current_phase] = phase_damage_container
@@ -22,13 +22,13 @@ function Details:OnCombatPhaseChanged()
         phase_healing_container = {}
         current_combat.PhaseData.heal [current_phase] = phase_healing_container
     end
-    
+
     for index, damage_actor in ipairs(Details.cache_damage_group) do
         local phase_damage = damage_actor.total - (phase_damage_section [damage_actor.nome] or 0)
         phase_damage_section [damage_actor.nome] = damage_actor.total
         phase_damage_container [damage_actor.nome] = (phase_damage_container [damage_actor.nome] or 0) + phase_damage
     end
-    
+
     for index, healing_actor in ipairs(Details.cache_healing_group) do
         local phase_heal = healing_actor.total - (phase_healing_section [healing_actor.nome] or 0)
         phase_healing_section [healing_actor.nome] = healing_actor.total
@@ -73,15 +73,15 @@ function Details:BossModsLink()
 
             if (phase and type(phase) == "number" and Details.encounter_table.phase ~= phase) then
                 Details:OnCombatPhaseChanged()
-                
+
                 Details.encounter_table.phase = phase
-                
+
                 local currentCombat = Details:GetCurrentCombat()
                 local combatTime = currentCombat:GetCombatTime()
                 if (combatTime > 5) then
                     tinsert(currentCombat.PhaseData, {phase, combatTime})
                 end
-                
+
                 Details:SendEvent("COMBAT_ENCOUNTER_PHASE_CHANGED", nil, phase)
                 --Details:Msg("Current phase is now:", phase)
             end
@@ -99,7 +99,7 @@ end
 function Details:CreateCallbackListeners()
 
     Details.DBM_timers = {}
-    
+
     local current_encounter = false
     local current_table_dbm = {}
     local current_table_bigwigs = {}
@@ -109,7 +109,7 @@ function Details:CreateCallbackListeners()
         if (event == "ENCOUNTER_START") then
             local encounterID, encounterName, difficultyID, raidSize = select(1, ...)
             current_encounter = encounterID
-            
+
         elseif (event == "ENCOUNTER_END" or event == "PLAYER_REGEN_ENABLED") then
             if (current_encounter) then
                 if (_G.DBM) then
@@ -130,8 +130,8 @@ function Details:CreateCallbackListeners()
                         end
                     end
                 end
-            end	
-            
+            end
+
             current_encounter = false
             wipe (current_table_dbm)
             wipe (current_table_bigwigs)

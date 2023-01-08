@@ -1,11 +1,11 @@
 local mod	= DBM:NewMod(2505, "DBM-Party-Dragonflight", 6, 1203)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20221206015003")
+mod:SetRevision("20230104041712")
 mod:SetCreatureID(186739)
 mod:SetEncounterID(2585)
 --mod:SetUsedIcons(1, 2, 3)
-mod:SetHotfixNoticeRev(20221127000000)
+mod:SetHotfixNoticeRev(20230103000000)
 --mod:SetMinSyncRevision(20211203000000)
 --mod.respawnTime = 29
 
@@ -58,7 +58,7 @@ function mod:OnCombatStart(delay)
 	timerSummonDraconicImageCD:Start(3.7-delay)
 	timerArcaneCleaveCD:Start(5-delay)
 	timerAncientOrbCD:Start(10.1-delay)
-	timerOverwhelmingenergyCD:Start(24.3-delay)
+	timerOverwhelmingenergyCD:Start(26.7-delay)
 end
 
 --function mod:OnCombatEnd()
@@ -113,7 +113,7 @@ function mod:SPELL_AURA_REMOVED(args)
 		timerSummonDraconicImageCD:Start(4.7)--4.7-5.7
 		timerArcaneCleaveCD:Start(7.1)--7.1-8.1
 		timerAncientOrbCD:Start(12)--12-13
-		timerOverwhelmingenergyCD:Start(43.3)
+		timerOverwhelmingenergyCD:Start(55.4)
 	end
 end
 

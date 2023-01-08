@@ -15,7 +15,7 @@ local max = math.max
 
 --api locals
 local PixelUtil = PixelUtil or DFPixelUtil
-local version = 9
+local version = 12
 
 local CONST_MENU_TYPE_MAINMENU = "main"
 local CONST_MENU_TYPE_SUBMENU = "sub"
@@ -2169,6 +2169,11 @@ function DF:CreateCoolTip()
 		end
 	end
 
+	--get the value of the fixed parameter
+	function gameCooltip:GetFixedParameter()
+		return gameCooltip.FixedValue
+	end
+
 	--set a fixed value for menu, the fixedValue is sent with the menu callback function
 	function gameCooltip:SetFixedParameter(value, injected)
 		if (injected ~= nil) then
@@ -2623,23 +2628,34 @@ function DF:CreateCoolTip()
 		wallpaperTable[7] = desaturate
 	end
 
-	function gameCooltip:SetBannerText(index, text, anchor, color, fontSize, fontFace, fontFlag)
+	function gameCooltip:SetBannerText(menuType, index, text, anchor, color, fontSize, fontFace, fontFlag)
+		menuType = gameCooltip:ParseMenuType(menuType)
+
+		local frame
+		if (menuType == CONST_MENU_TYPE_MAINMENU) then
+			frame = frame1
+		elseif (menuType == CONST_MENU_TYPE_SUBMENU) then
+			frame = frame2
+		end
+
 		local fontstring
 		if (index == 1) then
-			fontstring = frame1.upperImageText
+			fontstring = frame.upperImageText
 		elseif (index == 2) then
-			fontstring = frame1.upperImageText2
+			fontstring = frame.upperImageText2
 		end
 
 		fontstring:SetText(text or "")
 
 		if (anchor and index == 1) then
 			local myAnchor, hisAnchor, x, y = unpack(anchor)
-			fontstring:SetPoint(myAnchor, frame1.upperImage, hisAnchor or myAnchor, x or 0, y or 0)
+			fontstring:ClearAllPoints()
+			fontstring:SetPoint(myAnchor, frame.upperImage, hisAnchor or myAnchor, x or 0, y or 0)
 
 		elseif (anchor and index == 2) then
 			local myAnchor, hisAnchor, x, y = unpack(anchor)
-			fontstring:SetPoint(myAnchor, frame1, hisAnchor or myAnchor, x or 0, y or 0)
+			fontstring:ClearAllPoints()
+			fontstring:SetPoint(myAnchor, frame, hisAnchor or myAnchor, x or 0, y or 0)
 		end
 
 		if (color) then
@@ -2662,7 +2678,6 @@ function DF:CreateCoolTip()
 
 		if (menuType == CONST_MENU_TYPE_MAINMENU) then
 			frame = frame1
-
 		elseif (menuType == CONST_MENU_TYPE_SUBMENU) then
 			frame = frame2
 		end
@@ -2680,12 +2695,21 @@ function DF:CreateCoolTip()
 		end
 	end
 
-	function gameCooltip:SetBannerImage(index, texturePath, width, height, anchor, texCoord, overlay)
+	function gameCooltip:SetBannerImage(menuType, index, texturePath, width, height, anchor, texCoord, overlay)
+		menuType = gameCooltip:ParseMenuType(menuType)
+
+		local frame
+		if (menuType == CONST_MENU_TYPE_MAINMENU) then
+			frame = frame1
+		elseif(menuType == CONST_MENU_TYPE_SUBMENU) then
+			frame = frame2
+		end
+
 		local texture
 		if (index == 1) then
-			texture = frame1.upperImage
+			texture = frame.upperImage
 		elseif (index == 2) then
-			texture = frame1.upperImage2
+			texture = frame.upperImage2
 		end
 
 		if (texturePath) then
@@ -2703,11 +2727,13 @@ function DF:CreateCoolTip()
 			if (type(anchor[1]) == "table") then
 				for anchorIndex, anchorPoints in ipairs(anchor) do
 					local myAnchor, hisAnchor, x, y = unpack(anchorPoints)
-					texture:SetPoint(myAnchor, frame1, hisAnchor or myAnchor, x or 0, y or 0)
+					texture:ClearAllPoints()
+					texture:SetPoint(myAnchor, frame, hisAnchor or myAnchor, x or 0, y or 0)
 				end
 			else
 				local myAnchor, hisAnchor, x, y = unpack(anchor)
-				texture:SetPoint(myAnchor, frame1, hisAnchor or myAnchor, x or 0, y or 0)
+				texture:ClearAllPoints()
+				texture:SetPoint(myAnchor, frame, hisAnchor or myAnchor, x or 0, y or 0)
 			end
 		end
 
@@ -2715,8 +2741,10 @@ function DF:CreateCoolTip()
 			local leftCoord, rightCoord, topCoord, bottomCoord = unpack(texCoord)
 			texture:SetTexCoord(leftCoord, rightCoord, topCoord, bottomCoord)
 		end
+
 		if (overlay) then
-			texture:SetVertexColor(unpack(overlay))
+			local red, green, blue, alpha = DF:ParseColors(overlay)
+			texture:SetVertexColor(red, green, blue, alpha)
 		end
 
 		gameCooltip.Banner[index] = true
@@ -3070,6 +3098,10 @@ function DF:CreateCoolTip()
 	function gameCooltip:Show(frame, menuType, color)
 		gameCooltip.hadInteractions = false
 		return gameCooltip:ShowCooltip(frame, menuType, color)
+	end
+
+	function gameCooltip:IsShown()
+		return frame1:IsShown()
 	end
 
 	function gameCooltip:ShowCooltip(frame, menuType, color)

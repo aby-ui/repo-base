@@ -526,6 +526,45 @@ GTFO.SpellID["385978"] = {
   sound = 3;
 };
 
+GTFO.SpellID["377876"] = {
+  --desc = "Sequential Slicer";
+  applicationOnly = true;
+  sound = 3;
+};
+
+GTFO.SpellID["377648"] = {
+  --desc = "Capricious Emanations";
+  applicationOnly = true;
+  sound = 3;
+};
+
+GTFO.SpellID["387717"] = {
+  --desc = "Tyr's Wrath (Maiden of Patience)";
+  sound = 3;
+};
+
+GTFO.SpellID["393811"] = {
+  --desc = "Sacred Wave (Maiden of Diligence)";
+  applicationOnly = true;
+  sound = 3;
+};
+
+GTFO.SpellID["389514"] = {
+  --desc = "Lava Breath (Bazual)";
+  tankSound = 0; -- Is this avoidable by the tank?
+  sound = 3;
+};
+
+GTFO.SpellID["394476"] = {
+  --desc = "Earth Eruption (Ko'jo)";
+  sound = 3;
+};
+
+GTFO.SpellID["387243"] = {
+  --desc = "MMRGL GRRGL! (Captivated Shellwarden)";
+  applicationOnly = true;
+  sound = 3;
+};
 
 --- *******************
 --- * Ruby Life Pools *
@@ -1130,6 +1169,17 @@ GTFO.SpellID["386368"] = {
   sound = 3;
 };
 
+GTFO.SpellID["374570"] = {
+  --desc = "Explosive Brand (Leymor)";
+  soundFunction = function() -- Warn only if you get hit more than once
+	if (GTFO_FindEvent("ExplosiveBrand")) then
+		return 3;
+	end
+	GTFO_AddEvent("ExplosiveBrand", 3);
+	return 0;
+  end
+};
+
 GTFO.SpellID["371352"] = {
   --desc = "Forbidden Knowledge (Unstable Curator)";
   applicationOnly = true;
@@ -1468,8 +1518,14 @@ GTFO.SpellID["373559"] = {
 
 GTFO.SpellID["372158"] = {
   --desc = "Sundering Strike (Kurog Grimtotem)";
+  applicationOnly = true;
   sound = 3;
   tankSound = 0;
+};
+
+GTFO.SpellID["374025"] = {
+  --desc = "Searing Carnage (Kurog Grimtotem)";
+  sound = 3;
 };
 
 GTFO.SpellID["395894"] = {
@@ -1492,6 +1548,7 @@ GTFO.SpellID["393754"] = {
   --desc = "Blazing Ejections (Broodguardian Ziruss)";
   applicationOnly = true;
   sound = 3;
+  negatingDebuffSpellID = 393612; -- Violent Combustion
 };
 
 GTFO.SpellID["381442"] = {

@@ -72,6 +72,7 @@ map.nodes[58634021] = Rare({
 map.nodes[54517174] = Rare({ -- review -- required 67030
     id = 193135,
     quest = 69839,
+    note = L['spawns_hourly'],
     rewards = {Achievement({id = 16676, criteria = 56041})}
 }) -- Azra's Prized Peony
 
@@ -92,7 +93,7 @@ map.nodes[28635882] = RareElite({
 map.nodes[52916529] = Rare({
     id = 192738,
     quest = 73890,
-    note = L['brundin_the_dragonbane_note'],
+    note = L['brundin_the_dragonbane_note'] .. '\n\n' .. L['spawns_hourly'],
     rewards = {
         Achievement({id = 16676, criteria = 56038}),
         Transmog({item = 200133, slot = L['fist']}), -- Volcanic Chakram
@@ -257,12 +258,14 @@ map.nodes[34618275] = Rare({
 map.nodes[39596353] = Rare({ -- review -- required 67030
     id = 186827,
     quest = 74010,
+    note = L['spawns_hourly'],
     rewards = {Achievement({id = 16676, criteria = 56046})}
 }) -- Magmaton
 
 map.nodes[22207649] = RareElite({ -- required 67030
     id = 193152,
     quest = 74012,
+    note = L['spawns_hourly'],
     rewards = {
         Achievement({id = 16676, criteria = 56047}),
         Transmog({item = 200192, slot = L['1h_mace']}), -- Handheld Geyser
@@ -300,6 +303,7 @@ map.nodes[56004592] = Rare({
 map.nodes[81485082] = Rare({ -- required 67030
     id = 193118,
     quest = 74017,
+    note = L['spawns_hourly'],
     rewards = {
         Achievement({id = 16676, criteria = 56043}),
         DC.CliffsideWylderdrake.FinnedNeck
@@ -472,8 +476,9 @@ map.nodes[30025534] = RareElite({
 
 map.nodes[33886446] = Rare({
     id = 193708,
-    note = L['skald_impaler_note'],
     quest = 74078,
+    label = L['large_lunker_sighting'],
+    note = L['large_lunker_sighting_note'],
     rewards = {Achievement({id = 16678, criteria = 56117})}
 }) -- Skald the Impaler
 

@@ -27,6 +27,13 @@ if (not DF.IsTimewalkWoW()) then
     DetailsMythicPlusFrame:RegisterEvent("START_TIMER")
 end
 
+function Details222.MythicPlus.LogStep(log)
+    local today = date("%d/%m/%y %H:%M:%S")
+    tinsert(Details.mythic_plus_log, 1, today .. "|" .. log)
+    tremove(Details.mythic_plus_log, 50)
+end
+
+
 --[[
     all mythic segments have:
         .is_mythic_dungeon_segment = true
@@ -49,6 +56,8 @@ function DetailsMythicPlusFrame.MergeSegmentsOnEnd()
     if (DetailsMythicPlusFrame.DevelopmentDebug) then
         print("Details!", "MergeSegmentsOnEnd() > starting to merge mythic segments.", "InCombatLockdown():", InCombatLockdown())
     end
+
+    Details222.MythicPlus.LogStep("MergeSegmentsOnEnd started | creating the overall segment at the end of the run.")
 
     --create a new combat to be the overall for the mythic run
     Details:EntrarEmCombate()
@@ -160,6 +169,7 @@ function DetailsMythicPlusFrame.MergeTrashCleanup (isFromSchedule)
 
     --table exists and there's at least one segment
     if (segmentsToMerge and segmentsToMerge[1]) then
+        Details222.MythicPlus.LogStep("MergeTrashCleanup started.")
 
         --the first segment is the segment where all other trash segments will be added
         local masterSegment = segmentsToMerge[1]
@@ -256,6 +266,8 @@ function DetailsMythicPlusFrame.MergeTrashCleanup (isFromSchedule)
         Details:InstanciaCallFunction(Details.AtualizaSoloMode_AfertReset)
         Details:InstanciaCallFunction(Details.ResetaGump)
         Details:RefreshMainWindow(-1, true)
+    else
+        Details222.MythicPlus.LogStep("MergeTrashCleanup | no segments to merge.")
     end
 end
 
@@ -265,6 +277,8 @@ function DetailsMythicPlusFrame.MergeRemainingTrashAfterAllBossesDone()
     if (DetailsMythicPlusFrame.DevelopmentDebug) then
         print("Details!", "MergeRemainingTrashAfterAllBossesDone() > running, #segments: ", #DetailsMythicPlusFrame.TrashMergeScheduled2, "trash overall table:", DetailsMythicPlusFrame.TrashMergeScheduled2_OverallCombat)
     end
+
+    Details222.MythicPlus.LogStep("running MergeRemainingTrashAfterAllBossesDone.")
 
     local segmentsToMerge = DetailsMythicPlusFrame.TrashMergeScheduled2
     local overallCombat = DetailsMythicPlusFrame.TrashMergeScheduled2_OverallCombat
@@ -356,6 +370,7 @@ function DetailsMythicPlusFrame.MergeRemainingTrashAfterAllBossesDone()
             Details:RefreshMainWindow(-1, true)
         end
 
+        Details222.MythicPlus.LogStep("delete_trash_after_merge | concluded")
         Details:SendEvent("DETAILS_DATA_SEGMENTREMOVED")
     else
         --clear the segments to merge table
@@ -376,7 +391,7 @@ end
 
 --this function is called right after defeat a boss inside a mythic dungeon
 --it comes from details! control leave combat
-function DetailsMythicPlusFrame.BossDefeated (this_is_end_end, encounterID, encounterName, difficultyID, raidSize, endStatus) --hold your breath and count to ten
+function DetailsMythicPlusFrame.BossDefeated(this_is_end_end, encounterID, encounterName, difficultyID, raidSize, endStatus) --hold your breath and count to ten
     if (DetailsMythicPlusFrame.DevelopmentDebug) then
         print("Details!", "BossDefeated() > boss defeated | SegmentID:", Details.MythicPlus.SegmentID, " | mapID:", Details.MythicPlus.DungeonID)
     end
@@ -397,6 +412,10 @@ function DetailsMythicPlusFrame.BossDefeated (this_is_end_end, encounterID, enco
         Level = Details.MythicPlus.Level,
         EJID = Details.MythicPlus.ejID,
     }
+
+    local mythicLevel = C_ChallengeMode.GetActiveKeystoneInfo()
+    local mPlusTable = _detalhes.tabela_vigente.is_mythic_dungeon
+    Details222.MythicPlus.LogStep("BossDefeated | key level: | " .. mythicLevel .. " | " .. (mPlusTable.EncounterName or "") .. " | " .. (mPlusTable.ZoneName or ""))
 
     --check if need to merge the trash for this boss
     if (_detalhes.mythic_plus.merge_boss_trash and not Details.MythicPlus.IsRestoredState) then
@@ -490,12 +509,15 @@ function DetailsMythicPlusFrame.MythicDungeonFinished (fromZoneLeft)
                 print("Details!", "MythicDungeonFinished() > was in combat, calling SairDoCombate():", InCombatLockdown())
             end
             Details:SairDoCombate()
+            Details222.MythicPlus.LogStep("MythicDungeonFinished() | Details was in combat.")
         end
 
         local segmentsToMerge = {}
 
         --check if there is trash segments after the last boss. need to merge these segments with the trash segment of the last boss
-        if (_detalhes.mythic_plus.merge_boss_trash and not Details.MythicPlus.IsRestoredState and not fromZoneLeft) then
+        local bCanMergeBossTrash = _detalhes.mythic_plus.merge_boss_trash
+        Details222.MythicPlus.LogStep("MythicDungeonFinished() | merge_boss_trash = " .. (bCanMergeBossTrash and "true" or "false"))
+        if (bCanMergeBossTrash and not Details.MythicPlus.IsRestoredState and not fromZoneLeft) then
             --is the current combat not a boss fight?
             --this mean a combat was opened after the last boss of the dungeon was killed
             if (not Details.tabela_vigente.is_boss and Details.tabela_vigente:GetCombatTime() > 5) then
@@ -737,6 +759,9 @@ function DetailsMythicPlusFrame.EventListener.OnDetailsEvent(contextObject, even
 
             if (combatObject.is_boss) then
                 if (not combatObject.is_boss.killed) then
+                    local encounterName = combatObject.is_boss.encounter
+                    local zoneName = combatObject.is_boss.zone
+                    local mythicLevel = C_ChallengeMode.GetActiveKeystoneInfo()
 
                     --just in case the combat get tagged as boss fight
                     Details.tabela_vigente.is_boss = nil
@@ -749,8 +774,10 @@ function DetailsMythicPlusFrame.EventListener.OnDetailsEvent(contextObject, even
                         Level = _detalhes.MythicPlus.Level,
                         EJID = _detalhes.MythicPlus.ejID,
                     }
+
+                    Details222.MythicPlus.LogStep("COMBAT_PLAYER_LEAVE | wiped on boss | key level: | " .. mythicLevel .. " | " .. (encounterName or "") .. " " .. zoneName)
                 else
-                    DetailsMythicPlusFrame.BossDefeated (false, combatObject.is_boss.id, combatObject.is_boss.name, combatObject.is_boss.diff, 5, 1)
+                    DetailsMythicPlusFrame.BossDefeated(false, combatObject.is_boss.id, combatObject.is_boss.name, combatObject.is_boss.diff, 5, 1)
                 end
             end
 
@@ -759,6 +786,7 @@ function DetailsMythicPlusFrame.EventListener.OnDetailsEvent(contextObject, even
     elseif (event == "COMBAT_ENCOUNTER_START") then
         --ignore the event if ignoring mythic dungeon special treatment
         if (_detalhes.streamer_config.disable_mythic_dungeon) then
+            Details222.MythicPlus.LogStep("COMBAT_ENCOUNTER_START | streamer_config.disable_mythic_dungeon is true and the code cannot continue.")
             return
         end
 
@@ -768,6 +796,7 @@ function DetailsMythicPlusFrame.EventListener.OnDetailsEvent(contextObject, even
     elseif (event == "COMBAT_ENCOUNTER_END") then
         --ignore the event if ignoring mythic dungeon special treatment
         if (_detalhes.streamer_config.disable_mythic_dungeon) then
+            Details222.MythicPlus.LogStep("COMBAT_ENCOUNTER_END | streamer_config.disable_mythic_dungeon is true and the code cannot continue.")
             return
         end
 
@@ -775,15 +804,14 @@ function DetailsMythicPlusFrame.EventListener.OnDetailsEvent(contextObject, even
         --nothing
 
     elseif (event == "COMBAT_MYTHICDUNGEON_START") then
-        --print("COMBAT_MYTHICDUNGEON_START", ...)
-        local lower_instance = _detalhes:GetLowerInstanceNumber()
-        if (lower_instance) then
-            lower_instance = _detalhes:GetInstance(lower_instance)
-            if (lower_instance) then
+        local lowerInstance = _detalhes:GetLowerInstanceNumber()
+        if (lowerInstance) then
+            lowerInstance = _detalhes:GetInstance(lowerInstance)
+            if (lowerInstance) then
                 C_Timer.After(3, function()
-                    if (lower_instance:IsEnabled()) then
+                    if (lowerInstance:IsEnabled()) then
                         --todo, need localization
-                        lower_instance:InstanceAlert ("Details!" .. " " .. "Damage" .. " " .. "Meter", {[[Interface\AddOns\Details\images\minimap]], 16, 16, false}, 3, {function() end}, false, true)
+                        lowerInstance:InstanceAlert("Details!" .. " " .. "Damage" .. " " .. "Meter", {[[Interface\AddOns\Details\images\minimap]], 16, 16, false}, 3, {function() end}, false, true)
                     end
                 end)
             end
@@ -801,9 +829,23 @@ function DetailsMythicPlusFrame.EventListener.OnDetailsEvent(contextObject, even
 
         C_Timer.After(0.5, DetailsMythicPlusFrame.OnChallengeModeStart)
 
+        --debugging
+        local mPlusSettings = Details.mythic_plus
+        local result = ""
+        for key, value in pairs(Details.mythic_plus) do
+			if (type(value) ~= "table") then
+				result = result .. key .. " = " .. tostring(value) .. " | "
+			end
+		end
+
+        local mythicLevel = C_ChallengeMode.GetActiveKeystoneInfo()
+        local zoneName, _, _, _, _, _, _, currentZoneID = GetInstanceInfo()
+		Details222.MythicPlus.LogStep("CHALLENGE_MODE_START | settings: " .. result .. " | level: " .. mythicLevel .. " | zone: " .. zoneName .. " | zoneId: " .. currentZoneID)
+
     elseif (event == "COMBAT_MYTHICDUNGEON_END") then
         --ignore the event if ignoring mythic dungeon special treatment
         if (_detalhes.streamer_config.disable_mythic_dungeon) then
+            Details222.MythicPlus.LogStep("COMBAT_MYTHICDUNGEON_END | streamer_config.disable_mythic_dungeon is true and the code cannot continue.")
             return
         end
 
@@ -826,6 +868,7 @@ DetailsMythicPlusFrame:SetScript("OnEvent", function(_, event, ...)
 
             --ignore the event if ignoring mythic dungeon special treatment
             if (_detalhes.streamer_config.disable_mythic_dungeon) then
+                Details222.MythicPlus.LogStep("ZONE_CHANGED_NEW_AREA | streamer_config.disable_mythic_dungeon is true and the code cannot continue.")
                 return
             end
 
@@ -835,14 +878,16 @@ DetailsMythicPlusFrame:SetScript("OnEvent", function(_, event, ...)
                     print("Zone changed and the zone is different than the dungeon")
                 end
 
+                Details222.MythicPlus.LogStep("ZONE_CHANGED_NEW_AREA | player has left the dungeon and Details! finished the dungeon because of that.")
+
                 --send mythic dungeon end event
                 _detalhes:SendEvent("COMBAT_MYTHICDUNGEON_END")
 
                 --finish the segment
-                DetailsMythicPlusFrame.BossDefeated (true)
+                DetailsMythicPlusFrame.BossDefeated(true)
 
                 --finish the mythic run
-                DetailsMythicPlusFrame.MythicDungeonFinished (true)
+                DetailsMythicPlusFrame.MythicDungeonFinished(true)
             end
         end
     end

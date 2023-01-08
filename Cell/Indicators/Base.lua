@@ -10,7 +10,7 @@ DebuffTypeColor.cleu = {r=0, g=1, b=1}
 -- CreateAura_BorderIcon
 -------------------------------------------------
 local function BorderIcon_SetFont(frame, font, size, flags, xOffset, yOffset)
-    if not strfind(strlower(font), ".ttf") then font = F:GetFont(font) end
+    font = F:GetFont(font)
 
     if flags == "Shadow" then
         frame.stack:SetFont(font, size, "")
@@ -189,7 +189,7 @@ end
 -- CreateAura_BarIcon
 -------------------------------------------------
 local function BarIcon_SetFont(frame, font, size, flags, xOffset, yOffset)
-    if not strfind(strlower(font), ".ttf") then font = F:GetFont(font) end
+    font = F:GetFont(font)
 
     if flags == "Shadow" then
         frame.stack:SetFont(font, size, "")
@@ -445,7 +445,7 @@ end
 -- CreateAura_Text
 -------------------------------------------------
 local function Text_SetFont(frame, font, size, flags)
-    if not strfind(strlower(font), ".ttf") then font = F:GetFont(font) end
+    font = F:GetFont(font)
 
     if flags == "Shadow" then
         frame.text:SetFont(font, size, "")
@@ -599,7 +599,7 @@ end
 -- CreateAura_Rect
 -------------------------------------------------
 local function Rect_SetFont(frame, font, size, flags, xOffset, yOffset)
-    if not strfind(strlower(font), ".ttf") then font = F:GetFont(font) end
+    font = F:GetFont(font)
 
     if flags == "Shadow" then
         frame.stack:SetFont(font, size, "")
@@ -686,7 +686,7 @@ end
 -- CreateAura_Bar
 -------------------------------------------------
 local function Bar_SetFont(bar, font, size, flags, xOffset, yOffset)
-    if not strfind(strlower(font), ".ttf") then font = F:GetFont(font) end
+    font = F:GetFont(font)
 
     if flags == "Shadow" then
         bar.stack:SetFont(font, size, "")
@@ -924,10 +924,9 @@ function I:CreateAura_Icons(name, parent, num)
         icons:UpdateSize()
     end
 
-    function icons:SetFont(font, ...)
-        font = F:GetFont(font)
+    function icons:SetFont(...)
         for i = 1, num do
-            icons[i]:SetFont(font, ...)
+            icons[i]:SetFont(...)
         end
     end
 

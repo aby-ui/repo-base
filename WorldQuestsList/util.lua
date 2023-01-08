@@ -545,7 +545,7 @@ do
 		self.NormalTexture:SetTexture("Interface\\Addons\\WorldQuestsList\\radioModern")
 		self.NormalTexture:SetAllPoints()
 		self.NormalTexture:SetTexCoord(0,0.25,0,1)
-		self:SetNormalTexture(self.PushedTexture)
+		self:SetNormalTexture(self.NormalTexture)
 	
 		self.HighlightTexture = self:CreateTexture()
 		self.HighlightTexture:SetTexture("Interface\\Addons\\WorldQuestsList\\radioModern")

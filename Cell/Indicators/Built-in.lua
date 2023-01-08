@@ -40,10 +40,9 @@ local function Cooldowns_UpdateSize(self, iconsShown)
     end
 end
 
-local function Cooldowns_SetFont(self, font, ...)
-    font = F:GetFont(font)
+local function Cooldowns_SetFont(self, ...)
     for i = 1, 5 do
-        self[i]:SetFont(font, ...)
+        self[i]:SetFont(...)
     end
 end
 
@@ -244,10 +243,9 @@ local function Debuffs_UpdateSize(self)
     end
 end
 
-local function Debuffs_SetFont(self, font, ...)
-    font = F:GetFont(font)
+local function Debuffs_SetFont(self, ...)
     for i = 1, 10 do
-        self[i]:SetFont(font, ...)
+        self[i]:SetFont(...)
     end
 end
 
@@ -732,10 +730,9 @@ local function RaidDebuffs_SetOrientation(self, orientation)
     self:UpdateSize()
 end
 
-local function RaidDebuffs_SetFont(self, font, ...)
-    font = F:GetFont(font)
+local function RaidDebuffs_SetFont(self, ...)
     for i = 1, 3 do
-        self[i]:SetFont(font, ...)
+        self[i]:SetFont(...)
     end
 end
 
@@ -1395,6 +1392,10 @@ function I:CreateAggroBorder(parent)
         bottom:SetHeight(n)
         left:SetWidth(n)
         right:SetWidth(n)
+    end
+
+    function aggroBorder:UpdatePixelPerfect()
+        P:Repoint(aggroBorder)
     end
 end
 

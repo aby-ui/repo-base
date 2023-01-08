@@ -155,7 +155,7 @@ function containerProto:OnCreate(name, isBank, bagObject)
 	headerLeftRegion:SetFrameLevel(frameLevel)
 
 	local headerRightRegion = SimpleLayeredRegion:Create(self, "TOPRIGHT", "LEFT", 4)
-	headerRightRegion:SetPoint("TOPRIGHT", -32, -BAG_INSET)
+	headerRightRegion:SetPoint("TOPRIGHT", -BAG_INSET, -BAG_INSET)
 	self.HeaderRightRegion = headerRightRegion
 	self:AddWidget(headerRightRegion)
 	headerRightRegion:SetFrameLevel(frameLevel)
@@ -176,12 +176,6 @@ function containerProto:OnCreate(name, isBank, bagObject)
 	bagSlotPanel:Hide()
 	self.BagSlotPanel = bagSlotPanel
 	wipe(bagSlots)
-
-	local closeButton = CreateFrame("Button", nil, self, "UIPanelCloseButton")
-	self.CloseButton = closeButton
-	closeButton:SetPoint("TOPRIGHT", -2, -2)
-	addon.SetupTooltip(closeButton, L["Close"])
-	closeButton:SetFrameLevel(frameLevel)
 
 	local bagSlotButton = CreateFrame("CheckButton", nil, self)
 	bagSlotButton:SetNormalTexture([[Interface\Buttons\Button-Backpack-Up]])
@@ -225,6 +219,7 @@ function containerProto:OnCreate(name, isBank, bagObject)
 		end
 		self:CreateSortButton()
 	end
+	self.CloseButton = self:CreateCloseButton()
 
 	local toSortSection = addon:AcquireSection(self, L["Recent Items"], self.name)
 	toSortSection:SetPoint("TOPLEFT", BAG_INSET, -addon.TOP_PADDING)
@@ -363,6 +358,17 @@ function containerProto:CreateDepositButton()
 	end
 end
 
+function containerProto:CreateCloseButton()
+	return self:CreateModuleButton(
+		"X",
+		200,
+		function()
+			self:Close()
+		end,
+		L["Close"]
+	)
+end
+
 function containerProto:CreateSortButton()
 	self:CreateModuleButton(
 		"S",
@@ -470,6 +476,9 @@ function containerProto:OnShow()
 end
 
 function containerProto:OnHide()
+	if self.isReagentBank then
+		self:ShowReagentTab(false)
+	end
 	containerParentProto.OnHide(self)
 	PlaySound(self.isBank and SOUNDKIT.IG_MAINMENU_CLOSE or SOUNDKIT.IG_BACKPACK_CLOSE)
 	self:PauseUpdates()

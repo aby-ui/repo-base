@@ -24,6 +24,7 @@ do
 			[77575] = 252, --Outbreak
 			[49206] = 252, --Summon Gargoyle
 			[42650] = 252, --Army of the Dead
+			[85948] = 252, --Festering Strike
 
 			--Frost Death Knight:
 			[49184] = 251, --Howling Blast
@@ -36,6 +37,7 @@ do
 			[194913] = 251, --Glacial Advance
 			[207230] = 251, --Frostscythe
 			[51271] = 251, --Pillar of Frost
+			[49020] = 251, --Obliterate
 
 			--Blood Death Knight:
 			[195292] = 250, --Death's Caress
@@ -51,6 +53,7 @@ do
 			[219809] = 250, --Tombstone
 			[194679] = 250, --Rune Tap
 			[50842] = 250, --Blood Boil
+			[206930] = 250, --Heart Strike
 
 			--Havoc Demon Hunter:
 			[188499] = 577, --Blade Dance
@@ -63,6 +66,7 @@ do
 			[162243] = 577, --Demon's Bite
 			[258860] = 577, --Essence Break
 			[258925] = 577, --Fel Barrage
+			[198589] = 577, --Blur
 
 			--Vengeance Demon Hunter:
 			[203782] = 581, --Shear
@@ -76,6 +80,8 @@ do
 			[203720] = 581, --Demon Spikes
 			[189110] = 581, --Infernal Strike
 			[247454] = 581, --Spirit Bomb
+			[202137] = 581, --Sigil of Silence
+			[263642] = 581, --Fracture
 
 			--Windwalker Monk:
 			[152175] = 269, --Whirling Dragon Punch
@@ -102,6 +108,7 @@ do
 			[116680] = 270, --Thunder Focus Tea
 			[115151] = 270, --Renewing Mist
 			[325197] = 270, --Invoke Chi-Ji, the Red Crane
+			[197908] = 270, --Mana Tea
 
 			--Brewmaster Monk:
 			[322960] = 268, --Fortifying Brew
@@ -136,7 +143,6 @@ do
 			[114052] = 264, --Ascendance
 			[383009] = 264, --Stormkeeper
 			[98008] = 264, --Spirit Link Totem
-			[5394] = 264, --Healing Stream Totem
 			[73685] = 264, --Unleash Life
 			[77130] = 264, --Purify Spirit
 			[16191] = 264, --Mana Tide Totem
@@ -170,7 +176,6 @@ do
 
 			--Guardian Druid:
 			[343240] = 104, --Berserk: Ravage
-			[61336] = 104, --Survival Instincts
 			[80313] = 104, --Pulverize
 			[102558] = 104, --Incarnation: Guardian of Ursoc
 			[6807] = 104, --Maul
@@ -178,6 +183,7 @@ do
 			[377779] = 104, --Berserk: Persistence
 			[200851] = 104, --Rage of the Sleeper
 			[155835] = 104, --Bristling Fur
+			[50334] = 104, --Berserk
 
 			--Balance Druid:
 			[191034] = 102, --Starfall
@@ -187,9 +193,12 @@ do
 			[202347] = 102, --Stellar Flare
 			[194223] = 102, --Celestial Alignment
 			[205636] = 102, --Force of Nature
-			[325727] = 102, --Adaptive Swarm
 			[274281] = 102, --New Moon
 			[202425] = 102, --Warrior of Elune
+			[88747] = 102, --Wild Mushroom
+			[24858] = 102, --Moonkin Form -Balance Specific
+			[194153] = 102, --Starfire -Balance Specific
+			[78674] = 102, --Starsurge -Balance Specific
 
 			--Restoration Druid:
 			[102342] = 105, --Ironbark
@@ -250,8 +259,9 @@ do
 			[386653] = 66, --Bulwark of Righteous Fury
 			[387174] = 66, --Eye of Tyr
 			[327193] = 66, --Moment of Glory
-			[31884] = 66, --Avenging Wrath
 			[378974] = 66, --Bastion of Light
+			[204019] = 66, --Blessed Hammer
+			[204018] = 66, --Blessing of Spellwarding
 
 			--Demonology Warlock:
 			[264130] = 266, --Power Siphon
@@ -293,7 +303,6 @@ do
 			[386997] = 265, --Soul Rot
 			[205180] = 265, --Summon Darkglare
 			[27243] = 265, --Seed of Corruption
-			[108503] = 265, --Grimoire of Sacrifice
 			[387073] = 265, --Soul Tap
 			[388667] = 265, --Drain Soul
 			[324536] = 265, --Malefic Rapture
@@ -333,7 +342,6 @@ do
 			[381664] = 259, --Amplifying Poison
 			[385627] = 259, --Kingsbane
 			[51723] = 259, --Fan of Knives
-			[5938] = 259, --Shiv
 			[703] = 259, --Garrote
 			[32645] = 259, --Envenom
 			[200806] = 259, --Exsanguinate
@@ -379,6 +387,7 @@ do
 			[321507] = 62, --Touch of the Magi
 			[205025] = 62, --Presence of Mind
 			[44425] = 62, --Arcane Barrage
+			[205022] = 62, --Arcane Familiar
 
 			--Holy Priest:
 			[372835] = 257, --Lightwell
@@ -424,6 +433,7 @@ do
 			[129250] = 256, --Power Word: Solace
 			[314867] = 256, --Shadow Covenant
 			[214621] = 256, --Schism
+			[204197] = 256, --Purge the Wicked
 
 			--Devastation Evoker:
 			[368847] = 1467, --Firestorm
@@ -432,6 +442,7 @@ do
 			[375087] = 1467, --Dragonrage
 			[359073] = 1467, --Eternity Surge
 			[359077] = 1467, --Eternity Surge
+			[382411] = 1467, --Eternity Surge
 			[357211] = 1467, --Pyre
 			[357212] = 1467, --Pyre
 
@@ -459,6 +470,7 @@ do
 			[394062] = 73, --Rend
 			[190456] = 73, --Ignore Pain
 			[385952] = 73, --Shield Charge
+			[392966] = 73, --Spell Block
 
 			--Arms Warrior:
 			[7384] = 71, --Overpower
@@ -493,7 +505,9 @@ do
 			[187708] = 255, --Carve
 			[203415] = 255, --Fury of the Eagle
 			[360966] = 255, --Spearhead
-			[259489] = 255, --Kill Command
+			[259489] = 255, --Kill Command -Survival Specific
+			[320976] = 255, --Kill Shot -Survival Specific
+			[187707] = 255, --Muzzle -Survival Interrupt
 
 			--Marksmanship Hunter:
 			[260402] = 254, --Double Tap
@@ -512,8 +526,8 @@ do
 			[131894] = 253, --A Murder of Crows
 			[19574] = 253, --Bestial Wrath
 			[217200] = 253, --Barbed Shot
-			[34026] = 253, --Kill Command
 			[193530] = 253, --Aspect of the Wild
+			[193455] = 253, --Cobra Shot
 
 
 		}

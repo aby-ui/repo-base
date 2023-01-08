@@ -153,6 +153,8 @@ SI.defaultDB = {
   -- Arena2v2rating: integer
   -- Arena3v3rating: integer
   -- RBGrating: integer
+  -- SoloShuffleRating: table
+  -- SpecializationIDs: table
 
   -- currency: key: currencyID  value:
   -- amount: integer
@@ -395,6 +397,14 @@ SI.defaultDB = {
     Progress9 = false, -- Emissary of War
     Progress10 = false, -- Patterns Within Patterns
     Progress11 = true, -- Dragonflight Renown
+    Progress12 = false, -- Aiding the Accord
+    Progress13 = false, -- Community Feast
+    Progress14 = false, -- Siege on Dragonbane Keep
+    Progress15 = false, -- Grand Hunt
+    Progress16 = false, -- Trial of the Elements
+    Progress17 = false, -- Trial of the Flood
+    Progress18 = false, -- Primal Storms Core
+    Progress19 = false, -- Sparks of Life
     Warfront1 = false, -- Arathi Highlands
     Warfront2 = false, -- Darkshores
     KeystoneReportTarget = "EXPORT",
@@ -1347,6 +1357,17 @@ function SI:UpdateToonData()
   t.Arena2v2rating = tonumber(GetPersonalRatedInfo(1), 10) or t.Arena2v2rating
   t.Arena3v3rating = tonumber(GetPersonalRatedInfo(2), 10) or t.Arena3v3rating
   t.RBGrating = tonumber(GetPersonalRatedInfo(4), 10) or t.RBGrating
+
+  t.SpecializationIDs = t.SpecializationIDs or {}
+  for i = 1, GetNumSpecializations() do
+    t.SpecializationIDs[i] = GetSpecializationInfo(i) or t.SpecializationIDs[i]
+  end
+  -- Solo Shuffle rating is unique to each specialization
+  t.SoloShuffleRating = t.SoloShuffleRating or {}
+  local currentSpecID = GetSpecialization()
+  if currentSpecID then
+    t.SoloShuffleRating[currentSpecID] = GetPersonalRatedInfo(7) or t.SoloShuffleRating[currentSpecID]
+  end
   SI:GetModule("TradeSkill"):ScanItemCDs()
   local Calling = SI:GetModule("Calling")
   local Progress = SI:GetModule("Progress")
@@ -1643,6 +1664,14 @@ hoverTooltip.ShowToonTooltip = function (cell, arg, ...)
   end
   if t.RBGrating and t.RBGrating > 0 then
     indicatortip:AddLine(BG_RATING_ABBR, t.RBGrating)
+  end
+  if t.SoloShuffleRating and t.SpecializationIDs then
+    for i, specID in ipairs(t.SpecializationIDs) do
+      if t.SoloShuffleRating[i] and t.SoloShuffleRating[i] > 0 then
+        local _, specName = GetSpecializationInfoForSpecID(specID)
+        indicatortip:AddLine(PVP_RATED_SOLO_SHUFFLE .. " " .. RATING .. ": " .. specName, t.SoloShuffleRating[i])
+      end
+    end
   end
   if t.Money then
     indicatortip:AddLine(MONEY,SI:formatNumber(t.Money,true))
@@ -2555,6 +2584,44 @@ hoverTooltip.ShowGrandHuntTooltip = function (cell, arg, ...)
   finishIndicator()
 end
 
+hoverTooltip.ShowPrimalStormsCoreTooltip = function (cell, arg, ...)
+  -- Should be in Module Progress
+  local toon, index = unpack(arg)
+  local t = SI.db.Toons[toon]
+  if not t or not t.Progress or not t.Progress[index] then return end
+  if not t or not t.Quests then return end
+  openIndicator(2, "LEFT", "RIGHT")
+
+  local P = SI:GetModule("Progress")
+  local totalDone = 0
+  for _, questID in ipairs(P.TrackedQuest[index].relatedQuest) do
+    if t.Progress[index][questID] then
+      totalDone = totalDone + 1
+    end
+  end
+
+  local toonstr = (db.Tooltip.ShowServer and toon) or strsplit(' ', toon)
+
+  indicatortip:AddHeader(ClassColorise(t.Class, toonstr), string.format("%d/%d", totalDone, #P.TrackedQuest[index].relatedQuest))
+
+  local stringTypeCore = {
+    YELLOW_FONT_COLOR_CODE .. L["Earth Core"] .. FONT_COLOR_CODE_CLOSE,
+    "|cff42a4f5" .. L["Water Core"] .. FONT_COLOR_CODE_CLOSE,
+    "|cffe4f2f5" .. L["Air Core"] .. FONT_COLOR_CODE_CLOSE,
+    ORANGE_FONT_COLOR_CODE .. L["Fire Core"] .. FONT_COLOR_CODE_CLOSE
+  }
+  local IDs = P.TrackedQuest[index].relatedQuest
+
+  for i, questID in ipairs(IDs) do
+    indicatortip:AddLine(
+      stringTypeCore[i],
+      t.Progress[index][questID] and REDFONT .. ALREADY_LOOTED .. FONTEND or GREENFONT .. AVAILABLE .. FONTEND
+    )
+  end
+
+  finishIndicator()
+end
+
 hoverTooltip.ShowKeyReportTarget = function (cell, arg, ...)
   openIndicator(2, "LEFT", "RIGHT")
   indicatortip:AddHeader(GOLDFONT..L["Keystone report target"]..FONTEND, SI.db.Tooltip.KeystoneReportTarget)
@@ -2583,7 +2650,7 @@ end
 function SI:OnInitialize()
   local versionString = GetAddOnMetadata("SavedInstances", "version")
   --[==[@debug@
-  if versionString == "10.0.5-8-g4f74de5" then
+  if versionString == "10.0.5-18-geb39089" then
     versionString = "Dev"
   end
   --@end-debug@]==]
@@ -2695,6 +2762,15 @@ function SI:OnEnable()
   self:RegisterEvent("MYTHIC_PLUS_NEW_WEEKLY_RECORD", "UpdateToonData")
   self:RegisterEvent("ZONE_CHANGED_NEW_AREA", RequestRatedInfo)
   self:RegisterEvent("PLAYER_ENTERING_WORLD", function()
+    C_Timer.After(1, function()
+      RequestRatedInfo()
+      RequestRaidInfo()
+    end)
+
+    SI:UpdateToonData()
+  end)
+  -- Update rating on spec change because Solo Shuffle is unique to each spec
+  self:RegisterEvent("PLAYER_SPECIALIZATION_CHANGED", function()
     C_Timer.After(1, function()
       RequestRatedInfo()
       RequestRaidInfo()

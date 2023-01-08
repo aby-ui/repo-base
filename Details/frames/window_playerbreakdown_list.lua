@@ -311,9 +311,7 @@
 		detailsFramework:ApplyStandardBackdrop(f.Header)
 		f.Header.__background:SetColorTexture(.60, .60, .60)
 
-		--print(f.Header:GetSize())
-
-		local playerSelectionLabel = detailsFramework:CreateLabel(playerScroll, "click to select a player", 14)
+		local playerSelectionLabel = detailsFramework:CreateLabel(playerScroll, "Click to select a player", 14)
 		playerSelectionLabel:SetPoint("bottom", playerScroll, "bottom", 0, 7)
 
 		--create the scrollbox lines

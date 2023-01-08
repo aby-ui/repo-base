@@ -2440,6 +2440,12 @@ function StreamOverlay:OnEvent (_, event, ...)
 				if (StreamOverlay.db.is_first_run and not Details:GetTutorialCVar ("STREAMER_PLUGIN_FIRSTRUN")) then
 					local show_frame = function()
 
+						if ("Don't Show The Welcome Screen") then
+							StreamOverlay.db.is_first_run = false
+							Details:DisablePlugin ("DETAILS_PLUGIN_STREAM_OVERLAY")
+							return
+						end
+
 						if ((DetailsWelcomeWindow and DetailsWelcomeWindow:IsShown()) or not StreamOverlay.db.is_first_run) then
 							return
 						end
@@ -2496,7 +2502,7 @@ function StreamOverlay:OnEvent (_, event, ...)
 						close:SetPoint ("center", text3, "center", 0, -50)
 					end
 					
-					--StreamOverlay.ShowWelcomeFrame = C_Timer.NewTicker (5, show_frame)
+					StreamOverlay.ShowWelcomeFrame = C_Timer.NewTicker (5, show_frame)
 				end
 				
 				--wipe (StreamOverlay.db)

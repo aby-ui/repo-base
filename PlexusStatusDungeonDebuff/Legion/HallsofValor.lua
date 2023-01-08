@@ -36,6 +36,7 @@ _G.GridStatusRaidDebuff:DebuffId(zoneid, 196497, 31, 6, 6) --Ravenous Leap
 --God-King Skovald
 --_G.GridStatusRaidDebuff:BossNameId(zoneid, 40, "God-King Skovald")
 --_G.GridStatusRaidDebuff:DebuffId(zoneid, 156829, 41, 6, 6)
+_G.GridStatusRaidDebuff:DebuffId(zoneid, 193660, 41, 6, 6) --Felblaze Rush
 
 --Odyn
 --_G.GridStatusRaidDebuff:BossNameId(zoneid, 50, "Odyn")

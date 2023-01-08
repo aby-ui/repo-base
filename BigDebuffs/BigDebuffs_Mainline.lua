@@ -111,7 +111,7 @@ addon.Spells = {
     [210141] = { type = CROWD_CONTROL}, -- Zombie Explosion (Reanimation Unholy PvP Talent)
     [288849] = { type = DEBUFF_OFFENSIVE, nounitFrames = true, nonameplates = true }, -- Crypt Fever (Necromancer's Bargain Unholy PvP Talent)
     [3714] = { type = BUFF_OTHER }, -- Path of Frost
-    [315443] = { type = BUFF_OFFENSIVE }, -- Abomination Limb (Necrolord Ability)
+    [383269] = { type = BUFF_OFFENSIVE }, -- Abomination Limb (Necrolord Ability)
     [311648] = { type = BUFF_OFFENSIVE }, -- Swarming Mist (Venthyr Ability)
 
     -- Demon Hunter
@@ -239,7 +239,7 @@ addon.Spells = {
 
     [66] = { type = BUFF_OFFENSIVE }, -- Invisibility (Countdown)
         [32612] = { type = BUFF_OFFENSIVE, parent = 66 }, -- Invisibility
-        [113862] = { type = BUFF_OFFENSIVE, parent = 66 }, -- Greater Invisibility
+        [110960] = { type = BUFF_OFFENSIVE, parent = 66 }, -- Greater Invisibility
     [118] = { type = CROWD_CONTROL }, -- Polymorph
         [28271] = { type = CROWD_CONTROL, parent = 118 }, -- Polymorph Turtle
         [28272] = { type = CROWD_CONTROL, parent = 118 }, -- Polymorph Pig
@@ -256,7 +256,6 @@ addon.Spells = {
         [277792] = { type = CROWD_CONTROL, parent = 118 }, -- Polymorph Bumblebee
     [122] = { type = ROOT }, -- Frost Nova
     [33395] = { type = ROOT }, -- Freeze
-    [12042] = { type = BUFF_OFFENSIVE }, -- Arcane Power
     [12051] = { type = BUFF_OFFENSIVE }, -- Evocation
     [12472] = { type = BUFF_OFFENSIVE }, -- Icy Veins
         [198144] = { type = BUFF_OFFENSIVE }, -- Ice Form
@@ -282,6 +281,7 @@ addon.Spells = {
     [333100] = { type = BUFF_OFFENSIVE }, -- Firestorm (Fire Legendary)
     [324220] = { type = BUFF_OFFENSIVE }, -- Deathborne (Necrolord Ability)
     [228358] = { type = DEBUFF_OFFENSIVE }, -- Winter's Chill
+    [389831] = { type = CROWD_CONTROL }, -- Snowdrift
 
     -- Monk
 
@@ -367,7 +367,6 @@ addon.Spells = {
     -- Priest
 
     [327661] = { type = BUFF_DEFENSIVE }, -- Fae Guardians
-    [337661] = { type = BUFF_DEFENSIVE }, -- Translucent Image (Fade defensive Conduit)
     [605] = { type = CROWD_CONTROL, priority = true }, -- Mind Control
     [8122] = { type = CROWD_CONTROL }, -- Psychic Scream
     [9484] = { type = CROWD_CONTROL }, -- Shackle Undead
@@ -399,7 +398,6 @@ addon.Spells = {
     [211336] = { type = BUFF_DEFENSIVE }, -- Archbishop Benedictus' Restitution (Resurrection Buff)
     [211319] = { type = BUFF_DEFENSIVE }, -- Archbishop Benedictus' Restitution (Debuff)
     [289655] = { type = BUFF_DEFENSIVE }, -- Holy Word: Concentration
-    [319952] = { type = BUFF_OFFENSIVE }, -- Surrender to Madness
     [322431] = { type = BUFF_OFFENSIVE, nounitFrames = true, nonameplates = true }, -- Thoughtsteal (Buff)
     [322459] = { type = DEBUFF_OFFENSIVE }, -- Thoughtstolen (Shaman)
         [322464] = { type = DEBUFF_OFFENSIVE, parent = 322459 }, -- Thoughtstolen (Mage)
@@ -443,7 +441,6 @@ addon.Spells = {
     [31224] = { type = IMMUNITY_SPELL }, -- Cloak of Shadows
     [45182] = { type = BUFF_DEFENSIVE }, -- Cheating Death
     [51690] = { type = BUFF_OFFENSIVE }, -- Killing Spree
-    [79140] = { type = DEBUFF_OFFENSIVE, nounitFrames = true, nonameplates = true }, -- Vendetta
     [121471] = { type = BUFF_OFFENSIVE }, -- Shadow Blades
     [185422] = { type = BUFF_OFFENSIVE }, -- Shadow Dance
     [207736] = { type = BUFF_OFFENSIVE }, -- Shadowy Duel
@@ -606,6 +603,7 @@ addon.Spells = {
     [115804] = { type = DEBUFF_OFFENSIVE, nounitFrames = true, nonameplates = true }, -- Mortal Wounds
 
     [34709] = { type = BUFF_OTHER }, -- Shadow Sight
+    [377362] = { type = IMMUNITY_SPELL }, -- Precognition
     [345231] = { type = BUFF_DEFENSIVE }, -- Gladiator's Emblem
     [314646] = { type = BUFF_OTHER }, -- Drink (40k mana vendor item)
         [348436] = { type = BUFF_OTHER, parent = 314646 }, -- (20k mana vendor item)

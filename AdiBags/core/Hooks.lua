@@ -64,7 +64,11 @@ do
 
 	function IterateBuiltInContainers()
 		if addon:GetInteractingWindow() == "BANKFRAME" then
-			return iter, NUM_BAG_SLOTS + NUM_BANKBAGSLOTS, -1
+			if addon.isRetail then
+				return iter, NUM_TOTAL_EQUIPPED_BAG_SLOTS+1 + NUM_BANKBAGSLOTS, -1
+			else
+				return iter, NUM_BAG_SLOTS + NUM_BANKBAGSLOTS, -1
+			end
 		else
 			return iter, NUM_BAG_SLOTS, -1
 		end
@@ -209,6 +213,5 @@ function addon:ToggleBackpack()
 end
 
 function addon:CloseSpecialWindows()
-	local found = self.hooks.CloseSpecialWindows()
-	return self:CloseAllBags() or found
+	return self:CloseAllBags()
 end

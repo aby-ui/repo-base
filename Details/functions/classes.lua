@@ -181,12 +181,26 @@ do
 	function _detalhes:GetFlag (actor)
 		return self.flag_original or actor and actor.flag_original
 	end
+
+	function _detalhes:GetSpells()
+		return self.spells._ActorTable
+	end
 	function _detalhes:GetActorSpells()
 		return self.spells._ActorTable
 	end
-	function _detalhes:GetSpell (spellid)
+
+	function _detalhes:GetSpell(spellid)
 		return self.spells._ActorTable [spellid]
 	end
+
+	---return an array of pet names
+	---@return table
+	function _detalhes:GetPets()
+		return self.pets
+	end
+
+	---return an array of pet names
+	---@return table
 	function _detalhes:Pets()
 		return self.pets
 	end

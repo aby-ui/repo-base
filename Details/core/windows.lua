@@ -1366,13 +1366,6 @@
 						GameCooltip:SetOption("HeighMod", 5)
 						GameCooltip:SetOption("TextSize", 10)
 
-						--344 427 200 268 0.0009765625
-						--0.672851, 0.833007, 0.391601, 0.522460
-
-						--GameCooltip:SetBannerImage (1, [[Interface\AddOns\Details\images\icons]], 83*.5, 68*.5, {"bottomleft", "topleft", 1, -4}, {0.672851, 0.833007, 0.391601, 0.522460}, nil)
-						--GameCooltip:SetBannerImage (2, "Interface\\PetBattles\\Weather-Windy", 512*.35, 128*.3, {"bottomleft", "topleft", -25, -4}, {0, 1, 1, 0})
-						--GameCooltip:SetBannerText (1, "Mini Map Menu", {"left", "right", 2, -5}, "white", 10)
-
 						--reset
 						GameCooltip:AddMenu (1, Details.tabela_historico.resetar, true, nil, nil, Loc ["STRING_ERASE_DATA"], nil, true)
 						GameCooltip:AddIcon ([[Interface\COMMON\VOICECHAT-MUTED]], 1, 1, 14, 14)

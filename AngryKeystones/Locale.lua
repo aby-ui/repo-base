@@ -47,6 +47,8 @@ langs.enUS = {
 	currentKeystoneText = "Current: |cFFFFFFFF%s|r",
 	config_announceKeystones = "Announce newly acquired Mythic Keystones to your party",
 	config_schedule = "Display keystone schedule and party keystones (requires reload UI)",
+	["dungeon_Shadowmoon Burial Grounds"] = "Shadowmoon",
+	["dungeon_Temple of the Jade Serpent"] = "Jade Serpent",
 }
 langs.enGB = langs.enUS
 

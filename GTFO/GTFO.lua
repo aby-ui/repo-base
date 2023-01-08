@@ -25,9 +25,9 @@ GTFO = {
 		TrivialDamagePercent = 2; -- Minimum % of HP lost required for an alert to be trivial
 		SoundOverrides = { "", "", "", "" }; -- Override table for GTFO sounds
 	};
-	Version = "5.0"; -- Version number (text format)
+	Version = "5.0.2"; -- Version number (text format)
 	VersionNumber = 0; -- Numeric version number for checking out-of-date clients (placeholder until client is detected)
-	RetailVersionNumber = 50000; -- Numeric version number for checking out-of-date clients (retail)
+	RetailVersionNumber = 50002; -- Numeric version number for checking out-of-date clients (retail)
 	ClassicVersionNumber = 50000; -- Numeric version number for checking out-of-date clients (Vanilla classic)
 	BurningCrusadeVersionNumber = 50000; -- Numeric version number for checking out-of-date clients (TBC classic)
 	WrathVersionNumber = 50000; -- Numeric version number for checking out-of-date clients (Wrath classic)
@@ -142,9 +142,14 @@ function GTFO_DebugPrint(str)
 	end
 end
 
-function GTFO_ScanPrint(str)
+function GTFO_ScanPrint(str, bNew)
 	if (GTFO.Settings.ScanMode) then
-		DEFAULT_CHAT_FRAME:AddMessage("[GTFO] "..tostring(str), 0.5, 0.5, 0.85);
+		if (bNew) then
+			DEFAULT_CHAT_FRAME:AddMessage("[GTFO:New] "..tostring(str), 0.5, 0.5, 0.85);
+		else
+			DEFAULT_CHAT_FRAME:AddMessage("[GTFO:Scan] "..tostring(str), 0.5, 0.65, 0.65);
+		end
+
 	end
 end
 
@@ -391,7 +396,7 @@ function GTFO_OnEvent(self, event, ...)
 							end
 
 							if (GTFO.FFSpellID[SpellID].test) then
-								GTFO_ScanPrint("TEST ALERT: Spell ID #"..SpellID);
+								GTFO_ScanPrint("TEST ALERT: Spell ID #"..SpellID, true);
 							end
 							alertID = GTFO_GetAlertID(GTFO.FFSpellID[SpellID]);
 							GTFO_PlaySound(alertID);
@@ -407,8 +412,7 @@ function GTFO_OnEvent(self, event, ...)
 			local damage = tonumber(misc2) or 0
 			local damagePercent = tonumber((damage * 100) / UnitHealthMax("player"))
 			-- Environmental detection
-			GTFO_ScanPrint(SpellType.." - "..environment);
-			local alertID;
+			local alertID = 0;
 			if (environment == "DROWNING") then
 				alertID = 1;
 			elseif (environment == "FATIGUE") then
@@ -419,30 +423,42 @@ function GTFO_OnEvent(self, event, ...)
 				end
 				alertID = 1;
 			elseif (environment == "LAVA") then
+				if (GTFO.Settings.IgnoreOptions and GTFO.Settings.IgnoreOptions["Lava"]) then
+					-- Lava being ignored
+					--GTFO_DebugPrint("Won't alert LAVA - Manually ignored");
+					return;
+				end
 				alertID = 2;
 				if (GTFO_HasDebuff("player", 81118) or GTFO_HasDebuff("player", 94073) or GTFO_HasDebuff("player", 94074) or GTFO_HasDebuff("player", 94075) or GTFO_HasDebuff("player", 97151)) then
 					-- Magma debuff exception
 					--GTFO_DebugPrint("Won't alert LAVA - Magma debuff found");
-					return;
-				end
-				if (not GTFO.Settings.TrivialMode and damagePercent < tonumber(GTFO.Settings.TrivialDamagePercent)) then
+					alertID = 0;
+				elseif (not GTFO.Settings.TrivialMode and damagePercent < tonumber(GTFO.Settings.TrivialDamagePercent)) then
 					-- Trivial
 					--GTFO_DebugPrint("Won't alert LAVA - Trivial");
-					return;
+					alertID = 0;
 				end
 			elseif (environment ~= "FALLING") then
+				if (GTFO.Settings.IgnoreOptions and GTFO.Settings.IgnoreOptions["Lava"]) then
+					-- Lava being ignored
+					--GTFO_DebugPrint("Won't alert LAVA - Manually ignored");
+					return;
+				end
 				alertID = 2;
 				if (not GTFO.Settings.TrivialMode and damagePercent < tonumber(GTFO.Settings.TrivialDamagePercent)) then
 					-- Trivial
 					--GTFO_DebugPrint("Won't alert "..tostring(environment).." - Trivial");
-					return;
+					alertID = 0;
 				end
 			else
 				return;
 			end
+			GTFO_ScanPrint(SpellType.." - "..environment, (alertID == 0));
+			if (alertID == 0) then
+				return;
+			end
 			GTFO_PlaySound(alertID);
 			GTFO_RecordStats(alertID, 0, GTFOLocal.Recount_Environmental, tonumber(damage), nil, SpellType);
-			return;
 		elseif (SpellType=="SPELL_PERIODIC_DAMAGE" or SpellType=="SPELL_DAMAGE" or SpellType=="SPELL_MISSED" or SpellType=="SPELL_PERIODIC_MISSED" or SpellType=="SPELL_ENERGIZE" or SpellType=="SPELL_INSTAKILL" or ((SpellType=="SPELL_AURA_APPLIED" or SpellType=="SPELL_AURA_APPLIED_DOSE" or SpellType=="SPELL_AURA_REFRESH") and misc4=="DEBUFF")) then
 			-- Spell detection
 			local SpellID = tonumber(misc1);
@@ -464,18 +480,12 @@ function GTFO_OnEvent(self, event, ...)
 						
 			if (GTFO.Settings.ScanMode and not GTFO.IgnoreScan[SpellID]) then
 				if (vehicle) then
-					GTFO_ScanPrint("V: "..SpellType.." - "..SpellID.." - "..GetSpellLink(SpellID).." - "..SpellSourceName.." ("..GTFO_GetMobId(sourceGUID)..") >"..tostring(destName));
-					GTFO_SpellScan(SpellID, SpellSourceName);
+					GTFO_ScanPrint("V: "..SpellType.." - "..SpellID.." - "..GetSpellLink(SpellID).." - "..SpellSourceName.." ("..GTFO_GetMobId(sourceGUID)..") >"..tostring(destName), GTFO_SpellScan(SpellID, SpellSourceName));
 				elseif (SpellType~="SPELL_ENERGIZE" or (SpellType=="SPELL_ENERGIZE" and sourceGUID ~= UnitGUID("player"))) then
 					if (GTFO.ClassicMode) then
-						GTFO_ScanPrint(SpellType.." - "..SpellID.." - "..SpellName.." - "..SpellSourceName.." ("..GTFO_GetMobId(sourceGUID)..") >"..tostring(destName).." for "..tostring(misc4));
+						GTFO_ScanPrint(SpellType.." - "..SpellID.." - "..SpellName.." - "..SpellSourceName.." ("..GTFO_GetMobId(sourceGUID)..") >"..tostring(destName).." for "..tostring(misc4), GTFO_SpellScanName(SpellName, SpellSourceName, tostring(misc4)));
 					else
-						GTFO_ScanPrint(SpellType.." - "..SpellID.." - "..GetSpellLink(SpellID).." - "..SpellSourceName.." ("..GTFO_GetMobId(sourceGUID)..") >"..tostring(destName).." for "..tostring(misc4));
-					end
-					if (GTFO.ClassicMode) then
-						GTFO_SpellScanName(SpellName, SpellSourceName, tostring(misc4));
-					else
-						GTFO_SpellScan(SpellID, SpellSourceName, tostring(misc4));
+						GTFO_ScanPrint(SpellType.." - "..SpellID.." - "..GetSpellLink(SpellID).." - "..SpellSourceName.." ("..GTFO_GetMobId(sourceGUID)..") >"..tostring(destName).." for "..tostring(misc4), GTFO_SpellScan(SpellID, SpellSourceName, tostring(misc4)));
 					end
 				end
 			end
@@ -612,7 +622,7 @@ function GTFO_OnEvent(self, event, ...)
 				end
 				alertID = GTFO_GetAlertID(GTFO.SpellID[SpellID]);
 				if (GTFO.SpellID[SpellID].test) then
-					GTFO_ScanPrint("TEST ALERT: Spell ID #"..SpellID);
+					GTFO_ScanPrint("TEST ALERT: Spell ID #"..SpellID, true);
 				end
 				GTFO_PlaySound(alertID);
 				if (SpellType == "SPELL_PERIODIC_DAMAGE" or SpellType == "SPELL_DAMAGE" or SpellType == "SPELL_ENERGIZE") then
@@ -2432,11 +2442,14 @@ function GTFO_SpellScan(spellId, spellOrigin, spellDamage)
 				IsDebuff = (spellDamage == "DEBUFF");
 				Damage = damage;
 			};
+			return true;
 		elseif (GTFO.Scans[spellId]) then
 			GTFO.Scans[spellId].Times = GTFO.Scans[spellId].Times + 1;
 			GTFO.Scans[spellId].Damage = GTFO.Scans[spellId].Damage + damage;
+			return true;
 		end
 	end
+	return false;
 end
 
 function GTFO_SpellScanName(spellName, spellOrigin, spellDamage)

@@ -233,6 +233,7 @@ map.nodes[14083747] = RareElite({
 map.nodes[32682911] = RareElite({ -- review -- required 67030
     id = 193251,
     quest = 69885,
+    note = L['spawns_hourly'],
     rewards = {
         Achievement({id = 16678, criteria = 56111})
         -- Transmog({item = , slot = L['']}) -- Name
@@ -242,6 +243,7 @@ map.nodes[32682911] = RareElite({ -- review -- required 67030
 map.nodes[19234362] = Rare({ -- required 67030
     id = 193269,
     quest = 74002,
+    note = L['spawns_hourly'],
     rewards = {
         Achievement({id = 16678, criteria = 56112}),
         Transmog({item = 200206, slot = L['bow']}) -- Behemoth Slayer Greatbow
@@ -334,6 +336,7 @@ map.nodes[58813260] = Rare({
 map.nodes[26494939] = Rare({ -- review -- required 67030
     id = 193149,
     quest = 72154,
+    note = L['spawns_hourly'],
     rewards = {
         Achievement({id = 16678, criteria = 56110})
         -- Transmog({item = , slot = L['']}) -- Name
@@ -396,6 +399,7 @@ map.nodes[59405520] = Rare({
     quest = 73900,
     rewards = {
         Achievement({id = 16678, criteria = 56097}),
+        Transmog({item = 200195, slot = L['plate']}), -- Thunderscale Legguards
         Transmog({item = 200193, slot = L['cloth']}), -- Manafrond Sandals
         Item({item = 200859, note = L['trinket']}) -- Seasoned Hunter's Trophy
     }
@@ -417,7 +421,7 @@ map.nodes[28564743] = Rare({
             28564743, 28304800, 27944822, 26974854, 26364841, 26074796,
             25824706, 25764642, 26134540, 26374491, 27124437, 27554428,
             28164470, 28614643, 28564743
-        })
+        }), POI({29804622}) -- Cave
     }
 }) -- Breezebiter
 
@@ -1316,6 +1320,18 @@ map.nodes[66333211] = Collectible({
     },
     pois = {POI({66453173})}
 }) -- Tome of Polymorph: Duck
+
+------------------- ACHIEVEMENT: THREE MINUTES OR IT'S FREE -------------------
+
+map.nodes[45635482] = Collectible({
+    label = '{item:200949}',
+    note = L['the_great_shellkhan_note'],
+    icon = 133920,
+    quest = 72110,
+    rewards = {
+        Item({item = 200949}) -- Case of Fresh Gleamfish
+    }
+}) -- Case of Fresh Gleamfish
 
 ----------------------------- MISCELLANEOUS NPCs ------------------------------
 

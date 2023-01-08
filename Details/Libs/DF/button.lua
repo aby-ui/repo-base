@@ -293,7 +293,11 @@ DF:Mixin(ButtonMetaFunctions, DF.ScriptHookMixin)
 ------------------------------------------------------------------------------------------------------------
 --methods
 
---functions
+	---change the function which will be called when the button is pressed
+	---@param func function
+	---@param param1 any
+	---@param param2 any
+	---@param clickType string|nil
 	function ButtonMetaFunctions:SetClickFunction(func, param1, param2, clickType)
 		if (not clickType or string.find(string.lower(clickType), "left")) then
 			if (func) then
@@ -318,29 +322,37 @@ DF:Mixin(ButtonMetaFunctions, DF.ScriptHookMixin)
 		end
 	end
 
---text
+	---set the text shown on the button
+	---@param text string
 	function ButtonMetaFunctions:SetText(text)
 		self.button.text:SetText(text)
 	end
 
---text color
+	---set the color of the button text
+	---@param ... any
 	function ButtonMetaFunctions:SetTextColor(...)
 		local red, green, blue, alpha = DF:ParseColors(...)
 		self.button.text:SetTextColor(red, green, blue, alpha)
 	end
 	ButtonMetaFunctions.SetFontColor = ButtonMetaFunctions.SetTextColor --alias
 
---text size
+	---set the size of the button text
+	---@param ... number
 	function ButtonMetaFunctions:SetFontSize(...)
 		DF:SetFontSize(self.button.text, ...)
 	end
 
---text font
+	---set the font into the button text
+	---@param font string
 	function ButtonMetaFunctions:SetFontFace(font)
 		DF:SetFontFace(self.button.text, font)
 	end
 
---textures
+	---comment
+	---@param normalTexture any
+	---@param highlightTexture any
+	---@param pressedTexture any
+	---@param disabledTexture any
 	function ButtonMetaFunctions:SetTexture(normalTexture, highlightTexture, pressedTexture, disabledTexture)
 		if (normalTexture) then
 			self.button:SetNormalTexture(normalTexture)
@@ -379,13 +391,25 @@ DF:Mixin(ButtonMetaFunctions, DF.ScriptHookMixin)
 		end
 	end
 
---icon
+	---return the texture set into the icon with SetIcon()
+	---@return number|nil texture
 	function ButtonMetaFunctions:GetIconTexture()
 		if (self.icon) then
 			return self.icon:GetTexture()
 		end
 	end
 
+	---add an icon to the left of the button text
+	---@param texture any
+	---@param width number|nil
+	---@param height number|nil
+	---@param layout "background|border|overlay|artwork"|nil
+	---@param texcoord table|nil
+	---@param overlay any
+	---@param textDistance number|nil
+	---@param leftPadding number|nil
+	---@param textHeight number|nil
+	---@param shortMethod any
 	function ButtonMetaFunctions:SetIcon(texture, width, height, layout, texcoord, overlay, textDistance, leftPadding, textHeight, shortMethod)
 		if (not self.icon) then
 			self.icon = self:CreateTexture(nil, "artwork")
@@ -461,30 +485,37 @@ DF:Mixin(ButtonMetaFunctions, DF.ScriptHookMixin)
 		end
 	end
 
---enabled
+	---query if the button is enabled or not
+	---@return boolean
 	function ButtonMetaFunctions:IsEnabled()
 		return self.button:IsEnabled()
 	end
 
+	---enable the button making it clickable and not grayed out
+	---@return unknown
 	function ButtonMetaFunctions:Enable()
 		return self.button:Enable()
 	end
 
+	---disable the button making it unclickable and grayed out
+	---@return unknown
 	function ButtonMetaFunctions:Disable()
 		return self.button:Disable()
 	end
 
---exec
+	---simulate a click on the button
 	function ButtonMetaFunctions:Exec()
 		local frameWidget = self.widget
 		DF:CoreDispatch((frameWidget:GetName() or "Button") .. ":Exec()", self.func, frameWidget, "LeftButton", self.param1, self.param2)
 	end
 
+	---simulate a click on the button, but this function is called with a different name
 	function ButtonMetaFunctions:Click()
 		local frameWidget = self.widget
 		DF:CoreDispatch((frameWidget:GetName() or "Button") .. ":Click()", self.func, frameWidget, "LeftButton", self.param1, self.param2)
 	end
 
+	---simulate a right click on the button
 	function ButtonMetaFunctions:RightClick()
 		local frameWidget = self.widget
 		DF:CoreDispatch((frameWidget:GetName() or "Button") .. ":RightClick()", self.funcright, frameWidget, "RightButton", self.param1, self.param2)
@@ -712,6 +743,10 @@ DF:Mixin(ButtonMetaFunctions, DF.ScriptHookMixin)
 
 ------------------------------------------------------------------------------------------------------------
 
+---receives a table where the keys are settings and the values are the values to set
+---this is the list of keys the table support:
+---width, height, icon|table, textcolor, textsize, textfont, textalign, backdrop, backdropcolor, backdropbordercolor, onentercolor, onleavecolor, onenterbordercolor, onleavebordercolor
+---@param template table
 function ButtonMetaFunctions:SetTemplate(template)
 	if (type(template) == "string") then
 		template = DF:GetTemplate("button", template)
@@ -818,6 +853,21 @@ end
 		self:SetScript("OnEnable", onEnableFunc)
 	end
 
+	---create a Details Framework button
+	---@param parent table
+	---@param func function
+	---@param width number
+	---@param height number
+	---@param text string
+	---@param param1 any|nil
+	---@param param2 any|nil
+	---@param texture any|nil
+	---@param member string|nil
+	---@param name string|nil
+	---@param shortMethod boolean|nil
+	---@param buttonTemplate table|nil
+	---@param textTemplate table|nil
+	---@return table|nil
 	function DF:CreateButton(parent, func, width, height, text, param1, param2, texture, member, name, shortMethod, buttonTemplate, textTemplate)
 		return DF:NewButton(parent, parent, name, member, width, height, func, param1, param2, texture, text, shortMethod, buttonTemplate, textTemplate)
 	end
@@ -994,6 +1044,14 @@ end
 		return self.color_texture:GetVertexColor()
 	end
 
+	---create a button which opens a color picker when clicked
+	---@param parent table
+	---@param name string|nil
+	---@param member string|nil
+	---@param callback function
+	---@param alpha number|nil
+	---@param buttonTemplate table|nil
+	---@return table|nil
 	function DF:CreateColorPickButton(parent, name, member, callback, alpha, buttonTemplate)
 		return DF:NewColorPickButton(parent, name, member, callback, alpha, buttonTemplate)
 	end

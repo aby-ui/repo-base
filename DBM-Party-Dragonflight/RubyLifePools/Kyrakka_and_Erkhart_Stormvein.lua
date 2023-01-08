@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2503, "DBM-Party-Dragonflight", 7, 1202)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20221205022223")
+mod:SetRevision("20230104050305")
 mod:SetCreatureID(190484, 190485)
 mod:SetEncounterID(2623)
 --mod:SetUsedIcons(1, 2, 3)
@@ -53,7 +53,7 @@ local specWarnStormslamDispel					= mod:NewSpecialWarningDispel(381512, "RemoveM
 local specWarnInterruptingCloudburst			= mod:NewSpecialWarningCast(381516, "SpellCaster", nil, nil, 2, 2, 4)
 
 local timerWindsofChangeCD						= mod:NewCDTimer(19.3, 381517, nil, nil, nil, 3)
-local timerStormslamCD							= mod:NewCDTimer(9.7, 381512, nil, "Tank|RemoveMagic", nil, 5, nil, DBM_COMMON_L.TANK_ICON..DBM_COMMON_L.MAGIC_ICON)
+local timerStormslamCD							= mod:NewCDTimer(17, 381512, nil, "Tank|RemoveMagic", nil, 5, nil, DBM_COMMON_L.TANK_ICON..DBM_COMMON_L.MAGIC_ICON)
 local timerCloudburstCD							= mod:NewCDTimer(19.3, 385558, nil, nil, nil, 2)--Used for both mythic and non mythic versions of spell
 
 --mod:AddRangeFrameOption("8")
@@ -86,7 +86,7 @@ function mod:OnCombatStart(delay)
 	timerFlamespitCD:Start(17.1-delay)--Iffy, 17-24?
 	--Erkhart Stormvein
 --	timerWindsofChangeCD:Start(1-delay)--Cast on engage
-	timerStormslamCD:Start(5.8-delay)
+	timerStormslamCD:Start(5.2-delay)
 	timerCloudburstCD:Start(9.4-delay)
 	if self.Options.InfoFrame then
 		DBM.InfoFrame:SetHeader(DBM:GetSpellInfo(381862))

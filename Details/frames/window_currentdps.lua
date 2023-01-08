@@ -3,6 +3,7 @@
 local Details = _G.Details
 local libwindow = LibStub("LibWindow-1.1")
 local DF = DetailsFramework
+local isDragonflight = DF.IsDragonflight()
 
 local green_team_color
 local yellow_team_color
@@ -397,19 +398,21 @@ function Details:CreateCurrentDpsFrame(parent, name)
 			--LibWindow.SavePosition(f)
 		end)
 
-		GhostFrame:HookScript("OnShow", function(ghostFrame)
-			if (f:IsShown()) then
-				local p1, p2, p3, p4, p5 = ghostFrame:GetPoint(1)
-				f.GhostFrameY = f.GhostFrameY or 0
-				if (DF:IsNearlyEqual(p5, f.GhostFrameY, 0.1)) then
-					return
-				end
+		if(isDragonflight) then
+			GhostFrame:HookScript("OnShow", function(ghostFrame)
+				if (f:IsShown()) then
+					local p1, p2, p3, p4, p5 = ghostFrame:GetPoint(1)
+					f.GhostFrameY = f.GhostFrameY or 0
+					if (DF:IsNearlyEqual(p5, f.GhostFrameY, 0.1)) then
+						return
+					end
 
-				local newY = p5-45
-				ghostFrame:SetPoint(p1, p2, p3, p4, newY)
-				f.GhostFrameY = newY
-			end
-		end)
+					local newY = p5-45
+					ghostFrame:SetPoint(p1, p2, p3, p4, newY)
+					f.GhostFrameY = newY
+				end
+			end)
+		end
 
 	--arena dps bars
 		--code for the dps bars shown in arenas

@@ -69,6 +69,12 @@ select(2, ...).L = setmetatable({
     ["SNIPPETS_TIPS"] = "[Double-Click] to rename. [Shift-Click] to delete. All checked snippets will be automatically invoked at the end of Cell initialization process (in ADDON_LOADED event).",
 
     ["CHANGELOGS"] = [[
+        <h1>r153-release (Jan 6, 2023, 02:37 GMT+8)</h1>
+        <p>* Tried to fix: fonts and Aggro (Border) indicator.</p>
+        <p>* Updated Targeted Spells list.</p>
+        <p>* Updated raid debuffs: Ulduar.</p>
+        <br/>
+
         <h1>r152-release (Dec 29, 2022, 19:40 GMT+8)</h1>
         <p>* Updated raid debuffs.</p>
         <p>* Updated duration text options (related code snippets needs to be updated).</p>

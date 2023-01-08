@@ -971,6 +971,10 @@ if AL then
 	AL["NOTE_377899_3"] = "[Marmoni's Prize]. Inside a crate."
 	AL["NOTE_377899_4"] = "[Well-Preserved Bone]. On the highest platform inside the tower, accessible from the top."
 	AL["NOTE_377900"] = "In order to see this treasure you have to find [Nokhud Armorer's Notes]. You can find this item in [Expedition Scout's Pack]s and [Disturbed Dirt]s."
+	AL["NOTE_378010"] = "In order to open it you need to collect 5x[Crystalline Petals] from [Crystalline Flower] (rare spawn) to create [Slumber Incense]. Use this item at the [Ancient Stone] to gain the buff [Waking Dream], that will alow you to interact with the [Emerald Chest] that contains the [Everliving Wooden Key] to open the treasure. Enable the guide icons for more information."
+	AL["NOTE_378010_1"] = "You can find a [Crystalline Flower] here"
+	AL["NOTE_378010_2"] = "Use the [Slumber Incense] beside the [Ancient Stone] and follow the path of flowers to keep the buff [Waking Dream] active"
+	AL["NOTE_378010_3"] = "With the buff [Waking Dream] active you can open the [Emerald Chest]"
 	AL["NOTE_380510"] = "Inside the thin tower. You have to craft a [Primal Molten Alloy] beside the [Dim Forge]. Then take a look to the forge and you will notice something small glowing in the front side, that's the treasure you are looking for."
 	AL["NOTE_380545"] = "There is a big jar with a torch inside and some grass. The item you are looking for is in the grass (is very small and hard to see)."
 	AL["NOTE_380556"] = "Click on the [Resonant Key] and find 3x[Crystal]"
@@ -1011,6 +1015,7 @@ if AL then
 	AL["NOTE_381223"] = "Inside a cave. In order to see this treasure you have to find a [Time-Lost Memo]. You can find this item in [Expedition Scout's Pack]s and [Disturbed Dirt]s."
 	AL["NOTE_381712"] = "Defeat all the waves of elementals to unlock it."
 	AL["NOTE_382325"] = "It is a reward for completing the quest [Rumors of the Jeweled Whelplings] that you will get once you reach renown 21 with the [Dragonscale Expedition]."
+	AL["NOTE_383732"] = "It can be found as soon as you reach renown 27 with the [DIskaara Tuskarr]."
 	AL["NOTE_471"] = "In a cave."
 	AL["NOTE_5822"] = "In a cave."
 	AL["NOTE_596"] = "Inside [The Deadmines], at the entrance."
@@ -1019,6 +1024,7 @@ if AL then
 	AL["NOTE_8204"] = "In a cave."
 	AL["NOTE_8205"] = "In a cave."
 	AL["NOTE_ABUSE_POWER_NPCS"] = "You need to complete the series of quests that start with [An Abuse of Power] to be able to kill this NPC. Then complete the repeatable quest [%s] to obtain the item required to unlock him."
+	AL["NOTE_AIR_STORM_EVENTS"] = "It only spawns while a thunder primal storm is up."
 	AL["NOTE_ANIMA_CONDUCTOR"] = "You have to be a member of the [%s] Covenant. You have to unlock the [Anima Conductor] and channel it to [%s]. %s"
 	AL["NOTE_ASCENDED_COUNCIL_NPCS"] = "This NPC forms part of the [Ascended Council]. You have to ring the five bells in a short period of time (few minutes) to start the event. You will have to fight all the champions. When you defeat them the [Cache of the Ascended] will appear."
 	AL["NOTE_BOUNDING_SHROOM"] = "Use the [Bounding Shroom] to reach there."
@@ -1031,6 +1037,8 @@ if AL then
 	AL["NOTE_DAPPERDEW_NPCS"] = "You have to be a member of the [Night Fae] Covenant. Talk to [Dapperdew] to start the event. Everyday, and for the whole day, one rare NPC will show up."
 	AL["NOTE_DISTURBED_DIRT"] = "It can be found as soon as you reach renown 5 with the [Dragonscale Expedition]. To dig it you need 1x[Small Expedition Shovel] sold by [Pathfinder Jeb] at the [Dragonscale Basecamp] or 1x[Expedition Multi-Toolbox] crafted by engineers."
 	AL["NOTE_DOMINANCE_KEEP"] = "Dominance Keep"
+	AL["NOTE_EARTH_STORM_EVENTS"] = "It only spawns while a earth primal storm is up."
+	AL["NOTE_FIRE_STORM_EVENTS"] = "It only spawns while a fire primal storm is up."
 	AL["NOTE_FIRIM_EXILE"] = "Firim in Exile"
 	AL["NOTE_FOUR_PEOPLE_NPCS"] = "It requires 4 people to summon him."
 	AL["NOTE_GLYPH_15985"] = "In the air on top of the tower."
@@ -1082,7 +1090,6 @@ if AL then
 	AL["NOTE_RUNE_CONSTRUCTS_CONTAINERS"] = "You have to disable 3x[Rune of constructs] that are around the area (they are tiles on the floors and walls). As soon as you disable the last one the chest will be unlock."
 	AL["NOTE_STOLEN_ANIMA_VESSEL"] = "RareScanner cannot alert you to this container. In order to find, you must buy a [Vault Anima Tracker] from [Archivist Roh-Suir] and use it (without it you won't see this container)."
 	AL["NOTE_STOLEN_ANIMA_VESSEL_RIFT"] = "RareScanner cannot alert you to this container. In order to find, you must buy a [Vault Anima Tracker] from [Archivist Roh-Suir] and use it (without it you won't see this container). Only visible when using the item [Repaired Riftkey] on a [Rift Portal] in Korthia and walking all the way here."
-	AL["NOTE_STORM_EVENTS"] = "It only spawns while a storm event is up."
 	AL["NOTE_SWELLING_TEAR_NPCS"] = "It appears only when the event [Swelling Tear] is active."
 	AL["NOTE_TEMPLE_COURAGE"] = "Temple of Courage"
 	AL["NOTE_THEATER_PAIN"] = "Theater of Pain"
@@ -1091,6 +1098,7 @@ if AL then
 	AL["NOTE_VENTHYR"] = "Venthyr"
 	AL["NOTE_VESPER_REPAIR_NPCS"] = "You need to complete the event [Vesper Repair] with another 2 players. Each person will stand on top of one of the gray plates on the ground, and then enemies will start showing up in waves. The rare NPC might appear in the third wave."
 	AL["NOTE_WANECRYPT_HILL"] = "Wanecrypt Hill"
+	AL["NOTE_WATER_STORM_EVENTS"] = "It only spawns while a frost primal storm is up."
 	AL["PILE_BONES"] = "Pile of Bones"
 	AL["PRE_EVENT"] = "Event: %s"
 	AL["PROFILES"] = "Profiles"
@@ -1160,7 +1168,7 @@ if AL then
 	AL["ZONE_943"] = "%s (Warfront)"
 	AL["ZONES_FILTER"] = "Zone filters"
 	AL["ZONES_FILTERS_SEARCH_DESC"] = "Type the name of the zone to filter the list below"
-	
+  
 	-- CONTINENT names
 	AL["ZONES_CONTINENT_LIST"] = {
 		[9999] = "Class Halls"; --Class Halls

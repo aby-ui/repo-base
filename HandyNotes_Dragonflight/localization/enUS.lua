@@ -206,7 +206,7 @@ L['mysterious_wand_note'] = 'Pick up the {object:Crystal Key} and place it into 
 L['eaglemaster_niraak_note'] = 'Kill nearby {npc:186295s} and {npc:186299s} to spawn the rare.'
 L['hunter_of_the_deep_note'] = 'Click on the weapon rack and shoot fish until the rare spawns.'
 L['porta_the_overgrown_note'] = 'Find 5x {item:194426} at the bottom of the lake to the west, then spread the soil at {npc:191953} to spawn the rare.'
-L['scaleseeker_mezeri_note'] = 'Offer {item:194681} to {npc:193224} and follow her until she reveals the rare.'
+L['scaleseeker_mezeri_note'] = 'Offer {item:194681} to {npc:193224} and follow her until she reveals the rare.\n\n{note:{npc:190315} at {location:Three-Falls Lookout} in {location:The Azure Span} is the nearest vendor.}'
 L['shade_of_grief_note'] = 'Click the {npc:193166} to spawn the rare.'
 L['windscale_the_stormborn_note'] = 'Kill the {npc:192367s} channeling into the {npc:192357}.'
 L['zarizz_note'] = 'Click and {emote:/hiss} at the four {npc:193169s} to summon the rare.'
@@ -267,6 +267,12 @@ L['initiate_kittileg_note'] = 'Complete {quest:66226} to obtain the toy!'
 L['quackers_duck_trap_kit'] = 'To summon {npc:192557} you first need the {item:194740} which you can find in a nearby camp.\n\nTo make a {item:194712} you need the following materials:'
 L['quackers_spawn'] = 'Next you need to catch a duck near the nest with the {item:194712}. Use the {item:194739} at the {npc:192581} to summon {npc:192557}.'
 
+L['knew_you_nokhud_do_it_note'] = '{note:All 3 items are unique and have a 30 minute timer.}\n\nCollect {item:200184}, {item:200194}, and {item:200196} from various {npc:185357s}, {npc:185353s}, and {npc:185168s} around {location:Nokhudon Hold}.\n\nCombine them to create {item:200201} and use it to speak with {npc:197884} to begin the training course.\n\nUse your |cFFFFFD00Extra Action Button|r to complete it and earn your achievement.\n\n{note:Completing the achievement while in a raid during an Elemental Storm makes farming the items much easier.}'
+L['options_icons_nokhud_do_it'] = '{achievement:16583}'
+L['options_icons_nokhud_do_it_desc'] = 'Display helpful information for completing {achievement:16583}.'
+
+L['chest_of_the_flood'] = 'Chest of the Flood'
+
 -------------------------------------------------------------------------------
 --------------------------------- THALDRASZUS ---------------------------------
 -------------------------------------------------------------------------------
@@ -275,6 +281,7 @@ L['ancient_protector_note'] = 'Kill nearby {npc:193244} to get {item:197708}. Co
 L['blightpaw_note'] = 'Talk to {npc:193222} nearby and agree to help him.'
 L['corrupted_proto_dragon_note'] = 'Inspect the {object:Corrupted Dragon Egg} to spawn the rare.'
 L['lord_epochbrgl_note'] = 'Click {npc:193257} to spawn the rare.'
+L['the_great_shellkhan_note'] = 'Collect {item:200949} from {location:Kauriq Gleamlet} in {location:The Azure Span}, go back to {npc:191416} within 3 minutes to return the item to activate the rare and get the achievement. \n\n{note:Make sure {npc:191416} and {npc:191305} are acutally there before you start. Only one character can pick up and return the item once a week to activate the rare, after which {npc:191416} will only thank you.}'
 L['weeping_vilomah_note'] = 'Talk to {npc:193206} to summon the rare.'
 L['woofang_note'] = 'Pet {npc:193156} to spawn the rare.'
 
@@ -306,6 +313,7 @@ L['arcanostabilized_provisions_note'] = 'Purchase from {npc:198831} {title:<Head
 L['steamed_scarab_steak_note'] = 'Purchase from {npc:197586} {title:<Spa Bartender>} at {location:Serene Dreams Spa}.'
 L['craft_creche_crowler_note'] = 'Purchase from {npc:187444} {title:<Traveling Dragonbrew Vendor>} at random map place per day: {location:Ruby Lifeshrine}, {location:Greenscale Inn}, {location:Camp Nowhere}, {location:Temporal Conflux}.'
 L['bivigosas_blood_sausages_note'] = 'Purchase from {npc:188895} {title:<Food & Drink>} at {location:Gelikyr Post}.'
+L['rumiastrasza_note'] = '{note:Complete the daily questline starting at {quest:71238} from {location:Valdrakken}, otherwise the achievement cannot be completed.}'
 L['options_icons_specialties'] = '{achievement:16621}'
 L['options_icons_specialties_desc'] = 'Display food and drink locations for the {achievement:16621} achievement.'
 
@@ -318,6 +326,8 @@ L['ruby_feast_gourmand'] = 'Every day, a random guest chef serves up different d
 L['sorotis_note'] = 'Exchange {item:199906} for {faction:2510} reputation.'
 L['lillian_brightmoon_note'] = 'Exchange {item:201412} for {faction:2507} reputation.'
 
+L['chest_of_the_elements'] = 'Chest of the Elements'
+
 -------------------------------------------------------------------------------
 ------------------------------ THE WAKING SHORE -------------------------------
 -------------------------------------------------------------------------------
@@ -329,7 +339,6 @@ L['lepidoralia_note'] = 'Located in the {location:Fluttering Cavern}. Help {npc:
 L['obsidian_citadel_rare_note'] = 'You and other players have to return a total of %dx {item:191264} to %s. To craft a key you need to combine 30x {item:191251} and 3x {item:193201}, you can get these items from {location:Obsidian Citadel} mobs.'
 L['shadeslash_note'] = 'Click the {object:Pilfered Focus} to summon the rare.'
 L['obsidian_throne_rare_note'] = 'Inside the {location:Obsidian Throne}.'
-L['skald_impaler_note'] = 'Use 5x {item:194701} to summon the rare.'
 L['slurpo_snail_note'] = 'Loot a {item:201033} from a cave in {location:The Azure Span} (11, 41) and use it in this cave to summon him.'
 L['worldcarver_atir_note'] = 'Collect 3x {item:191211} from {npc:187366} nearby and place them at {npc:197395} to spawn the rare.'
 

@@ -83,6 +83,7 @@ map.nodes[31097121] = Rare({
 map.nodes[59847057] = Rare({ -- required 67030
     id = 193220,
     quest = 69868,
+    note = L['spawns_hourly'],
     rewards = {
         Achievement({id = 16679, criteria = 56149}),
         Transmog({item = 200138, slot = L['polearm']}) -- Ancient Dancer's Longspear
@@ -115,6 +116,7 @@ map.nodes[52746732] = CRAGGRAVATEDELEMENTAL
 map.nodes[47675115] = Rare({ -- required 67030
     id = 193234,
     quest = 73990,
+    note = L['spawns_hourly'],
     rewards = {
         Achievement({id = 16446, criteria = 55398, note = L['pretty_neat_note']}),
         Achievement({id = 16679, criteria = 56147})
@@ -153,16 +155,18 @@ map.nodes[62298177] = Rare({
 map.nodes[52895903] = Rare({
     id = 193246,
     quest = 74013,
+    note = L['spawns_hourly'],
     rewards = {Achievement({id = 16679, criteria = 56141})}
 }) -- Matriarch Remalla
 
--- map.nodes[] = Rare({ -- reqired 67030
---     id = 193688,
---     quest = 69976,
---     rewards = {
---         Achievement({id = 16679, criteria = 56140}),
---     }
--- }) -- Phenran
+map.nodes[59806100] = Rare({ -- reqired 67030
+    id = 193688,
+    quest = 69976,
+    note = L['spawns_hourly'],
+    rewards = {
+        Achievement({id = 16679, criteria = 56140}) --
+    }
+}) -- Phenran
 
 map.nodes[57218420] = Rare({ -- reqired 67030 review
     id = 193210,
@@ -192,19 +196,21 @@ map.nodes[57218420] = Rare({ -- reqired 67030 review
 map.nodes[40087014] = Rare({ -- reqiured 67030
     id = 193240,
     quest = 69880,
+    note = L['spawns_hourly'],
     rewards = {Achievement({id = 16679, criteria = 56148})}
 }) -- Riverwalker Tamopo
 
 map.nodes[50005180] = Rare({ -- reqiured 67030 review
     id = 193666,
     quest = 69966,
+    note = L['spawns_hourly'],
     rewards = {Achievement({id = 16679, criteria = 56151})}
 }) -- Rokmur
 
 map.nodes[37607780] = Rare({ -- reqiured 67030
     id = 193176,
     quest = 69859,
-    note = L['in_cave'],
+    note = L['in_cave'] .. '\n\n' .. L['spawns_hourly'],
     rewards = {
         Achievement({id = 16679, criteria = 56150}), --
         Toy({item = 200148}) -- A Collection Of Me
@@ -227,8 +233,10 @@ map.nodes[47207895] = Rare({ -- review -- reqiured 67030
 map.nodes[38466826] = Rare({
     id = 191305,
     quest = 74085,
+    note = L['the_great_shellkhan_note'],
     rewards = {
         Achievement({id = 16679, criteria = 56155}), --
+        Achievement({id = 16622}), -- Three Minutes or It's Free
         Toy({item = 200999}) -- The Super Shellkhan Gang
     }
 }) -- The Great Shellkhan
@@ -247,7 +255,7 @@ map.nodes[46267317] = Rare({
 map.nodes[35027001] = Rare({ -- reqiured 67030 review
     id = 193146,
     quest = 74036,
-    note = L['in_small_cave'],
+    note = L['in_small_cave'] .. '\n\n' .. L['spawns_hourly'],
     rewards = {
         Achievement({id = 16679, criteria = 56146}),
         Transmog({item = 200291, slot = L['leather']}) -- Waterlogged Racing Grips
@@ -266,6 +274,14 @@ map.nodes[47884976] = Rare({
         Item({item = 200445, note = L['neck']}) -- Lucky Hunting Charm
     }
 }) -- Woolfang
+
+map.nodes[57366540] = Rare({
+    id = 197411,
+    quest = 74057,
+    label = L['large_lunker_sighting'],
+    note = L['large_lunker_sighting_note'],
+    rewards = {Achievement({id = 16678, criteria = 56130})}
+}) -- Astray Splasher
 
 -------------------------------------------------------------------------------
 
@@ -388,6 +404,25 @@ val.nodes[09535629] = Treasure({
         Item({item = 198106}) -- Recipe: Tasty Hatchling's Treat
     }
 }) -- Tasty Hatchling's Treat
+
+-------------------------------------------------------------------------------
+
+tpf.nodes[28002590] = ns.node.ElementalChest({
+    quest = 71995,
+    parent = map.id,
+    label = L['chest_of_the_elements'],
+    note = L['in_cave'],
+    rewards = {
+        Item({item = 192055}), -- Dragon Isles Artifact
+        Item({item = 199906}), -- Centaur Hunting Trophy
+        Item({item = 190454}), -- Primal Chaos
+        Item({item = 198451, note = L['trinket']}), -- Lifeflame Ampoule
+        Item({item = 198407, note = L['trinket']}), -- Azure Arcanic Amplifier
+        Transmog({item = 201443, slot = L['shield']}), -- Primal Revenant's Icewall
+        Transmog({item = 201444, slot = L['1h_sword']}) -- Primal Revenant's Earthblade
+    },
+    pois = {POI({29282604})} -- Entrance
+}) -- Chest of the Elements
 
 -------------------------------------------------------------------------------
 --------------------------------- BATTLE PETS ---------------------------------
@@ -816,7 +851,7 @@ map.nodes[50674562] = HemetNesingwaryJr({
 val.nodes[60921096] = Collectible({
     label = '{item:200904}',
     icon = 237358,
-    note = L['picante_pomfruit_cake_note'],
+    note = L['picante_pomfruit_cake_note'] .. '\n\n' .. L['rumiastrasza_note'],
     group = ns.groups.SPECIALTIES,
     parent = map.id,
     rewards = {Achievement({id = 16621, criteria = 55733})}
@@ -1065,7 +1100,7 @@ local Mythressa = Class('Mythressa', NPC, {
     rewards = {
         Achievement({id = 16502}), -- Storming the Runway
         Pet({item = 200173, id = 3287, note = 'x1000'}), -- Ghostflame
-        Pet({item = 200114, id = 3282, note = 'x1000'}), -- Stormie
+        Pet({item = 200114, id = 3382, note = 'x1000'}), -- Stormie
         Mount({item = 192775, id = 1622, note = 'x2000'}) -- Stormhide Salamanther
     }
 }) -- Mythressa <Apprentice Primal Researcher>
@@ -1089,7 +1124,7 @@ val.nodes[61261096] = Collectible({
     icon = 629060,
     parent = map.id,
     label = '{achievement:16556}',
-    note = L['ruby_feast_gourmand'],
+    note = L['ruby_feast_gourmand'] .. '\n\n' .. L['rumiastrasza_note'],
     rewards = {
         Achievement({
             id = 16556,

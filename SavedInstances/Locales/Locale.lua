@@ -169,6 +169,7 @@ Ld["Paragon Chests"] = "Paragon Chests"
 Ld["Party"] = "Party"
 Ld["Patterns Within Patterns"] = "Patterns Within Patterns"
 Ld["PF"] = "PF"
+Ld["Primal Storms Core"] = "Primal Storms Core"
 Ld["Quest progresses"] = "Quest progresses"
 Ld["Raids before dungeons"] = "Raids before dungeons"
 Ld["Recent Bonus Rolls"] = "Recent Bonus Rolls"
@@ -224,6 +225,7 @@ Ld["Sort Order"] = "Sort Order"
 Ld["Sorting"] = "Sorting"
 Ld["SOTS"] = "SOTS"
 Ld["Space between categories"] = "Space between categories"
+Ld["Sparks of Life"] = "Sparks of Life"
 Ld["STRT"] = "STRT"
 Ld["TAV"] = "TAV"
 Ld["TD"] = "TD"
@@ -453,6 +455,8 @@ La["Party"] = "Groupe"
 --[[Translation missing --]]
 La["Patterns Within Patterns"] = "Patterns Within Patterns"
 La["PF"] = "PF"
+--[[Translation missing --]]
+La["Primal Storms Core"] = "Primal Storms Core"
 La["Quest progresses"] = "Progression des quêtes"
 La["Raids before dungeons"] = "Raids avant les donjons"
 La["Recent Bonus Rolls"] = "Jets de dé bonus récents"
@@ -514,6 +518,8 @@ La["Sorting"] = "Trier"
 --[[Translation missing --]]
 La["SOTS"] = "SOTS"
 La["Space between categories"] = "Espacer les catégories"
+--[[Translation missing --]]
+La["Sparks of Life"] = "Sparks of Life"
 --[[Translation missing --]]
 La["STRT"] = "STRT"
 --[[Translation missing --]]
@@ -758,6 +764,8 @@ La["Paragon Chests"] = "Paragonkiste"
 La["Party"] = "Gruppe"
 La["Patterns Within Patterns"] = "Verschachtelte Muster"
 La["PF"] = "PF"
+--[[Translation missing --]]
+La["Primal Storms Core"] = "Primal Storms Core"
 La["Quest progresses"] = "Questfortschritte"
 La["Raids before dungeons"] = "Schlachtzüge vor Dungeons"
 La["Recent Bonus Rolls"] = "Letzte Bonuswürfe"
@@ -819,6 +827,8 @@ La["Sorting"] = "Sortierung"
 --[[Translation missing --]]
 La["SOTS"] = "SOTS"
 La["Space between categories"] = "Freiraum zwischen Kategorien"
+--[[Translation missing --]]
+La["Sparks of Life"] = "Sparks of Life"
 --[[Translation missing --]]
 La["STRT"] = "STRT"
 --[[Translation missing --]]
@@ -1031,6 +1041,8 @@ La["Paragon Chests"] = "평판 보상"
 La["Party"] = "파티"
 La["Patterns Within Patterns"] = "양식 속의 양식"
 La["PF"] = "역병"
+--[[Translation missing --]]
+La["Primal Storms Core"] = "Primal Storms Core"
 La["Quest progresses"] = "퀘스트 진행도"
 La["Raids before dungeons"] = "던전 앞에 공격대"
 La["Recent Bonus Rolls"] = "최근 추가 보상"
@@ -1086,6 +1098,8 @@ La["Sort Order"] = "정렬 순서"
 La["Sorting"] = "정렬"
 La["SOTS"] = "폭사"
 La["Space between categories"] = "카테고리 사이에 공백"
+--[[Translation missing --]]
+La["Sparks of Life"] = "Sparks of Life"
 La["STRT"] = "타자:경이"
 La["TAV"] = "하늘빛"
 La["TD"] = "톨다고르"
@@ -1368,6 +1382,8 @@ La["Patterns Within Patterns"] = "Patterns Within Patterns"
 --[[Translation missing --]]
 La["PF"] = "PF"
 --[[Translation missing --]]
+La["Primal Storms Core"] = "Primal Storms Core"
+--[[Translation missing --]]
 La["Quest progresses"] = "Quest progresses"
 La["Raids before dungeons"] = "Bandas antes que mazmorras"
 La["Recent Bonus Rolls"] = "Tiradas Extra Recientes"
@@ -1441,6 +1457,8 @@ La["Sorting"] = "Sorting"
 --[[Translation missing --]]
 La["SOTS"] = "SOTS"
 La["Space between categories"] = "Espacio entre categorías"
+--[[Translation missing --]]
+La["Sparks of Life"] = "Sparks of Life"
 --[[Translation missing --]]
 La["STRT"] = "STRT"
 --[[Translation missing --]]
@@ -1679,6 +1697,8 @@ La["Paragon Chests"] = "Сундуки за Репутацию"
 La["Party"] = "Группа"
 La["Patterns Within Patterns"] = "Закономерности в закономерностях"
 La["PF"] = "ЧК"
+--[[Translation missing --]]
+La["Primal Storms Core"] = "Primal Storms Core"
 La["Quest progresses"] = "Прогресс квеста"
 La["Raids before dungeons"] = "Рейды перед подземельями"
 La["Recent Bonus Rolls"] = "Недавние бонусные броски"
@@ -1737,6 +1757,8 @@ La["Sort Order"] = "Порядок сортировки"
 La["Sorting"] = "Сортировка"
 La["SOTS"] = "СШ"
 La["Space between categories"] = "Промежуток между категориями"
+--[[Translation missing --]]
+La["Sparks of Life"] = "Sparks of Life"
 La["STRT"] = "УЛИЦЫ"
 --[[Translation missing --]]
 La["TAV"] = "TAV"
@@ -1939,6 +1961,7 @@ La["Paragon Chests"] = "巅峰声望宝箱"
 La["Party"] = "小队"
 La["Patterns Within Patterns"] = "法则中的法则"
 La["PF"] = "凋魂"
+La["Primal Storms Core"] = "原始元素核心"
 La["Quest progresses"] = "任务进度"
 La["Raids before dungeons"] = "团队副本于地下城前"
 La["Recent Bonus Rolls"] = "近期额外拾取情况"
@@ -1994,6 +2017,8 @@ La["Sort Order"] = "序号"
 La["Sorting"] = "排序"
 La["SOTS"] = "风暴"
 La["Space between categories"] = "显示分类间距"
+--[[Translation missing --]]
+La["Sparks of Life"] = "Sparks of Life"
 La["STRT"] = "天街"
 La["TAV"] = "魔馆"
 La["TD"] = "托尔"
@@ -2240,6 +2265,8 @@ La["Party"] = "Grupo"
 --[[Translation missing --]]
 La["Patterns Within Patterns"] = "Patterns Within Patterns"
 La["PF"] = "BP (PF)"
+--[[Translation missing --]]
+La["Primal Storms Core"] = "Primal Storms Core"
 La["Quest progresses"] = "Progreso de misiones"
 La["Raids before dungeons"] = "Bandas antes que mazmorras"
 La["Recent Bonus Rolls"] = "Tiradas extra recientes"
@@ -2303,6 +2330,8 @@ La["Sorting"] = "Ordenar"
 --[[Translation missing --]]
 La["SOTS"] = "SOTS"
 La["Space between categories"] = "Espacio entre categorías"
+--[[Translation missing --]]
+La["Sparks of Life"] = "Sparks of Life"
 --[[Translation missing --]]
 La["STRT"] = "STRT"
 --[[Translation missing --]]
@@ -2385,8 +2414,7 @@ La["Account Summary"] = "帳號統計"
 --[[Translation missing --]]
 La["AD"] = "AD"
 La["Aiding the Accord"] = "支援協調者"
---[[Translation missing --]]
-La["Air Core"] = "Air Core"
+La["Air Core"] = "風核心"
 La["Always show"] = "永遠顯示"
 La["Amathet Reliquary"] = "阿瑪賽特聖匣"
 --[[Translation missing --]]
@@ -2443,8 +2471,7 @@ La["Dragonflight Renown"] = "巨龍崛起名望"
 La["Dragonflight Transmute"] = "巨龍崛起變化"
 La["Dump quest debugging information"] = "傾印任務偵錯資訊"
 La["Dump time debugging information"] = "傾印時間偵錯資訊"
---[[Translation missing --]]
-La["Earth Core"] = "Earth Core"
+La["Earth Core"] = "地核心"
 La["Emissary Missing"] = "沒有特使"
 La["Emissary of War"] = "戰爭使者"
 La["Emissary Quests"] = "特使任務"
@@ -2457,8 +2484,7 @@ La["Extended Lockout - Not yet saved"] = "進度即將到期 - 尚未儲存"
 La["Facets of Research"] = "研究切面"
 --[[Translation missing --]]
 La["FH"] = "FH"
---[[Translation missing --]]
-La["Fire Core"] = "Fire Core"
+La["Fire Core"] = "火核心"
 La["Fit to screen"] = "不超出畫面"
 La["Flex"] = "彈性"
 La["Format large numbers"] = "格式化大數目"
@@ -2471,8 +2497,7 @@ La["Full Clear No Masks"] = "全清 無面具"
 La["GD"] = "車站"
 La["General settings"] = "一般設定"
 La["GMBT"] = "險招"
---[[Translation missing --]]
-La["Grand Hunt"] = "Grand Hunt"
+La["Grand Hunt"] = "大狩獵"
 La["Grand Hunts: Mythic Reward"] = "大狩獵：傳奇獎勵"
 La["Grand Hunts: Rare Reward"] = "大狩獵：稀有獎勵"
 La["Grand Hunts: Uncommon Reward"] = "大狩獵：精良獎勵"
@@ -2532,6 +2557,7 @@ La["Paragon Chests"] = "巔峰獎勵箱"
 La["Party"] = "隊伍"
 La["Patterns Within Patterns"] = "計畫中的計畫"
 La["PF"] = "瘟疫"
+La["Primal Storms Core"] = "元素風暴核心"
 La["Quest progresses"] = "任務進度"
 La["Raids before dungeons"] = "團隊在地城之前"
 La["Recent Bonus Rolls"] = "最近的額外骰子"
@@ -2589,6 +2615,8 @@ La["Sorting"] = "排序"
 --[[Translation missing --]]
 La["SOTS"] = "SOTS"
 La["Space between categories"] = "分類間距"
+--[[Translation missing --]]
+La["Sparks of Life"] = "Sparks of Life"
 La["STRT"] = "街道"
 --[[Translation missing --]]
 La["TAV"] = "TAV"
@@ -2618,10 +2646,8 @@ La["Trade skills"] = "專業技能"
 La["Transmute"] = "轉化"
 La["Trial of Elements"] = "元素的試煉"
 La["Trial of Flood"] = "洪流的試煉"
---[[Translation missing --]]
-La["Trial of the Elements"] = "Trial of the Elements"
---[[Translation missing --]]
-La["Trial of the Flood"] = "Trial of the Flood"
+La["Trial of the Elements"] = "元素的試煉"
+La["Trial of the Flood"] = "洪流的試煉"
 La["Type"] = "類型"
 --[[Translation missing --]]
 La["UNDR"] = "UNDR"
@@ -2633,8 +2659,7 @@ La["VOTW"] = "看守"
 La["Warfronts"] = "戰爭前線"
 La["Warn about instance limit"] = "警告副本限制"
 La["Warning: You've entered about %i instances recently and are approaching the %i instance per hour limit for your account. More instances should be available in %s."] = "警告：你最近已經進入副本 %i 次，並且已經接近每小時 %i 次的帳號進入限制。 %s 後允許進入更多副本。"
---[[Translation missing --]]
-La["Water Core"] = "Water Core"
+La["Water Core"] = "水核心"
 La["Weekly Quests"] = "每週任務"
 La["Wild Transmute"] = "狂野塑形"
 --[[Translation missing --]]
@@ -2864,6 +2889,8 @@ La["Patterns Within Patterns"] = "Patterns Within Patterns"
 --[[Translation missing --]]
 La["PF"] = "PF"
 --[[Translation missing --]]
+La["Primal Storms Core"] = "Primal Storms Core"
+--[[Translation missing --]]
 La["Quest progresses"] = "Quest progresses"
 La["Raids before dungeons"] = "Reide antes de masmorras"
 La["Recent Bonus Rolls"] = "Saque de bônus recentes"
@@ -2936,6 +2963,8 @@ La["Sorting"] = "Sorting"
 --[[Translation missing --]]
 La["SOTS"] = "SOTS"
 La["Space between categories"] = "Espaço entre as categorias"
+--[[Translation missing --]]
+La["Sparks of Life"] = "Sparks of Life"
 --[[Translation missing --]]
 La["STRT"] = "STRT"
 --[[Translation missing --]]
@@ -3245,6 +3274,8 @@ La["Patterns Within Patterns"] = "Patterns Within Patterns"
 --[[Translation missing --]]
 La["PF"] = "PF"
 --[[Translation missing --]]
+La["Primal Storms Core"] = "Primal Storms Core"
+--[[Translation missing --]]
 La["Quest progresses"] = "Quest progresses"
 La["Raids before dungeons"] = "Incursioni prima delle spedizioni"
 La["Recent Bonus Rolls"] = "Tiri bonus recenti"
@@ -3316,6 +3347,8 @@ La["Sorting"] = "Sorting"
 --[[Translation missing --]]
 La["SOTS"] = "SOTS"
 La["Space between categories"] = "Spazio tra le categorie"
+--[[Translation missing --]]
+La["Sparks of Life"] = "Sparks of Life"
 --[[Translation missing --]]
 La["STRT"] = "STRT"
 --[[Translation missing --]]

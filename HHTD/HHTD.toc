@@ -19,7 +19,7 @@
 
 
 ## Author: John Wellesz
-## Version: 2.4.9.14
+## Version: 2.4.9.14-1-gcc9b091
 
 ## LoadManagers: AddonLoader
 
@@ -34,7 +34,7 @@
 ## OptionalDeps: Ace3, LibNameplateRegistry-1.0
 ## X-Embeds: Ace3, LibNameplateRegistry-1.0
 
-## X-ReleaseDate: "2022-11-28T00:44:14Z"
+## X-ReleaseDate: "2023-01-03T13:11:17Z"
 ## X-Category: PvP
 ## X-eMail: hhtd@2072productions.com
 ## X-Website: https://www.2072productions.com/to/HHTD.php

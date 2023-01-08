@@ -121,7 +121,7 @@ do
 			[INVSLOT_MAINHAND] = true,
 			[INVSLOT_FEET] = true,
 			[INVSLOT_WRIST] = true,
-			[INVSLOT_HAND] = true,
+			[INVSLOT_HAND] = false,
 		}
 
 		-- how to get the enchantId:

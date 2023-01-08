@@ -57,8 +57,10 @@ local function setCompatibleRestrictedRange(range)
 		return 53
 	elseif range <= 60 and not isClassic then
 		return 60
-	elseif range <= 80 and isRetail then
+	elseif range <= 80 and not isClassic then
 		return 80
+	elseif range <= 100 and not isClassic then
+		return 100
 	end
 end
 
@@ -79,13 +81,14 @@ do
 	if isRetail then
 		itemRanges[4] = 90175 -- Gin-Ji Knife Set (MoP)
 		itemRanges[53] = 116139 -- Haunting Memento (WoD)
-		itemRanges[80] = 35278 -- Reinforced Net (WotLK)
 	end
-	if not isClassic then -- Exists in BCC
+	if not isClassic then -- Exists in Wrath/BCC but not vanilla/era
 		itemRanges[6] = 16114 -- Foremans Blackjack (TBC)
 		itemRanges[43] = 34471 -- Vial of the Sunwell (UnitInRange api alternate if item checks break)
 		itemRanges[48] = 32698 -- Wrangling Rope
 		itemRanges[60] = 32825 -- Soul Cannon
+		itemRanges[80] = 35278 -- Reinforced Net (WotLK)
+		itemRanges[100] = 41058 -- Hyldnir Harpoon (WotLK)
 	end
 
 	local apiRanges = {
@@ -123,7 +126,8 @@ do
 			elseif not isClassic and IsItemInRange(32698, uId) then return 48
 			elseif isRetail and IsItemInRange(116139, uId) then return 53
 			elseif not isClassic and IsItemInRange(32825, uId) then return 60
-			elseif isRetail and IsItemInRange(35278, uId) then return 80
+			elseif not isClassic and IsItemInRange(35278, uId) then return 80
+			elseif not isClassic and IsItemInRange(41058, uId) then return 100
 			else return 1000 end -- Just so it has a numeric value, even if it's unknown to protect from nil errors
 		end
 	end

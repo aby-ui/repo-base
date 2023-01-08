@@ -212,6 +212,7 @@ local CreatePluginFrames = function()
 		{text = "Food", width = 45},
 		{text = "Flask", width = 45},
 		{text = "Rune", width = 45},
+		{text = "M+ Score", width = 60},
 		--{text = "Pre-Pot Last Try", width = 100},
 		--{text = "Using Details!", width = 100},
 	}
@@ -240,7 +241,7 @@ local CreatePluginFrames = function()
 	end
 
 	--create line for the scroll
-	local scrollCreateLine = function(self, index)
+	local scrollCreateLine = function(self, index) --~create
 		local line = CreateFrame("button", "$parentLine" .. index, self, "BackdropTemplate")
 		line:SetPoint("topleft", self, "topleft", 1, -((index-1) * (scrollLineHeight + 1)) - 1)
 		line:SetSize(scrollWidth - 2, scrollLineHeight)
@@ -294,6 +295,9 @@ local CreatePluginFrames = function()
 		--no rune
 		local runeIndicator = DF:CreateImage(line, "", scrollLineHeight, scrollLineHeight)
 
+		--mythic+
+		local mythicPlusIndicator = DF:CreateLabel(line)
+
 		--no pre pot
 		--local PrePotIndicator = DF:CreateImage (line, "", scroll_line_height, scroll_line_height)
 		--using details!
@@ -306,6 +310,7 @@ local CreatePluginFrames = function()
 		line:AddFrameToHeaderAlignment(foodIndicator)
 		line:AddFrameToHeaderAlignment(flaskIndicator)
 		line:AddFrameToHeaderAlignment(runeIndicator)
+		line:AddFrameToHeaderAlignment(mythicPlusIndicator)
 		--line:AddFrameToHeaderAlignment(PrePotIndicator)
 		--line:AddFrameToHeaderAlignment(DetailsIndicator)
 
@@ -323,6 +328,7 @@ local CreatePluginFrames = function()
 		line.FlaskIndicator = flaskIndicator
 		line.FlaskTierIndicator = flaskTierIndicator
 		line.RuneIndicator = runeIndicator
+		line.MythicPlusIndicator = mythicPlusIndicator
 		--line.PrePotIndicator = PrePotIndicator
 		--line.DetailsIndicator = DetailsIndicator
 
@@ -407,8 +413,6 @@ local CreatePluginFrames = function()
 
 					line.TalentsRow:ClearIcons()
 
-					--print("dssd", playerTable.Talents)
-
 					if (playerTable.Talents) then
 						for i = 1, #playerTable.Talents do
 							local talent = playerTable.Talents[i]
@@ -437,9 +441,11 @@ local CreatePluginFrames = function()
 					elseif (playerTable.Eating) then
 						line.FoodIndicator.texture = eatingFoodIcon.texture
 						line.FoodIndicator.texcoord = eatingFoodIcon.coords
+						line.FoodTierIndicator.text = ""
 
 					else
 						line.FoodIndicator.texture = ""
+						line.FoodTierIndicator.text = ""
 					end
 
 					local flaskInfo = playerTable.Flask
@@ -454,6 +460,9 @@ local CreatePluginFrames = function()
 					line.RuneIndicator.texture = playerTable.Rune and [[Interface\Scenarios\ScenarioIcon-Check]] or ""
 					--line.PrePotIndicator.texture = playerTable.PrePot and [[Interface\Scenarios\ScenarioIcon-Check]] or ""
 					--line.DetailsIndicator.texture = playerTable.UseDetails and [[Interface\Scenarios\ScenarioIcon-Check]] or ""
+
+					--mythic+ score
+					line.MythicPlusIndicator.text = playerTable.MythicPlusScore and playerTable.MythicPlusScore > 0 and playerTable.MythicPlusScore or ""
 				end
 			end
 		end
@@ -595,7 +604,7 @@ local CreatePluginFrames = function()
 		end
 	end)
 
-	local updateRaidCheckFrame = function(self, deltaTime)
+	local updateRaidCheckFrame = function(self, deltaTime) --~update
 		raidCheckFrame.NextUpdate = raidCheckFrame.NextUpdate - deltaTime
 		if (raidCheckFrame.NextUpdate > 0) then
 			return
@@ -638,6 +647,26 @@ local CreatePluginFrames = function()
 				end
 			end
 
+			local mythicPlusScore = 0
+			local RaiderIO = _G.RaiderIO
+
+			if (RaiderIO) then
+				local playerName, playerRealm = unitNameWithRealm:match("(.+)%-(.+)")
+				local faction = UnitFactionGroup(unitNameWithRealm)
+				faction = faction == "Horde" and 2 or 1
+
+				--local rioProfile = RaiderIO.GetProfile(playerName, playerRealm, faction == "Horde" and 2 or 1)
+				local rioProfile = RaiderIO.GetProfile(playerName, playerRealm) or RaiderIO.GetProfile(unitName, GetRealmName())
+
+				if (rioProfile and rioProfile.mythicKeystoneProfile) then
+					local mythicPlusProfile = rioProfile.mythicKeystoneProfile
+					local previousScore = mythicPlusProfile.previousScore or 0
+					local currentScore = mythicPlusProfile.currentScore or 0
+					mythicPlusScore = previousScore and previousScore > currentScore and previousScore or currentScore
+					mythicPlusScore = mythicPlusScore or currentScore
+				end
+			end
+
 			--order by class > alphabetically by the unit name
 			unitClassID = (((unitClassID or 0) + 128) ^ 4) + tonumber(string.byte (unitName, 1) .. "" .. string.byte(unitName, 2))
 
@@ -656,6 +685,7 @@ local CreatePluginFrames = function()
 				Rune = DetailsRaidCheck.havefocusaug_table[unitSerial],
 				Eating = DetailsRaidCheck.iseating_table[unitSerial],
 				UseDetails = Details.trusted_characters[unitSerial],
+				MythicPlusScore = mythicPlusScore,
 			})
 		end
 
@@ -683,6 +713,20 @@ local CreatePluginFrames = function()
 				end
 			end
 
+			local mythicPlusScore = 0
+			local RaiderIO = _G.RaiderIO
+
+			if (RaiderIO) then
+				local rioProfile = RaiderIO.GetProfile(unitName, GetRealmName())
+				if (rioProfile and rioProfile.mythicKeystoneProfile) then
+					local mythicPlusProfile = rioProfile.mythicKeystoneProfile
+					local previousScore = mythicPlusProfile.previousScore or 0
+					local currentScore = mythicPlusProfile.currentScore or 0
+					mythicPlusScore = previousScore and previousScore > currentScore and previousScore or currentScore
+					mythicPlusScore = mythicPlusScore or currentScore
+				end
+			end
+
 			tinsert (PlayerData, {unitName, unitClassID,
 				Name = unitName,
 				UnitNameRealm = unitNameWithRealm,
@@ -698,6 +742,7 @@ local CreatePluginFrames = function()
 				Rune = DetailsRaidCheck.havefocusaug_table[unitSerial],
 				Eating = DetailsRaidCheck.iseating_table[unitSerial],
 				UseDetails = Details.trusted_characters[unitSerial],
+				MythicPlusScore = mythicPlusScore,
 			})
 		end
 
@@ -795,7 +840,7 @@ local CreatePluginFrames = function()
 		local unitSerial = UnitGUID(unitId)
 
 		local function handleAuraBuff(aura)
-			local auraInfo = C_UnitAuras.GetAuraDataByAuraInstanceID("player", aura.auraInstanceID)
+			local auraInfo = C_UnitAuras.GetAuraDataByAuraInstanceID(unitId, aura.auraInstanceID)
 			if (auraInfo) then
 				local buffName = auraInfo.name
 				local spellId = auraInfo.spellId

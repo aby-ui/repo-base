@@ -652,4 +652,47 @@ addon.Cooldowns = {
         [198898] = { duration = 30, class = "MONK", specID = { 270 } }, -- Song of Chi-Ji
         [115450] = { duration = 8, class = "MONK", specID = { 270 } }, -- Detox
 
+    -- Evoker
+
+    [351338] = { default = true, duration = 40, class = "EVOKER" }, -- Quell
+    [363916] = { duration = 90, class = "EVOKER", charges = 2 }, -- Obsidian Scales
+    [355689] = { duration = 90, class = "EVOKER"}, -- Landslide
+    [360995] = { duration = 24, class = "EVOKER" }, -- Verdant Embrace
+    [374251] = { duration = 60, class = "EVOKER" }, -- Cauterizing Flame
+    [370553] = { duration = 120, class = "EVOKER" }, -- Tip the Scales
+    [360806] = { duration = 15, class = "EVOKER" }, -- Sleep Walk
+    [374348] = { duration = 90, class = "EVOKER" }, -- Renewing Blaze
+    [370665] = { duration = 60, class = "EVOKER" }, -- Rescue
+    [372048] = { duration = 120, class = "EVOKER" }, -- Opressing Roar
+    [368432] = { duration = 9, class = "EVOKER" }, -- Unravel
+    [374229] = { duration = 120, class = "EVOKER" }, -- Zephyr
+    [374968] = { duration = 120, class = "EVOKER" }, -- Time Spiral
+    [357210] = { duration = 120, class = "EVOKER" }, -- Deep Breath
+    [357208] = { duration = 30, class = "EVOKER" }, -- Fire Breath
+    [355913] = { duration = 30, class = "EVOKER" }, -- Emerald Blossom
+    [383005] = { duration = 90, class = "EVOKER" }, -- Chrono Loop
+    [378464] = { duration = 90, class = "EVOKER" }, -- Nullifying Shroud
+    [370388] = { duration = 90, class = "EVOKER" }, -- Swoop Up
+
+        -- Devastation
+
+        [365585] = { duration = 10, class = "EVOKER", specID = { 1467 } }, -- Expunge
+        [359073] = { duration = 30, class = "EVOKER", specID = { 1467 } }, -- Eternity Surge
+        [375087] = { duration = 120, class = "EVOKER", specID = { 1467 } }, -- Dragonrage
+        [368847] = { duration = 20, class = "EVOKER", specID = { 1467 } }, -- Firestorm
+        [370452] = { duration = 15, class = "EVOKER", specID = { 1467 } }, -- Shattering Star
+
+        -- Preservation
+
+        [367364] = { duration = 9, class = "EVOKER", specID = { 1468 }, charges = 2 }, -- Reversion
+        [363534] = { duration = 240, class = "EVOKER", specID = { 1468 } }, -- Rewind
+        [367226] = { duration = 30, class = "EVOKER", specID = { 1468 } }, -- Spiritbloom
+        [357170] = { duration = 60, class = "EVOKER", specID = { 1468 } }, -- Time Dilation
+        [368412] = { duration = 120, class = "EVOKER", specID = { 1468 } }, -- Time of Need
+        [370960] = { duration = 180, class = "EVOKER", specID = { 1468 }}, -- Emerald Communion
+        [370537] = { duration = 90, class = "EVOKER", specID = { 1468 } }, -- Stasis
+        [359816] = { duration = 120, class = "EVOKER", specID = { 1468 } }, -- Dream Flight
+        [360823] = { duration = 8, class = "EVOKER", specID = { 1468 } }, -- Naturalize
+        [378441] = { duration = 120, class = "EVOKER", specID = { 1468 } }, -- Time Stop
+        [377509] = { duration = 90, class = "EVOKER", specID = { 1468 } }, -- Time Stop
 }

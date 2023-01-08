@@ -381,7 +381,7 @@ do
 --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 --Cache All Spells
 
-	function Details:BuildSpellListSlow()
+	function Details:BuildSpellListSlow() -- this is not in use
 
 		local load_frame = _G.DetailsLoadSpellCache
 		if (load_frame and (load_frame.completed or load_frame.inprogress)) then

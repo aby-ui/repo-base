@@ -17,10 +17,10 @@
 
 	local _InCombatLockdown = InCombatLockdown --wow api local
 
-	local atributo_damage =	_detalhes.atributo_damage --details local
-	local atributo_heal =		_detalhes.atributo_heal --details local
-	local atributo_energy =		_detalhes.atributo_energy --details local
-	local atributo_misc =		_detalhes.atributo_misc --details local
+	local classDamage =	_detalhes.atributo_damage --details local
+	local classHeal =		_detalhes.atributo_heal --details local
+	local classEnergy =		_detalhes.atributo_energy --details local
+	local classUtility =		_detalhes.atributo_misc --details local
 	local alvo_da_habilidade = 	_detalhes.alvo_da_habilidade --details local
 	local habilidade_dano = 	_detalhes.habilidade_dano --details local
 	local habilidade_cura = 		_detalhes.habilidade_cura --details local
@@ -216,30 +216,30 @@
 
 								if (class_type == class_type_dano) then
 									if (combate.overall_added and not overall_saved) then
-										shadow = atributo_damage:r_connect_shadow (esta_classe)
+										shadow = classDamage:r_connect_shadow (esta_classe)
 									else
-										shadow = atributo_damage:r_onlyrefresh_shadow (esta_classe)
+										shadow = classDamage:r_onlyrefresh_shadow (esta_classe)
 									end
 
 								elseif (class_type == class_type_cura) then
 									if (combate.overall_added and not overall_saved) then
-										shadow = atributo_heal:r_connect_shadow (esta_classe)
+										shadow = classHeal:r_connect_shadow (esta_classe)
 									else
-										shadow = atributo_heal:r_onlyrefresh_shadow (esta_classe)
+										shadow = classHeal:r_onlyrefresh_shadow (esta_classe)
 									end
 
 								elseif (class_type == class_type_e_energy) then
 									if (combate.overall_added and not overall_saved) then
-										shadow = atributo_energy:r_connect_shadow (esta_classe)
+										shadow = classEnergy:r_connect_shadow (esta_classe)
 									else
-										shadow = atributo_energy:r_onlyrefresh_shadow (esta_classe)
+										shadow = classEnergy:r_onlyrefresh_shadow (esta_classe)
 									end
 
 								elseif (class_type == class_type_misc) then
 									if (combate.overall_added and not overall_saved) then
-										shadow = atributo_misc:r_connect_shadow (esta_classe)
+										shadow = classUtility:r_connect_shadow (esta_classe)
 									else
-										shadow = atributo_misc:r_onlyrefresh_shadow (esta_classe)
+										shadow = classUtility:r_onlyrefresh_shadow (esta_classe)
 									end
 								end
 
@@ -262,14 +262,14 @@
 			--restaura last_events_table
 				local primeiro_combate = tabelas_do_historico [1] --primeiro combate
 				if (primeiro_combate) then
-					primeiro_combate [1]:ActorCallFunction (atributo_damage.r_last_events_table)
-					primeiro_combate [2]:ActorCallFunction (atributo_heal.r_last_events_table)
+					primeiro_combate [1]:ActorCallFunction (classDamage.r_last_events_table)
+					primeiro_combate [2]:ActorCallFunction (classHeal.r_last_events_table)
 				end
 
 				local segundo_combate = tabelas_do_historico [2] --segundo combate
 				if (segundo_combate) then
-					segundo_combate [1]:ActorCallFunction (atributo_damage.r_last_events_table)
-					segundo_combate [2]:ActorCallFunction (atributo_heal.r_last_events_table)
+					segundo_combate [1]:ActorCallFunction (classDamage.r_last_events_table)
+					segundo_combate [2]:ActorCallFunction (classHeal.r_last_events_table)
 				end
 
 		end
@@ -748,7 +748,7 @@
 			UpdateAddOnMemoryUsage()
 			local memory = GetAddOnMemoryUsage ("Details")
 			if (memory > _detalhes.memory_ram) then
-				_detalhes:IniciarColetaDeLixo (true, 60) --sending true doesn't check anythink
+				_detalhes:RestartInternalGarbageCollector (true, 60) --sending true doesn't check anythink
 			end
 		end
 	end
@@ -762,25 +762,25 @@
 				_detalhes:Msg("(debug) checking memory periodically. Using: ",math.floor(memory))
 			end
 			if (memory > _detalhes.memory_ram * 1000) then
-				_detalhes:IniciarColetaDeLixo (1, 60) --sending 1 only check for combat and ignore garbage collect cooldown
+				_detalhes:RestartInternalGarbageCollector (1, 60) --sending 1 only check for combat and ignore garbage collect cooldown
 			end
 		end
 	end
 
-	function _detalhes:IniciarColetaDeLixo (forcar, lastevent)
-
-		if (not forcar) then
+	function _detalhes:RestartInternalGarbageCollector(bShouldForceCollect, lastEvent)
+		if (not bShouldForceCollect) then
 			if (_detalhes.ultima_coleta + _detalhes.intervalo_coleta > _detalhes._tempo + 1)  then
 				return
+
 			elseif (_detalhes.in_combat or _InCombatLockdown() or _detalhes:IsInInstance()) then
-				_detalhes:ScheduleTimer("IniciarColetaDeLixo", 5)
+				_detalhes:ScheduleTimer("RestartInternalGarbageCollector", 5)
 				return
 			end
 		else
-			if (type(forcar) ~= "boolean") then
-				if (forcar == 1) then
+			if (type(bShouldForceCollect) ~= "boolean") then
+				if (bShouldForceCollect == 1) then
 					if (_detalhes.in_combat or _InCombatLockdown()) then
-						_detalhes:ScheduleTimer("IniciarColetaDeLixo", 5, forcar)
+						_detalhes:ScheduleTimer("RestartInternalGarbageCollector", 5, bShouldForceCollect)
 						return
 					end
 				end
@@ -788,70 +788,62 @@
 		end
 
 		if (_detalhes.debug) then
-			if (forcar) then
-				_detalhes:Msg("(debug) collecting garbage with forced state: ", forcar)
+			if (bShouldForceCollect) then
+				_detalhes:Msg("(debug) collecting garbage with forced state:", bShouldForceCollect)
 			else
 				_detalhes:Msg("(debug) collecting garbage.")
 			end
 		end
 
-		local memory = GetAddOnMemoryUsage ("Details")
+		--cleanup all the parser caches
+		Details:ClearParserCache()
 
-		--reseta o cache do parser
-		_detalhes:ClearParserCache()
-
-		--limpa barras que n�o est�o sendo usadas nas inst�ncias.
-		for index, instancia in ipairs(_detalhes.tabela_instancias) do
-			if (instancia.barras and instancia.barras [1]) then
-				for i, barra in ipairs(instancia.barras) do
-					if (not barra:IsShown()) then
-						barra.minha_tabela = nil
+		--cleanup all the window lines (bars) which isn't in use
+		for index, instanceObject in ipairs(Details.tabela_instancias) do
+			if (instanceObject.barras and instanceObject.barras[1]) then
+				for i, lineRow in ipairs(instanceObject.barras) do
+					if (not lineRow:IsShown()) then
+						lineRow.minha_tabela = nil
 					end
 				end
 			end
 		end
 
-		--faz a coleta nos 4 atributos
-		local damage = atributo_damage:ColetarLixo (lastevent)
-		local heal = atributo_heal:ColetarLixo (lastevent)
-		local energy = atributo_energy:ColetarLixo (lastevent)
-		local misc = atributo_misc:ColetarLixo (lastevent)
+		--do garbage collection on the handler for each actor class
+		local damage = classDamage:ColetarLixo(lastEvent)
+		local heal = classHeal:ColetarLixo(lastEvent)
+		local energy = classEnergy:ColetarLixo(lastEvent)
+		local misc = classUtility:ColetarLixo(lastEvent)
 
 		local limpados = damage + heal + energy + misc
 
 		--refresh nas janelas
 		if (limpados > 0) then
-			_detalhes:InstanciaCallFunction(_detalhes.reset_window)
+			Details:InstanciaCallFunction(_detalhes.reset_window)
 		end
 
-		_detalhes:ManutencaoTimeMachine()
+		Details:ManutencaoTimeMachine()
 
-		--print cache states
-		--if (_detalhes.debug) then
-		--	_detalhes:Msg("(debug) removed: damage "..damage.." heal "..heal.." energy "..energy.." misc "..misc)
-		--end
-
-		--elimina pets antigos
+		--cleanup backlisted pets within the handler of actor containers
 		_detalhes:LimparPets()
 		if (not _detalhes.in_combat) then
-			_detalhes:ClearCCPetsBlackList()
+			Details:ClearCCPetsBlackList()
 		end
 
-		--reseta cache de specs
-		_detalhes:ResetSpecCache()
+		--cleanup spec cache
+		Details:ResetSpecCache()
 
-		--wipa container de escudos
-		wipe(_detalhes.escudos)
+		--cleanup the shield cache
+		wipe(Details.escudos)
 
-		_detalhes.ultima_coleta = _detalhes._tempo
+		--set the time of the latest internal garbage collect
+		Details.ultima_coleta = _detalhes._tempo
 
 		if (_detalhes.debug) then
+			Details:Msg("(debug) executing: collectgarbage().")
 			collectgarbage()
 			UpdateAddOnMemoryUsage()
-			--local memory2 = GetAddOnMemoryUsage ("Details")
-			--_detalhes:Msg("(debug) memory before: "..memory.." memory after: "..memory2)
 		end
-
 	end
 
 	--combates Normais

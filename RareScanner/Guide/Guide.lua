@@ -1119,6 +1119,19 @@ private.CONTAINER_GUIDE = {
 		[RSConstants.ENTRANCE..1] = { x = 0.3063, y = 0.5147 };
 		[RSConstants.ENTRANCE..2] = { x = 0.2942, y = 0.5272 };
 	}; --Onyx Gem Cluster
+	["3780102023"] = { 
+		[RSConstants.STEP1..1] = { x = 0.2661, y = 0.4876, comment = AL["NOTE_378010_1"] };
+		[RSConstants.STEP1..2] = { x = 0.2686, y = 0.4733, comment = AL["NOTE_378010_1"] };
+		[RSConstants.STEP1..3] = { x = 0.2758, y = 0.5276, comment = AL["NOTE_378010_1"] };
+		[RSConstants.STEP1..4] = { x = 0.2774, y = 0.5084, comment = AL["NOTE_378010_1"] };
+		[RSConstants.STEP1..5] = { x = 0.2935, y = 0.4888, comment = AL["NOTE_378010_1"] };
+		[RSConstants.STEP1..6] = { x = 0.2949, y = 0.5166, comment = AL["NOTE_378010_1"] };
+		[RSConstants.STEP1..7] = { x = 0.3050, y = 0.4596, comment = AL["NOTE_378010_1"] };
+		[RSConstants.STEP1..8] = { x = 0.3618, y = 0.4690, comment = AL["NOTE_378010_1"] };
+		[RSConstants.STEP1..9] = { x = 0.3213, y = 0.4689, comment = AL["NOTE_378010_1"] };
+		[RSConstants.STEP2] = { x = 0.6703, y = 0.4372, comment = AL["NOTE_378010_2"] };
+		[RSConstants.STEP3] = { x = 0.6697, y = 0.5036, comment = AL["NOTE_378010_3"] };
+	}; --Forgotten Dragon Treasure
 }
 
 ---============================================================================

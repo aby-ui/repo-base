@@ -22,6 +22,11 @@
 		return habilidade_dano:NovaTabela(spellId, nil, cleuToken)
 	end
 
+	--cleu token is used to check if the spell is a dot
+	function Details.CreateSpellTable(spellId, cleuToken)
+		return habilidade_dano:NovaTabela(spellId, nil, cleuToken)
+	end
+
 	function habilidade_dano:NovaTabela(id, link, token)
 		local _newDamageSpell = {
 			total = 0, --total damage

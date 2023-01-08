@@ -36,8 +36,8 @@
 -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 --constants
 
-	local combatente =			_detalhes.combatente
-	local container_combatentes =	_detalhes.container_combatentes
+	local actorContainer =	_detalhes.container_combatentes
+
 	local alvo_da_habilidade = 	_detalhes.alvo_da_habilidade
 	local atributo_damage =		_detalhes.atributo_damage
 	local atributo_heal =			_detalhes.atributo_heal
@@ -73,38 +73,119 @@
 
 	local debugPetname = false
 
-	local KirinTor = GetFactionInfoByID (1090) or "1"
-	local Valarjar = GetFactionInfoByID (1948) or "1"
-	local HighmountainTribe = GetFactionInfoByID (1828) or "1"
-	local CourtofFarondis = GetFactionInfoByID (1900) or "1"
-	local Dreamweavers = GetFactionInfoByID (1883) or "1"
-	local TheNightfallen = GetFactionInfoByID (1859) or "1"
-	local TheWardens = GetFactionInfoByID (1894) or "1"
-
 	local SPELLID_SANGUINE_HEAL = 226510
 	local sanguineActorName = GetSpellInfo(SPELLID_SANGUINE_HEAL)
 
-	local IsFactionNpc = {
-		[KirinTor] = true,
-		[Valarjar] = true,
-		[HighmountainTribe] = true,
-		[CourtofFarondis] = true,
-		[Dreamweavers] = true,
-		[TheNightfallen] = true,
-		[TheWardens] = true,
-	}
-	
 -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 --api functions
 
+--[=[
+["AzeriteItemPowerDescription"] = 9,
+["SellPrice"] = 11,
+["CurrencyTotal"] = 14,
+["GemSocket"] = 3,
+["QuestObjective"] = 8,
+["UnitName"] = 2,
+["SpellName"] = 13,
+["ItemEnchantmentPermanent"] = 15,
+["RuneforgeLegendaryPowerDescription"] = 10,
+["QuestPlayer"] = 18,
+["Blank"] = 1,
+["UnitOwner"] = 16,
+["LearnableSpell"] = 6,
+["ProfessionCraftingQuality"] = 12,
+["UnitThreat"] = 7,
+["QuestTitle"] = 17,
+["ItemBinding"] = 20,
+["NestedBlock"] = 19,
+["AzeriteEssencePower"] = 5,
+["AzeriteEssenceSlot"] = 4,
+["None"] = 0,
+--]=]
+
+---attempt to get the owner of rogue's Akaari's Soul from Secrect Technique
+---@param petGUID string
+---@return string|any
+---@return string|any
+---@return number|any
+function Details222.Pets.AkaarisSoulOwner(petGUID)
+	local tooltipData = C_TooltipInfo.GetHyperlink("unit:" .. petGUID)
+	local args = tooltipData.args
+
+	local playerGUID
+	--iterate among args and find into the value field == guid and it must have guidVal
+	for i = 1, #args do
+		local arg = args[i]
+		if (arg.field == "guid") then
+			playerGUID = arg.guidVal
+			break
+		end
+	end
+
+	if (playerGUID) then
+		local actorObject = Details:GetActorFromCache(playerGUID) --quick cache only exists during conbat
+		if (actorObject) then
+			return actorObject.nome, playerGUID, actorObject.flag_original
+		end
+		local guidCache = Details:GetParserPlayerCache() --cahe exists until the next combat starts
+		local ownerName = guidCache[playerGUID]
+		if (ownerName) then
+			return ownerName, playerGUID, 0x514
+		end
+	end
+end
+
+---attempt to the owner of a pet using tooltip scan, if the owner isn't found, return nil
+---@param petGUID string
+---@param petName string
+---@return string|nil ownerName
+---@return string|nil ownerGUID
+---@return integer|nil ownerFlags
 	function Details222.Pets.GetPetOwner(petGUID, petName)
 		pet_tooltip_frame:SetOwner(WorldFrame, "ANCHOR_NONE")
 		pet_tooltip_frame:SetHyperlink(("unit:" .. petGUID) or "")
 
+		--C_TooltipInfo.GetHyperlink 
+
 		if (bIsDragonflight) then
-			local tooltipData = pet_tooltip_frame:GetTooltipData()
-			if (tooltipData and tooltipData.lines[1]) then
-				if (tooltipData.lines[1].leftText == petName) then
+			local tooltipData = pet_tooltip_frame:GetTooltipData() --is pet tooltip reliable with the new tooltips changes?
+			if (tooltipData) then
+
+				local tooltipLines = tooltipData.lines
+				for lineIndex = 1, #tooltipLines do
+					local thisLine = tooltipLines[lineIndex]
+					--get the type of information this line is showing
+					local lineType = thisLine.type --type 0 = 'friendly' type 2 = 'name' type 16 = controller guid
+
+					--parse the different types of information
+					if (lineType == 2) then --unit name
+						if (thisLine.leftText ~= petName) then
+							--tooltip isn't showing our pet
+							return
+						end
+
+					elseif (lineType == 16) then --controller guid
+						--assuming the unit name always comes before the controller guid
+						local GUID = thisLine.guid
+						--very fast way to get an actorObject, this cache only lives while in combat
+						local actorObject = Details:GetActorFromCache(GUID)
+						if (actorObject) then
+							--Details:Msg("(debug) pet found (1)", petName, "owner:", actorObject.nome)
+							return actorObject.nome, GUID, actorObject.flag_original
+						else
+							--return the actor name for a guid, this cache lives for current combat until next segment
+							local guidCache = Details:GetParserPlayerCache()
+							local ownerName = guidCache[GUID]
+							if (ownerName) then
+								--Details:Msg("(debug) pet found (2)", petName, "owner:", ownerName)
+								return ownerName, GUID, 0x514
+							end
+						end
+					end
+				end
+
+				--[=[
+				if (tooltipData.lines[1].leftText == petName) then --should rely on the first line carrying the pet name?
 					for i = 2, #tooltipData.lines do
 						local tooltipLine = tooltipData.lines[i]
 						local args = tooltipLine.args
@@ -114,12 +195,13 @@
 								local guidCache = Details:GetParserPlayerCache()
 								local ownerName = guidCache[ownerGUID]
 								if (ownerName) then
-									return ownerName, ownerGUID
+									return ownerName, ownerGUID, 0x514
 								end
 							end
 						end
 					end
 				end
+				--]=]
 			end
 		end
 
@@ -154,79 +236,94 @@
 		end
 	end
 
-	function container_combatentes:GetActor(actorName)
+	---return the actor object for a given actor name
+	---@param actorName string
+	---@return table|nil
+	function actorContainer:GetActor(actorName)
 		local index = self._NameIndexTable [actorName]
 		if (index) then
 			return self._ActorTable [index]
 		end
 	end
-	
-	function container_combatentes:GetSpellSource (spellid)
+
+	---return an actor name which used the spell passed 'spellId'
+	---@param spellId number
+	---@return string|nil
+	function actorContainer:GetSpellSource(spellId)
 		local t = self._ActorTable
-		--print("getting the source", spellid, #t)
 		for i = 1, #t do
-			if (t[i].spells._ActorTable [spellid]) then
+			if (t[i].spells._ActorTable[spellId]) then
 				return t[i].nome
 			end
 		end
 	end
-	
-	function container_combatentes:GetAmount (actorName, key)
+
+	---return the value stored in the 'key' for an actor, the key can be any value stored in the actor table such like 'total', 'damage_taken', 'heal', 'interrupt', etc
+	---@param actorName string
+	---@param key string
+	---@return number
+	function actorContainer:GetAmount(actorName, key)
 		key = key or "total"
-		local index = self._NameIndexTable [actorName]
+		local index = self._NameIndexTable[actorName]
 		if (index) then
-			return self._ActorTable [index] [key] or 0
+			return self._ActorTable[index][key] or 0
 		else
 			return 0
 		end
 	end
-	
-	function container_combatentes:GetTotal (key)
+
+	---return the total value stored in the 'key' for all actors, the key can be any value stored in the actor table such like 'total', 'damage_taken', 'heal', 'interrupt', etc
+	---@param key string
+	---@return number
+	function actorContainer:GetTotal(key)
 		local total = 0
 		key = key or "total"
 		for _, actor in ipairs(self._ActorTable) do
-			total = total + (actor [key] or 0)
+			total = total + (actor[key] or 0)
 		end
-		
 		return total
 	end
-	
-	function container_combatentes:GetTotalOnRaid (key, combat)
+
+	function actorContainer:GetTotalOnRaid(key, combat)
 		local total = 0
 		key = key or "total"
 		local roster = combat.raid_roster
 		for _, actor in ipairs(self._ActorTable) do
 			if (roster [actor.nome]) then
-				total = total + (actor [key] or 0)
+				total = total + (actor[key] or 0)
 			end
 		end
-		
 		return total
 	end
 
-	function container_combatentes:ListActors()
+	---return an ipairs iterator for all actors stored in this Container
+	---usage: for index, actorObject in container:ListActors() do
+	---@return function
+	function actorContainer:ListActors()
 		return ipairs(self._ActorTable)
 	end
-	
+
 -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 --internals
 
-	--build a new actor container
-	function container_combatentes:NovoContainer (tipo_do_container, combat_table, combat_id)
-		local _newContainer = {
-			funcao_de_criacao = container_combatentes:FuncaoDeCriacao (tipo_do_container),
-			
-			tipo = tipo_do_container,
-			
-			combatId = combat_id,
-			
+	---create a new actor container, can be a damage container, heal container, enemy container or utility container
+	---actors can be added by using newContainer.GetOrCreateActor
+	---actors can be retrieved using the same function above
+	---@param containerType number
+	---@param combatObject table
+	---@param combatId number
+	---@return table
+	function actorContainer:NovoContainer(containerType, combatObject, combatId)
+		local newContainer = {
+			funcao_de_criacao = actorContainer:FuncaoDeCriacao(containerType),
+			tipo = containerType,
+			combatId = combatId,
 			_ActorTable = {},
 			_NameIndexTable = {}
 		}
-		
-		setmetatable(_newContainer, container_combatentes)
 
-		return _newContainer
+		setmetatable(newContainer, actorContainer)
+		return newContainer
 	end
 
 	--try to get the actor class from name
@@ -631,12 +728,17 @@
 		end
 	end
 
-	--english alias
-	function container_combatentes:GetOrCreateActor (serial, nome, flag, criar)
-		return self:PegarCombatente (serial, nome, flag, criar)
+	---get an actor from the container, if the actor doesn't exists, and the bShouldCreate is true, create a new actor
+	---@param serial string
+	---@param actorName string
+	---@param actorFlags number
+	---@param bShouldCreate boolean
+	---@return table
+	function actorContainer:GetOrCreateActor (serial, actorName, actorFlags, bShouldCreate)
+		return self:PegarCombatente(serial, actorName, actorFlags, criar)
 	end
 
-	function container_combatentes:PegarCombatente (serial, nome, flag, criar)
+	function actorContainer:PegarCombatente (serial, nome, flag, criar)
 		--[[statistics]]-- _detalhes.statistics.container_calls = _detalhes.statistics.container_calls + 1
 	
 		--if (flag and nome:find("Kastfall") and bit.band(flag, 0x2000) ~= 0) then
@@ -908,7 +1010,7 @@
 		table.wipe(petBlackList)
 	end
 
-	function container_combatentes:FuncaoDeCriacao (tipo)
+	function actorContainer:FuncaoDeCriacao (tipo)
 		if (tipo == container_damage_target) then
 			return alvo_da_habilidade.NovaTabela
 			
@@ -940,7 +1042,7 @@
 	end
 
 	--chama a fun��o para ser executada em todos os atores
-	function container_combatentes:ActorCallFunction (funcao, ...)
+	function actorContainer:ActorCallFunction (funcao, ...)
 		for index, actor in ipairs(self._ActorTable) do
 			funcao (nil, actor, ...)
 		end
@@ -951,18 +1053,18 @@
 		return (t1 [bykey] or 0) > (t2 [bykey] or 0)
 	end
 	
-	function container_combatentes:SortByKey (key)
+	function actorContainer:SortByKey (key)
 		assert(type(key) == "string", "Container:SortByKey() expects a keyname on parameter 1.")
 		bykey = key
 		_table_sort (self._ActorTable, sort)
 		self:remapear()
 	end
 	
-	function container_combatentes:Remap()
+	function actorContainer:Remap()
 		return self:remapear()
 	end
 	
-	function container_combatentes:remapear()
+	function actorContainer:remapear()
 		local mapa = self._NameIndexTable
 		local conteudo = self._ActorTable
 		for i = 1, #conteudo do
@@ -974,7 +1076,7 @@
 		--reconstr�i meta e indexes
 			setmetatable(container, _detalhes.container_combatentes)
 			container.__index = _detalhes.container_combatentes
-			container.funcao_de_criacao = container_combatentes:FuncaoDeCriacao (container.tipo)
+			container.funcao_de_criacao = actorContainer:FuncaoDeCriacao (container.tipo)
 
 		--repara mapa
 			local mapa = {}

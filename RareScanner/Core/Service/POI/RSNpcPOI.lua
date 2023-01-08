@@ -50,6 +50,70 @@ local function RemoveNotDiscoveredNpc(npcID)
 end
 
 ---============================================================================
+-- Storm invasion NOCs POIs
+---- NPCs that are part of a storm invasion event (Dragonflight)
+---============================================================================
+
+local function GetStormInvasionAtlasName(npcID, mapID)
+  if (RSUtils.Contains(RSConstants.FIRE_STORM_EVENTS_NPCS, npcID)) then
+    return RSConstants.FIRE_STORM_ATLAS 
+  elseif (RSUtils.Contains(RSConstants.WATER_STORM_EVENTS_NPCS, npcID)) then
+    return RSConstants.WATER_STORM_ATLAS 
+  elseif (RSUtils.Contains(RSConstants.EARTH_STORM_EVENTS_NPCS, npcID)) then
+    return RSConstants.EARTH_STORM_ATLAS 
+  elseif (RSUtils.Contains(RSConstants.AIR_STORM_EVENTS_NPCS, npcID)) then
+    return RSConstants.AIR_STORM_ATLAS
+  end
+  
+  return nil
+end
+
+local function GetStormInvasionXY(npcID, mapID)
+  local npcStormAtlasName = GetStormInvasionAtlasName(npcID, mapID) 
+  if (not npcStormAtlasName) then
+    return nil
+  end
+   
+  local areaPOIs = GetAreaPOIsForPlayerByMapIDCached(mapID);
+  for _, areaPoiID in ipairs(areaPOIs) do
+    local poiInfo = C_AreaPoiInfo.GetAreaPOIInfo(mapID, areaPoiID);
+    if (poiInfo and poiInfo.atlasName == npcStormAtlasName) then
+      local x, y = poiInfo.position:GetXY()
+      local mapNpcInfo = RSNpcDB.GetInternalNpcInfoByMapID(npcID, mapID)
+      if (not mapNpcInfo or not mapNpcInfo.overlay) then
+        return x, y
+      else
+        local xyDistances = {}
+        for _, coordinatePair in ipairs (mapNpcInfo.overlay) do
+          local coordx, coordy =  strsplit("-", coordinatePair)
+          local distance = RSUtils.DistanceBetweenCoords(coordx, x, coordy, y)
+          if (distance > 0.01) then
+            xyDistances[coordinatePair] = distance
+          end
+        end
+  
+        if (RSUtils.GetTableLength(xyDistances) == 0) then
+          return x, y
+        end
+  
+        local distances = {}
+        for xy, distance in pairs (xyDistances) do
+          table.insert(distances, distance)
+        end
+        
+        local min = math.min(unpack(distances))
+        for xy, distance in pairs (xyDistances) do
+          if (distance == min) then
+            local xo, yo = strsplit("-", xy)
+            return xo, yo
+          end
+        end
+      end
+    end
+  end
+end
+
+---============================================================================
 -- NPC Map POIs
 ---- Manage adding NPC icons to the world map and minimap
 ---============================================================================
@@ -65,7 +129,11 @@ function RSNpcPOI.GetNpcPOI(npcID, mapID, npcInfo, alreadyFoundInfo)
 		POI.x = alreadyFoundInfo.coordX
 		POI.y = alreadyFoundInfo.coordY
 	else
-		POI.x, POI.y = RSNpcDB.GetInternalNpcCoordinates(npcID, mapID)
+	  if (GetStormInvasionAtlasName(npcID, mapID)) then
+	    POI.x, POI.y = GetStormInvasionXY(npcID, mapID)
+	  else
+		  POI.x, POI.y = RSNpcDB.GetInternalNpcCoordinates(npcID, mapID)
+		end
 	end
 	POI.foundTime = alreadyFoundInfo and alreadyFoundInfo.foundTime
 	POI.isDead = RSNpcDB.IsNpcKilled(npcID)
@@ -151,6 +219,12 @@ local function IsNpcPOIFiltered(npcID, mapID, artID, zoneQuestID, questTitles, v
 	if (RSUtils.Contains(questTitles, npcName)) then
 		RSLogger:PrintDebugMessageEntityID(npcID, string.format("Saltado NPC [%s]: Tiene misión del mundo activa.", npcID))
 		return true
+	end
+	
+	-- Skip if storm NPC and the event isn't up
+	if (GetStormInvasionAtlasName(npcID, mapID) and not GetStormInvasionXY(npcID, mapID)) then
+    RSLogger:PrintDebugMessageEntityID(npcID, string.format("Saltado NPC [%s]: Invasión de tormentas que no esta activa.", npcID))
+    return true
 	end
 
 	-- A 'not discovered' NPC will be setted as killed when the kill is detected while loading the addon and its questID is completed

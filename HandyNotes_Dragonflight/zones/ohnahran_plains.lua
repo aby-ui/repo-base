@@ -35,6 +35,7 @@ local Pet = ns.reward.Pet
 local Toy = ns.reward.Toy
 local Transmog = ns.reward.Transmog
 
+local Circle = ns.poi.Circle
 local Path = ns.poi.Path
 local POI = ns.poi.POI
 
@@ -94,6 +95,7 @@ map.nodes[56718128] = Rare({
 map.nodes[74414762] = Rare({ -- reqiured 67030 review
     id = 193170,
     quest = 69856,
+    note = L['spawns_hourly'],
     rewards = {
         Achievement({id = 16677, criteria = 56075})
         -- Transmog({item = , slot = L['']}) -- Name
@@ -147,12 +149,14 @@ map.nodes[32823817] = Rare({ -- review
 map.nodes[71694585] = Rare({
     id = 193212,
     quest = 74011,
+    note = L['spawns_hourly'],
     rewards = {Achievement({id = 16677, criteria = 56073})}
 }) -- Malsegan
 
 map.nodes[63017996] = Rare({ -- reqiured 67030
     id = 193173,
     quest = 69857,
+    note = L['spawns_hourly'],
     rewards = {
         Achievement({id = 16677, criteria = 56070}),
         Item({item = 200542, note = L['trinket']}) -- Breezy Companion
@@ -177,6 +181,7 @@ map.nodes[58604940] = Rare({
 map.nodes[61212950] = Rare({ -- reqiured 67030
     id = 193235,
     quest = 69877,
+    note = L['spawns_hourly'],
     rewards = {Achievement({id = 16677, criteria = 56074})}
 }) -- Oshigol
 
@@ -292,6 +297,7 @@ map.nodes[21603960] = Rare({
 map.nodes[53627281] = Rare({ -- reqiured 67030 review
     id = 193123,
     quest = 74034,
+    note = L['spawns_hourly'],
     rewards = {
         Achievement({id = 16677, criteria = 56072}),
         Transmog({item = 200216, slot = L['cloth']}) -- Water Heating Cord
@@ -380,6 +386,14 @@ map.nodes[90434005] = Rare({
     note = L['blightpaw_note'],
     rewards = {Achievement({id = 16679, criteria = 56136})}
 }) -- Blightpaw the Depraved
+
+map.nodes[80817770] = Rare({
+    id = 197411,
+    quest = 74057,
+    label = L['large_lunker_sighting'],
+    note = L['large_lunker_sighting_note'],
+    rewards = {Achievement({id = 16678, criteria = 56130})}
+}) -- Astray Splasher
 
 -------------------------------------------------------------------------------
 
@@ -516,6 +530,22 @@ map.nodes[51985839] = Treasure({
         Toy({item = 200878}) -- Wheeled Floaty Boaty Controller
     }
 }) -- Yennu's Boat
+
+-------------------------------------------------------------------------------
+
+map.nodes[56007870] = ns.node.ElementalChest({
+    quest = 71033,
+    label = L['chest_of_the_flood'],
+    rewards = {
+        Item({item = 192055}), -- Dragon Isles Artifact
+        Item({item = 200093}), -- Centaur Hunting Trophy
+        Item({item = 190454}), -- Primal Chaos
+        Item({item = 198542, note = L['trinket']}), -- Shikaari Huntress' Arrowhead
+        Item({item = 198539, note = L['trinket']}), -- Breath of the Plains
+        Transmog({item = 201443, slot = L['shield']}), -- Primal Revenant's Icewall
+        Transmog({item = 201442, slot = L['1h_sword']}) -- Primal Revenant's Frostblade
+    }
+}) -- Chest of the Flood
 
 -------------------------------------------------------------------------------
 --------------------------------- BATTLE PETS ---------------------------------
@@ -1293,7 +1323,7 @@ map.nodes[26604460] = Safari({
     }
 }) -- Ironbeak Duck
 
-map.nodes[56007860] = Safari({
+map.nodes[55407440] = Safari({
     id = 189122,
     rewards = {Achievement({id = 16519, criteria = 55652}), Pet({id = 3296})},
     pois = {
@@ -1428,6 +1458,29 @@ map.nodes[54367534] = ElementalStorm({
     mapID = map.id,
     areaPOIs = {7225, 7226, 7227, 7228}
 }) -- Elemental Storm: Ohn'iri Springs
+
+-------------------------------------------------------------------------------
+--------------------------- KNEW YOU NOKHUD DO IT! ----------------------------
+-------------------------------------------------------------------------------
+
+map.nodes[34603468] = Collectible({
+    label = '{npc:197884}',
+    icon = 1103068,
+    note = L['knew_you_nokhud_do_it_note'],
+    group = ns.groups.NOKHUD_DO_IT,
+    rewards = {
+        Achievement({id = 16583}) -- Knew You Nokhud Do It!
+    },
+    pois = {
+        Path({Circle({origin = 34943880, radius = 2})}), -- Nokhudon Hold
+        Path({
+            34693453, 35263463, 35783477, 36133487, 36373508, 36973482,
+            37553460, 37813427, 37773397, 37353335, 37203289, 36813235,
+            36513218, 36153214, 35753226, 35343241, 35103236, 34973277,
+            34963336, 34833385, 34733415, 34693453
+        }) -- Training Course Path
+    }
+}) -- Training Master Turasa
 
 -------------------------------------------------------------------------------
 -------------------------------- MISCELLANEOUS --------------------------------

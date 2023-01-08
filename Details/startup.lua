@@ -223,7 +223,7 @@ function Details:StartMeUp() --I'll never stop!
 	self.ultima_coleta = 0
 	self.intervalo_coleta = 720
 	self.intervalo_memoria = 180
-	self.garbagecollect = Details.Schedules.NewTicker(self.intervalo_coleta, Details.IniciarColetaDeLixo, Details)
+	self.garbagecollect = Details.Schedules.NewTicker(self.intervalo_coleta, Details.RestartInternalGarbageCollector, Details)
 	self.next_memory_check = _G.time() + self.intervalo_memoria
 
 	--player role
@@ -578,6 +578,10 @@ function Details:StartMeUp() --I'll never stop!
 	if (Details.check_stuttering) then
 		_G["UpdateAddOnMemoryUsage"] = Details.UpdateAddOnMemoryUsage_Custom
 	end
+
+	pcall(Details222.EJCache.MakeCache)
+
+	pcall(Details222.ClassCache.MakeCache)
 
 	function Details:InstallOkey()
 		return true

@@ -563,9 +563,6 @@ local function CreatePluginFrames (data)
 			local textPoint = {"left", "left", 4, 0}
 			
 			local SharedMedia = LibStub:GetLibrary("LibSharedMedia-3.0")
-			
-			--CoolTip:SetBannerImage (1, [[]], 200, 22, avatarPoint, avatarTexCoord, nil) --> overlay [2] avatar path
-			--CoolTip:SetBannerText (1, Loc ["STRING_PLUGIN_NAME"], textPoint, {1, 1, 1}, 14, SharedMedia:Fetch ("font", _detalhes.tooltip.fontface)) --> text [1] nickname
 		
 		--apply the backdrop settings to the menu
 		Details:FormatCooltipBackdrop()

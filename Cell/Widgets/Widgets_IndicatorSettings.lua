@@ -1208,7 +1208,7 @@ local function CreateSetting_Font(parent)
         widget = addon:CreateFrame("CellIndicatorSettings_Font", parent, 240, 145)
         settingWidgets["font"] = widget
 
-        widget.font = addon:CreateDropdown(widget, 110)
+        widget.font = addon:CreateDropdown(widget, 110, "font")
         widget.font:SetPoint("TOPLEFT", 5, -20)
         local items, fonts, defaultFontName, defaultFont = F:GetFontItems()
         for _, item in pairs(items) do
@@ -1284,7 +1284,7 @@ local function CreateSetting_Font(parent)
         
         -- show db value
         function widget:SetDBValue(fontTable)
-            widget.font:SetSelected(fontTable[1])
+            widget.font:SetSelected(fontTable[1], fonts[fontTable[1]])
             widget.fontSize:SetValue(fontTable[2])
             widget.outline:SetSelected(L[fontTable[3]])
             widget.xOffset:SetValue(fontTable[4])
@@ -1305,7 +1305,7 @@ local function CreateSetting_FontNoOffset(parent)
         widget = addon:CreateFrame("CellIndicatorSettings_FontNoOffset", parent, 240, 95)
         settingWidgets["font-noOffset"] = widget
 
-        widget.font = addon:CreateDropdown(widget, 110)
+        widget.font = addon:CreateDropdown(widget, 110, "font")
         widget.font:SetPoint("TOPLEFT", 5, -20)
         local items, fonts, defaultFontName, defaultFont = F:GetFontItems()
         for _, item in pairs(items) do
@@ -1369,7 +1369,7 @@ local function CreateSetting_FontNoOffset(parent)
         
         -- show db value
         function widget:SetDBValue(fontTable)
-            widget.font:SetSelected(fontTable[1])
+            widget.font:SetSelected(fontTable[1], fonts[fontTable[1]])
             widget.fontSize:SetValue(fontTable[2])
             widget.outline:SetSelected(L[fontTable[3]])
         end
@@ -1401,7 +1401,7 @@ end
 --         end
 
 --         -- font
---         widget.font = addon:CreateDropdown(widget, 110)
+--         widget.font = addon:CreateDropdown(widget, 110, "font")
 --         widget.font:SetPoint("TOPLEFT", 5, -20)
 --         local items, fonts, defaultFontName, defaultFont = F:GetFontItems()
 --         for _, item in pairs(items) do
@@ -1490,7 +1490,7 @@ end
         
 --         -- show db value
 --         function widget:SetDBValue(fontTable)
---             widget.font:SetSelected(fontTable[1])
+--             widget.font:SetSelected(fontTable[1], fonts[fontTable[1]])
 --             widget.fontSize:SetValue(fontTable[2])
 --             widget.outline:SetSelectedValue(fontTable[3])
 --             widget.alignment:SetSelectedValue(fontTable[4])
@@ -1512,7 +1512,7 @@ end
 --         widget = addon:CreateFrame("CellIndicatorSettings_Font", parent, 240, 95)
 --         settingWidgets["font"] = widget
 
---         widget.font = addon:CreateDropdown(widget, 110)
+--         widget.font = addon:CreateDropdown(widget, 110, "font")
 --         widget.font:SetPoint("TOPLEFT", 5, -20)
 --         local items, fonts, defaultFontName, defaultFont = F:GetFontItems()
 --         for _, item in pairs(items) do
@@ -1582,7 +1582,7 @@ end
         
 --         -- show db value
 --         function widget:SetDBValue(fontTable)
---             widget.font:SetSelected(fontTable[1])
+--             widget.font:SetSelected(fontTable[1], fonts[fontTable[1]])
 --             widget.fontSize:SetValue(fontTable[2])
 --             widget.outline:SetSelected(L[fontTable[3]])
 --             widget.xOffset:SetValue(fontTable[4])

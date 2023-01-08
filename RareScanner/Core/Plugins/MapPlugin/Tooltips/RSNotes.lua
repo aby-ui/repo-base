@@ -85,9 +85,18 @@ function RSNotes.GetNote(entityID, mapID)
 	-- Requires entering the rift in the maw
 	elseif (RSUtils.Contains(RSConstants.RIFT_NPCS_MAW, entityID)) then
 		return AL["NOTE_RIFT_NPCS_MAW"]
-	-- Requires elemental storms in Dragon Isles
-	elseif (RSUtils.Contains(RSConstants.STORM_EVENTS_NPCS, entityID)) then
-		return AL["NOTE_STORM_EVENTS"]
+	-- Requires air storms in Dragon Isles
+	elseif (RSUtils.Contains(RSConstants.AIR_STORM_EVENTS_NPCS, entityID)) then
+		return AL["NOTE_AIR_STORM_EVENTS"]
+  -- Requires fire storms in Dragon Isles
+  elseif (RSUtils.Contains(RSConstants.FIRE_STORM_EVENTS_NPCS, entityID)) then
+    return AL["NOTE_FIRE_STORM_EVENTS"]
+  -- Requires earth storms in Dragon Isles
+  elseif (RSUtils.Contains(RSConstants.EARTH_STORM_EVENTS_NPCS, entityID)) then
+    return AL["NOTE_EARTH_STORM_EVENTS"]
+  -- Requires water storms in Dragon Isles
+  elseif (RSUtils.Contains(RSConstants.WATER_STORM_EVENTS_NPCS, entityID)) then
+    return AL["NOTE_WATER_STORM_EVENTS"]
 	-- Grand hunting party bosses
 	elseif (RSUtils.Contains(RSConstants.HUNTING_PARTY_NPCS, entityID)) then
 		return AL["NOTE_HUNTING_PARTY_NPCS"]

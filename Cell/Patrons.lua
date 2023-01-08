@@ -33,6 +33,7 @@ local patrons = {
     {"批歪 (爱发电)", "piwai"},
     {"ZzZ (爱发电)", "zzz"},
     {"音速豆奶-白银之手 (CN)", "yinsudounai"},
+    {"月神之韧 (爱发电)", "yueshenzhiren"},
 }
 
 -- sort

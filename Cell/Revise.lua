@@ -1686,6 +1686,79 @@ function F:Revise()
         end
     end
 
+    -- r153-release
+    if CellDB["revise"] and dbRevision < 153 then
+        if Cell.isRetail then
+            -- targetedSpells
+            -- 青龙寺
+            if not F:TContains(CellDB["targetedSpellsList"], 106823) then -- 翔龙猛袭
+                tinsert(CellDB["targetedSpellsList"], 106823)
+            end
+            if not F:TContains(CellDB["targetedSpellsList"], 106841) then -- 青龙猛袭
+                tinsert(CellDB["targetedSpellsList"], 106841)
+            end
+            -- 群星庭院
+            if not F:TContains(CellDB["targetedSpellsList"], 211473) then -- 暗影鞭笞
+                tinsert(CellDB["targetedSpellsList"], 211473)
+            end
+            -- 英灵殿
+            if not F:TContains(CellDB["targetedSpellsList"], 192018) then -- 光明之盾
+                tinsert(CellDB["targetedSpellsList"], 192018)
+            end
+            -- 化身巨龙牢窟
+            if not F:TContains(CellDB["targetedSpellsList"], 375870) then -- 致死石爪
+                tinsert(CellDB["targetedSpellsList"], 375870)
+            end
+            if not F:TContains(CellDB["targetedSpellsList"], 395906) then -- 电化之颌
+                tinsert(CellDB["targetedSpellsList"], 395906)
+            end
+            if not F:TContains(CellDB["targetedSpellsList"], 372158) then -- 破甲一击
+                tinsert(CellDB["targetedSpellsList"], 372158)
+            end
+            if not F:TContains(CellDB["targetedSpellsList"], 372056) then -- 碾压
+                tinsert(CellDB["targetedSpellsList"], 372056)
+            end
+            if not F:TContains(CellDB["targetedSpellsList"], 375580) then -- 西风猛击
+                tinsert(CellDB["targetedSpellsList"], 375580)
+            end
+            if not F:TContains(CellDB["targetedSpellsList"], 376276) then -- 震荡猛击
+                tinsert(CellDB["targetedSpellsList"], 376276)
+            end
+            -- 红玉新生法池
+            if not F:TContains(CellDB["targetedSpellsList"], 381512) then -- 风暴猛击
+                tinsert(CellDB["targetedSpellsList"], 381512)
+            end
+            -- 碧蓝魔馆
+            if not F:TContains(CellDB["targetedSpellsList"], 374789) then -- 注能打击
+                tinsert(CellDB["targetedSpellsList"], 374789)
+            end
+            if not F:TContains(CellDB["targetedSpellsList"], 372222) then -- 奥术顺劈
+                tinsert(CellDB["targetedSpellsList"], 372222)
+            end
+            if not F:TContains(CellDB["targetedSpellsList"], 384978) then -- 巨龙打击
+                tinsert(CellDB["targetedSpellsList"], 384978)
+            end
+            if not F:TContains(CellDB["targetedSpellsList"], 391136) then -- 肩部猛击
+                tinsert(CellDB["targetedSpellsList"], 391136)
+            end
+            -- 诺库德阻击战
+            if not F:TContains(CellDB["targetedSpellsList"], 376827) then -- 传导打击
+                tinsert(CellDB["targetedSpellsList"], 376827)
+            end
+            if not F:TContains(CellDB["targetedSpellsList"], 376829) then -- 雷霆打击
+                tinsert(CellDB["targetedSpellsList"], 376829)
+            end
+            if not F:TContains(CellDB["targetedSpellsList"], 375937) then -- 撕裂猛击
+                tinsert(CellDB["targetedSpellsList"], 375937)
+            end
+            if not F:TContains(CellDB["targetedSpellsList"], 375929) then -- 野蛮打击
+                tinsert(CellDB["targetedSpellsList"], 375929)
+            end
+
+            Cell.vars.targetedSpellsList = F:ConvertTable(CellDB["targetedSpellsList"])
+        end
+    end
+
     CellDB["revise"] = Cell.version
     if Cell.isWrath then
         CellCharacterDB["revise"] = Cell.version

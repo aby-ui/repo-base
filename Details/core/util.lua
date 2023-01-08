@@ -2,6 +2,7 @@
 
 	local _detalhes = _G._detalhes
 	local Loc = LibStub("AceLocale-3.0"):GetLocale ( "Details" )
+	local addonName, Details222 = ...
 	local _
 
 -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -336,8 +337,7 @@
 		return playername, playerclass, deathtime, deathcombattime, deathtimestring, playermaxhealth, deathevents, lastcooldown
 	end
 
-	--get the fractional number representing the alphabetical letter
-	function _detalhes:GetOrderNumber(who_name)
+	function Details:GetOrderNumber() --who_name
 		--local name = upper (who_name .. "zz")
 		--local byte1 = abs(_string_byte (name, 2)-91)/1000000
 		--return byte1 + abs(_string_byte (name, 1)-91)/10000
@@ -1124,15 +1124,17 @@ end
 				return true
 
 			elseif (IsInRaid()) then
+				local unitIdCache = Details222.UnitIdCache.Raid
 				for i = 1, GetNumGroupMembers(), 1 do
-					if (UnitAffectingCombat("raid"..i)) then
+					if (UnitAffectingCombat(unitIdCache[i])) then
 						return true
 					end
 				end
 
 			elseif (IsInGroup()) then
+				local unitIdCache = Details222.UnitIdCache.Party
 				for i = 1, GetNumGroupMembers()-1, 1 do
-					if (UnitAffectingCombat("party"..i)) then
+					if (UnitAffectingCombat(unitIdCache[i])) then
 						return true
 					end
 				end
@@ -1150,7 +1152,7 @@ end
 			end
 		end
 
-		_detalhes:SairDoCombate()
+		Details:SairDoCombate()
 	end
 
 	function _detalhes:FindGUIDFromName (name)

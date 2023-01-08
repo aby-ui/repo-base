@@ -1,4 +1,4 @@
-local VERSION = 105
+local VERSION = 106
 
 --[[
 Special icons for rares, pvp or pet battle quests in list
@@ -317,6 +317,8 @@ Bugfixes
 9.2 update
 
 toc update
+
+fixes
 ]]
 
 local GlobalAddonName, WQLdb = ...
@@ -1262,7 +1264,7 @@ WorldQuestList.ScrollDownLine:SetScript("OnEnter",function(self)
 	self.entered = true
 	self.timer = C_Timer.NewTicker(.05,function(timer)
 		if not self.entered then
-			timer:Cancel()
+			self.timer:Cancel()
 			self.timer = nil
 			return
 		end
@@ -1308,7 +1310,7 @@ WorldQuestList.ScrollUpLine:SetScript("OnEnter",function(self)
 	self.entered = true
 	self.timer = C_Timer.NewTicker(.05,function(timer)
 		if not self.entered then
-			timer:Cancel()
+			self.timer:Cancel()
 			self.timer = nil
 			return
 		end
@@ -1793,13 +1795,21 @@ do
 
 	function WorldQuestList:IsShadowlandsZone(mapID)
 		mapID = mapID or GetCurrentMapID()
-		if mapID >= 1525 then
+		if mapID >= 1525 and mapID < 2022 and mapID ~= 1978 then
 			return true
 		else
 			return false
 		end
 	end
 
+	function WorldQuestList:IsDragonflightZone(mapID)
+		mapID = mapID or GetCurrentMapID()
+		if mapID >= 2022 or mapID == 1978 then
+			return true
+		else
+			return false
+		end
+	end
 end
 
 do
@@ -1955,6 +1965,8 @@ do
 		[1355] = {1598.10,2787.43,-2666.83,-56.17},	--Назжатар
 
 		[1550] = {12568.46,6330.90,-11587.08,-9772.61},	--shadowlands
+
+		[1978] = {13342.78,8432.13,-12137.89,-8544.50},	--Драконьи острова
 	}
 	function WorldQuestList:DevCreateMapCoords(mapID)
 		self.DCMC = self.DCMC or CreateFrame("Frame")
@@ -1985,7 +1997,9 @@ do
 					local topY,bottomY = sY - height * msY, sY + height * (1 - msY)
 
 					print('dist',dist,'mapID',mapID,'coords',leftX,rightX,topY,bottomY)
-					JJBox("["..mapID.."] = {"..format("%.2f",leftX)..","..format("%.2f",topY)..","..format("%.2f",rightX)..","..format("%.2f",bottomY).."},\t--"..C_Map.GetMapInfo(mapID).name)
+					if GMRT then
+						GMRT.F:Export2("["..mapID.."] = {"..format("%.2f",leftX)..","..format("%.2f",topY)..","..format("%.2f",rightX)..","..format("%.2f",bottomY).."},\t--"..C_Map.GetMapInfo(mapID).name)
+					end
 				end
 			end
 		end)
@@ -2123,6 +2137,11 @@ do
 		[1907] = 2470,
 
 		[1982] = 2478,
+
+		[2106] = 2510,
+		[2031] = 2507,
+		[2108] = 2503,
+		[2109] = 2511,
 	}
 	local fg_list = {
 		[2164] = "Both",
@@ -3280,9 +3299,10 @@ do
 	local list = {}
 	WorldQuestList.filterDropDown.Button.List = list
 
+	local DF = function() return WorldQuestList:IsDragonflightZone() end
 	local SL = function() return WorldQuestList:IsShadowlandsZone() end
-	local LEGION = function() return WorldQuestList:IsLegionZone() and not SL() end
-	local NOT_LEGION = function() return not WorldQuestList:IsLegionZone() and not SL() end
+	local LEGION = function() return WorldQuestList:IsLegionZone() and not SL() and not DF() end
+	local NOT_LEGION = function() return not WorldQuestList:IsLegionZone() and not SL() and not DF() end
 	local GetFaction = function(id,non_translated) 
 		return FACTION.." "..(GetFactionInfoByID(id) or non_translated or ("ID "..tostring(id)))
 	end
@@ -3415,6 +3435,11 @@ do
 	list[#list+1] = {text = GetFaction(2407),	func = SetIgnoreFilter,	arg1 = "faction2407IgnoreFilter",	checkable = true,	shownFunc = function() return WorldQuestList:IsFactionAvailable(2407) and SL() end	}
 
 	list[#list+1] = {text = GetFaction(2478),	func = SetIgnoreFilter,	arg1 = "faction2478IgnoreFilter",	checkable = true,	shownFunc = function() return WorldQuestList:IsFactionAvailable(2478) and SL() end	}
+
+	list[#list+1] = {text = GetFaction(2510),	func = SetIgnoreFilter,	arg1 = "faction2510IgnoreFilter",	checkable = true,	shownFunc = function() return WorldQuestList:IsFactionAvailable(2510) and DF() end	}
+	list[#list+1] = {text = GetFaction(2507),	func = SetIgnoreFilter,	arg1 = "faction2507IgnoreFilter",	checkable = true,	shownFunc = function() return WorldQuestList:IsFactionAvailable(2507) and DF() end	}
+	list[#list+1] = {text = GetFaction(2503),	func = SetIgnoreFilter,	arg1 = "faction2503IgnoreFilter",	checkable = true,	shownFunc = function() return WorldQuestList:IsFactionAvailable(2503) and DF() end	}
+	list[#list+1] = {text = GetFaction(2511),	func = SetIgnoreFilter,	arg1 = "faction2511IgnoreFilter",	checkable = true,	shownFunc = function() return WorldQuestList:IsFactionAvailable(2511) and DF() end	}
 
 	list[#list+1] = {text = CLOSE,			func = function() ELib.ScrollDropDown.Close() end,		padding = 16,	}
 
@@ -3582,9 +3607,10 @@ do
 	local list = {}
 	WorldQuestList.optionsDropDown.Button.List = list
 
+	local DF = function() return WorldQuestList:IsDragonflightZone() end
 	local SL = function() return WorldQuestList:IsShadowlandsZone() end
-	local LEGION = function() return WorldQuestList:IsLegionZone() and not SL() end
-	local NOT_LEGION = function() return not WorldQuestList:IsLegionZone() and not SL() end
+	local LEGION = function() return WorldQuestList:IsLegionZone() and not SL() and not DF() end
+	local NOT_LEGION = function() return not WorldQuestList:IsLegionZone() and not SL()and not DF() end
 
 	local lfgSubMenu = {
 		{
@@ -3834,6 +3860,7 @@ do
 	end
 
 	local iconsGeneralSubmenu = {
+		{text = WorldQuestList:GetMapName(1978),func = SetIconGeneral,	checkable = true,	arg1=1978	},
 		{text = WorldQuestList:GetMapName(1550),func = SetIconGeneral,	checkable = true,	arg1=1550	},
 		{text = WorldQuestList:GetMapName(947),	func = SetIconGeneral,	checkable = true,	arg1=947	},
 		{text = WorldQuestList:GetMapName(875),	func = SetIconGeneral,	checkable = true,	arg1=875	},
@@ -3990,13 +4017,18 @@ do
 		{text = GetFaction(2407),	func = SetHighlighFaction,	arg1 = "faction2407Highlight",	checkable = true,	shownFunc = function() return WorldQuestList:IsFactionAvailable(2407) and SL() end	},
 
 		{text = GetFaction(2478),	func = SetHighlighFaction,	arg1 = "faction2478Highlight",	checkable = true,	shownFunc = function() return WorldQuestList:IsFactionAvailable(2478) and SL() end	},
+
+		{text = GetFaction(2510),	func = SetHighlighFaction,	arg1 = "faction2510Highlight",	checkable = true,	shownFunc = function() return WorldQuestList:IsFactionAvailable(2510) and DF() end	},
+		{text = GetFaction(2507),	func = SetHighlighFaction,	arg1 = "faction2507Highlight",	checkable = true,	shownFunc = function() return WorldQuestList:IsFactionAvailable(2507) and DF() end	},
+		{text = GetFaction(2503),	func = SetHighlighFaction,	arg1 = "faction2503Highlight",	checkable = true,	shownFunc = function() return WorldQuestList:IsFactionAvailable(2503) and DF() end	},
+		{text = GetFaction(2511),	func = SetHighlighFaction,	arg1 = "faction2511Highlight",	checkable = true,	shownFunc = function() return WorldQuestList:IsFactionAvailable(2511) and DF() end	},
 	}
 
 	list[#list+1] = {
 		text = HIGHLIGHTING.." "..REPUTATION,
 		padding = 16,
 		subMenu = highlightingSubmenu,
-		shownFunc = function() return NOT_LEGION() or SL() or not WorldQuestList.optionsDropDown:IsVisible() end,
+		shownFunc = function() return NOT_LEGION() or SL() or DF() or not WorldQuestList.optionsDropDown:IsVisible() end,
 	}
 
 	list[#list+1] = {
@@ -4938,10 +4970,6 @@ function WorldQuestList:WaypointRemove(waypoint)
 	end
 end
 
-
-local inspectScantip = CreateFrame("GameTooltip", GlobalAddonName.."WorldQuestListInspectScanningTooltip", nil, "GameTooltipTemplate")
-inspectScantip:SetOwner(UIParent, "ANCHOR_NONE")
-
 local ITEM_LEVEL = (ITEM_LEVEL or "NO DATA FOR ITEM_LEVEL"):gsub("%%d","(%%d+%+*)")
 
 local NUM_WORLDMAP_TASK_POIS = 0
@@ -5665,6 +5693,15 @@ local BOUNTY_QUEST_TO_FACTION = {
 	[48642] = 2170,
 }
 
+local DF_MAP_LIST = {2022,2023,2024,2025}
+local function InList(k,t,p)
+	for _,v in pairs(t) do 
+		if (p and v[p]==k) or (not p and v==k) then 
+			return true 
+		end 
+	end
+end
+
 local GENERAL_MAPS = {	--1: continent A, 2: azeroth, 3: argus, 4: continent B
 	[947] = 2,
 	[875] = 1,
@@ -5679,6 +5716,7 @@ local GENERAL_MAPS = {	--1: continent A, 2: azeroth, 3: argus, 4: continent B
 	[13] = 4,
 	[101] = 4,
 	[1550] = 1,
+	[1978] = 1,
 }
 WorldQuestList.GeneralMaps = GENERAL_MAPS
 
@@ -5901,6 +5939,27 @@ function WorldQuestList_Update(preMapID,forceUpdate)
 				poiData.position.dX, poiData.position.dY, poiData.position.dMap = poiData.position.x,poiData.position.y,mapAreaID
 
 				tinsert(taskInfo.poi, {poiData.name, poiData.description, poiData.position.x, poiData.position.y, pois[i], poiData.atlasName, 2, mapAreaID, poiData.position.dX, poiData.position.dY})
+			end
+		end
+	end
+	if mapAreaID == 1978 or InList(mapAreaID, DF_MAP_LIST) then
+		for _,mapID in pairs(mapAreaID == 1978 and DF_MAP_LIST or {mapAreaID}) do
+			local pois = C_AreaPoiInfo.GetAreaPOIForMap(mapID)
+			for i=1,#pois do
+				local poiData = C_AreaPoiInfo.GetAreaPOIInfo(mapID,pois[i])
+				if poiData and type(poiData.atlasName) == 'string' and (poiData.atlasName:find("^ElementalStorm") or poiData.atlasName=="racing") and (not taskInfo.poi or not InList(pois[i],taskInfo.poi,5)) then
+					taskInfo.poi = taskInfo.poi or {}
+					poiData.position.dX, poiData.position.dY, poiData.position.dMap = poiData.position.x,poiData.position.y,mapID
+	
+					local xMin,xMax,yMin,yMax = C_Map.GetMapRectOnMap(mapID,mapAreaID)
+					if xMin ~= xMax and yMin ~= yMax then
+						poiData.position.x, poiData.position.y = xMin + poiData.position.x * (xMax - xMin),yMin + poiData.position.y * (yMax - yMin)
+					else
+						poiData.position.x, poiData.position.y = nil
+					end
+	
+					tinsert(taskInfo.poi, {poiData.name, poiData.description, poiData.position.x, poiData.position.y, pois[i], poiData.atlasName, 3, mapID, poiData.position.dX, poiData.position.dY})
+				end
 			end
 		end
 	end
@@ -6418,35 +6477,40 @@ function WorldQuestList_Update(preMapID,forceUpdate)
 						if itemID and WorldQuestList.CacheSLAnimaItems[itemID] then
 							isAnimaItem = WorldQuestList.CacheSLAnimaItems[itemID]
 						else
-							inspectScantip:SetQuestLogItem("reward", 1, questID)
-							rewardItemLink = select(2,inspectScantip:GetItem())
-							for j=2, inspectScantip:NumLines() do
-								local tooltipLine = _G[GlobalAddonName.."WorldQuestListInspectScanningTooltipTextLeft"..j]
-								local text = tooltipLine:GetText()
-								if text and text:find(ITEM_LEVEL) then
-									local ilvl = text:match(ITEM_LEVEL)
-									RewardListStrings[#RewardListStrings] = RewardListStrings[#RewardListStrings]:gsub("(|t %d*x* *)","%1"..ilvl.." ")
-									ilvl = tonumber( ilvl:gsub("%+",""),nil )
-									if ilvl then
-										RewardListType[#RewardListStrings] = (VWQL.SortPrio.itemgear or defSortPrio.itemgear)
-										RewardListSort[#RewardListStrings] = ilvl + (itemID / 1000000)
-										itemIlvl = ilvl
-										hasRewardFiltered = true
-									end
-								elseif text and text:find(LE.ITEM_BIND_ON_EQUIP) and j<=4 then
-									isBoeItem = true
-								elseif text and text:find(WORLD_QUEST_REWARD_FILTERS_ANIMA.."|r$") then
-									isAnimaItem = true
-								elseif text and isAnimaItem and text:find("^"..LE.ITEM_SPELL_TRIGGER_ONUSE) then
-									local num = text:gsub("(%d+)[ %.,]+(%d+)","%1%2"):match("%d+")
-									isAnimaItem = tonumber(num or "")
-									if isAnimaItem then
-										WorldQuestList.CacheSLAnimaItems[itemID] = isAnimaItem
-									end
-									isAnimaItem = isAnimaItem or 35
-								end 
+							local tooltipData = C_TooltipInfo.GetQuestLogItem("reward", 1, questID)
+							if tooltipData then
+								TooltipUtil.SurfaceArgs(tooltipData)
+								for _, line in ipairs(tooltipData.lines) do
+									TooltipUtil.SurfaceArgs(line)
+								end
+								rewardItemLink = tooltipData.hyperlink
+								for j=2, #tooltipData.lines do
+									local tooltipLine = tooltipData.lines[j]
+									local text = tooltipLine.leftText
+									if text and text:find(ITEM_LEVEL) then
+										local ilvl = text:match(ITEM_LEVEL)
+										RewardListStrings[#RewardListStrings] = RewardListStrings[#RewardListStrings]:gsub("(|t %d*x* *)","%1"..ilvl.." ")
+										ilvl = tonumber( ilvl:gsub("%+",""),nil )
+										if ilvl then
+											RewardListType[#RewardListStrings] = (VWQL.SortPrio.itemgear or defSortPrio.itemgear)
+											RewardListSort[#RewardListStrings] = ilvl + (itemID / 1000000)
+											itemIlvl = ilvl
+											hasRewardFiltered = true
+										end
+									elseif text and text:find(LE.ITEM_BIND_ON_EQUIP) and j<=4 then
+										isBoeItem = true
+									elseif text and text:find(WORLD_QUEST_REWARD_FILTERS_ANIMA.."|r$") then
+										isAnimaItem = true
+									elseif text and isAnimaItem and text:find("^"..LE.ITEM_SPELL_TRIGGER_ONUSE) then
+										local num = text:gsub("(%d+)[ %.,]+(%d+)","%1%2"):match("%d+")
+										isAnimaItem = tonumber(num or "")
+										if isAnimaItem then
+											WorldQuestList.CacheSLAnimaItems[itemID] = isAnimaItem
+										end
+										isAnimaItem = isAnimaItem or 35
+									end 
+								end
 							end
-							inspectScantip:ClearLines()
 						end
 
 						if isAnimaItem then
@@ -6671,8 +6735,8 @@ function WorldQuestList_Update(preMapID,forceUpdate)
 						faction = faction,
 						factionInProgress = factionInProgress,
 						factionSort = factionSort,
-						zone = (((VWQL.OppositeContinent and (mapAreaID == 875 or mapAreaID == 876)) or mapAreaID == 947 or mapAreaID == 1550) and WorldQuestList:GetMapIcon(info.mapID) or "")..
-							((mapAreaID == 875 or mapAreaID == 876 or mapAreaID == 1550) and WorldQuestList:GetMapTextColor(info.mapID) or "")..WorldQuestList:GetMapName(info.mapID),
+						zone = (((VWQL.OppositeContinent and (mapAreaID == 875 or mapAreaID == 876)) or mapAreaID == 947 or mapAreaID == 1550 or mapAreaID == 1978) and WorldQuestList:GetMapIcon(info.mapID) or "")..
+							((mapAreaID == 875 or mapAreaID == 876 or mapAreaID == 1550 or mapAreaID == 1978) and WorldQuestList:GetMapTextColor(info.mapID) or "")..WorldQuestList:GetMapName(info.mapID),
 						zoneID = info.mapID or 0,
 						timeleft = timeleft,
 						time = timeLeftMinutes or 0,
@@ -6769,6 +6833,35 @@ function WorldQuestList_Update(preMapID,forceUpdate)
 					nameicon = -10,
 					distance = WorldQuestList:CalculateSqDistanceTo(x, y),
 					questColor = 5,
+					isInvasionPoint = true,
+				})
+				numTaskPOIs = numTaskPOIs + 1
+			elseif poiWQLType == 3 then
+				local timeLeftMinutes = (C_AreaPoiInfo.GetAreaPOISecondsLeft(poiID) or 0) / 60
+				tinsert(result,{
+					info = {
+						x = x,
+						y = y,
+						mapID = zoneID,
+						name = description,
+						dX = dX,
+						dY = dY,
+						dMap = zoneID,
+					},
+					reward = description and description:gsub("^.-: ","") or "",
+					faction = "",
+					factionSort = "",
+					zone = WorldQuestList:GetMapName(zoneID),
+					zoneID = zoneID or 0,
+					timeleft = WorldQuestList:FormatTime(timeLeftMinutes),
+					time = timeLeftMinutes,
+					numObjectives = 0,
+					name = name,
+					rewardType = 70,
+					rewardSort = poiID,
+					nameicon = atlasIcon,
+					distance = WorldQuestList:CalculateSqDistanceTo(x, y),
+					questColor = nil,
 					isInvasionPoint = true,
 				})
 				numTaskPOIs = numTaskPOIs + 1
@@ -7831,6 +7924,7 @@ do
 		for _, areaPoiID in pairs(areaPOIs) do
 			local poiInfo = C_AreaPoiInfo.GetAreaPOIInfo(994, areaPoiID)
 			if poiInfo and (type(poiInfo.atlasName)~='string' or not poiInfo.atlasName:find("Vindicaar")) then
+				poiInfo.dataProvider = AreaPOIDataProviderMixin
 				WorldMapFrame:AcquirePin(AreaPOIDataProviderMixin:GetPinTemplate(), poiInfo)
 			end
 		end	  
@@ -8545,8 +8639,8 @@ QuestCreationBox:SetScript("OnEvent",function (self,event,arg1,arg2)
 		local data = C_LFGList.GetActiveEntryInfo()
 		if data then
 			if data.activityID then
-				local _, _, categoryID = C_LFGList.GetActivityInfo(data.activityID)
-				if categoryID ~= 1 then
+				local activityInfo = C_LFGList.GetActivityInfoTable(data.activityID)
+				if not activityInfo or activityInfo.categoryID ~= 1 then
 					return
 				end
 			end
@@ -8610,8 +8704,8 @@ QuestCreationBox:SetScript("OnEvent",function (self,event,arg1,arg2)
 		then
 			local data = C_LFGList.GetActiveEntryInfo()
 			if data and data.activityID then
-				local _, _, categoryID = C_LFGList.GetActivityInfo(data.activityID)
-				if categoryID ~= 1 then
+				local activityInfo = C_LFGList.GetActivityInfoTable(data.activityID)
+				if not activityInfo or activityInfo.categoryID ~= 1 then
 					return
 				end
 			end
@@ -8757,7 +8851,9 @@ local function objectiveTrackerButtons_OnUpdate(self)
 end
 
 local function IsQuestValidForEye(questID)
-	return QuestUtils_IsQuestWorldQuest(questID) or (WQLdb.WorldQuestBfAAssaultQuests[questID or 0] and not IsQuestComplete(questID or 0))
+	if type(questID) == "number" and questID <= 10000000 and questID > 0 then
+		return QuestUtils_IsQuestWorldQuest(questID) or (WQLdb.WorldQuestBfAAssaultQuests[questID or 0] and not IsQuestComplete(questID or 0))
+	end
 end
 
 local function ObjectiveTracker_Update_hook(reason, questID)
@@ -9118,6 +9214,12 @@ do
 							amount = floor(numItems * (warMode and C_QuestLog.QuestCanHaveWarModeBonus(obj.questID) and C_CurrencyInfo.DoesWarModeBonusApply(currencyID) and warModeBonus or 1))
 							iconTexture, ajustMask = nil
 							break
+						elseif currencyID == 2003 then
+							iconTexture = texture
+							ajustMask = true
+							ajustSize = 5
+							amount = floor(numItems * (warMode and C_QuestLog.QuestCanHaveWarModeBonus(obj.questID) and C_CurrencyInfo.DoesWarModeBonusApply(currencyID) and warModeBonus or 1))
+							break
 						elseif WorldQuestList:IsFactionCurrency(currencyID or 0) then
 							iconAtlas = "poi-workorders"
 							amount = numItems
@@ -9139,9 +9241,11 @@ do
 
 								local itemLink = CacheQuestItemReward[obj.questID]
 								if not itemLink then
-									inspectScantip:SetQuestLogItem("reward", 1, obj.questID)
-									itemLink = select(2,inspectScantip:GetItem())
-									inspectScantip:ClearLines()
+									local tooltipData = C_TooltipInfo.GetQuestLogItem("reward", 1, obj.questID)
+									if tooltipData then
+										TooltipUtil.SurfaceArgs(tooltipData)
+										itemLink = tooltipData.hyperlink
+									end
 
 									CacheQuestItemReward[obj.questID] = itemLink
 								end
@@ -9207,6 +9311,11 @@ do
 							elseif itemID == 169485 then
 								iconAtlas = SlotToIcon.INVTYPE_HAND
 								ajustSize = 10
+							elseif itemID == 198048 or itemID == 198056 or itemID == 198058 or itemID == 198059 then
+								iconTexture = icon
+								ajustMask = true
+								ajustSize = 4
+								amount = itemID == 198048 and "I" or itemID == 198056 and "II" or itemID == 198058 and "III" or "IV"
 							end
 
 							if CacheIsAnimaItem[itemID] then
@@ -9224,38 +9333,43 @@ do
 									amount = amount + bonus
 								end
 							elseif select(2,GetItemInfoInstant(itemID)) == MISCELLANEOUS then
-								inspectScantip:SetQuestLogItem("reward", 1, obj.questID)
-								local isAnima
-								for j=2, inspectScantip:NumLines() do
-									local tooltipLine = _G[GlobalAddonName.."WorldQuestListInspectScanningTooltipTextLeft"..j]
-									local text = tooltipLine:GetText()
-									if text and text:find(WORLD_QUEST_REWARD_FILTERS_ANIMA.."|r$") then
-										isAnima = 1
-									elseif text and isAnima and text:find("^"..LE.ITEM_SPELL_TRIGGER_ONUSE) then
-										local num = text:gsub("(%d+)[ %.,]+(%d+)","%1%2"):match("%d+")
-										isAnima = tonumber(num or "") or 1
-										break
-									end 
-								end
-								if isAnima then
-									if isAnima ~= 1 then
-										CacheIsAnimaItem[itemID] = isAnima
+								local tooltipData = C_TooltipInfo.GetQuestLogItem("reward", 1, obj.questID)
+								if tooltipData then
+									TooltipUtil.SurfaceArgs(tooltipData)
+									for _, line in ipairs(tooltipData.lines) do
+										TooltipUtil.SurfaceArgs(line)
 									end
-									iconTexture = 613397
-									ajustMask = true
-									ajustSize = 10
-									amount = numItems * isAnima
-									if warMode and C_QuestLog.QuestCanHaveWarModeBonus(obj.questID) then
-										local bonus = floor(amount * (warModeBonus - 1) + .5)
-										--if isAnima <= 35 then
-											bonus = bonus - bonus % 3
-										--else
-										--	bonus = bonus - bonus % 5
-										--end
-										amount = amount + bonus
+									local isAnima
+									for j=2, #tooltipData.lines do
+										local tooltipLine = tooltipData.lines[j]
+										local text = tooltipLine.leftText
+										if text and text:find(WORLD_QUEST_REWARD_FILTERS_ANIMA.."|r$") then
+											isAnima = 1
+										elseif text and isAnima and text:find("^"..LE.ITEM_SPELL_TRIGGER_ONUSE) then
+											local num = text:gsub("(%d+)[ %.,]+(%d+)","%1%2"):match("%d+")
+											isAnima = tonumber(num or "") or 1
+											break
+										end 
+									end
+									if isAnima then
+										if isAnima ~= 1 then
+											CacheIsAnimaItem[itemID] = isAnima
+										end
+										iconTexture = 613397
+										ajustMask = true
+										ajustSize = 10
+										amount = numItems * isAnima
+										if warMode and C_QuestLog.QuestCanHaveWarModeBonus(obj.questID) then
+											local bonus = floor(amount * (warModeBonus - 1) + .5)
+											--if isAnima <= 35 then
+												bonus = bonus - bonus % 3
+											--else
+											--	bonus = bonus - bonus % 5
+											--end
+											amount = amount + bonus
+										end
 									end
 								end
-								inspectScantip:ClearLines()
 							end
 
 							if worldQuestType == LE.LE_QUEST_TAG_TYPE_PET_BATTLE then
@@ -9363,7 +9477,7 @@ do
 							obj.Texture:SetTexture()
 						end
 
-						if amount > 0 and not isRibbonDisabled then
+						if ((type(amount)=="number" and amount > 0) or type(amount) == "string") and not isRibbonDisabled then
 							if not obj.WQL_rewardRibbon:IsShown() then
 								obj.WQL_rewardRibbon:Show()
 							end
@@ -9622,59 +9736,6 @@ end
 WorldMapFrame:RegisterCallback("WorldQuestsUpdate", function()
 	WorldQuestList:WQIcons_UpdateScale()
 end, WorldMapFrame)
-
-
-
-
-
-
-local waypointLastClick = 0
-local waypointShare = CreateFrame("Frame")
-waypointShare:RegisterEvent("CHAT_MSG_ADDON")
-waypointShare:SetScript("OnEvent",function(self,event,...)
-	if event == "USER_WAYPOINT_UPDATED" then
-		self:UnregisterEvent("USER_WAYPOINT_UPDATED")
-		C_Timer.After(.3,function()
-			C_SuperTrack.SetSuperTrackedUserWaypoint(true)
-		end)
-		local hyperlink = C_Map.GetUserWaypointHyperlink()
-		if hyperlink then
-			local chat_type = (IsInGroup(LE_PARTY_CATEGORY_INSTANCE) and "INSTANCE_CHAT") or (IsInRaid() and "RAID") or "PARTY"
-
-			C_ChatInfo.SendAddonMessage("WQLWP", "WP\t" .. hyperlink, chat_type)
-		end
-	elseif event == "CHAT_MSG_ADDON" then
-		local prefix, message, channel, sender = ...
-		if prefix == "WQLWP" and (channel == "INSTANCE_CHAT" or channel == "RAID" or channel == "PARTY") and not UnitIsUnit(sender,"player") then
-			local prefix2, msg = strsplit("\t", message)
-			if prefix2 == "WP" then
-				local hyperlink = msg
-				local point = C_Map.GetUserWaypointFromHyperlink(hyperlink)
-				C_Map.SetUserWaypoint(point)
-				C_Timer.After(.3,function()
-					C_SuperTrack.SetSuperTrackedUserWaypoint(true)
-				end)
-			end
-		end
-	end
-end)
-C_ChatInfo.RegisterAddonMessagePrefix("WQLWP")
-
-WorldMapFrame:AddCanvasClickHandler(function(self)
-	if IsControlKeyDown() then
-		local mapID = WorldMapFrame:GetMapID() or 0
-		if C_Map.CanSetUserWaypointOnMap(mapID) then
-			waypointShare:RegisterEvent("USER_WAYPOINT_UPDATED")
-		end
-	elseif IsShiftKeyDown() and false then
-		local cX, cY = WorldMapFrame.ScrollContainer:GetNormalizedCursorPosition()
-		if cX and cY then
-			slashfunc("way "..format("%.2f %.2f",cX * 100,cY * 100))
-			WQL_WayDataProviderMixin:RefreshAllData()
-		end
-	end
-	return false
-end, 91)
 
 
 

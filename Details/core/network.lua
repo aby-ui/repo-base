@@ -326,15 +326,15 @@
 	--guild sync G = requested a list of encounters
 	--guild sync A = received missing encounters, add them
 
-	function Details.network.GuildSync(player, realm, coreVersion, type, data)
-		local characterName = Ambiguate(player, "none")
+	function Details.network.GuildSync(sourceName, realm, coreVersion, type, data)
+		local characterName = Ambiguate(sourceName, "none")
 
-		if (UnitName("player") == characterName) then
-			return
+		if (UnitName("player") == sourceName) then
+			--return
 		end
 
 		if (coreVersion ~= Details.realversion) then
-			return false
+			--return false
 		end
 
 		if (type == "R") then --RoS - somebody requested IDs of stored encounters
@@ -345,22 +345,23 @@
 			end
 
 			local IDs = Details.storage:GetIDsToGuildSync()
+
 			if (IDs and IDs [1]) then
-				local from = UnitName ("player")
+				local from = UnitName("player")
 				local realm = GetRealmName()
-				Details:SendCommMessage(DETAILS_PREFIX_NETWORK, Details:Serialize(CONST_GUILD_SYNC, from, realm, Details.realversion, "L", IDs), "WHISPER", characterName)
+				Details:SendCommMessage(DETAILS_PREFIX_NETWORK, Details:Serialize(CONST_GUILD_SYNC, from, realm, Details.realversion, "L", IDs), "WHISPER", sourceName)
 			end
 
 			Details.LastGuildSyncDataTime1 = GetTime() + 60
 			return true
 
 		elseif (type == "L") then --RoC - the player received the IDs list and send back which IDs he doesn't have
-			local MissingIDs = Details.storage:CheckMissingIDsToGuildSync(data)
+			local missingIds = Details.storage:CheckMissingIDsToGuildSync(data)
 
-			if (MissingIDs and MissingIDs[1]) then
+			if (missingIds and missingIds[1]) then
 				local from = UnitName ("player")
 				local realm = GetRealmName()
-				Details:SendCommMessage(DETAILS_PREFIX_NETWORK, Details:Serialize(CONST_GUILD_SYNC, from, realm, Details.realversion, "G", MissingIDs), "WHISPER", characterName)
+				Details:SendCommMessage(DETAILS_PREFIX_NETWORK, Details:Serialize(CONST_GUILD_SYNC, from, realm, Details.realversion, "G", missingIds), "WHISPER", sourceName)
 			end
 			return true
 
@@ -435,9 +436,6 @@
 --register comm
 
 	function Details:CommReceived(commPrefix, data, channel, source)
-
-		--print("comm", source, data)
-
 		local deserializedTable = {Details:Deserialize(data)}
 		if (not deserializedTable[1]) then
 			if (Details.debugnet) then

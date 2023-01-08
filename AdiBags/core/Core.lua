@@ -117,6 +117,13 @@ function addon:OnInitialize()
 	end
 	--@end-alpha@]===]
 
+	if addon.isRetail then
+		-- Disable the reagent bag tutorial
+		C_CVar.SetCVarBitfield("closedInfoFrames", LE_FRAME_TUTORIAL_EQUIP_REAGENT_BAG, true)
+		C_CVar.SetCVar("professionToolSlotsExampleShown", 1)
+		C_CVar.SetCVar("professionAccessorySlotsExampleShown", 1)
+	end
+
 	self:Debug('Initialized')
 end
 
@@ -179,15 +186,15 @@ end
 
 function addon:EnableHooks()
 	self:RawHook("OpenAllBags", true)
-	self:RawHook("CloseAllBags", true)
+	self:SecureHook("CloseAllBags")
 	self:RawHook("ToggleAllBags", true)
 	self:RawHook("ToggleBackpack", true)
 	self:RawHook("ToggleBag", true)
 	self:RawHook("OpenBag", true)
-	self:RawHook("CloseBag", true)
+	self:SecureHook("CloseBag")
 	self:RawHook("OpenBackpack", true)
-	self:RawHook("CloseBackpack", true)
-	self:RawHook('CloseSpecialWindows', true)
+	self:SecureHook("CloseBackpack")
+	self:SecureHook('CloseSpecialWindows')
 end
 
 function addon:DisableHooks()

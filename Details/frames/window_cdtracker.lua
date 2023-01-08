@@ -202,7 +202,7 @@ end
         if (spellIcon) then
             cooldownFrame:SetIcon(spellIcon, .1, .9, .1, .9)
 
-            local classColor = C_ClassColor.GetClassColor(cooldownFrame.class)
+            local classColor = C_ClassColor.GetClassColor(cooldownFrame.class or "PRIEST")
             cooldownFrame:SetStatusBarColor(classColor.r, classColor.g, classColor.b)
             cooldownFrame:SetLeftText(DF:RemoveRealmName(cooldownFrame.unitName))
             cooldownFrame:SetSize(Details.ocd_tracker.width, Details.ocd_tracker.height)

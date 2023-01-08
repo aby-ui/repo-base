@@ -3,7 +3,7 @@ Button Widget for our Expand button
 -------------------------------------------------------------------------------]]
 if not WeakAuras.IsLibsOK() then return end
 
-local Type, Version = "WeakAurasExpand", 4
+local Type, Version = "WeakAurasExpand", 5
 
 local AceGUI = LibStub and LibStub("AceGUI-3.0", true)
 if not AceGUI or (AceGUI:GetWidgetVersion(Type) or 0) >= Version then return end
@@ -38,6 +38,7 @@ local methods = {
 		self:SetHeight(110)
 		self:SetWidth(110)
 		self:SetLabel()
+		self:SetFontObject(GameFontHighlightLarge)
 		self:SetImage(nil)
 		self:SetImageSize(64, 64)
 		self:SetDisabled(false)

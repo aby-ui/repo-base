@@ -608,6 +608,12 @@ L["Changelogs"] = "更新记录"
 L["Click to view recent changelogs"] = "点击查看近期更新记录"
 L["Click to view older changelogs"] = "点击查看远古更新记录"
 L["CHANGELOGS"] = [[
+    <h1>r153-release (Jan 6, 2023, 02:37 GMT+8)</h1>
+    <p>* 尝试修复：字体和仇恨(边框)指示器。</p>
+    <p>* 更新被法术选中指示器的默认法术列表。</p>
+    <p>* 更新副本减益：奥杜尔。</p>
+    <br/>
+
     <h1>r152-release (Dec 29, 2022, 19:40 GMT+8)</h1>
     <p>* 更新副本减益。</p>
     <p>* 更新持续时间文本的相关选项（如果你使用了相关代码片段，需要自行手动更新）。</p>

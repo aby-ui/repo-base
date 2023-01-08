@@ -182,6 +182,15 @@ function Details:OpenClassColorsConfig()
                 name = "Debuff",
                 desc = "Debuff",
             },
+            {--buff
+                type = "select",
+                get = function() return Details.death_log_colors.buff end,
+                values = function()
+                    return buildColorList("buff")
+                end,
+                name = "Buff",
+                desc = "Buff",
+            },
         }
 
         --templates

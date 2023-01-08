@@ -2354,7 +2354,7 @@ do
 
     local chargesChanged = spellCharges[id] ~= charges or spellCounts[id] ~= spellCount
                            or spellChargesMax[id] ~= maxCharges
-    local chargesDifference = (charges or spellCount or 0) - (spellCharges[id] or spellCount or 0)
+    local chargesDifference = (charges or spellCount or 0) - (spellCharges[id] or spellCounts[id] or 0)
     spellCharges[id] = charges;
     spellChargesMax[id] = maxCharges;
     spellCounts[id] = spellCount
@@ -3380,7 +3380,8 @@ function WeakAuras.GetSpellCost(powerTypeToCheck)
   if spellID then
     local costTable = GetSpellPowerCost(spellID);
     for _, costInfo in pairs(costTable) do
-      if costInfo.type == powerTypeToCheck then
+      -- When there is no required aura for a power cost, the API returns an aura ID of 0 and false for hasRequiredAura despite being valid.
+      if costInfo.type == powerTypeToCheck and (costInfo.requiredAuraID == 0 or costInfo.hasRequiredAura) then
         return costInfo.cost;
       end
     end

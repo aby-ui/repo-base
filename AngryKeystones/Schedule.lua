@@ -31,9 +31,12 @@ local unitKeystones = {}
 local function GetNameForKeystone(keystoneMapID, keystoneLevel)
 	local keystoneMapName = keystoneMapID and C_ChallengeMode.GetMapUIInfo(keystoneMapID)
 	if keystoneMapID and keystoneMapName then
+		if Addon.Locale:Local("dungeon_"..keystoneMapName) then
+			keystoneMapName = Addon.Locale:Get("dungeon_"..keystoneMapName)
+		end
 		keystoneMapName = gsub(keystoneMapName, ".-%-", "") -- Mechagon
 		keystoneMapName = gsub(keystoneMapName, ".-"..HEADER_COLON, "") -- Tazavesh
-		return string.format("%s (%d)", keystoneMapName, keystoneLevel)
+		return string.format("(%d) %s", keystoneLevel, keystoneMapName)
 	end
 end
 
@@ -82,11 +85,11 @@ local function UpdatePartyKeystones()
 	end
 	if e == 1 then
 		Mod.AffixFrame:ClearAllPoints()
-		Mod.AffixFrame:SetPoint("LEFT", ChallengesFrame.WeeklyInfo.Child.WeeklyChest, "RIGHT", 130, 0)
+		Mod.AffixFrame:SetPoint("LEFT", ChallengesFrame.WeeklyInfo.Child.WeeklyChest, "RIGHT", 130-15, 0-12)
 		Mod.PartyFrame:Hide()
 	else
 		Mod.AffixFrame:ClearAllPoints()
-		Mod.AffixFrame:SetPoint("TOPLEFT", ChallengesFrame.WeeklyInfo.Child.WeeklyChest, "TOPRIGHT", 130, 55)
+		Mod.AffixFrame:SetPoint("TOPLEFT", ChallengesFrame.WeeklyInfo.Child.WeeklyChest, "TOPRIGHT", 130-15, 55-12)
 		Mod.PartyFrame:Show()
 	end
 	while e <= 4 do
@@ -105,12 +108,13 @@ local function UpdateFrame()
 
 	local weeklyChest = ChallengesFrame.WeeklyInfo.Child.WeeklyChest
 	weeklyChest:ClearAllPoints()
-	weeklyChest:SetPoint("LEFT", 120, -30) --abyui
+	weeklyChest:SetPoint("LEFT", 120, -15) --abyui
 
-	local description = ChallengesFrame.WeeklyInfo.Child.Description
-	description:SetWidth(240)
-	description:ClearAllPoints()
-	description:SetPoint("TOP", weeklyChest, "TOP", 0, 75)
+	-- Wordwrap and size of the original frame
+	local description = ChallengesFrame.WeeklyInfo.Child.WeeklyChest.RunStatus
+	--description:SetWordWrap(true)
+	--description:SetSize(240, 90)
+	description:SetScale(0.85)
 
 	local currentKeystoneName = GetNameForKeystone(C_MythicPlus.GetOwnedKeystoneChallengeMapID(), C_MythicPlus.GetOwnedKeystoneLevel())
 	if currentKeystoneName then
@@ -167,7 +171,7 @@ function Mod:Blizzard_ChallengesUI()
 	if not scheduleEnabled then return end
 	
 	local frame = CreateFrame("Frame", nil, ChallengesFrame)
-	frame:SetSize(246, 92)
+	frame:SetSize(246, 92-5)
 	frame:SetPoint("TOPLEFT", ChallengesFrame.WeeklyInfo.Child.WeeklyChest, "TOPRIGHT", -20, 30)
 	Mod.AffixFrame = frame
 
@@ -271,7 +275,7 @@ function Mod:Blizzard_ChallengesUI()
 		local text2 = entry:CreateFontString(nil, "ARTWORK", "GameFontHighlight")
         local f1,f2,f3 = text2:GetFont()
         text2:SetFont(f1, 14, f3)
-		text2:SetWidth(190)
+		text2:SetWidth(140) --190
 		text2:SetJustifyH("RIGHT")
 		text2:SetWordWrap(false)
 		text2:SetText()
@@ -394,7 +398,7 @@ end
 function Mod:SendCurrentKeystone()
 	local keystoneMapID = C_MythicPlus.GetOwnedKeystoneChallengeMapID()
 	local keystoneLevel = C_MythicPlus.GetOwnedKeystoneLevel()
-	
+
 	local message = "0"
 	if keystoneLevel and keystoneMapID then
 		message = string.format("%d:%d", keystoneMapID, keystoneLevel)
@@ -442,7 +446,7 @@ end
 
 function Mod:Startup()
 	scheduleEnabled = Addon.Config.schedule
-	
+
 	self:RegisterAddOnLoaded("Blizzard_ChallengesUI")
 	self:RegisterEvent("GROUP_ROSTER_UPDATE", "SetPartyKeystoneRequest")
 	self:RegisterEvent("BAG_UPDATE")
@@ -461,6 +465,6 @@ function Mod:Startup()
 	end)
 
 	--C_Timer.NewTicker(60, function() self:CheckCurrentKeystone() end) --abyui
-	
+
 	requestPartyKeystones = true
 end

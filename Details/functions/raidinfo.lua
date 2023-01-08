@@ -1,5 +1,4 @@
 
-
 --install data for raiding tiers
 
 local C_Timer = _G.C_Timer
@@ -8,6 +7,81 @@ local tinsert = _G.tinsert
 local addonName, Details222 = ...
 
 function Details.InstallRaidInfo()
+	do
+		local INSTANCE_EJID = 1200
+		local INSTANCE_MAPID = 2522
+		local HDIMAGESPATH = [[Details\images\raid]]
+		local HDFILEPREFIX = 'VaultoftheIncarnatesRaid'
+		local EJ_LOREBG = 'UI-EJ-LOREBG-VaultoftheIncarnates'
+
+		local ENCOUNTER_ID_CL = {
+			[2587] = 1, --Eranog
+			[2639] = 2, --Terros
+			[2590] = 3, --The Primal Council
+			[2592] = 4, --Sennarth, the Cold Breath
+			[2635] = 5, --Dathea, Ascended
+			[2605] = 6, --Kurog Grimtotem
+			[2614] = 7, --Broodkeeper Diurna
+			[2607] = 8, --Raszageth the Storm-Eater
+			2587, 2639, 2590, 2592, 2635, 2605, 2614, 2607,
+		}
+
+		local ENCOUNTER_ID_EJ = {
+			[2480] = 1, --Eranog
+			[2500] = 2, --Terros
+			[2486] = 3, --The Primal Council
+			[2482] = 4, --Sennarth, the Cold Breath
+			[2502] = 5, --Dathea, Ascended
+			[2491] = 6, --Kurog Grimtotem
+			[2493] = 7, --Broodkeeper Diurna
+			[2499] = 8, --Raszageth the Storm-Eater
+			2480, 2500, 2486, 2482, 2502, 2491, 2493, 2499,
+		}
+
+		local BOSSNAMES = {
+			"Eranog", --1
+			"Terros", --2
+			"The Primal Council", --3
+			"Sennarth, the Cold Breath", --4
+			"Dathea, Ascended", --5
+			"Kurog Grimtotem", --6
+			"Broodkeeper Diurna", --7
+			"Raszageth the Storm-Eater", --8
+		}
+
+		local ENCOUNTERS = {
+			{boss = "Eranog", portrait = 4757695},
+			{boss = "Terros", portrait = 4757701},
+			{boss = "The Primal Council", portrait = 4757702},
+			{boss = "Sennarth, the Cold Breath", portrait = 4757699},
+			{boss = "Dathea, Ascended", portrait = 4757694},
+			{boss = "Kurog Grimtotem", portrait = 4757696},
+			{boss = "Broodkeeper Diurna", portrait = 4757693},
+			{boss = "Raszageth the Storm-Eater", portrait = 4757698},
+		}
+
+		--load encounter journal
+		DetailsFramework.EncounterJournal.EJ_SelectInstance(INSTANCE_EJID)
+		local InstanceName = DetailsFramework.EncounterJournal.EJ_GetInstanceInfo(INSTANCE_EJID)
+
+		Details:InstallEncounter({
+			id = INSTANCE_MAPID, --map id
+			ej_id = INSTANCE_EJID, --encounter journal id
+			name = InstanceName,
+			icons = "Interface\\AddOns\\" .. HDIMAGESPATH .. "\\" .. HDFILEPREFIX .. "_BossFaces",
+			icon = "Interface\\AddOns\\" .. HDIMAGESPATH .. "\\" .. HDFILEPREFIX .. "_Icon256x128",
+			is_raid = true,
+			backgroundEJ = "Interface\\EncounterJournal\\" .. EJ_LOREBG,
+			encounter_ids = ENCOUNTER_ID_EJ,
+			encounter_ids2 = ENCOUNTER_ID_CL,
+			boss_names = BOSSNAMES,
+			encounters = ENCOUNTERS,
+			boss_ids = {
+				--npc ids
+			},
+		})
+
+	end
 
 	do
 		--data for Sanctum of Domination (Shadowlands tier 1)

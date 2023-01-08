@@ -350,6 +350,7 @@ function OmniBar:Delete(key, keepProfile)
 	if WOW_PROJECT_ID == WOW_PROJECT_MAINLINE then
 		bar:UnregisterEvent("ARENA_PREP_OPPONENT_SPECIALIZATIONS")
 		bar:UnregisterEvent("UPDATE_BATTLEFIELD_STATUS")
+		bar:UnregisterEvent("PVP_MATCH_ACTIVE")
 	end
 	bar:Hide()
 	if (not keepProfile) then self.db.profile.bars[key] = nil end
@@ -534,6 +535,7 @@ function OmniBar:Initialize(key, name)
 	if WOW_PROJECT_ID == WOW_PROJECT_MAINLINE then
 		f:RegisterEvent("ARENA_PREP_OPPONENT_SPECIALIZATIONS", "OnEvent")
 		f:RegisterEvent("UPDATE_BATTLEFIELD_STATUS", "OnEvent")
+		f:RegisterEvent("PVP_MATCH_ACTIVE", "OnEvent")
 	end
 
 	f:RegisterEvent("UPDATE_BATTLEFIELD_SCORE", "OnEvent")
@@ -1019,6 +1021,11 @@ function OmniBar_OnEvent(self, event, ...)
 		if self.disabled then return end
 		if self.settings.trackUnit == "GROUP" or self.settings.trackUnit:match("^party") then
 			OmniBar_Refresh(self)
+		end
+
+	elseif event == "PVP_MATCH_ACTIVE" then
+		if self.zone == "arena" then
+			OmniBar_ResetIcons(self)
 		end
 
 	elseif event == "PLAYER_TARGET_CHANGED" or event == "PLAYER_FOCUS_CHANGED" or event == "PLAYER_REGEN_DISABLED" then

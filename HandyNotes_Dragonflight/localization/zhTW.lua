@@ -267,6 +267,12 @@ L['initiate_kittileg_note'] = '完成 {quest:66226} 來取得玩具!'
 L['quackers_duck_trap_kit'] = '要召喚 {npc:192557}. 首先你需要可以在附近營地找到的 {item:194740}.\n\n 要製造成 {item:194712} 你需要如下的材料:'
 L['quackers_spawn'] = '接著你需要用 {item:194712} 抓住一隻鴨子. 你可以在附近的巢邊找到一些. 然後在 {npc:192581} 使用 {item:194739} 來召喚 {npc:192557}.'
 
+L['knew_you_nokhud_do_it_note'] = nil
+L['options_icons_nokhud_do_it'] = '{achievement:16583}'
+L['options_icons_nokhud_do_it_desc'] = nil
+
+L['chest_of_the_flood'] = nil
+
 -------------------------------------------------------------------------------
 --------------------------------- THALDRASZUS ---------------------------------
 -------------------------------------------------------------------------------
@@ -275,6 +281,7 @@ L['ancient_protector_note'] = '殺掉附近的 {npc:193244} 來取得 {item:1977
 L['blightpaw_note'] = '和附近的 {npc:193222} 交談並同意幫助他.'
 L['corrupted_proto_dragon_note'] = '和 {object:腐化的龍蛋} 互動來召喚稀有'
 L['lord_epochbrgl_note'] = '點擊 {npc:193257} 來刷新稀有'
+L['the_great_shellkhan_note'] = nil
 L['weeping_vilomah_note'] = '和 {npc:193206} 對話來召喚稀有'
 L['woofang_note'] = '撫摸 {npc:193156} 來召喚稀有.'
 
@@ -306,6 +313,7 @@ L['arcanostabilized_provisions_note'] = '從在 {location:時光合流} 內的 {
 L['steamed_scarab_steak_note'] = '從在 {location:安詳夢境水療中心} 的 {npc:197586} {title:<水療中心酒保>} 處購買.'
 L['craft_creche_crowler_note'] = '從在每天地圖下列隨機位置 {location:晶紅生命聖殿}, {location:綠鱗旅店}, {location:穆斯提的大帳篷}, {location:時光合流} 的 {npc:187444} {title:<旅行龍釀商人>} 處購買.'
 L['bivigosas_blood_sausages_note'] = '從在 {location:蓋利奇爾崗哨} 的 {npc:188895} {title:<食物和飲料>} 處購買.'
+L['rumiastrasza_note'] = nil
 L['options_icons_specialties'] = '{achievement:16621}'
 L['options_icons_specialties_desc'] = '顯示成就 {achievement:16621} 所需的食物和飲料位置.'
 
@@ -318,6 +326,8 @@ L['ruby_feast_gourmand'] = '一個隨機的客座大廚會每天提供不同的�
 L['sorotis_note'] = '用 {item:199906} 交換 {faction:2510} 聲望'
 L['lillian_brightmoon_note'] = '用 {item:201412} 交換 {faction:2507} 聲望'
 
+L['chest_of_the_elements'] = nil
+
 -------------------------------------------------------------------------------
 ------------------------------ THE WAKING SHORE -------------------------------
 -------------------------------------------------------------------------------
@@ -329,7 +339,6 @@ L['lepidoralia_note'] = '在 {location:振翅洞穴}. 幫助 {npc:193342} 抓住
 L['obsidian_citadel_rare_note'] = '你或其他玩家必須要繳交總共 %d個 {item:191264} 給 %s. 要鑄造鑰匙你需要結合30個 {item:191251} 和3個 {item:193201}, 你可以在 {location:黑曜王座} 的怪物身上取得這些物品'
 L['shadeslash_note'] = '點選 {object:Pilfered Focus} 來召喚稀有'
 L['obsidian_throne_rare_note'] = '在 {location:黑曜王座} 內. '
-L['skald_impaler_note'] = '使用5個 {item:194701} 來召喚稀有'
 L['slurpo_snail_note'] = '在 {location:蒼藍高原} (11, 41) 的山洞拾取一個 {item:201033}並在此山洞使用來召喚他'
 L['worldcarver_atir_note'] = '從附近的 {npc:187366} 收集3個 {item:191211}, 並且將他們放置在 {npc:197395} 來召喚稀有'
 

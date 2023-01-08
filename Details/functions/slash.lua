@@ -26,6 +26,14 @@ end
 
 SLASH_DETAILS1, SLASH_DETAILS2, SLASH_DETAILS3 = "/details", "/dt", "/de"
 
+--lower case
+local lowerCase_SLASH_CHANGES = string.lower(Loc ["STRING_SLASH_CHANGES"])
+local lowerCase_SLASH_CHANGES_ALIAS1 = string.lower(Loc ["STRING_SLASH_CHANGES_ALIAS1"])
+local lowerCase_CHANGES_ALIAS2 = string.lower(Loc ["STRING_SLASH_CHANGES_ALIAS2"])
+local lowerCase_SLASH_HISTORY = string.lower(Loc ["STRING_SLASH_HISTORY"])
+local lowerCase_SLASH_OPTIONS = string.lower(Loc ["STRING_SLASH_OPTIONS"])
+local lowerCase_SLASH_WORLDBOSS = string.lower(Loc ["STRING_SLASH_WORLDBOSS"])
+
 function SlashCmdList.DETAILS (msg, editbox)
 
 	local command, rest = msg:match("^(%S*)%s*(.-)$")
@@ -41,7 +49,14 @@ function SlashCmdList.DETAILS (msg, editbox)
 	elseif (command == Loc ["STRING_SLASH_NEW"] or command == "new") then
 		_detalhes:CriarInstancia(nil, true)
 
-	elseif (command == Loc ["STRING_SLASH_HISTORY"] or command == "history" or command == "score" or command == "rank" or command == "ranking" or command == "statistics" or command == "stats") then
+	elseif (command == Loc ["STRING_SLASH_HISTORY"] or 
+	command == "history" or
+	command == "score" or
+	command == "rank" or
+	command == "ranking" or
+	command == "statistics" or
+	command == lowerCase_SLASH_HISTORY or
+	command == "stats") then
 		_detalhes:OpenRaidHistoryWindow()
 
 	elseif (command == Loc ["STRING_SLASH_TOGGLE"] or command == "toggle") then
@@ -194,7 +209,10 @@ function SlashCmdList.DETAILS (msg, editbox)
 
 		print(Loc ["STRING_DETAILS1"] .. Loc ["STRING_SLASH_CAPTUREON"])
 
-	elseif (command == Loc ["STRING_SLASH_OPTIONS"] or command == "options" or command == "config") then
+	elseif (command == Loc ["STRING_SLASH_OPTIONS"] or
+	 command == "options" or
+	 command == lowerCase_SLASH_OPTIONS or
+	 command == "config") then
 
 		if (rest and tonumber(rest)) then
 			local instanceN = tonumber(rest)
@@ -214,19 +232,30 @@ function SlashCmdList.DETAILS (msg, editbox)
 
 		end
 
-	elseif (command == Loc ["STRING_SLASH_WORLDBOSS"] or command == "worldboss") then
+	elseif (command == Loc ["STRING_SLASH_WORLDBOSS"] or command == "worldboss" or command == lowerCase_SLASH_WORLDBOSS) then
 
 		local questIds = {{"Tarlna the Ageless", 81535}, {"Drov the Ruiner ", 87437}, {"Rukhmar", 87493}}
 		for _, _table in pairs(questIds) do
 			print(format("%s: \124cff%s\124r", _table [1], IsQuestFlaggedCompleted (_table [2]) and "ff0000"..Loc ["STRING_KILLED"] or "00ff00"..Loc ["STRING_ALIVE"]))
 		end
 
-	elseif (command == Loc ["STRING_SLASH_CHANGES"] or command == Loc ["STRING_SLASH_CHANGES_ALIAS1"] or command == Loc ["STRING_SLASH_CHANGES_ALIAS2"] or command == "news" or command == "updates") then
+	elseif (
+		command == lowerCase_SLASH_CHANGES or
+		command == lowerCase_SLASH_CHANGES_ALIAS1 or
+		command == lowerCase_CHANGES_ALIAS2 or
+		command == Loc ["STRING_SLASH_CHANGES"] or
+		command == Loc ["STRING_SLASH_CHANGES_ALIAS1"] or
+		command == Loc ["STRING_SLASH_CHANGES_ALIAS2"] or
+		command == "news" or
+		command == "updates") then
 		_detalhes:OpenNewsWindow()
 
 	elseif (command == "discord") then
 		_detalhes:CopyPaste ("https://discord.gg/AGSzAZX")
 
+
+	elseif (command == "m+log") then
+		Details:Dump(Details.mythic_plus_log)
 
 	elseif (command == "exitlog") then
 		local newT = {}
@@ -857,7 +886,7 @@ function SlashCmdList.DETAILS (msg, editbox)
 	elseif (msg == "version") then
 		Details.ShowCopyValueFrame(Details.GetVersionString())
 
-	elseif (msg == "users" or msg == "version" or msg == "versioncheck") then
+	elseif (msg == "users" or msg == "versioncheck") then
 		Details.SendHighFive()
 
 		print(Loc ["STRING_DETAILS1"] .. "highfive sent, HI!")
@@ -1846,11 +1875,10 @@ function Details:UpdateUserPanel(usersTable)
 			padding = 2,
 		}
 
-		DetailsUserPanel.Header = DetailsFramework:CreateHeader (DetailsUserPanel, headerTable, headerOptions)
+		DetailsUserPanel.Header = DetailsFramework:CreateHeader(DetailsUserPanel, headerTable, headerOptions)
 		DetailsUserPanel.Header:SetPoint("topleft", DetailsUserPanel, "topleft", 5, headerY)
 
-		local scroll_refresh = function(self, data, offset, total_lines)
-
+		local scrollRefresh = function(self, data, offset, total_lines)
 			--store user names shown
 			local userShown = {}
 			local lineId = 1
@@ -1862,7 +1890,8 @@ function Details:UpdateUserPanel(usersTable)
 					local userName, userRealm, userVersion = unpack(userTable)
 					if (not userShown[userName]) then
 						local line = self:GetLine(lineId)
-						line.UserNameText.text = userName
+						local onlyUserName = DetailsFramework:RemoveRealmName(userName)
+						line.UserNameText.text = onlyUserName
 						line.RealmText.text = userRealm
 						line.VersionText.text = userVersion
 						userShown[userName] = true
@@ -1925,7 +1954,7 @@ function Details:UpdateUserPanel(usersTable)
 			return line
 		end
 
-		local usersScroll = DetailsFramework:CreateScrollBox (DetailsUserPanel, "$parentUsersScroll", scroll_refresh, DetailsUserPanel.Data, scroll_width, scroll_height, scroll_lines, scroll_line_height)
+		local usersScroll = DetailsFramework:CreateScrollBox (DetailsUserPanel, "$parentUsersScroll", scrollRefresh, DetailsUserPanel.Data, scroll_width, scroll_height, scroll_lines, scroll_line_height)
 		DetailsFramework:ReskinSlider(usersScroll)
 		usersScroll:SetPoint("topleft", DetailsUserPanel, "topleft", 5, scrollY)
 		Details.UserPanel.ScrollBox = usersScroll
@@ -2039,7 +2068,7 @@ if (WOW_PROJECT_ID == WOW_PROJECT_MAINLINE) then
 				local backdrop_color_inguild = {.5, .8, .5, 0.2}
 				local backdrop_color_on_enter_inguild = {.5, 1, .5, 0.4}
 
-				local f = DetailsFramework:CreateSimplePanel(UIParent, CONST_WINDOW_WIDTH, CONST_WINDOW_HEIGHT, "M+ Keystones", "DetailsKeystoneInfoFrame")
+				local f = DetailsFramework:CreateSimplePanel(UIParent, CONST_WINDOW_WIDTH, CONST_WINDOW_HEIGHT, "M+ Keystones (/key)", "DetailsKeystoneInfoFrame")
 				f:SetPoint("center", UIParent, "center", 0, 0)
 
 				f:SetScript("OnMouseDown", nil) --disable framework native moving scripts
@@ -2123,7 +2152,9 @@ if (WOW_PROJECT_ID == WOW_PROJECT_MAINLINE) then
 							local L, R, T, B = unpack(iconTexCoords)
 							line.icon:SetTexCoord(L+0.02, R-0.02, T+0.02, B-0.02)
 
-							line.playerNameText.text = unitName
+							--remove the realm name from the player name (if any)
+							local unitNameNoRealm = DetailsFramework:RemoveRealmName(unitName)
+							line.playerNameText.text = unitNameNoRealm
 							line.keystoneLevelText.text = level
 							line.dungeonNameText.text = mapName
 							DetailsFramework:TruncateText(line.dungeonNameText, 240)
@@ -2356,10 +2387,10 @@ if (WOW_PROJECT_ID == WOW_PROJECT_MAINLINE) then
 					elseif (columnIndex == 4) then
 						sortByIndex = 3
 					--sort by classic dungeon name
-					elseif (columnIndex == 5) then
-						sortByIndex = 4
+					--elseif (columnIndex == 5) then
+					--	sortByIndex = 4
 					--sort by mythic+ ranting
-					elseif (columnIndex == 6) then
+					elseif (columnIndex == 5) then
 						sortByIndex = 6
 					end
 
