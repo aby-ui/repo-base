@@ -49,6 +49,8 @@ local defaults = {
                 [316099] = true, -- Unstable Affliction
                 [342938] = true, -- Unstable Affliction
                 [34914] = true, -- Vampiric Touch
+				[383005] = true, -- Chrono Loop
+				[375901] = true, -- Mindgames
             },
             inRaid = {
                 hide = false,

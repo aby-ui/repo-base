@@ -1,13 +1,14 @@
 -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 --global name declaration
 --local _StartDebugTime = debugprofilestop() print(debugprofilestop() - _StartDebugTime)
+--test if the packager will deploy to wago
 		_ = nil
 		_G._detalhes = LibStub("AceAddon-3.0"):NewAddon("_detalhes", "AceTimer-3.0", "AceComm-3.0", "AceSerializer-3.0", "NickTag-1.0")
 		local addonName, Details222 = ...
 		local version, build, date, tocversion = GetBuildInfo()
 
-		_detalhes.build_counter = 10403
-		_detalhes.alpha_build_counter = 10403 --if this is higher than the regular counter, use it instead
+		_detalhes.build_counter = 10406
+		_detalhes.alpha_build_counter = 10406 --if this is higher than the regular counter, use it instead
 		_detalhes.dont_open_news = true
 		_detalhes.game_version = version
 		_detalhes.userversion = version .. " " .. _detalhes.build_counter
@@ -85,6 +86,16 @@ do
 	_detalhes.resize_debug = {}
 
 	local Loc = _G.LibStub("AceLocale-3.0"):GetLocale( "Details" )
+
+
+	--Fixed load errors on Wrath.
+	--Fixed enemy cast time in the death tooltip sometimes showing off time.
+	--Allow negative offsets on Aligned Text Columns (Flamanis).
+	--Remove multi-spec entries for shaman guessing (Flamanis).
+	--More Demon hunter abilities added to be merged (Flamanis).
+	--Added duck polymorph to Mage CCs (Flamanis).
+	--Fixed an issue with some options not updating when the window is selected at the bottom right corner of the options panel (Flamanis).
+
 
 	local news = {
 		{"v10.0.2.10333.147", "Jan 04th, 2023"},

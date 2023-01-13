@@ -15,7 +15,7 @@ local max = math.max
 
 --api locals
 local PixelUtil = PixelUtil or DFPixelUtil
-local version = 12
+local version = 13
 
 local CONST_MENU_TYPE_MAINMENU = "main"
 local CONST_MENU_TYPE_SUBMENU = "sub"
@@ -1411,6 +1411,7 @@ function DF:CreateCoolTip()
 
 	------------------------------------------------------------------------------------------------------------------
 
+	--build the sub menu when the cooltip is set to be a menu
 	function gameCooltip:ShowSub(index)
 		if (gameCooltip.OptionsTable.IgnoreSubMenu) then
 			DF:FadeFrame(frame2, 1)
@@ -1593,10 +1594,203 @@ function DF:CreateCoolTip()
 		row.leftText:SetHeight(10)
 	end
 
+	--when showing a tooltip, this function will build the second frame
+	function gameCooltip:BuildTooltipSecondFrame()
+		--get all sub tables for indexes in the main frame and store it into only one table
+		local LeftTextTableSub = {}
+		for mainFrameIndex, subTable in pairs(gameCooltip.LeftTextTableSub) do
+			for subIndex, subTable2 in ipairs(subTable) do
+				LeftTextTableSub[#LeftTextTableSub+1] = subTable2
+			end
+		end
+
+		local RightTextTableSub = {}
+		for mainFrameIndex, subTable in pairs(gameCooltip.RightTextTableSub) do
+			for subIndex, subTable2 in ipairs(subTable) do
+				RightTextTableSub[#RightTextTableSub+1] = subTable2
+			end
+		end
+
+		local LeftIconTableSub = {}
+		for mainFrameIndex, subTable in pairs(gameCooltip.LeftIconTableSub) do
+			for subIndex, subTable2 in ipairs(subTable) do
+				LeftIconTableSub[#LeftIconTableSub+1] = subTable2
+			end
+		end
+
+		local RightIconTableSub = {}
+		for mainFrameIndex, subTable in pairs(gameCooltip.RightIconTableSub) do
+			for subIndex, subTable2 in ipairs(subTable) do
+				RightIconTableSub[#RightIconTableSub+1] = subTable2
+			end
+		end
+
+		local StatusBarTableSub = {}
+		for mainFrameIndex, subTable in pairs(gameCooltip.StatusBarTableSub) do
+			for subIndex, subTable2 in ipairs(subTable) do
+				StatusBarTableSub[#StatusBarTableSub+1] = subTable2
+			end
+		end
+
+		local WallpaperTableSub = {}
+		for mainFrameIndex, subTable in pairs(gameCooltip.WallpaperTableSub) do
+			for subIndex, subTable2 in ipairs(subTable) do
+				WallpaperTableSub[#WallpaperTableSub+1] = subTable2
+			end
+		end
+
+		local TopIconTableSub = {}
+		for mainFrameIndex, subTable in pairs(gameCooltip.TopIconTableSub) do
+			for subIndex, subTable2 in ipairs(subTable) do
+				TopIconTableSub[#TopIconTableSub+1] = subTable2
+			end
+		end
+
+		frame2:EnableMouse(false)
+
+		--width
+		if (gameCooltip.OptionsTable.FixedWidth) then
+			frame2:SetWidth(gameCooltip.OptionsTable.FixedWidth)
+		end
+
+		frame2.w = gameCooltip.OptionsTable.FixedWidth or 0
+		frame2.hHeight = 0
+		frame2.hHeight = 0
+		gameCooltip.active = true
+
+		for currentIndex = 1, #LeftTextTableSub do
+			local button = frame2.Lines[currentIndex]
+			if (not button) then
+				button = gameCooltip:CreateButtonOnSecondFrame(currentIndex)
+			end
+
+			button.index = currentIndex
+
+			button:Show()
+			button.background:Hide()
+			button:SetHeight(gameCooltip.OptionsTable.ButtonHeightMod or gameCooltip.default_height)
+
+			--clear registered click buttons
+			button:RegisterForClicks()
+
+			--setup texts and icons
+			gameCooltip:TextAndIcon(currentIndex, frame2, button, LeftTextTableSub[currentIndex], RightTextTableSub[currentIndex], LeftIconTableSub[currentIndex], RightIconTableSub[currentIndex])
+			--setup statusbar
+			gameCooltip:StatusBar(button, StatusBarTableSub[currentIndex])
+
+			currentIndex = currentIndex + 1
+		end
+
+		--hide unused lines
+		for i = #LeftTextTableSub+1, #frame2.Lines do
+			frame2.Lines[i]:Hide()
+		end
+
+		local spacing = 0
+		if (gameCooltip.OptionsTable.YSpacingMod) then
+			spacing = gameCooltip.OptionsTable.YSpacingMod
+		end
+
+		--normalize height of all rows
+		local heightValue = -6 + spacing + (gameCooltip.OptionsTable.ButtonsYMod or 0)
+		for i = 1, #LeftTextTableSub do
+			local menuButton = frame2.Lines[i]
+
+			menuButton:ClearAllPoints()
+			menuButton:SetPoint("center", frame2, "center")
+			menuButton:SetPoint("left", frame2, "left", -4, 0)
+			menuButton:SetPoint("right", frame2, "right", 4, 0)
+
+			if (menuButton.divbar) then
+				menuButton.divbar:Hide()
+				menuButton.isDiv = false
+			end
+
+			--height
+			if (gameCooltip.OptionsTable.AlignAsBlizzTooltip) then
+				local height = max(2, menuButton.leftText:GetStringHeight(), menuButton.rightText:GetStringHeight(), menuButton.leftIcon:GetHeight(), menuButton.rightIcon:GetHeight(), gameCooltip.OptionsTable.AlignAsBlizzTooltipForceHeight or 2)
+				menuButton:SetHeight(height)
+				menuButton:SetPoint("top", frame2, "top", 0, heightValue)
+				heightValue = heightValue + (height * -1)
+
+			elseif (gameCooltip.OptionsTable.IgnoreButtonAutoHeight) then
+				local height = max(menuButton.leftText:GetStringHeight(), menuButton.rightText:GetStringHeight(), menuButton.leftIcon:GetHeight(), menuButton.rightIcon:GetHeight())
+				menuButton:SetHeight(height)
+				menuButton:SetPoint("top", frame2, "top", 0, heightValue)
+				heightValue = heightValue + (height * -1) + spacing + (gameCooltip.OptionsTable.ButtonsYMod or 0)
+
+			else
+				menuButton:SetHeight(frame2.hHeight + (gameCooltip.OptionsTable.ButtonHeightMod or 0))
+				menuButton:SetPoint("top", frame2, "top", 0, (((i-1) * frame2.hHeight) * -1) - 6 + (gameCooltip.OptionsTable.ButtonsYMod or 0) + spacing)
+			end
+
+			if (gameCooltip.OptionsTable.YSpacingMod and not gameCooltip.OptionsTable.IgnoreButtonAutoHeight) then
+				spacing = spacing + gameCooltip.OptionsTable.YSpacingMod
+			end
+
+			menuButton:EnableMouse(false)
+		end
+
+		if (not gameCooltip.OptionsTable.FixedWidth) then
+			if (gameCooltip.Type == 2) then --with bars
+				if (gameCooltip.OptionsTable.MinWidth) then
+					local width = frame2.w + 34
+					PixelUtil.SetWidth(frame2, math.max(width, gameCooltip.OptionsTable.MinWidth))
+				else
+					PixelUtil.SetWidth(frame2, frame2.w + 34)
+				end
+			else
+				--width stability check
+				local width = frame2.w + 24
+				if (width > gameCooltip.LastSize - 5 and width < gameCooltip.LastSize + 5) then
+					width = gameCooltip.LastSize
+				else
+					gameCooltip.LastSize = width
+				end
+
+				if (gameCooltip.OptionsTable.MinWidth) then
+					PixelUtil.SetWidth(frame2, math.max(width, gameCooltip.OptionsTable.MinWidth))
+				else
+					PixelUtil.SetWidth(frame2, width)
+				end
+			end
+		end
+
+		if (gameCooltip.OptionsTable.FixedHeight) then
+			PixelUtil.SetHeight(frame2, gameCooltip.OptionsTable.FixedHeight)
+		else
+			if (gameCooltip.OptionsTable.AlignAsBlizzTooltip) then
+				PixelUtil.SetHeight(frame2, ((heightValue - 10) * -1) + (gameCooltip.OptionsTable.AlignAsBlizzTooltipFrameHeightOffset or 0))
+
+			elseif (gameCooltip.OptionsTable.IgnoreButtonAutoHeight) then
+				PixelUtil.SetHeight(frame2, (heightValue + spacing) * -1)
+
+			else
+				PixelUtil.SetHeight(frame2, max((frame2.hHeight * gameCooltip.Indexes) + 8 + ((gameCooltip.OptionsTable.ButtonsYMod or 0) * -1), 22))
+			end
+		end
+
+		if (gameCooltip.WallpaperTable[1]) then
+			gameCooltip:SetupWallpaper(gameCooltip.WallpaperTable, frame2.frameWallpaper)
+		else
+			frame2.frameWallpaper:Hide()
+		end
+
+		--unhide frame
+		DF:FadeFrame(frame2, 0)
+
+		--fix sparks
+		for i = 1, #LeftTextTableSub do
+			local menuButton = frame2.Lines[i]
+			menuButton:SetAlpha(1)
+			if (menuButton.spark:IsShown() or menuButton.spark2:IsShown()) then
+				gameCooltip:RefreshSpark(menuButton)
+			end
+		end
+	end
+
 	--~inicio ~start ~tooltip
 	function gameCooltip:BuildTooltip()
-		--hide sub frame
-		DF:FadeFrame(frame2, 1)
 		--hide select bar
 		gameCooltip:HideSelectedTexture(frame1)
 
@@ -1739,6 +1933,14 @@ function DF:CreateCoolTip()
 			if (menuButton.spark:IsShown() or menuButton.spark2:IsShown()) then
 				gameCooltip:RefreshSpark(menuButton)
 			end
+		end
+
+		--check if there is something to show in the second frame
+		if (gameCooltip.HaveSubMenu) then
+			gameCooltip:BuildTooltipSecondFrame()
+		else
+			--hide sub frame
+			DF:FadeFrame(frame2, 1)
 		end
 	end
 
@@ -2867,6 +3069,7 @@ function DF:CreateCoolTip()
 	end
 
 	--adds a line for tooltips
+	--AddLine creates a new line on the tooltip
 	function gameCooltip:AddLine(leftText, rightText, menuType, ColorR1, ColorG1, ColorB1, ColorA1, ColorR2, ColorG2, ColorB2, ColorA2, fontSize, fontFace, fontFlag)
 		--check data integrity
 		local leftTextType = type(leftText)
@@ -2922,6 +3125,8 @@ function DF:CreateCoolTip()
 				gameCooltip.IndexesSub[gameCooltip.Indexes] = 0
 			end
 
+			--as a new line as been added, reset the amount of sub indexes
+			--this key is only used within functions that add something to the tooltip
 			gameCooltip.SubIndexes = 0
 
 			frameTableLeft = gameCooltip.LeftTextTable

@@ -35,7 +35,7 @@ local GetContainerNumFreeSlots = C_Container and _G.C_Container.GetContainerNumF
 local GetItemInfo = _G.GetItemInfo
 local GetItemQualityColor = _G.GetItemQualityColor
 local hooksecurefunc = _G.hooksecurefunc
-local IsBattlePayItem = C_Container and _G.C_Container.IsBattlePayItem or _G.IsBattlePayItem
+local IsBattlePayItem = C_Container and _G.C_Container.IsBattlePayItem or _G.IsBattlePayItem or function(...) return false end
 local IsContainerItemAnUpgrade = _G.IsContainerItemAnUpgrade
 local IsInventoryItemLocked = _G.IsInventoryItemLocked
 local SplitContainerItem = C_Container and _G.C_Container.SplitContainerItem or _G.SplitContainerItem
@@ -78,7 +78,7 @@ else
 	buttonClass, buttonProto = addon:NewClass("ItemButton", "Button", "ContainerFrameItemButtonTemplate", "ABEvent-1.0")
 end
 
-local childrenNames = { "Cooldown", "IconTexture", "IconQuestTexture", "Count", "Stock", "NormalTexture", "NewItemTexture", "IconOverlay2" }
+local childrenNames = { "Cooldown", "IconBorder", "IconTexture", "IconQuestTexture", "Count", "Stock", "NormalTexture", "NewItemTexture", "IconOverlay2", "ItemContextOverlay" }
 
 function buttonProto:OnCreate()
 	local name = self:GetName()
@@ -93,6 +93,7 @@ function buttonProto:OnCreate()
 	self:SetScript('OnHide', self.OnHide)
 	self:SetWidth(ITEM_SIZE)
 	self:SetHeight(ITEM_SIZE)
+	self.EmptySlotTextureFile = addon.EMPTY_SLOT_FILE
 	if self.NewItemTexture then
 		self.NewItemTexture:Hide()
 	end
@@ -109,9 +110,11 @@ function buttonProto:OnAcquire(container, bag, slot)
 	--self:SetBagID(bag)
 	self:SetID(slot)
 	self:FullUpdate()
+	addon:SendMessage("AdiBags_AcquireButton", self)
 end
 
 function buttonProto:OnRelease()
+	addon:SendMessage("AdiBags_ReleaseButton", self)
 	self:SetSection(nil)
 	self.container = nil
 	self.itemId = nil
@@ -284,6 +287,7 @@ end
 function buttonProto:UNIT_QUEST_LOG_CHANGED(event, unit)
 	if unit == "player" then
 		self:UpdateBorder(event)
+		self:UpdateAlpha()
 	end
 end
 
@@ -315,16 +319,29 @@ function buttonProto:FullUpdate()
 	self:Update()
 end
 
-function buttonProto:Update()
-	if not self:CanUpdate() then return end
+function buttonProto:UpdateIcon()
 	local icon = self.IconTexture
+	local settings = addon.db.profile
 	if self.texture then
 		icon:SetTexture(self.texture)
 		icon:SetTexCoord(0,1,0,1)
 	else
-		icon:SetTexture([[Interface\BUTTONS\UI-EmptySlot]])
+		icon:SetTexture(self.EmptySlotTextureFile)
 		icon:SetTexCoord(12/64, 51/64, 12/64, 51/64)
 	end
+	if self.IconQuestTexture then
+		local isQuestItem, questId = addon:GetContainerItemQuestInfo(self.bag, self.slot)
+		if settings.questIndicator and (isQuestItem or questId) then
+			self.IconQuestTexture:Show()
+		else
+			self.IconQuestTexture:Hide()
+		end
+	end
+end
+
+function buttonProto:Update()
+	if not self:CanUpdate() then return end
+	self:UpdateIcon()
 	local tag = (not self.itemId or addon.db.profile.showBagType) and addon:GetFamilyTag(self.bagFamily)
 	if tag then
 		self.Stock:SetText(tag)
@@ -339,6 +356,7 @@ function buttonProto:Update()
 	end
 	self:UpdateLock()
 	self:UpdateNew()
+	self:UpdateAlpha()
 	if addon.isRetail then
 		self:UpdateUpgradeIcon()
 		self:UpdateOverlay()
@@ -406,7 +424,7 @@ end
 function buttonProto:UpdateNew()
 	if addon.isRetail then
 		self.BattlepayItemTexture:SetShown(IsBattlePayItem(self.bag, self.slot))
-	elseif addon.isWrath then
+	else
 		self.BattlepayItemTexture:SetShown(false)
 	end
 end
@@ -421,11 +439,10 @@ if addon.isRetail then
 	end
 end
 
-local function GetBorder(bag, slot, itemId, settings)
+local function GetBorder(quality, isQuestItem, questId, isQuestActive, settings)
 	if addon.isRetail or addon.isWrath then
 		if settings.questIndicator then
-			local isQuestItem, questId, isActive = addon:GetContainerItemQuestInfo(bag, slot)
-			if questId and not isActive then
+			if questId and not isQuestActive then
 				return TEXTURE_ITEM_QUEST_BANG
 			end
 			if questId or isQuestItem then
@@ -435,11 +452,6 @@ local function GetBorder(bag, slot, itemId, settings)
 	end
 	if not settings.qualityHighlight then
 		return
-	end
-	local quality = addon:GetContainerItemQuality(bag, slot)
-	if quality == ITEM_QUALITY_POOR and settings.dimJunk then
-		local v = 1 - 0.5 * settings.qualityOpacity
-		return true, v, v, v, 1, nil, nil, nil, nil, "MOD"
 	end
 	local color = quality ~= ITEM_QUALITY_COMMON and BAG_ITEM_QUALITY_COLORS[quality]
 	if color then
@@ -454,24 +466,24 @@ local function hasItem(i)
 end
 
 function buttonProto:UpdateBorder(isolatedEvent)
-	local texture, r, g, b, a, x1, x2, y1, y2, blendMode
+	local texture, r, g, b, a, x1, x2, y1, y2, blendMode, quality
+	local settings = addon.db.profile
+	local isQuestItem, questId, isQuestActive
 	if hasItem(self.hasItem) then
-		texture, r, g, b, a, x1, x2, y1, y2, blendMode = GetBorder(self.bag, self.slot, self.itemLink or self.itemId, addon.db.profile)
+		quality = addon:GetContainerItemQuality(self.bag, self.slot)
+		isQuestItem, questId, isQuestActive = addon:GetContainerItemQuestInfo(self.bag, self.slot)
+		texture, r, g, b, a, x1, x2, y1, y2, blendMode = GetBorder(quality, isQuestItem, questId, isQuestActive, settings)
 	end
+
+	local layer = (settings.questIndicator and (isQuestItem or questId)) and self.IconQuestTexture or self.IconBorder
 	if not texture then
-		self.IconQuestTexture:Hide()
+		layer:Hide()
 	else
-		local border = self.IconQuestTexture
-		if texture == true then
-			border:SetVertexColor(1, 1, 1, 1)
-			border:SetColorTexture(r or 1, g or 1, b or 1, a or 1)
-		else
-			border:SetTexture(texture)
-			border:SetVertexColor(r or 1, g or 1, b or 1, a or 1)
-		end
-		border:SetTexCoord(x1 or 0, x2 or 1, y1 or 0, y2 or 1)
-		border:SetBlendMode(blendMode or "BLEND")
-		border:Show()
+		layer:SetTexture(texture)
+		layer:SetVertexColor(r or 1, g or 1, b or 1, a or 1)
+		layer:SetTexCoord(x1 or 0, x2 or 1, y1 or 0, y2 or 1)
+		layer:SetBlendMode(blendMode or "BLEND")
+		layer:Show()
 	end
 	if self.JunkIcon then
 		local quality = hasItem(self.hasItem) and select(3, GetItemInfo(self.itemLink or self.itemId))
@@ -485,6 +497,20 @@ end
 function buttonProto:UpdateOverlay()
 	local _, _, _, quality = GetContainerItemInfo(self.bag, self.slot)
 	SetItemButtonOverlay(self, self.itemId or self.itemLink or 0, quality)
+end
+
+function buttonProto:UpdateAlpha()
+	local settings = addon.db.profile
+	local newAlpha = 1
+
+	if self.hasItem and settings.dimJunk then
+		local quality = addon:GetContainerItemQuality(self.bag, self.slot)
+		if quality == ITEM_QUALITY_POOR then
+			newAlpha = 0.5
+		end
+	end
+
+	self:SetAlpha(newAlpha)
 end
 
 --------------------------------------------------------------------------------

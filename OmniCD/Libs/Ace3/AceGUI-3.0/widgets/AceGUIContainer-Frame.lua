@@ -10,7 +10,7 @@ Frame Container
 --[[ s r
 local Type, Version = "Frame", 30
 ]]
-local Type, Version = "Frame-OmniCD", 30 -- 28 DF
+local Type, Version = "Frame-OmniCD", 31 -- 28 DF
 -- e
 local AceGUI = LibStub and LibStub("AceGUI-3.0", true)
 if not AceGUI or (AceGUI:GetWidgetVersion(Type) or 0) >= Version then return end
@@ -113,6 +113,7 @@ local methods = {
 	["OnRelease"] = function(self)
 		self.status = nil
 		wipe(self.localstatus)
+		self.frame:SetScale(1) -- s a remove scaling done
 	end,
 
 	["OnWidthSet"] = function(self, width)

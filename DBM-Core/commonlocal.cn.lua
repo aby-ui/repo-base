@@ -1,7 +1,7 @@
 -- CL.Core
 -- Diablohu(diablohudream@gmail.com)
 -- yleaf(yaroot@gmail.com)
--- Mini Dragon(projecteurs@gmail.com) <流浪者酒馆-Brilla@金色平原> 20220808
+-- Mini Dragon(projecteurs@gmail.com) <流浪者酒馆-Brilla@金色平原> 20230111
 
 if GetLocale() ~= "zhCN" then return end
 if not DBM_COMMON_L then DBM_COMMON_L = {} end
@@ -19,6 +19,7 @@ CL.INTERMISSION						= "转场"
 CL.NO_DEBUFF						= "没有 %s"
 CL.ALLY								= "队友"
 CL.ALLIES							= "人群"
+CL.CLEAR							= "清空"
 CL.SAFE								= "安全"
 CL.NOTSAFE							= "不安全"
 CL.SEASONAL							= "季节性"
@@ -53,9 +54,10 @@ CL.RINGS							= "环"
 CL.CHEST							= "奖励宝箱"
 CL.ADD								= "小怪"
 CL.ADDS								= "小怪"
+CL.ADDCOUNT							= "小怪 %s"
 CL.BIG_ADD							= "大怪"
 CL.BOSS								= "Boss"
-CL.ENEMIES							= "Enemies"
+CL.ENEMIES							= "敌人"
 CL.BREAK_LOS						= "卡视角"
 CL.RESTORE_LOS						= "恢复视角"
 CL.BOSSTOGETHER						= "拉近Boss"

@@ -70,6 +70,7 @@ function RSContainerPOI.GetContainerPOI(containerID, mapID, containerInfo, alrea
 	POI.achievementIDs = RSAchievementDB.GetNotCompletedAchievementIDsByMap(containerID, mapID)
 	if (containerInfo) then
 		POI.worldmap = containerInfo.worldmap
+		POI.factionID = containerInfo.factionID
 	end
 
 	-- Textures
@@ -109,6 +110,12 @@ local function IsContainerPOIFiltered(containerID, mapID, zoneQuestID, prof, vig
 	-- Skip if the entity is filtered
 	if (RSConfigDB.IsContainerFiltered(containerID) and not RSContainerDB.IsWorldMap(containerID) and not RSConfigDB.IsContainerFilteredOnlyOnAlerts() and (not RSConfigDB.IsContainerFilteredOnlyOnWorldMap() or (RSConfigDB.IsContainerFilteredOnlyOnWorldMap() and not RSGeneralDB.IsRecentlySeen(containerID)))) then
 		RSLogger:PrintDebugMessageEntityID(containerID, string.format("Saltado Contenedor [%s]: Filtrado en opciones.", containerID))
+		return true
+	end
+	
+	-- Skip if not trackeable and filtered
+	if (not RSConfigDB.IsShowingNotTrackeableContainers() and RSUtils.Contains(RSConstants.CONTAINERS_WITHOUT_VIGNETTE, containerID)) then
+		RSLogger:PrintDebugMessageEntityID(containerID, string.format("Saltado Contenedor [%s]: Filtrado contenedor no rastreable.", containerID))
 		return true
 	end
 

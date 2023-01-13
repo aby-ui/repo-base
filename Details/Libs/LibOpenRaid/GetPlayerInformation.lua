@@ -701,13 +701,12 @@ end
 --@spellId: the spellId to check for cooldown
 --return timeLeft, charges, startTimeOffset, duration, buffDuration
 function openRaidLib.CooldownManager.GetPlayerCooldownStatus(spellId)
-    --get the cooldown info from the cooldowns database of the lib
+    --check if is a charge spell
     local cooldownInfo = LIB_OPEN_RAID_COOLDOWNS_INFO[spellId]
     if (cooldownInfo) then
         local buffDuration = getAuraDuration(spellId)
-
         local chargesAvailable, chargesTotal, start, duration = GetSpellCharges(spellId)
-        if (chargesAvailable) then
+        if chargesAvailable then
             if (chargesAvailable == chargesTotal) then
                 return 0, chargesTotal, 0, 0, 0 --all charges are ready to use
             else
@@ -717,13 +716,13 @@ function openRaidLib.CooldownManager.GetPlayerCooldownStatus(spellId)
                 return ceil(timeLeft), chargesAvailable, startTimeOffset, duration, buffDuration --time left, charges, startTime, duration, buffDuration
             end
         else
-            local startTime, cooldownDuration = GetSpellCooldown(spellId)
-            if (startTime == 0) then --cooldown is ready
+            local start, duration = GetSpellCooldown(spellId)
+            if (start == 0) then --cooldown is ready
                 return 0, 1, 0, 0, 0 --time left, charges, startTime
             else
-                local timeLeft = startTime + cooldownDuration - GetTime()
-                local startTimeOffset = startTime - GetTime()
-                return ceil(timeLeft), 0, ceil(startTimeOffset), cooldownDuration, buffDuration --time left, charges, startTime, duration, buffDuration
+                local timeLeft = start + duration - GetTime()
+                local startTimeOffset = start - GetTime()
+                return ceil(timeLeft), 0, ceil(startTimeOffset), duration, buffDuration --time left, charges, startTime, duration, buffDuration
             end
         end
     else

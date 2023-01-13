@@ -3,7 +3,7 @@ local L		= mod:GetLocalizedStrings()
 
 mod.statTypes = "normal,heroic,mythic,challenge,timewalker"
 
-mod:SetRevision("20200912135206")
+mod:SetRevision("20230107210947")
 mod:SetCreatureID(74787)
 mod:SetEncounterID(1653)
 
@@ -18,7 +18,7 @@ local warnCrushingLeap			= mod:NewTargetNoFilterAnnounce(150751, 3)
 
 local specWarnFerociousYell		= mod:NewSpecialWarningInterrupt(150759, "HasInterrupt", nil, 2, 1, 2)
 local specWarnRaiseMiners		= mod:NewSpecialWarningSwitch(150801, "Tank", nil, nil, 1, 2)
-local specWarnEarthCrush		= mod:NewSpecialWarningSpell(153679, nil, nil, nil, 3, 2)--avoidable.
+local specWarnEarthCrush		= mod:NewSpecialWarningSpell(153679, nil, nil, 2, 2, 2)--avoidable.
 local specWarnWildSlam			= mod:NewSpecialWarningSpell(150753, nil, nil, nil, 2, 2)--not avoidable. large aoe damage and knockback
 
 --local timerFerociousYellCD--12~18. large variable?
@@ -44,7 +44,7 @@ function mod:SPELL_CAST_START(args)
 		specWarnRaiseMiners:Play("mobsoon")
 	elseif spellId == 153679 then
 		specWarnEarthCrush:Show()
-		specWarnEarthCrush:Play("watchstep")
+		specWarnEarthCrush:Play("shockwave")
 	elseif spellId == 150753 then
 		specWarnWildSlam:Show()
 		specWarnWildSlam:Play("carefly")

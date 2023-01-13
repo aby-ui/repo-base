@@ -419,6 +419,10 @@ local function isDescendant(frame, ancestor)
         return true
     end
 
+    if frame:IsForbidden() then
+        return false
+    end
+
     return isDescendant(frame:GetParent(), ancestor)
 end
 

@@ -374,6 +374,11 @@ function Details.ShowDeathTooltip(instance, lineFrame, combatObject, deathTable)
 	--progress bar texture
 	gameCooltip:SetOption("StatusBarTexture", statusbarTexture)
 
+	--for i = 1, 20 do
+	--	gameCooltip:AddLine("What Info Could Go Here?", "Oh!", 2, "white")
+	--	gameCooltip:AddIcon("Interface\\Glues\\CharacterSelect\\Glues-AddOn-Icons", 2, 1, 16, 16, .75, 1, 0, 1)
+	--end
+
 	return true
 end
 

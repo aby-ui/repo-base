@@ -1,5 +1,5 @@
 ## Interface: 100002
-## Version: 10.0.16-6-g7fb6239
+## Version: 10.0.19-8-g4c01606
 ## Title:|cffffe00a<|r|cffff7d0aDBM|r|cffffe00a>|r |cff69ccf0World Bosses (Dragonflight)|r
 ## Title-esES:|cffffe00a<|r|cffff7d0aDBM|r|cffffe00a>|r |cff69ccf0Jefes de Mundo (Dragonflight)|r
 ## Title-esMX:|cffffe00a<|r|cffff7d0aDBM|r|cffffe00a>|r |cff69ccf0Jefes de Mundo (Dragonflight)|r

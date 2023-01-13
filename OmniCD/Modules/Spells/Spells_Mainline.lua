@@ -718,7 +718,7 @@ E.spell_db = {
 
 
 
-		{ ["class"]="MONK",["type"]="defensive",["buff"]=322507,["spec"]=true,["maxRanks"]=1,["name"]="Celestial Brew",["ID"]=92,["duration"]=60,["icon"]=1360979,["spellID"]=322507, },
+		{ ["class"]="MONK",["type"]="defensive",["buff"]=322507,["spec"]=true,["maxRanks"]=1,["name"]="Celestial Brew",["ID"]=92,["duration"]=45,["icon"]=1360979,["spellID"]=322507, },
 
 
 
@@ -2118,7 +2118,7 @@ E.spell_db = {
 
 
 
-		{ ["class"]="PALADIN",["type"]="defensive",["buff"]=184662,["spec"]=true,["maxRanks"]=1,["name"]="Shield of Vengeance",["ID"]=76,["duration"]=120,["icon"]=236264,["spellID"]=184662, },
+		{ ["class"]="PALADIN",["type"]="defensive",["buff"]=184662,["spec"]=true,["maxRanks"]=1,["name"]="Shield of Vengeance",["ID"]=76,["duration"]=90,["icon"]=236264,["spellID"]=184662, },
 		{ ["class"]="PALADIN",["type"]="defensive",["buff"]=498,["spec"]=true,["maxRanks"]=1,["name"]="Divine Protection",["ID"]=76,["duration"]={[70]=120,["default"]=60},["icon"]=524353,["spellID"]=498, },
 
 
@@ -2233,7 +2233,7 @@ E.spell_db = {
 		{ ["class"]="SHAMAN",["type"]="other",["buff"]=204366,["spec"]=true,["name"]="Thundercharge",["duration"]=45,["icon"]=1385916,["spellID"]=204366, },
 		{ ["class"]="SHAMAN",["type"]="disarm",["buff"]=355580,["spec"]=true,["name"]="Static Field Totem",["duration"]=60,["icon"]=1020304,["spellID"]=355580, },
 		{ ["class"]="SHAMAN",["type"]="offensive",["buff"]=193876,["spec"]=true,["name"]="Shamanism",["duration"]=60,["icon"]=454482,["spellID"]=193876, },
-		{ ["class"]="SHAMAN",["type"]="offensive",["buff"]=2825,["name"]="Bloodlust",["duration"]=300,["icon"]=236288,["spellID"]=2825,["pve"]=true,["talent"]=193876, },
+		{ ["class"]="SHAMAN",["type"]="offensive",["buff"]=2825,["name"]="Bloodlust",["duration"]=300,["icon"]=136012,["spellID"]=2825,["pve"]=true,["talent"]=193876, },
 		{ ["class"]="SHAMAN",["type"]="dispel",["buff"]=77130,["spec"]=264,["name"]="Purify Spirit",["duration"]=8,["icon"]=236288,["spellID"]=77130, },
 		{ ["class"]="SHAMAN",["type"]="disarm",["buff"]=356736,["spec"]=true,["name"]="Unleashed Shield",["duration"]=30,["icon"]=538567,["spellID"]=356736, },
 		{ ["class"]="SHAMAN",["type"]="counterCC",["buff"]=204336,["spec"]=true,["name"]="Grounding Totem",["duration"]=30,["icon"]=136039,["spellID"]=204336, },
@@ -2661,9 +2661,9 @@ E.spell_db = {
 		{ ["class"]="RACIAL",["type"]="racial",["name"]="Ancestral Call",["buff"]=274740,["race"]=36,["duration"]=120,["icon"]=2021574,["spellID"]=274738, },
 		{ ["class"]="RACIAL",["type"]="racial",["name"]="Hyper Organic Light Originator",["buff"]=312924,["race"]=37,["duration"]=180,["icon"]=3192686,["spellID"]=312924, },
 		{ ["class"]="RACIAL",["type"]="racial",["name"]="Emergency Failsafe",["buff"]=312916,["race"]=37,["duration"]=150,["icon"]=3192688,["spellID"]=312916, },
-		{ ["class"]="RACIAL",["type"]="racial",["name"]="Tail Swipe",["buff"]=368970,["race"]=70,["duration"]=90,["icon"]=4622486,["spellID"]=368970, },
-		{ ["class"]="RACIAL",["type"]="racial",["name"]="Wing Buffet",["buff"]=357214,["race"]=70,["duration"]=90,["icon"]=4622488,["spellID"]=357214, },
-		{ ["class"]="RACIAL",["type"]="racial",["name"]="Soar",["buff"]=369536,["race"]=70,["duration"]=240,["icon"]=4622485,["spellID"]=369536, },
+		{ ["class"]="RACIAL",["type"]="racial",["name"]="Tail Swipe",["buff"]=368970,["race"]={52,70},["duration"]=90,["icon"]=4622486,["spellID"]=368970, },
+		{ ["class"]="RACIAL",["type"]="racial",["name"]="Wing Buffet",["buff"]=357214,["race"]={52,70},["duration"]=90,["icon"]=4622488,["spellID"]=357214, },
+
 	},
 	["PVPTRINKET"] = {
 
@@ -2729,7 +2729,7 @@ E.spellDefaults = {
 	59752, 7744,
 	47482, 47528, 48707, 48792, 114556, 51052,
 	183752, 196555, 198589, 209258, 187827, 196718, 191427, 205604, 740,
-	351338, 372048, 378441, 357170, 363916, 374348, 374227, 359816, 363534, 377509, 378464,
+	351338, 372048, 378441, 357170, 363916, 374348, 374227, 363534, 377509, 378464,
 	106839, 78675, 22812, 102342, 108238, 61336, 33891,
 	147362, 187707, 187650, 186265, 109304, 53480,
 	2139, 45438, 342246, 342245, 86949, 235219, 198111, 190319,
@@ -2743,5 +2743,6 @@ E.spellDefaults = {
 }
 
 E.raidDefaults = {
-	51052, 196718, 740, 374227, 359816, 363534, 115310, 31821, 64843, 265202, 62618, 15286, 108280, 98008, 97462,
+	47528, 183752, 351338, 106839, 78675, 147362, 187707, 2139, 116705, 96231, 31935, 15487, 1766, 57994, 119898, 212619, 6552, 386071,
+	51052, 196718, 740, 374227, 363534, 115310, 31821, 64843, 265202, 62618, 15286, 108280, 98008, 97462,
 }

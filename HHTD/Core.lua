@@ -3,7 +3,7 @@ H.H.T.D. World of Warcraft Add-on
 Copyright (c) 2009-2018 by John Wellesz (hhtd@2072productions.com)
 All rights reserved
 
-Version 2.4.9.14-1-gcc9b091
+Version 2.4.10
 
 In World of Warcraft healers have to die. This is a cruel truth that you're
 taught very early in the game. This add-on helps you influence this unfortunate
@@ -37,7 +37,7 @@ local INFO      = 3;
 local INFO2     = 4;
 
 local UNPACKAGED = "@pro" .. "ject-version@";
-local VERSION = "2.4.9.14-1-gcc9b091";
+local VERSION = "2.4.10";
 
 local ADDON_NAME, T = ...;
 
@@ -256,11 +256,11 @@ function HHTD:HHTD_HEALER_BORN(selfevent, isFriend, healer)
     HHTD.Registry_by_GUID[isFriend][healer.guid] = healer;
     HHTD.Registry_by_Name[isFriend][healer.name] = healer;
 
-    --@alpha@
+    --[=[@alpha@
     if InCombatLockdown() then
         self:AddDelayedFunctionCall('test', self.Debug, self, INFO2, "After combat lock down test");
     end
-    --@end-alpha@
+    --@end-alpha@]=]
 
     -- if the player is human and friendly and is part of our group, set his/her role to HEALER
     if self.db.global.SetFriendlyHealersRole and not HHTD_C.WOWC then
@@ -342,6 +342,12 @@ local function REGISTER_HEALERS_ONLY_SPELLS_ONCE ()
         [116680] = "MONK", -- Thunder Focus Tea
         [116849] = "MONK", -- Life Cocoon
         -- [119611] = "MONK", -- Renewing mist
+
+        [364343] = "EVOKER", -- Echo (talent)
+        [355936] = "EVOKER", -- Dream Breath (talent)
+        [363534] = "EVOKER", -- Rewind (talent)
+        [373861] = "EVOKER", -- Temporal Anomaly (talent)
+        [359816] = "EVOKER", -- Dream Flight (talent)
 
         --[==[@debug@
         -- test bad spell mitigation
@@ -553,7 +559,7 @@ do
                 name = L["OPT_VERSION"],
                 desc = L["OPT_VERSION_DESC"],
                 guiHidden = true,
-                func = function () HHTD:Print(L["VERSION"], '2.4.9.14-1-gcc9b091,', L["RELEASE_DATE"], '2023-01-03T13:11:17Z') end,
+                func = function () HHTD:Print(L["VERSION"], '2.4.10,', L["RELEASE_DATE"], '2023-01-07T16:45:31Z') end,
                 order = -5,
             },
             ShowGUI = {
@@ -571,7 +577,7 @@ do
                 args = {
                     Info_Header = {
                         type = 'header',
-                        name = L["VERSION"] .. ' 2.4.9.14-1-gcc9b091 -- ' .. L["RELEASE_DATE"] .. ' 2023-01-03T13:11:17Z',
+                        name = L["VERSION"] .. ' 2.4.10 -- ' .. L["RELEASE_DATE"] .. ' 2023-01-07T16:45:31Z',
                         order = 1,
                     },
                     Pve = {
@@ -828,10 +834,10 @@ local DEFAULT__CONFIGURATION = {
         Enabled = true,
         Debug = false,
         DebugLevel = 1,
-        --@alpha@
+        --[=[@alpha@
         Debug = true,
         DebugLevel = 2,
-        --@end-alpha@
+        --@end-alpha@]=]
         Log = false,
         Pve = true,
         PvpHSpecsOnly = false,
@@ -1172,9 +1178,9 @@ do
     };
 
     function HHTD:UPDATE_BATTLEFIELD_SCORE()
-        --@alpha@
+        --[=[@alpha@
         self:Debug(INFO, "UPDATE_BATTLEFIELD_SCORE")
-        --@end-alpha@
+        --@end-alpha@]=]
 
         WIPRBSD[1] = false
     end
@@ -1597,7 +1603,14 @@ do
         end
 
         local class = select(2, UnitClass(unit));
-        local dummySpell = ({["DRUID"] = GetSpellInfo(33891), ["SHAMAN"] = GetSpellInfo(974), ["PRIEST"] = GetSpellInfo(109964), ["PALADIN"] = GetSpellInfo(82326), ["MONK"] = GetSpellInfo(115175)})[class] or GetSpellInfo(3273);
+        local dummySpell = ({
+            ["DRUID"] = GetSpellInfo(000740),
+            ["SHAMAN"] = GetSpellInfo(077472),
+            ["PRIEST"] = GetSpellInfo(047788),
+            ["PALADIN"] = GetSpellInfo(085222),
+            ["MONK"] = GetSpellInfo(116849),
+            ["EVOKER"] = GetSpellInfo(364343),
+        })[class] or GetSpellInfo(3273);
         self:COMBAT_LOG_EVENT_UNFILTERED(nil, 0, event, false, srcGUID, srcName, srcFlags, 0, destGUID, destName, destFlags, 0, 0, dummySpell, "", HHTD.HealThreshold + 1);
     end
 

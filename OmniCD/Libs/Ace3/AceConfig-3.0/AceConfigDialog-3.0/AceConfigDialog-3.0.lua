@@ -1888,12 +1888,9 @@ function AceConfigDialog:FeedGroup(appName,options,container,rootframe,path, isR
 
 	--Add a scrollframe if we are not going to add a group control, this is the inverse of the conditions for that later on
 	if (not (hasChildGroups and not inline)) or (grouptype ~= "tab" and grouptype ~= "select" and (parenttype == "tree" and not isRoot)) then
+		--[[ s r
 		if container.type ~= "InlineGroup" and container.type ~= "SimpleGroup" then
-			--[[ s r
 			scroll = gui:Create("ScrollFrame")
-			]]
-			scroll = gui:Create("ScrollFrame-OmniCD")
-			-- e
 			scroll:SetLayout("flow")
 			scroll.width = "fill"
 			scroll.height = "fill"
@@ -1901,18 +1898,21 @@ function AceConfigDialog:FeedGroup(appName,options,container,rootframe,path, isR
 			container:AddChild(scroll)
 			container = scroll
 		end
-		--[[ s r <spell list>
-		if container.type ~= "InlineGroup-OmniCD" and container.type ~= "SimpleGroup-OmniCD" then
+		]]
+		if container.type ~= "InlineGroup-OmniCD" and container.type ~= "SimpleGroup-OmniCD" then -- <spell list> is 'multiselect'
 			scroll = gui:Create("ScrollFrame-OmniCD")
+			--[[ s b <spell list>
 			local opt = path[#path-1]
 			scroll:SetLayout(opt and opt:match("list_") and "Flow-Nopadding-OmniCD" or "flow" )
+			]]-- e
+			scroll:SetLayout("flow")
 			scroll.width = "fill"
 			scroll.height = "fill"
 			container:SetLayout("fill")
 			container:AddChild(scroll)
 			container = scroll
 		end
-		]]-- e
+		-- e
 	end
 
 	FeedOptions(appName,options,container,rootframe,path,group,nil)

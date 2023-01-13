@@ -12,6 +12,8 @@
 
     <!--Include file="Libs\BugGrabber\load.xml" /-->
 
+    <!--<Script file="Libs\LibDualSpec-1.0\LibDualSpec-1.0.lua" />-->
+
     <Script>
         DecursiveInEmbeddedMode = true;
     </Script>
@@ -25,7 +27,7 @@
 
 
     <Script>
-        DecursiveEmbedsxmlCheck = "2.7.8.12-2-g8a095be";
+        DecursiveEmbedsxmlCheck = "2.7.8.13-3-ga7591ae";
     </Script>
 
 </Ui>

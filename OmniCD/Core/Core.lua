@@ -248,7 +248,7 @@ do
 		end
 		frame:SetBackdrop(backdrop)
 		for _, pieceName in ipairs(textureUVs) do
-			local region = frame[pieceName];
+			local region = frame[pieceName]
 			if region then
 				E.DisablePixelSnap(region)
 			end

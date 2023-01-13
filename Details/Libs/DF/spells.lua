@@ -937,6 +937,7 @@ DF.CrowdControlSpells = {
 	[61721] = "MAGE", --Polymorph Rabbit
 	[28272] = "MAGE", --Polymorph Pig
 	[277792] = "MAGE", --Polymorph Bumblebee
+	[391622] = "MAGE", --Polymorph Duck
 	[2139] = "MAGE", --Counterspell
 	
 	[82691] = "MAGE", --Ring of Frost (debuff spellid)

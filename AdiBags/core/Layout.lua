@@ -58,42 +58,6 @@ function addon:CreateBagAnchor()
 	self.anchor = anchor
 end
 
-local function AnchoredBagLayout(self)
-	self.anchor:ApplySettings()
-	self:Debug("Anchor Bag Layout")
-
-	local nextBag, data, firstIndex = self:IterateBags(true)
-	local index, bag = nextBag(data, firstIndex)
-	if not bag then return end
-
-	local anchor = self.anchor
-	local anchorPoint = anchor:GetPosition()
-
-	local frame = bag:GetFrame()
-	frame:ClearAllPoints()
-	self:Debug('AnchoredBagLayout', anchorPoint)
-	frame:SetPoint(anchorPoint, anchor, anchorPoint, 0, 0)
-
-	local lastFrame = frame
-	index, bag = nextBag(data, index)
-	if not bag then return end
-
-	local vPart = anchorPoint:match("TOP") or anchorPoint:match("BOTTOM") or ""
-	local hFrom, hTo, x = "LEFT", "RIGHT", 10
-	if anchorPoint:match("RIGHT") then
-		hFrom, hTo, x = "RIGHT", "LEFT", -10
-	end
-	local fromPoint = vPart..hFrom
-	local toPoint = vPart..hTo
-
-	while bag do
-		local frame = bag:GetFrame()
-		frame:ClearAllPoints()
-		frame:SetPoint(fromPoint, lastFrame, toPoint, x / frame:GetScale(), 0)
-		lastFrame, index, bag = frame, nextBag(data, index)
-	end
-end
-
 local function ManualBagLayout(self)
 	for index, bag in self:IterateBags(true) do
 		bag:GetFrame().Anchor:ApplySettings()
@@ -107,11 +71,7 @@ function addon:LayoutBags()
 			bag:GetFrame():SetScale(scale)
 		end
 	end
-	if self.db.profile.positionMode == 'anchored' then
-		AnchoredBagLayout(self)
-	else
-		ManualBagLayout(self)
-	end
+	ManualBagLayout(self)
 	self:SendMessage('AdiBags_ForceFullLayout')
 end
 

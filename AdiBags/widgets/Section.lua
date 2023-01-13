@@ -93,7 +93,6 @@ function sectionProto:OnCreate()
 
 	local header = CreateFrame("Button", nil, self)
 	header.section = self
-	header:SetNormalFontObject(addon.sectionFont)
 	header:SetPoint("TOPLEFT", 0, 0)
 	header:SetPoint("TOPRIGHT", SECTION_SPACING - ITEM_SPACING, 0)
 	header:SetHeight(HEADER_SIZE)
@@ -133,6 +132,7 @@ function sectionProto:OnAcquire(container, name, category)
 	self.count = 0
 	self.container = container
 	self:RegisterMessage('AdiBags_OrderChanged', 'FullLayout')
+	self.Header:SetNormalFontObject(addon.fonts[string.lower(container.name)].sectionFont)
 	self.Header:SetText(self.name)
 	self:UpdateHeaderScripts()
 end
@@ -144,6 +144,19 @@ function sectionProto:OnRelease()
 	self.name = nil
 	self.category = nil
 	self.container = nil
+end
+
+function sectionProto:UpdateFont()
+	local font
+	if self.container.isReagentBank then
+		font = addon.fonts.reagentBank.sectionFont
+		self.Header:SetNormalFontObject(font)
+		font:ApplySettings()
+	else
+		font = addon.fonts[string.lower(self.container.name)].sectionFont
+		self.Header:SetNormalFontObject(font)
+		font:ApplySettings()
+	end
 end
 
 function sectionProto:GetOrder()

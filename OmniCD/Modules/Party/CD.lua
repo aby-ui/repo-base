@@ -1177,24 +1177,40 @@ local majorMovementAbilities = {
 	["WARLOCK"] = 48020,
 	["WARRIOR"] = 6544,
 }
+E.majorMovementAbilitiesByIDs = {}
+for class, spellID in pairs(majorMovementAbilities) do
+	if type(spellID) == "table" then
+		for _, id in pairs(spellID) do
+			E.majorMovementAbilitiesByIDs[id] = class
+		end
+	else
+		E.majorMovementAbilitiesByIDs[spellID] = class
+	end
+end
 
 registeredEvents['SPELL_AURA_REMOVED'][381748] = function(info)
-	local id = majorMovementAbilities[info.class]
-	local icon = type(id) == "table" and (info.spellIcons[ id[1] ] or info.spellIcons[ id[2] ]) or info.spellIcons[id]
-	if icon and icon.active then
-		P:UpdateCooldown(icon, 0, 1/0.85)
+	if info.auras["isBlessingOfTheBronze"] then
+		local id = majorMovementAbilities[info.class]
+		local icon = type(id) == "table" and (info.spellIcons[ id[1] ] or info.spellIcons[ id[2] ]) or info.spellIcons[id]
+		if icon and icon.active then
+			P:UpdateCooldown(icon, 0, 1/0.85)
+		end
+		info.auras["isBlessingOfTheBronze"] = nil
 	end
-	info.auras["isBlessingOfTheBronze"] = nil
 end
 
 registeredEvents['SPELL_AURA_APPLIED'][381748] = function(info)
-	local id = majorMovementAbilities[info.class]
-	local icon = type(id) == "table" and (info.spellIcons[ id[1] ] or info.spellIcons[ id[2] ]) or info.spellIcons[id]
-	if icon and icon.active then
-		P:UpdateCooldown(icon, 0, 0.85)
+	if not info.auras["isBlessingOfTheBronze"] then
+		local id = majorMovementAbilities[info.class]
+		local icon = type(id) == "table" and (info.spellIcons[ id[1] ] or info.spellIcons[ id[2] ]) or info.spellIcons[id]
+		if icon and icon.active then
+			P:UpdateCooldown(icon, 0, 0.85)
+		end
+		info.auras["isBlessingOfTheBronze"] = true
 	end
-	info.auras["isBlessingOfTheBronze"] = true
 end
+
+registeredEvents['SPELL_AURA_APPLIED'][381748] = registeredEvents['SPELL_AURA_APPLIED'][381748]
 
 
 registeredEvents['SPELL_AURA_REMOVED'][375234] = function(info, srcGUID, spellID, destGUID)
@@ -2703,7 +2719,7 @@ registeredEvents['SPELL_HEAL'][82326] = ReduceHammerOfWrathCD
 registeredEvents['SPELL_DAMAGE'][31935] = function(info)
 	local talentRank = info.talentData[378279]
 	if talentRank then
-		local icon = info.spellIcons[86659]
+		local icon = info.spellIcons[86659] or info.spellIcons[228049]
 		if icon and icon.active then
 			P:UpdateCooldown(icon, 0.5 * talentRank)
 		end
@@ -2956,6 +2972,7 @@ local function ReduceVoidEruptionCD(destInfo, _,_,_,_,_, timestamp)
 		end
 	end
 end
+
 local function ReduceDesperatePrayerCD(destInfo, _,_, amount, overkill)
 	if destInfo.talentData[238100] then
 		local icon = destInfo.spellIcons[19236]
@@ -2963,7 +2980,7 @@ local function ReduceDesperatePrayerCD(destInfo, _,_, amount, overkill)
 			local maxHP = UnitHealthMax(destInfo.unit)
 			if maxHP > 0 then
 				local actualDamage = amount - (overkill or 0)
-				local reducedTime = actualDamage / maxHP * 33
+				local reducedTime = actualDamage / maxHP * 35
 				P:UpdateCooldown(icon, reducedTime)
 			end
 		end
@@ -5241,7 +5258,7 @@ function CD:UNIT_PET(unit)
 	end
 
 	local guid = UnitGUID(unit)
-	local info = E.Party.groupInfo[guid]
+	local info = groupInfo[guid]
 	if info and (info.class == "WARLOCK" or info.spec == 253) then
 		local petGUID = info.petGUID
 		if petGUID then

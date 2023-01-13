@@ -3,7 +3,7 @@ local L		= mod:GetLocalizedStrings()
 
 mod.statTypes = "normal,heroic,mythic,challenge,timewalker"
 
-mod:SetRevision("20220920232426")
+mod:SetRevision("20230107210947")
 mod:SetCreatureID(74366, 74475)--74366 Forgemaster Gog'duh, 74475 Magmolatus
 mod:SetEncounterID(1655)
 mod:SetMainBossID(74475)
@@ -18,8 +18,9 @@ mod:RegisterEventsInCombat(
 )
 
 local warnDancingFlames			= mod:NewTargetNoFilterAnnounce(149975, 3, nil, "Healer")
+local warnMoltenImpact			= mod:NewSpellAnnounce(150038, 3)
 
-local specWarnMagmaBarrage		= mod:NewSpecialWarningMove(150011, nil, nil, nil, 1, 8)
+local specWarnMagmaBarrage		= mod:NewSpecialWarningGTFO(150011, nil, nil, nil, 1, 8)
 local specWarnRoughSmash		= mod:NewSpecialWarningDodge(149941, "Melee", nil, nil, 4, 2)
 local specWarnRuination			= mod:NewSpecialWarningSwitch("ej8622", "-Healer", nil, nil, 1, 2)
 local specWarnCalamity			= mod:NewSpecialWarningSwitch("ej8626", "-Healer", nil, nil, 1, 2)
@@ -27,7 +28,6 @@ local specWarnFirestorm			= mod:NewSpecialWarningInterrupt(149997, "HasInterrupt
 local specWarnDancingFlames		= mod:NewSpecialWarningDispel(149975, "RemoveMagic", nil, nil, 1, 2)
 local specWarnMagmolatus		= mod:NewSpecialWarningSwitch("ej8621", nil, nil, 2, 1, 2)--Dps can turn this on too I suppose but 5 seconds after boss spawns they are switching to add anyways, so this is mainly for tank to pick it up
 local specWarnSlagSmash			= mod:NewSpecialWarningDodge(150023, "Melee", nil, nil, 4, 2)
-local specWarnMoltenImpact		= mod:NewSpecialWarningSpell(150038, nil, nil, nil, 2, 2)
 local specWarnWitheringFlames	= mod:NewSpecialWarningDispel(150032, "RemoveMagic", nil, nil, 1, 2)
 
 local timerMoltenImpactCD		= mod:NewNextTimer(21.5, 150038, nil, nil, nil, 1)
@@ -97,8 +97,7 @@ function mod:SPELL_CAST_START(args)
 		specWarnRoughSmash:Show()
 		specWarnRoughSmash:Play("justrun")
 	elseif spellId == 150038 then
-		specWarnMoltenImpact:Show()
-		specWarnMoltenImpact:Play("watchstep")
+		warnMoltenImpact:Show()
 		timerMoltenImpactCD:Start()
 	elseif spellId == 150023 then
 		specWarnSlagSmash:Show()
@@ -106,9 +105,9 @@ function mod:SPELL_CAST_START(args)
 	end
 end
 
-function mod:SPELL_PERIODIC_DAMAGE(_, _, _, _, destGUID, _, _, _, spellId)
+function mod:SPELL_PERIODIC_DAMAGE(_, _, _, _, destGUID, _, _, _, spellId, spellName)
 	if spellId == 15011 and destGUID == UnitGUID("player") and self:AntiSpam(2, 1) then--need to check spell ids again
-		specWarnMagmaBarrage:Show()
+		specWarnMagmaBarrage:Show(spellName)
 		specWarnMagmaBarrage:Play("watchfeet")
 	end
 end

@@ -123,8 +123,6 @@ end
 
 function P:IsEnabledSpell(id, spellType, key)
 	local db = key and E.profile.Party[key] or E.db
-	id = tostring(id)
-
 	if not db.spells[id] then
 		return nil
 	end
@@ -148,7 +146,7 @@ function P:UpdateEnabledSpells()
 			local t = v[i]
 			local id = t.spellID
 			local spellType = t.type
-			self.spell_enabled[id] = self:IsEnabledSpell(id, spellType)
+			self.spell_enabled[id] = self:IsEnabledSpell(tostring(id), spellType)
 		end
 	end
 end

@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod("HoVTrash", "DBM-Party-Legion", 4)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20221230020308")
+mod:SetRevision("20230110014321")
 --mod:SetModelID(47785)
 mod:SetZone(1477)
 
@@ -108,14 +108,13 @@ function mod:SPELL_AURA_REMOVED(args)
 end
 
 function mod:GOSSIP_SHOW()
-	local table = C_GossipInfo.GetOptions()
-	if table[1] and table[1].gossipOptionID then
-		local gossipOptionID = table[1].gossipOptionID
+	local gossipOptionID = self:GetGossipID()
+	if gossipOptionID then
 		DBM:Debug("GOSSIP_SHOW triggered with a gossip ID of: "..gossipOptionID)
 		if self.Options.AGSkovaldTrash and (gossipOptionID == 44755 or gossipOptionID == 44801 or gossipOptionID == 44802 or gossipOptionID == 44754) then -- Skovald Trash
-			C_GossipInfo.SelectOption(gossipOptionID)
+			self:SelectGossip(gossipOptionID)
 		elseif self.Options.AGStartOdyn and gossipOptionID == 44910 then -- Odyn
-			C_GossipInfo.SelectOption(gossipOptionID)
+			self:SelectGossip(gossipOptionID)
 		end
 	end
 end

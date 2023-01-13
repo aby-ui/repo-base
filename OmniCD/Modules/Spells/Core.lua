@@ -50,6 +50,9 @@ function E:ProcessSpellDB()
 					end
 					t.icon = t.icon or GetItemIcon(itemID)
 				else
+					if id == 2825 and self.userFaction ~= "Horde" then
+						t.icon = 132313
+					end
 					t.icon = t.icon or select(2, GetSpellTexture(self.iconFix[id] or id))
 				end
 

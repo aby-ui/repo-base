@@ -149,7 +149,7 @@ function addon:CreateFontOptions(font, title, order)
 		handler = font,
 		set = 'SetSetting',
 		get = 'GetSetting',
-		disabled = false,
+		disabled = function() return addon.db.profile.theme.currentTheme == 'default' end,
 		args = {
 			name = {
 				name = L['Font'],
@@ -176,7 +176,7 @@ function addon:CreateFontOptions(font, title, order)
 				name = L['Reset'],
 				type = 'execute',
 				order = 40,
-				disabled  = 'IsDefault',
+				disabled = function() return addon.db.profile.theme.currentTheme == 'default' end,
 				func = 'ResetSettings',
 			},
 		},

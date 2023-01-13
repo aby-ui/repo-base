@@ -793,7 +793,7 @@ L["STRING_OPTIONS_MENU_ATTRIBUTE_ENABLED_DESC"] = "Active shows the display name
 L["STRING_OPTIONS_MENU_ATTRIBUTE_ENCOUNTERTIMER"] = "Encounter Timer"
 L["STRING_OPTIONS_MENU_ATTRIBUTE_ENCOUNTERTIMER_DESC"] = "When enabled, a stopwatch is shown on the left side of the text."
 --[[Translation missing --]]
---[[ L["STRING_OPTIONS_MENU_ATTRIBUTE_FONT"] = ""--]] 
+L["STRING_OPTIONS_MENU_ATTRIBUTE_FONT"] = ""
 L["STRING_OPTIONS_MENU_ATTRIBUTE_FONT_DESC"] = "Select the text font for attribute text."
 L["STRING_OPTIONS_MENU_ATTRIBUTE_SHADOW_DESC"] = "Enable or disable the shadow on the text."
 L["STRING_OPTIONS_MENU_ATTRIBUTE_SIDE"] = "Attach to Top Side"
@@ -801,7 +801,7 @@ L["STRING_OPTIONS_MENU_ATTRIBUTE_SIDE_DESC"] = "Choose where the text is anchore
 L["STRING_OPTIONS_MENU_ATTRIBUTE_TEXTCOLOR"] = "Text Color"
 L["STRING_OPTIONS_MENU_ATTRIBUTE_TEXTCOLOR_DESC"] = "Change the attribute text color."
 --[[Translation missing --]]
---[[ L["STRING_OPTIONS_MENU_ATTRIBUTE_TEXTSIZE"] = ""--]] 
+L["STRING_OPTIONS_MENU_ATTRIBUTE_TEXTSIZE"] = ""
 L["STRING_OPTIONS_MENU_ATTRIBUTE_TEXTSIZE_DESC"] = "Adjust the size of attribute text."
 L["STRING_OPTIONS_MENU_ATTRIBUTESETTINGS_ANCHOR"] = "Settings:"
 L["STRING_OPTIONS_MENU_AUTOHIDE_DESC"] = "Hide buttons automatically when the mouse leaves the window and shows up when you back to interact within the window again."
@@ -1247,11 +1247,11 @@ L["STRING_OPTIONS_TOOLTIPS_BORDER_TEXTURE_DESC"] = "Modify the border texture fi
 L["STRING_OPTIONS_TOOLTIPS_FONTCOLOR"] = "Text Color"
 L["STRING_OPTIONS_TOOLTIPS_FONTCOLOR_DESC"] = "Change the color used on tooltip texts."
 --[[Translation missing --]]
---[[ L["STRING_OPTIONS_TOOLTIPS_FONTFACE"] = ""--]] 
+L["STRING_OPTIONS_TOOLTIPS_FONTFACE"] = ""
 L["STRING_OPTIONS_TOOLTIPS_FONTFACE_DESC"] = "Choose the font used on tooltip texts."
 L["STRING_OPTIONS_TOOLTIPS_FONTSHADOW_DESC"] = "Enable or disable the shadow in the text."
 --[[Translation missing --]]
---[[ L["STRING_OPTIONS_TOOLTIPS_FONTSIZE"] = ""--]] 
+L["STRING_OPTIONS_TOOLTIPS_FONTSIZE"] = ""
 L["STRING_OPTIONS_TOOLTIPS_FONTSIZE_DESC"] = "Increase or decrease the size of tooltip texts"
 L["STRING_OPTIONS_TOOLTIPS_IGNORESUBWALLPAPER"] = "Sub Menu Wallpaper"
 L["STRING_OPTIONS_TOOLTIPS_IGNORESUBWALLPAPER_DESC"] = "When enabled, some menus may use their own wallpaper on sub menus."
@@ -1609,14 +1609,14 @@ Use the arrows in the bottom right to navigate.]=]
 L["STRING_WELCOME_11"] = "if you change your mind, you can always modify again through options panel"
 L["STRING_WELCOME_12"] = "Choose how fast the window get updated, you may also enable animations and real time updates for Hps and Dps numbers."
 --[[Translation missing --]]
---[[ L["STRING_WELCOME_13"] = ""--]] 
+L["STRING_WELCOME_13"] = ""
 --[[Translation missing --]]
---[[ L["STRING_WELCOME_14"] = ""--]] 
+L["STRING_WELCOME_14"] = ""
 L["STRING_WELCOME_15"] = "Tooltip for the update speed in the welcome window."
 --[[Translation missing --]]
---[[ L["STRING_WELCOME_16"] = ""--]] 
+L["STRING_WELCOME_16"] = ""
 --[[Translation missing --]]
---[[ L["STRING_WELCOME_17"] = ""--]] 
+L["STRING_WELCOME_17"] = ""
 L["STRING_WELCOME_2"] = "if you change your mind, you can always modify again through options panel"
 L["STRING_WELCOME_26"] = "Using the Interface: Stretch"
 L["STRING_WELCOME_27"] = [=[The highlighted button is the Stretcher. |cFFFFFF00Click|r and |cFFFFFF00drag up!|r.
@@ -1652,28 +1652,28 @@ L["STRING_WELCOME_41"] = "Interface Entertainment Tweaks:"
 L["STRING_WELCOME_42"] = "Quick Appearance Settings"
 L["STRING_WELCOME_43"] = "Choose your prefered skin:"
 --[[Translation missing --]]
---[[ L["STRING_WELCOME_44"] = ""--]] 
+L["STRING_WELCOME_44"] = ""
 L["STRING_WELCOME_45"] = "For more customization options, check the options panel."
 --[[Translation missing --]]
---[[ L["STRING_WELCOME_46"] = ""--]] 
+L["STRING_WELCOME_46"] = ""
 L["STRING_WELCOME_5"] = "Effective Time: "
 --[[Translation missing --]]
---[[ L["STRING_WELCOME_57"] = ""--]] 
+L["STRING_WELCOME_57"] = ""
 L["STRING_WELCOME_58"] = [=[Predefined sets of appearance configurations.
 
 |cFFFFFF00Important|r: all settings can be modified later on the options panel.]=]
 --[[Translation missing --]]
---[[ L["STRING_WELCOME_59"] = ""--]] 
+L["STRING_WELCOME_59"] = ""
 L["STRING_WELCOME_6"] = "the timer of each raid member is put on hold if their activity is ceased and back again to count when resumed."
 --[[Translation missing --]]
---[[ L["STRING_WELCOME_60"] = ""--]] 
+L["STRING_WELCOME_60"] = ""
 --[[Translation missing --]]
---[[ L["STRING_WELCOME_61"] = ""--]] 
+L["STRING_WELCOME_61"] = ""
 --[[Translation missing --]]
---[[ L["STRING_WELCOME_62"] = ""--]] 
+L["STRING_WELCOME_62"] = ""
 L["STRING_WELCOME_63"] = "Update DPS/HPS on Real Time"
 --[[Translation missing --]]
---[[ L["STRING_WELCOME_64"] = ""--]] 
+L["STRING_WELCOME_64"] = ""
 L["STRING_WELCOME_65"] = "Press Right Button!"
 L["STRING_WELCOME_66"] = [=[Drag a window near other to create a group.
 
@@ -1693,11 +1693,11 @@ Examples are: threat meter, dps analysis, encounter summary, charts creation, an
 L["STRING_WELCOME_69"] = "Skip"
 L["STRING_WELCOME_7"] = "used for rankings, this method uses the elapsed combat time for measure the DPS and HPS of all raid members."
 --[[Translation missing --]]
---[[ L["STRING_WELCOME_70"] = ""--]] 
+L["STRING_WELCOME_70"] = ""
 --[[Translation missing --]]
---[[ L["STRING_WELCOME_71"] = ""--]] 
+L["STRING_WELCOME_71"] = ""
 --[[Translation missing --]]
---[[ L["STRING_WELCOME_72"] = ""--]] 
+L["STRING_WELCOME_72"] = ""
 L["STRING_WELCOME_73"] = "Select the Alphabet or Region:"
 L["STRING_WELCOME_74"] = "Latin Alphabet"
 L["STRING_WELCOME_75"] = "Cyrillic Alphabet"
@@ -1713,4 +1713,3 @@ L["STRING_WIPE_ERROR1"] = "a wipe already has been call."
 L["STRING_WIPE_ERROR2"] = "we aren't in a raid encounter."
 L["STRING_WIPE_ERROR3"] = "couldn't end the encounter."
 L["STRING_YES"] = "Yes"
-

@@ -235,7 +235,14 @@ L:SetOptionLocalization({
 -----------------------
 -- Kyrakka and Erkhart Stormvein --
 -----------------------
---L= DBM:GetModLocalization(2503)
+L= DBM:GetModLocalization(2503)
+
+L:SetMiscLocalization({
+	North	= "Toward North",
+	West	= "Toward West",
+	South	= "Toward South",
+	East	= "Toward East"
+})
 
 ---------
 --Trash--

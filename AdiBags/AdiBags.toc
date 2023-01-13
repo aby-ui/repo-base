@@ -22,9 +22,9 @@
 ## Title: AdiBags
 ## Notes: Adirelle's bag addon.
 ## Author: Adirelle
-## Version: v1.9.54
+## Version: v1.10.5
 ## SavedVariables: AdiBagsDB
-## X-Date: 2023-01-06T7:20:18Z
+## X-Date: 2023-01-12T6:53:18Z
 ## X-License: GPL v3
 ## OptionalDeps: LibStub, CallbackHandler-1.0, Ace3, LibSharedMedia-3.0, Scrap, BrainDead, SyLevel
 #@alpha@
@@ -33,9 +33,10 @@
 
 Localization.lua
 core\EventHandlers.lua
+core\Fonts.lua
 core\Constants.lua
 core\Utility.lua
-core\Fonts.lua
+core\Theme.lua
 core\Core.lua
 core\Hooks.lua
 core\Bags.lua
@@ -65,7 +66,9 @@ modules\TooltipInfo.lua
 modules\SectionVisibilityDropdown.lua
 modules\BankSwitcher.lua
 modules\ChangeHighlight.lua
+modules\Masque.lua
 
+core\ItemDatabase.lua
 core\DefaultFilters.lua
 
 #@debug@

@@ -112,8 +112,7 @@ L["Detach from raid frames and set position manually"] = "與團隊框架分離�
 L["Disable Popup"] = "不需要確認"
 L["Disable Reload UI confirmation when using Pixel Perfect borders"] = "使用像素完美邊框時，無須確認立即重新載入介面。"
 L["Disable to make the icons click through"] = "停用來讓滑鼠點擊可以穿透圖示"
---[[Translation missing --]]
-L["Disabled spells will not appear on your bars even if you have them selected here"] = "Disabled spells will not appear on your bars even if you have them selected here"
+L["Disabled spells will not appear on your bars even if you have them selected here"] = "就算在這裡選取，被停用的法術也不會出現在技能列上。"
 L["Display a glow animation around an icon when it is activated"] = "技能被使用時在圖示周圍顯示發光動畫效果"
 L["Display custom border around icons"] = "圖示周圍顯示自訂邊框"
 L["Display default border around icons"] = "圖示周圍顯示預設邊框"
@@ -146,14 +145,10 @@ L["Font"] = "文字"
 L["Font Outline"] = "文字外框"
 L["Fonts"] = "字體"
 L["Glow Icons"] = "圖示發光"
---[[Translation missing --]]
-L["Group member must have OmniCD to detect cooldown reduction by Glyphs."] = "Group member must have OmniCD to detect cooldown reduction by Glyphs."
---[[Translation missing --]]
-L["Group member must have OmniCD to detect cooldown reduction with a chance to proc and Soulbind Conduits."] = "Group member must have OmniCD to detect cooldown reduction with a chance to proc and Soulbind Conduits."
---[[Translation missing --]]
-L["Group member must have OmniCD to detect cooldown reduction with a chance to proc."] = "Group member must have OmniCD to detect cooldown reduction with a chance to proc."
---[[Translation missing --]]
-L["Group member must have OmniCD to detect Talents."] = "Group member must have OmniCD to detect Talents."
+L["Group member must have OmniCD to detect cooldown reduction by Glyphs."] = "隊友必須有 OmniCD 才能偵測到銘文減少的冷卻時間。"
+L["Group member must have OmniCD to detect cooldown reduction with a chance to proc and Soulbind Conduits."] = "隊友必須有 OmniCD 才能偵測到靈印和機率觸發的減少冷卻時間。"
+L["Group member must have OmniCD to detect cooldown reduction with a chance to proc."] = "隊友必須有 OmniCD 才能偵測到機率觸發的減少冷卻時間。"
+L["Group member must have OmniCD to detect Talents."] = "隊友必須有 OmniCD 才能偵測到天賦。"
 L["Group Padding"] = "隊伍間距"
 L["Group Size"] = "隊伍大小"
 L["Group Type"] = "隊伍類型"
@@ -194,8 +189,7 @@ L["Inactive"] = "未啟動"
 L["Inactive Icon Opacity"] = "非冷卻中圖示不透明度"
 L["INNER"] = "內部"
 L["Interrupt Bar"] = "斷法技能列"
---[[Translation missing --]]
-L["Interrupt spell types are automatically added to this bar."] = "Interrupt spell types are automatically added to this bar."
+L["Interrupt spell types are automatically added to this bar."] = "斷法類型會自動加入到此技能列。"
 L["Interrupted Spell Icon"] = "已斷法法術圖示"
 L["Interrupted Target Marker"] = "已斷法目標標記"
 L["Interrupts"] = "斷法"
@@ -292,12 +286,9 @@ L["Select the highest priority spell type to use as the start of the 2nd row"] =
 L["Select the highest priority spell type to use as the start of the 3rd row"] = "選擇第三排開頭、優先順序最高的法術類型"
 L["Select the icon layout"] = "選擇圖示版面配置"
 L["Select the spell types you want to display on this column."] = "選擇要在此行中顯示的法術類型。"
---[[Translation missing --]]
-L["Select the spells you want to move from the 'Raid CD' tab. The spell must be enabled from the 'Spells' tab first."] = "Select the spells you want to move from the 'Raid CD' tab. The spell must be enabled from the 'Spells' tab first."
---[[Translation missing --]]
-L["Select the spells you want to show on Raid Bar 1-8 instead of the default Unit Bar"] = "Select the spells you want to show on Raid Bar 1-8 instead of the default Unit Bar"
---[[Translation missing --]]
-L["Select the spells you want to track."] = "Select the spells you want to track."
+L["Select the spells you want to move from the 'Raid CD' tab. The spell must be enabled from the 'Spells' tab first."] = "在 '團隊冷卻' 標籤頁中選擇要移動的法術。必須先在 '法術' 標籤頁中啟用該法術。"
+L["Select the spells you want to show on Raid Bar 1-8 instead of the default Unit Bar"] = "選擇想要顯示在團隊技能列 1-8，而不是顯示在預設單位技能列的法術。"
+L["Select the spells you want to track."] = "選擇想要監控的法術。"
 L["Select the zone setting to use for this zone."] = "選擇此區域要使用的區域設定。"
 L["Select the zone you want to copy settings from."] = "選擇要複製哪個區域的設定。"
 L["Select your default party frame layout"] = "選擇預設的隊伍框架版面配置"

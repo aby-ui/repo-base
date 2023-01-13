@@ -83,7 +83,7 @@ function Details.options.InitializeOptionsWindow(instance)
         if (not instance:IsEnabled() or not instance:IsStarted()) then
             _detalhes.CriarInstancia (_, _, instance.meu_id)
         end
-        Details.options.SetCurrentInstance(instance)
+        Details.options.SetCurrentInstanceAndRefresh(instance)
         f.updateMicroFrames()
     end
 

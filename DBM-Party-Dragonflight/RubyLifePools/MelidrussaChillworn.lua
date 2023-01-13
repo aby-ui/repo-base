@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2488, "DBM-Party-Dragonflight", 7, 1202)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20221226072844")
+mod:SetRevision("20230108011611")
 mod:SetCreatureID(188252)
 mod:SetEncounterID(2609)
 --mod:SetUsedIcons(1, 2, 3)
@@ -34,6 +34,7 @@ local warnIceBulwark							= mod:NewSpellAnnounce(372988, 4)
 
 local specWarnPrimalChill						= mod:NewSpecialWarningStack(372682, nil, 8, nil, nil, 1, 6)
 local specWarnHailbombs							= mod:NewSpecialWarningDodge(396044, nil, nil, nil, 2, 2)
+local specWarnChillStorm						= mod:NewSpecialWarningMoveAway(372851, nil, nil, nil, 1, 2)
 local yellChillstorm							= mod:NewYell(372851)
 local yellChillstormFades						= mod:NewShortFadesYell(372851)
 local specWarnFrostOverload						= mod:NewSpecialWarningInterrupt(373680, "HasInterrupt", nil, nil, 1, 2, 4)
@@ -114,10 +115,13 @@ function mod:SPELL_AURA_APPLIED(args)
 	elseif spellId == 372988 then
 		warnIceBulwark:Show()
 	elseif spellId == 385518 then
-		warnChillstorm:Show(args.destName)
 		if args:IsPlayer() then
+			specWarnChillStorm:Show()
+			specWarnChillStorm:Play("runout")
 			yellChillstorm:Yell()
 			yellChillstormFades:Countdown(3.5, 2)--Debuff says 1sec but combat log shows 3.5 on M+ at least, not checked lower difficulties since harder to search on WCL
+		else
+			warnChillstorm:Show(args.destName)
 		end
 	end
 end

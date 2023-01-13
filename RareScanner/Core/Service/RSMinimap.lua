@@ -40,9 +40,9 @@ local RSUtils = private.ImportLib("RareScannerUtils")
 ---============================================================================
 
 local MINIMAP_BUTTON_NAME = "RareScannerMinimapIcon"
-local ENTITY_FRAME_LEVEL = 3
-local OVERLAY_FRAME_LEVEL = 2
-local GUIDE_FRAME_LEVEL = 4
+local ENTITY_FRAME_LEVEL = 1002
+local OVERLAY_FRAME_LEVEL = 1003
+local GUIDE_FRAME_LEVEL = 1004
 
 function RSMinimap.LoadMinimapButton()
 	local RareScannerMinimapLDB = LibStub("LibDataBroker-1.1"):NewDataObject("RareScannerLDB", {

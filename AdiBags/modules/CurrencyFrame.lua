@@ -59,7 +59,10 @@ function mod:OnInitialize()
 		self.moduleName,
 		{
 			profile = {
-				shown = { ['*'] = false }, --[GetCurrencyInfo(1191)] = true, }, not work
+				shown = {
+					['*'] = false,  --[GetCurrencyInfo(1191)] = true, --not work
+					Honor = true
+				},
 				hideZeroes = true,
 				text = addon:GetFontDefaults(NumberFontNormalLarge),
 				width = 4,

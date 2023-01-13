@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod("TheNokhudOffensiveTrash", "DBM-Party-Dragonflight", 3)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20221226070201")
+mod:SetRevision("20230109004131")
 --mod:SetModelID(47785)
 mod.isTrashMod = true
 
@@ -18,6 +18,7 @@ mod:RegisterEvents(
 --local warnConcentrateAnima					= mod:NewTargetNoFilterAnnounce(339525, 3)
 local warnTotemicOverload					= mod:NewCastAnnounce(387145, 4)
 local warnChantoftheDead					= mod:NewCastAnnounce(387614, 3)
+local warnTempest							= mod:NewCastAnnounce(373395, 4)
 local warnBloodcurdlingShout				= mod:NewCastAnnounce(373395, 3)
 
 local specWarnShatterSoul					= mod:NewSpecialWarningMoveTo(395035, nil, nil, nil, 1, 2)
@@ -51,9 +52,13 @@ function mod:SPELL_CAST_START(args)
 	local spellId = args.spellId
 	if spellId == 387145 and self:AntiSpam(5, 4) then
 		warnTotemicOverload:Show()
-	elseif spellId == 386024 and self:CheckInterruptFilter(args.sourceGUID, false, true) then
-		specWarnTempest:Show(args.sourceName)
-		specWarnTempest:Play("kickcast")
+	elseif spellId == 386024 then
+		if self.Options.SpecWarn386024interrupt and self:CheckInterruptFilter(args.sourceGUID, false, true) then
+			specWarnTempest:Show(args.sourceName)
+			specWarnTempest:Play("kickcast")
+		elseif self:AntiSpam(3, 5) then
+			warnTempest:Show()
+		end
 	elseif spellId == 387411 and self:CheckInterruptFilter(args.sourceGUID, false, true) then
 		specWarnDeathBoltVolley:Show(args.sourceName)
 		specWarnDeathBoltVolley:Play("kickcast")

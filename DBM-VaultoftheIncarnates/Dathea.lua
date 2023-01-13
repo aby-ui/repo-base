@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2502, "DBM-VaultoftheIncarnates", nil, 1200)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20221228062737")
+mod:SetRevision("20230113011759")
 mod:SetCreatureID(189813)
 mod:SetEncounterID(2635)
 mod:SetUsedIcons(8, 7, 6, 5, 4)
@@ -32,7 +32,7 @@ mod:RegisterEventsInCombat(
  or ability.id = 391600 and type = "cast" and source.id = 189813
 --]]
 --Dathea, Ascended
-mod:AddTimerLine(DBM:EJ_GetSectionInfo(25340))
+mod:AddTimerLine(DBM_COMMON_L.BOSS)
 local warnRagingBurst							= mod:NewCountAnnounce(388302, 3, nil, nil, 86189)
 local warnZephyrSlam							= mod:NewStackAnnounce(375580, 2, nil, "Tank|Healer")
 
@@ -57,9 +57,9 @@ mod:AddRangeFrameOption(5, 391686)
 --mod:AddInfoFrameOption(391686, true)
 --Volatile Infuser
 mod:AddTimerLine(DBM:EJ_GetSectionInfo(25903))
-local warnBlowback								= mod:NewCastAnnounce(387627, 4)--Fallback warning, should know it's being cast even if not in distance of knockback, so you don't walk into it
+local warnBlowback								= mod:NewCastAnnounce(395501, 4)--Fallback warning, should know it's being cast even if not in distance of knockback, so you don't walk into it
 
-local specWarnBlowback							= mod:NewSpecialWarningSpell(387627, nil, nil, nil, 2, 2)--Distance based warning, Ie in range of knockback
+local specWarnBlowback							= mod:NewSpecialWarningSpell(395501, nil, nil, nil, 2, 2)--Distance based warning, Ie in range of knockback
 local specWarnDivertedEssence					= mod:NewSpecialWarningInterruptCount(387943, "HasInterrupt", nil, nil, 1, 2)
 local specWarnAerialSlash						= mod:NewSpecialWarningDefensive(385812, nil, nil, nil, 1, 2)
 

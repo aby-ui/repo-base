@@ -49,7 +49,7 @@ local SchoolParser = {
 
 local function retrieveAlternatePowerName(self, key)
 	if key == ALTERNATE_POWER_INDEX then
-		return select(10, UnitAlternatePowerInfo("player"))
+		return UnitPowerType("player")
 	end
 end
 

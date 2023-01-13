@@ -18,21 +18,21 @@
 
 ## SavedVariables: DecursiveDB
 
-## Version: 2.7.8.12-2-g8a095be
+## Version: 2.7.8.13-3-ga7591ae
 ## Author: John Wellesz
 
 ## X-License: GNU GPL V3
 
-## OptionalDeps: Ace3, LibQTip-1.0, LibDataBroker-1.1, LibDBIcon-1.0, !BugGrabber
+## OptionalDeps: Ace3, LibQTip-1.0, LibDataBroker-1.1, LibDBIcon-1.0, !BugGrabber, LibDualSpec-1.0
 
 ## LoadManagers: AddonLoader
-## X-LoadOn-Class: Mage, Priest, Paladin, Druid, Hunter, Warlock, Shaman, Monk, Deathknight
+## X-LoadOn-Class: Mage, Priest, Paladin, Druid, Hunter, Warlock, Shaman, Monk, Deathknight, Evoker
 ## X-LoadOn-Slash: /decursive, /dcr
 
 
-## X-Embeds: Ace3, LibQTip-1.0, LibDataBroker-1.1, LibDBIcon-1.0, !BugGrabber
+## X-Embeds: Ace3, LibQTip-1.0, LibDataBroker-1.1, LibDBIcon-1.0, !BugGrabber, LibDualSpec-1.0
 
-## X-ReleaseDate: "2022-12-13T11:47:22Z"
+## X-ReleaseDate: "2023-01-10T12:00:52Z"
 ## X-Category: Combat
 ## X-Website: http://www.2072productions.com/to/decursive.php
 ## X-Credits: Sylvin (Full french translation), Peter Sun, Ananhaid (ZhTW and zhCN translation), Fenlis, Chkid (koKR translation), Hemathio, Swix, Athariel, StingerSoft (Russian Translation), Freydis88, Floyddotnet, Vilogity, Dessa, Farook (German translation)

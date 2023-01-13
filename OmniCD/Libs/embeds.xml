@@ -2,4 +2,22 @@
 ..\FrameXML\UI.xsd">
 	<Include file="Ace3\AceGUI-3.0\AceGUI-3.0-OmniCD.xml"/>
 	<Include file="Ace3\AceConfig-3.0\AceConfigDialog-3.0\AceConfigDialog-3.0.lua"/>
+	<!--
+	<Script file="Ace3\LibStub\LibStub.lua"/>
+	<Include file="Ace3\CallbackHandler-1.0\CallbackHandler-1.0.xml"/>
+	<Include file="Ace3\AceAddon-3.0\AceAddon-3.0.xml"/>
+	<!-Include file="Ace3\AceEvent-3.0\AceEvent-3.0.xml"/->
+	<Include file="Ace3\AceHook-3.0\AceHook-3.0.xml"/>
+	<Include file="Ace3\AceDB-3.0\AceDB-3.0.xml"/>
+	<Include file="Ace3\AceDBOptions-3.0\AceDBOptions-3.0.xml"/>
+	<Include file="Ace3\AceLocale-3.0\AceLocale-3.0.xml" />
+	<Include file="Ace3\AceGUI-3.0\AceGUI-3.0.xml"/>
+	<Include file="Ace3\AceConfig-3.0\AceConfig-3.0.xml"/>
+	<!-Include file="Ace3\AceComm-3.0\AceComm-3.0.xml"/->
+	<Include file="Ace3\AceSerializer-3.0\AceSerializer-3.0.xml"/>
+	<Include file="LibSharedMedia-3.0\lib.xml"/>
+	<Include file="LibDeflate\lib.xml"/>
+	<Include file="UTF8\utf8.xml"/>
+	<Script file="LibDualSpec-1.0\LibDualSpec-1.0.lua"/>
+	-->
 </Ui>

@@ -470,7 +470,7 @@ function P:ApplyExSettings(key)
 			else
 				iconicon:SetVertexColor(1, 1, 1)
 			end
-			iconicon:SetDesaturated(desaturateActive and isActiveIcon and not isHighlighted and (not charges or charges == 0));
+			iconicon:SetDesaturated(desaturateActive and isActiveIcon and not isHighlighted and (not charges or charges == 0))
 		end
 
 

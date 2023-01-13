@@ -24,6 +24,7 @@ C.Party.arena = {
 	["general"] = {
 		["showAnchor"] = false,
 		["showPlayer"] = false,
+		["showPlayerEx"] = true,
 		["showTooltip"] = false,
 		["showRange"] = false,
 	},

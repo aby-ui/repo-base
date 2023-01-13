@@ -50,13 +50,16 @@ end
 
 local RemoveHighlight_OnTimerEnd
 RemoveHighlight_OnTimerEnd = function(icon)
-	local info = P.groupInfo[icon.guid]
-	if info and icon.isHighlighted then
-		local duration = P:GetBuffDuration(info.unit, icon.buff)
-		if not duration then
-			P:RemoveHighlight(icon)
-		elseif duration > 0 then
-			icon.isHighlighted = E.TimerAfter(duration + 0.1, RemoveHighlight_OnTimerEnd, icon)
+	local guid = icon.guid
+	if guid then
+		local info = P.groupInfo[guid]
+		if info and icon.isHighlighted then
+			local duration = P:GetBuffDuration(info.unit, icon.buff)
+			if not duration then
+				P:RemoveHighlight(icon)
+			elseif duration > 0 then
+				icon.isHighlighted = E.TimerAfter(duration + 0.1, RemoveHighlight_OnTimerEnd, icon)
+			end
 		end
 	end
 end
@@ -184,5 +187,3 @@ end
 function P:SetGlow(icon)
 	icon.AnimFrame.animIn:Play()
 end
-
-E.GetOverlayGlow = GetOverlayGlow

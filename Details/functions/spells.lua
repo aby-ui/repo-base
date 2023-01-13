@@ -125,9 +125,7 @@ do
 
 			--Enhancement Shaman:
 			[333974] = 263, --Fire Nova
-			[117014] = 263, --Elemental Blast
 			[51533] = 263, --Feral Spirit
-			[378270] = 263, --Deeply Rooted Elements
 			[384352] = 263, --Doom Winds
 			[197214] = 263, --Sundering
 			[114051] = 263, --Ascendance

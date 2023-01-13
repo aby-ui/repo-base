@@ -1971,16 +1971,25 @@ function detailsFramework:CreateScaleBar(frame, config) --~scale
 end
 
 local no_options = {}
---[=[
-	options available to panel_options:
-	NoScripts = false, --if true, won't set OnMouseDown and OnMouseUp (won't be movable)
-	NoTUISpecialFrame = false, --if true, won't add the frame to 'UISpecialFrames'
-	DontRightClickClose = false, --if true, won't make the frame close when clicked with the right mouse button
-	UseScaleBar = false, --if true, will create a scale bar in the top left corner (require a table on 'db' to save the scale)
-	UseStatusBar = false, --if true, creates a status bar at the bottom of the frame (frame.StatusBar)
-	NoCloseButton = false, --if true, won't show the close button
-	NoTitleBar = false, --if true, don't create the title bar
-]=]
+
+---create a simple panel with a title bar, a close button and a background
+---already has onmousedown and onmouseup scripts to make it movable
+---the panelOptions table can be used to set some options:
+---NoScripts = false, --if true, won't set OnMouseDown and OnMouseUp (won't be movable)
+---NoTUISpecialFrame = false, --if true, won't add the frame to 'UISpecialFrames'
+---DontRightClickClose = false, --if true, won't make the frame close when clicked with the right mouse button
+---UseScaleBar = false, --if true, will create a scale bar in the top left corner (require a table on 'db' to save the scale)
+---UseStatusBar = false, --if true, creates a status bar at the bottom of the frame (frame.StatusBar)
+---NoCloseButton = false, --if true, won't show the close button
+---NoTitleBar = false, --if true, don't create the title bar
+---@param parent table
+---@param width number|nil
+---@param height number|nil
+---@param title string|nil
+---@param frameName string|nil
+---@param panelOptions table|nil
+---@param savedVariableTable table|nil
+---@return table
 function detailsFramework:CreateSimplePanel(parent, width, height, title, frameName, panelOptions, savedVariableTable)
 	if (savedVariableTable and frameName and not savedVariableTable[frameName]) then
 		savedVariableTable[frameName] = {
@@ -4474,8 +4483,11 @@ end
 
 ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 -- ~standard backdrop
-
-function detailsFramework:ApplyStandardBackdrop(frame, solidColor, alphaScale)
+---this is the standard backdrop for detailsframework, it's a dark-ish color semi transparent with a thin opaque black border
+---@param frame table
+---@param bUseSolidColor any
+---@param alphaScale number
+function detailsFramework:ApplyStandardBackdrop(frame, bUseSolidColor, alphaScale)
 	alphaScale = alphaScale or 0.95
 
 	if (not frame.SetBackdrop)then
@@ -4485,7 +4497,7 @@ function detailsFramework:ApplyStandardBackdrop(frame, solidColor, alphaScale)
 
 	local red, green, blue, alpha = detailsFramework:GetDefaultBackdropColor()
 
-	if (solidColor) then
+	if (bUseSolidColor) then
 		local colorDeviation = 0.05
 		frame:SetBackdrop({edgeFile = [[Interface\Buttons\WHITE8X8]], edgeSize = 1, bgFile = [[Interface\Buttons\WHITE8X8]], tileSize = 32, tile = true})
 		frame:SetBackdropColor(red, green, blue, 0.872)

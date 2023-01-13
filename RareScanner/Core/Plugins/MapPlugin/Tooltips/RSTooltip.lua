@@ -52,6 +52,7 @@ end
 function cellPrototype:SetupCell(cell, args)
 	local parentPin, POI, groupTooltip = unpack(args)
 	self.pin = pinFramePool:Acquire()
+	self.pin.dataProvider = parentPin.dataProvider
 	self.pin:SetParent(self)
 	self.pin:SetAllPoints(self)
 	function self.pin:GetMap()
@@ -74,9 +75,8 @@ function cellPrototype:SetupCell(cell, args)
 	end)
 	self.pin.POI = POI
 	self.pin.Texture:SetTexture(POI.Texture)
-	--self.pin.Texture:SetScale(RSConfigDB.GetIconsWorldMapScale() - 0.3)
-	-- So far leave the scale static, lets see what people think
 	self.pin.Texture:SetScale(0.7)
+	--MapPinHighlight_CheckHighlightPin(self.pin:GetHighlightType(), self.pin, self.pin.Texture, AREAPOI_HIGHLIGHT_PARAMS);
 	self.pin:Show()
 	return self.pin:GetWidth(), self.pin:GetHeight()
 end

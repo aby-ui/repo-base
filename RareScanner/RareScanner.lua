@@ -358,7 +358,7 @@ function scanner_button:DetectedNewVignette(self, vignetteInfo, isNavigating)
 		return
 	end
 	
-	RSLogger:PrintDebugMessage(string.format("Vignette ATLAS [%s]", vignetteInfo.atlasName))
+	--RSLogger:PrintDebugMessage(string.format("Vignette ATLAS [%s]", vignetteInfo.atlasName))
 		
 	-- Overrides name if Torghast vignette
 	if (vignetteInfo.type and vignetteInfo.type == Enum.VignetteType.Torghast) then
@@ -386,6 +386,11 @@ function scanner_button:DetectedNewVignette(self, vignetteInfo, isNavigating)
 		vignetteInfo.atlasName = RSConstants.CONTAINER_VIGNETTE
 		entityID = containerID
 		vignetteInfo.preEvent = true
+	end
+	
+	-- Check if container with NPC vignette
+	if (RSConstants.CONTAINER_WITH_NPC_VIGNETTE[entityID]) then
+		vignetteInfo.atlasName = RSConstants.CONTAINER_VIGNETTE
 	end
 
 	-- Check it it is an entity that use a vignette but it isn't a rare, event or treasure

@@ -19,11 +19,12 @@ function P:SetIconLayout(frame, sortOrder)
 		sort(icons, sortPriority)
 	end
 
-	local db_prio = E.db.priority;
+	local db_prio = E.db.priority
 	local count, rows, numActive, lastActiveIndex = 0, 1, 1
 	for i = 1, frame.numIcons do
 		local icon = icons[i]
 		icon:Hide()
+
 
 		if displayInactive or icon.active then
 			icon:ClearAllPoints()
@@ -158,7 +159,7 @@ function P:SetOpacity(icon)
 			icon.icon:SetVertexColor(1, 1, 1)
 		end
 		local charges = icon.maxcharges and tonumber(icon.count:GetText())
-		icon.icon:SetDesaturated(E.db.icons.desaturateActive and icon.active and not icon.isHighlighted and (not charges or charges == 0));
+		icon.icon:SetDesaturated(E.db.icons.desaturateActive and icon.active and not icon.isHighlighted and (not charges or charges == 0))
 	end
 end
 

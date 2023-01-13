@@ -131,13 +131,18 @@ L= DBM:GetModLocalization(1487)
 -----------------------
 L= DBM:GetModLocalization(1488)
 
+L:SetMiscLocalization({
+	SkovaldRP		= "神御之王斯寇瓦德"
+})
+
 -----------------------
 -- Odyn --
 -----------------------
 L= DBM:GetModLocalization(1489)
 
 L:SetMiscLocalization({
-	tempestModeMessage		=	"不是耀眼風暴循環: %s。8秒後重新檢查。"
+	tempestModeMessage		="不是耀眼風暴循環: %s。8秒後重新檢查。",
+	OdynRP					= "了不起！"
 })
 
 -----------------------
@@ -147,6 +152,11 @@ L = DBM:GetModLocalization("HoVTrash")
 
 L:SetGeneralLocalization({
 	name =	"英靈殿小怪"
+})
+
+L:SetOptionLocalization({
+	AGSkovaldTrash	= "當與斯寇瓦德之前的四王互動時，自動選擇對話開始戰鬥。",
+	AGStartOdyn		= "當與歐丁互動時自動選擇對話開始戰鬥"
 })
 
 -----------------------
@@ -240,6 +250,10 @@ L= DBM:GetModLocalization(1719)
 -----------------------
 L= DBM:GetModLocalization(1720)
 
+L:SetMiscLocalization({
+	MelRP		= "大博學者，你一定要先離開嗎？?"
+})
+
 -----------------------
 --Court of Stars Trash
 -----------------------
@@ -250,13 +264,18 @@ L:SetGeneralLocalization({
 })
 
 L:SetOptionLocalization({
-	SpyHelper	= "幫忙辨識間諜"
+	AGBoat			= "當與燈籠互動時，自動選擇對話以召喚小舟。",
+	AGDisguise		= "當與 黎利斯．路納斯特 互動時，自動選擇對話以啟用偽裝。",
+	SpyHelper		= "當與 長舌造謠者 NPC互動時，通過自動掃描對話來幫助識別間諜，並顯示在資訊框架上 (也與其他 DBM/BW 的使用者同步)",
+	SpyHelperClose	= "在 0.3 秒後自動關閉對話視窗 (延遲允許其他mod或WA有時間掃描對話)",
+	SendToChat2		= "同時也發送提示到聊天 (需要上述選項啟用)"
 })
 
 L:SetMiscLocalization({
 	Found			= "喂喂，",
 	--Add translationss, but keep english termss for cross language groups since these post to chat
 	--Format "localized / english"
+	CluesFound	= "找到的線索: %d/5",
 	Gloves		= "手套 / gloves",
 	NoGloves	= "沒有手套 / no gloves",
 	Cape		= "斗篷 / cape",
@@ -270,7 +289,9 @@ L:SetMiscLocalization({
 	Potions		= "藥水瓶 / potions",
 	NoPotions	= "無藥水瓶 / no potions",
 	Book		= "書本 / book",
-	Pouch		= "腰袋 / pouch"
+	Pouch		= "腰袋 / pouch",
+
+	SpyFound 	= "間諜已經被 %s 找到"
 })
 
 -----------------------

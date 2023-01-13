@@ -307,28 +307,23 @@ function addon:SetupDefaultFilters()
 					splitBySubclass = { false },
 					mergeGems = true,
 					mergeGlyphs = true,
+					splitExpansion = false,
 				}
 			})
 		end
 
 		function itemCat:GetOptions()
-			local values = {}
-			if addon.isRetail then
-				values = {
-					[TRADE_GOODS] = TRADE_GOODS,
-					[CONSUMMABLE] = CONSUMMABLE,
-					[MISCELLANEOUS] = MISCELLANEOUS,
-					[GEM] = GEM,
-					[GLYPH] = GLYPH,
-					[RECIPE] = RECIPE,
-				}
-			else
-				values = {
-					[TRADE_GOODS] = TRADE_GOODS,
-					[CONSUMMABLE] = CONSUMMABLE,
-					[MISCELLANEOUS] = MISCELLANEOUS,
-					[RECIPE] = RECIPE,
-				}
+			local values = {
+				[TRADE_GOODS] = TRADE_GOODS,
+				[CONSUMMABLE] = CONSUMMABLE,
+				[MISCELLANEOUS] = MISCELLANEOUS,
+				[RECIPE] = RECIPE,
+			}
+			if addon.isBCC then
+				values[GEM] = GEM
+			elseif not addon.isClassic then
+				values[GEM] = GEM
+				values[GLYPH] = GLYPH
 			end
 
 			return {
@@ -340,18 +335,25 @@ function addon:SetupDefaultFilters()
 					values = values
 				},
 				mergeGems = {
-					name = L['Gems are trade goods'],
-					desc = L['Consider gems as a subcategory of trade goods'],
+					name = L['Gems are trade/crafting goods'],
+					desc = L['Consider gems as a subcategory of trade/crafting goods'],
 					type = 'toggle',
 					width = 'double',
 					order = 20,
 				},
 				mergeGlyphs = {
-					name = L['Glyphs are trade goods'],
-					desc = L['Consider glyphs as a subcategory of trade goods'],
+					name = L['Glyphs are trade/crafting goods'],
+					desc = L['Consider glyphs as a subcategory of trade/crafting goods'],
 					type = 'toggle',
 					width = 'double',
 					order = 30,
+				},
+				splitExpansion = {
+					name = L['Split trade/crafting goods by expansion'],
+					desc = L['Split trade/crafting goods by expansion'],
+					type = 'toggle',
+					width = 'double',
+					order = 40,
 				},
 			}, addon:GetOptionHandler(self, true)
 		end
@@ -363,13 +365,17 @@ function addon:SetupDefaultFilters()
 			elseif class == GLYPH and self.db.profile.mergeGlyphs then
 				class, subclass = TRADE_GOODS, class
 			end
+
+			--TODO: Implement an option to override `subclass` with professions from our `addon.TRADESKILL_MAP`?
+			local reagentData = addon.ItemDatabase:ReagentData(slotData)
 			if self.db.profile.splitBySubclass[class] then
-				return subclass, class
+				return (self.db.profile.splitExpansion and reagentData and subclass..": "..reagentData.expacName)
+				or subclass, class
 			else
-				return class
+				return (self.db.profile.splitExpansion and reagentData and class..": "..reagentData.expacName)
+				or class
 			end
 		end
 
 	end
-
 end

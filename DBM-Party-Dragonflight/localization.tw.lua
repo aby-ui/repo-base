@@ -103,6 +103,10 @@ L:SetGeneralLocalization({
 	name =	"諾庫德進攻地小怪"
 })
 
+L:SetMiscLocalization({
+	Soul = "靈魂"
+})
+
 -----------------------
 -- <<<Neltharus >>> --
 -----------------------
@@ -146,17 +150,25 @@ L:SetGeneralLocalization({
 -----------------------
 -- Vexamus --
 -----------------------
---L= DBM:GetModLocalization(9999)
+L= DBM:GetModLocalization(2509)
+
+L:SetMiscLocalization({
+	VexRP		= "好，開始吧。很久很久以前"
+})
 
 -----------------------
--- Accidental Amalgamation --
+-- Overgrown Ancient --
 -----------------------
---L= DBM:GetModLocalization(9999)
+L= DBM:GetModLocalization(2512)
+
+L:SetMiscLocalization({
+	TreeRP	= "生命魔法太多了！你在做什麼？"
+})
 
 -----------------------
--- Headmaster --
+-- Echo of Doragosa --
 -----------------------
---L= DBM:GetModLocalization(9999)
+--L= DBM:GetModLocalization(2514)
 
 ---------
 --Trash--
@@ -178,17 +190,17 @@ L:SetGeneralLocalization({
 -----------------------
 -- Talash Greywing --
 -----------------------
---L= DBM:GetModLocalization(9999)
+--L= DBM:GetModLocalization(2483)
 
 -----------------------
 -- Umbrelskul --
 -----------------------
---L= DBM:GetModLocalization(9999)
+--L= DBM:GetModLocalization(2508)
 
 -----------------------
 -- Azureblade --
 -----------------------
---L= DBM:GetModLocalization(9999)
+--L= DBM:GetModLocalization(2505)
 
 ---------
 --Trash--
@@ -197,6 +209,10 @@ L = DBM:GetModLocalization("TheAzurevaultTrash")
 
 L:SetGeneralLocalization({
 	name =	"蒼藍密庫小怪"
+})
+
+L:SetOptionLocalization({
+	AGBook			= "與位移之書互動時自動選擇對話"
 })
 
 -----------------------
@@ -215,7 +231,14 @@ L:SetGeneralLocalization({
 -----------------------
 -- Kyrakka and Erkhart Stormvein --
 -----------------------
---L= DBM:GetModLocalization(2503)
+L= DBM:GetModLocalization(2503)
+
+L:SetMiscLocalization({
+	North	= "往北吹",
+	West	= "往西吹",
+	South	= "往南吹",
+	East	= "往東吹"
+})
 
 ---------
 --Trash--
@@ -232,22 +255,22 @@ L:SetGeneralLocalization({
 -----------------------
 -- Watcher Irideus --
 -----------------------
---L= DBM:GetModLocalization(9999)
+--L= DBM:GetModLocalization(2504)
 
 -----------------------
 -- Gulping Goliath --
 -----------------------
---L= DBM:GetModLocalization(9999)
+--L= DBM:GetModLocalization(2507)
 
 -----------------------
 -- Khajin the Unyielding --
 -----------------------
---L= DBM:GetModLocalization(9999)
+--L= DBM:GetModLocalization(2510)
 
 -----------------------
 -- Primal Tsunami --
 -----------------------
---L= DBM:GetModLocalization(9999)
+--L= DBM:GetModLocalization(2511)
 
 ---------
 --Trash--

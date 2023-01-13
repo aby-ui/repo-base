@@ -410,6 +410,13 @@ function P:UpdateUnitBar(guid, isUpdateBarsOrGRU)
 	frame.anchor.text:SetText(index)
 
 	frame:UnregisterAllEvents()
+
+	if info.isAdminObsForMDI then
+		frame.numIcons = 0
+		self:RemoveUnusedIcons(frame, 1)
+		return
+	end
+
 	if not E.preCata and notUser then
 		frame:RegisterUnitEvent('PLAYER_SPECIALIZATION_CHANGED', unit)
 	end
@@ -429,13 +436,6 @@ function P:UpdateUnitBar(guid, isUpdateBarsOrGRU)
 		frame:RegisterUnitEvent('UNIT_SPELLCAST_SUCCEEDED', unit, UNIT_TO_PET[unit])
 	end
 	frame:RegisterUnitEvent('UNIT_CONNECTION', unit)
-
-
-	if info.isAdminObsForMDI then
-		frame.numIcons = 0
-		self:RemoveUnusedIcons(frame, 1)
-		return
-	end
 
 	local isInspectedUnit = info.spec
 	local lvl = info.level
@@ -610,6 +610,13 @@ function P:UpdateUnitBar(guid, isUpdateBarsOrGRU)
 										end
 									end
 								end
+
+
+								if E.majorMovementAbilitiesByIDs[spellID] then
+									if self:GetBuffDuration(unit, 381748) then
+										info.auras["isBlessingOfTheBronze"] = true
+									end
+								end
 							elseif i == 5 then
 								local covData = E.covenant_cdmod_conduits[spellID]
 								if covData and info.talentData[ covData[1] ] then
@@ -715,7 +722,7 @@ function P:UpdateUnitBar(guid, isUpdateBarsOrGRU)
 
 						info.spellIcons[spellID] = icon
 
-						if i == 2 and race ~= 37 and race ~= 70 then
+						if i == 2 and spellID ~= 312916 and spellID ~= 368970 and spellID ~= 357214 then
 							break
 						end
 					end

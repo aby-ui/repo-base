@@ -124,7 +124,7 @@ E.STR = {
 E.HEX_C = {
 
 
-	[1]			= "|cff99ffcd",
+	[1]			= "|cff99cdff",
 	[2]			= "|cff0291b0",
 	[5]			= "|cff7bbb4e",
 	[11]			= "|cff99cdff",

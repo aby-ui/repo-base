@@ -347,6 +347,12 @@ local QuestExceptions = {
   [64522] = "Weekly", -- Stolen Korthian Supplies
 
   -- DF
+  -- Aiding the Accord
+  [70750] = "Weekly", -- Aiding the Accord
+  [72068] = "Weekly", -- Aiding the Accord: A Feast For All
+  [72373] = "Weekly", -- Aiding the Accord: The Hunt is On
+  [72374] = "Weekly", -- Aiding the Accord: Dragonbane Keep
+  [72375] = "Weekly", -- Aiding the Accord: The Isles Call
   -- Fishing Weeklies
   [70199] = "Weekly", -- Catch and Release: Scalebelly Mackerel
   [70200] = "Weekly", -- Catch and Release: Thousandbite Piranha
@@ -416,6 +422,10 @@ local QuestExceptions = {
   [72428] = "Weekly", -- Hornswog Hoarders
   [66938] = "Weekly", -- Mammoth Marrow
   [70572] = "Weekly", -- The Cold Does Bother Them, Actually
+  [66941] = "Weekly", -- Tremendous Tools
+  [66935] = "Weekly", -- Crystal Quill Pens
+  [70619] = "Weekly", -- A Study of Leather
+  [70614] = "Weekly", -- Bubble Craze
   -- Primalist Invasions
   [70723] = "Weekly", -- Shattering the Earth Primalists
   [70752] = "Weekly", -- Vaporizing the Water Primalists
@@ -449,12 +459,12 @@ local QuestExceptions = {
   -- [62632] = "Weekly", -- A Burning Path Through Time - TBC Timewalking
   -- [62633] = "Weekly", -- A Frozen Path Through Time - WLK Timewalking
   -- [62634] = "Weekly", -- A Shattered Path Through Time - CTM Timewalking
-  -- [62635] = "Weekly", -- A Shattered Path Through Time - MOP Timewalking
-  -- [62636] = "Weekly", -- A Savage Path Through Time - WOD Timewalking
+  [72725] = "Weekly", -- A Shrouded Path Through Time - MOP Timewalking
+  [72724] = "Weekly", -- A Savage Path Through Time - WOD Timewalking
   [72723] = "Weekly", -- A Call to Battle - Battlegrounds
   [72722] = "Weekly", -- Emissary of War - Mythic Dungeons
   -- [62639] = "AccountWeekly", -- The Very Best - PvP Pet Battles
-  -- [62640] = "Weekly", -- The Arena Calls - Arena Skirmishes
+  [72720] = "Weekly", -- The Arena Calls - Arena Skirmishes
 }
 SI.QuestExceptions = QuestExceptions
 

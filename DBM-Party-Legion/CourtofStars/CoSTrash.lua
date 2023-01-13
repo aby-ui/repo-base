@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod("CoSTrash", "DBM-Party-Legion", 7)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20230101182735")
+mod:SetRevision("20230110014321")
 --mod:SetModelID(47785)
 mod:SetOOCBWComms()
 mod:SetMinSyncRevision(20221228000000)
@@ -218,14 +218,13 @@ do
 	end
 
 	function mod:GOSSIP_SHOW()
-		local table = C_GossipInfo.GetOptions()
-		if table[1] and table[1].gossipOptionID then
-			local gossipOptionID = table[1].gossipOptionID
+		local gossipOptionID = self:GetGossipID()
+		if gossipOptionID then
 			DBM:Debug("GOSSIP_SHOW triggered with a gossip ID of: "..gossipOptionID)
 			if self.Options.AGBoat and gossipOptionID == 45624 then -- Boat
-				C_GossipInfo.SelectOption(gossipOptionID)
+				self:SelectGossip(gossipOptionID)
 			elseif self.Options.AGDisguise and gossipOptionID == 45656 then -- Disguise
-				C_GossipInfo.SelectOption(gossipOptionID)
+				self:SelectGossip(gossipOptionID)
 			elseif clueIds[gossipOptionID] then -- SpyHelper
 				if not self.Options.SpyHelper then return end
 				local clue = clueIds[gossipOptionID]
@@ -243,7 +242,7 @@ do
 					callUpdate()
 					--Still required to advance dialog or demon hunters can't use spectral sight
 					--We try to delay it by .1 so other mods can still parse gossip ID in theory
-					C_Timer.After(0.1, function() C_GossipInfo.SelectOption(gossipOptionID) end)
+					C_Timer.After(0.1, function() self:SelectGossip(gossipOptionID) end)
 				end
 				if self.Options.SpyHelperClose then
 					--Delay used so DBM doesn't prevent other mods or WAs from parsing data

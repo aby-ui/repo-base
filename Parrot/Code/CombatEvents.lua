@@ -2446,7 +2446,7 @@ local moreParams = {
 	SPELL_DISPEL = { "spellId", "spellName", "spellSchool", "extraSpellID", "extraSpellName", "extraSchool", "auraType", },
 	SPELL_DISPEL_FAILED = { "spellId", "spellName", "spellSchool", "extraSpellID", "extraSpellName", "extraSchool", },
 	SPELL_DRAIN = { "spellId", "spellName", "spellSchool", "amount", "powerType", "extraAmount", },
-	SPELL_ENERGIZE = { "spellId", "spellName", "spellSchool", "amount", "powerType", },
+	SPELL_ENERGIZE = { "spellId", "spellName", "spellSchool", "amount", "overEnergize", "powerType", },
 	SPELL_EXTRA_ATTACKS = { "spellId", "spellName", "spellSchool", "amount", },
 	SPELL_HEAL = { "spellId", "spellName", "spellSchool", "amount", "overhealing", "absorbed", "critical", extra = { "info.realAmount = info.amount - info.overhealAmount", } },
 	SPELL_INTERRUPT = { "spellId", "spellName", "spellSchool", "extraSpellID", "extraSpellName", "extraSchool", },

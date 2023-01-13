@@ -28,6 +28,32 @@ local RSGuidePOI = private.ImportLib("RareScannerGuidePOI")
 
 RareScannerDataProviderMixin = CreateFromMixins(MapCanvasDataProviderMixin);
 
+function RareScannerDataProviderMixin:OnAdded(mapCanvas)
+	MapCanvasDataProviderMixin.OnAdded(self, mapCanvas);
+	self:GetMap():RegisterCallback("SetBounty", self.SetBounty, self);
+end
+
+function RareScannerDataProviderMixin:OnRemoved(mapCanvas)
+	self:GetMap():UnregisterCallback("SetBounty", self.SetBounty, self);
+	MapCanvasDataProviderMixin.OnRemoved(self, mapCanvas);
+end
+
+function RareScannerDataProviderMixin:SetBounty(bountyQuestID, bountyFactionID, bountyFrameType)
+	local changed = self.bountyQuestID ~= bountyQuestID;
+	if (changed) then
+		self.bountyQuestID = bountyQuestID;
+		self.bountyFactionID = bountyFactionID;
+		self.bountyFrameType = bountyFrameType;
+		if (self:GetMap()) then
+			self:RefreshAllData();
+		end
+	end
+end
+
+function RareScannerDataProviderMixin:GetBountyInfo()
+	return self.bountyQuestID, self.bountyFactionID, self.bountyFrameType;
+end
+
 function RareScannerDataProviderMixin:OnMapChanged()
 	self:RefreshAllData();
 end
@@ -234,7 +260,7 @@ function RareScannerDataProviderMixin:RefreshAllData(fromOnShow)
 		if (not filtered) then
 			local pin
 			if (POI.isGroup) then
-				pin = self:GetMap():AcquirePin("RSGroupPinTemplate", POI);
+				pin = self:GetMap():AcquirePin("RSGroupPinTemplate", POI, self);
 
 				-- Animates the ping in case the filter is on
 				if (RSGeneralDB.GetWorldMapTextFilter()) then
@@ -252,7 +278,7 @@ function RareScannerDataProviderMixin:RefreshAllData(fromOnShow)
 				end
 			else
 				RSLogger:PrintDebugMessageEntityID(POI.entityID, string.format("Mostrando Entidad [%s].", POI.entityID))
-				pin = self:GetMap():AcquirePin("RSEntityPinTemplate", POI);
+				pin = self:GetMap():AcquirePin("RSEntityPinTemplate", POI, self);
 
 				-- Animates the ping in case the filter is on
 				if (RSGeneralDB.GetWorldMapTextFilter()) then

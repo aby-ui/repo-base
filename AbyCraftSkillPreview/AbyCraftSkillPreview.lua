@@ -54,7 +54,7 @@ local function updateSkillPoint(changeEditBox)
         end
     end
 
-    ct.toggle.text:SetText(L["Quantity Mismatch"])
+    ct.toggle.text:SetText(L["Quantities Mismatch"])
     if allEqual then
         local self = ct.form
         --@see Blizzard_ProfessionsRecipeSchematicForm.lua ProfessionsRecipeSchematicFormMixin:GetRecipeOperationInfo()
@@ -128,7 +128,7 @@ local function setup()
     ct.toggle:SetScript("OnClick", function() togglePreview() end)
     ct.toggle:SetScript("OnEnter", function(self)
         GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
-        if Locale_zhCN then
+        if LOCALE_zhCN then
             GameTooltip:SetText("说明")
             GameTooltip:AddLine("本功能由warbaby(爱不易)原创开发")
             GameTooltip:AddLine("用于查看不同品质的材料对配方技能的影响")

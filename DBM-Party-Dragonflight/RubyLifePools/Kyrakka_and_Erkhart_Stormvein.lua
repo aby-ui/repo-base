@@ -1,12 +1,12 @@
 local mod	= DBM:NewMod(2503, "DBM-Party-Dragonflight", 7, 1202)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20230104050305")
+mod:SetRevision("20230109214834")
 mod:SetCreatureID(190484, 190485)
 mod:SetEncounterID(2623)
 --mod:SetUsedIcons(1, 2, 3)
 mod:SetBossHPInfoToHighest()
-mod:SetHotfixNoticeRev(20221126000000)
+mod:SetHotfixNoticeRev(20230109000000)
 --mod:SetMinSyncRevision(20211203000000)
 --mod.respawnTime = 29
 
@@ -45,20 +45,22 @@ local timerFlamespitCD							= mod:NewCDTimer(15.7, 381605, nil, nil, nil, 3)
 local timerRoaringFirebreathCD					= mod:NewCDTimer(18, 381525, nil, nil, nil, 3)
 --Erkhart Stormvein
 mod:AddTimerLine(DBM:EJ_GetSectionInfo(25369))
-local warnWindsofChange							= mod:NewSpellAnnounce(381517, 3)
+local warnWindsofChange							= mod:NewCountAnnounce(381517, 3, nil, nil, 227878)--Not actually a count timer, but has best localized text
 local warnCloudburst							= mod:NewSpellAnnounce(385558, 3)
 
 local specWarnStormslam							= mod:NewSpecialWarningDefensive(381512, nil, nil, nil, 1, 2)
 local specWarnStormslamDispel					= mod:NewSpecialWarningDispel(381512, "RemoveMagic", nil, nil, 1, 2)
 local specWarnInterruptingCloudburst			= mod:NewSpecialWarningCast(381516, "SpellCaster", nil, nil, 2, 2, 4)
 
-local timerWindsofChangeCD						= mod:NewCDTimer(19.3, 381517, nil, nil, nil, 3)
+local timerWindsofChangeCD						= mod:NewCDCountTimer(19.3, 381517, 227878, nil, nil, 3)--Not actually a count timer, but has best localized text
 local timerStormslamCD							= mod:NewCDTimer(17, 381512, nil, "Tank|RemoveMagic", nil, 5, nil, DBM_COMMON_L.TANK_ICON..DBM_COMMON_L.MAGIC_ICON)
 local timerCloudburstCD							= mod:NewCDTimer(19.3, 385558, nil, nil, nil, 2)--Used for both mythic and non mythic versions of spell
 
 --mod:AddRangeFrameOption("8")
 mod:AddInfoFrameOption(381862, true)--Infernocore
 --mod:AddSetIconOption("SetIconOnStaggeringBarrage", 361018, true, false, {1, 2, 3})
+
+mod.vb.windDirection = 0
 
 --Seems to work?
 function mod:SpitTarget(targetname)
@@ -79,15 +81,24 @@ function mod:BreathTarget(targetname)
 end
 --]]
 
+--Count started at 0 because count is incremented in success event not start
+local directions = {
+	[0] = L.North,
+	[1] = L.West,
+	[2] = L.South,
+	[3] = L.East
+}
+
 function mod:OnCombatStart(delay)
+	self.vb.windDirection = 0
 	self:SetStage(1)
 	--Kyrakka
 	timerRoaringFirebreathCD:Start(2.1-delay)
-	timerFlamespitCD:Start(17.1-delay)--Iffy, 17-24?
+	timerFlamespitCD:Start(17.1-delay)--17-24?
 	--Erkhart Stormvein
---	timerWindsofChangeCD:Start(1-delay)--Cast on engage
-	timerStormslamCD:Start(5.2-delay)
+	timerStormslamCD:Start(5-delay)
 	timerCloudburstCD:Start(9.4-delay)
+	timerWindsofChangeCD:Start(17.1-delay, L.North)
 	if self.Options.InfoFrame then
 		DBM.InfoFrame:SetHeader(DBM:GetSpellInfo(381862))
 		DBM.InfoFrame:Show(5, "playerdebuffremaining", 381862)
@@ -114,7 +125,7 @@ function mod:SPELL_CAST_START(args)
 		specWarnRoaringFirebreath:Play("breathsoon")
 		timerRoaringFirebreathCD:Start(18)--18-27
 	elseif spellId == 381517 then
-		warnWindsofChange:Show()
+		warnWindsofChange:Show(directions[self.vb.windDirection])
 	elseif spellId == 381512 then
 		if self:IsTanking("player", nil, nil, true, args.sourceGUID) then--Using GUID check because might be boss1 or boss2
 			specWarnStormslam:Show()
@@ -135,7 +146,11 @@ end
 function mod:SPELL_CAST_SUCCESS(args)
 	local spellId = args.spellId
 	if spellId == 381517 then--Here because boss can stutter cast and start cast over
-		timerWindsofChangeCD:Start(17.8)
+		self.vb.windDirection = self.vb.windDirection + 1
+		if self.vb.windDirection == 4 then
+			self.vb.windDirection = 0
+		end
+		timerWindsofChangeCD:Start(17.8, directions[self.vb.windDirection])
 	end
 end
 

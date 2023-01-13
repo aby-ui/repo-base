@@ -120,10 +120,6 @@ local function SendRequestSync()
 	end
 end
 
-
-
-
-
 local function UpdateRosterInfo(force)
 	if not force then
 		P.callbackTimers.rosterDelay = nil
@@ -132,7 +128,7 @@ local function UpdateRosterInfo(force)
 	local size = P:GetEffectiveNumGroupMembers()
 	local oldDisabled = P.disabled
 	P.disabled = not P.isInTestMode and (P.disabledZone or size == 0
-		or (size == 1 and P.isUserHidden)
+		or (size == 1 and P.isUserDisabled)
 		or (GetNumGroupMembers(LE_PARTY_CATEGORY_HOME) == 0 and not E.profile.Party.visibility.finder)
 		or (size > E.profile.Party.visibility.size))
 
@@ -219,13 +215,16 @@ local function UpdateRosterInfo(force)
 				frame.anchor.text:SetText(index)
 			end
 
-			if force or (not info.isDead and info.isDeadOrOffline and not isDeadOrOffline) or (not info.isAdminObsForMDI == isAdminObsForMDI) then
+
+
+
+			if force or (not info.isDead and info.isDeadOrOffline and not isDeadOrOffline) or (info.isAdminObsForMDI ~= isAdminObsForMDI) then
 				info.isAdminObsForMDI = isAdminObsForMDI
 				if not isUser then
 					P.pendingQueue[#P.pendingQueue + 1] = guid
 				end
 				P:UpdateUnitBar(guid, true)
-			elseif unitIdChanged then
+			elseif unitIdChanged and not isAdminObsForMDI then
 				frame:UnregisterAllEvents()
 				if not E.preCata and not isUser then
 					frame:RegisterUnitEvent('PLAYER_SPECIALIZATION_CHANGED', unit)
@@ -345,10 +344,12 @@ function P:GROUP_JOINED(arg1,arg2)
 	end
 	self.joinedNewGroup = true
 
-	if self.isInArena and C_PvP.IsRatedSoloShuffle() and not self.callbackTimers.arenaTicker then
+	if self.isInArena and C_PvP.IsRatedSoloShuffle() then
 		self:ResetAllIcons("joinedPvP")
-		self:RegisterEvent('PLAYER_REGEN_DISABLED')
-		self.callbackTimers.arenaTicker = C_Timer.NewTicker(6, inspectAllGroupMembers, 5)
+		if not self.callbackTimers.arenaTicker then
+			self:RegisterEvent('PLAYER_REGEN_DISABLED')
+			self.callbackTimers.arenaTicker = C_Timer.NewTicker(6, inspectAllGroupMembers, 5)
+		end
 	end
 end
 
@@ -388,7 +389,8 @@ function P:PLAYER_ENTERING_WORLD(isInitialLogin, isReloadingUi, isRefresh)
 	end
 
 	self.isUserHidden = not self.isInTestMode and not E.db.general.showPlayer
-	self.isUserDisabled = self.isUserHidden and not IsAnyExBarEnabled()
+
+	self.isUserDisabled = self.isUserHidden and (not E.db.general.showPlayerEx or not IsAnyExBarEnabled())
 	self.isPvP = E.preCata or (self.isInPvPInstance or (instanceType == "none" and C_PvP.IsWarModeDesired()))
 	self.effectivePixelMult = nil
 

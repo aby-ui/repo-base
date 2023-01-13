@@ -156,7 +156,7 @@ if Addon:IsBuild("retail") then
 
         -- inject custom flyout handling
         Addon.SpellFlyout:WrapScript(button, "OnClick", [[
-            if button == "LeftButton" and not down then
+            if not down then
                 local actionType, actionID = GetActionInfo(self:GetAttribute("action"))
 
                 if actionType == "flyout" then

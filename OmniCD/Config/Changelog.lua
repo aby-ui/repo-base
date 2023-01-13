@@ -27,13 +27,12 @@ v3.4.0.2722
 	Wrath of the Lich King Classic release. (Build 45435)
 ]=]
 else E.changelog = [=[
-v10.0.2.2734
-	Fixed Coldthirst incorrectly reducing Mind Freeze to 3 sec
-	Fixed Status Bar text wrapping
-	Fixed Sentinel, Incarn
-	Dec 20, 2022 Hotfixes
-	Added option panel scaling
-	Cooldowns will now reset inbetween solo shuffle rounds
+v10.0.2.2735
+	Cds will correctly reset inbetween solo shuffle rounds #3
+	Desperate Prayer has been added to Sync
+	Fixed Dracthyr racials for Alliance
+	Returned option to exclude player spells on Extra Bars
+	JANUARY 3/9, 2023 Hotfixes
 
 v10.0.2.2730
 	Dragonflight

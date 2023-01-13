@@ -404,7 +404,8 @@ SI.defaultDB = {
     Progress16 = false, -- Trial of the Elements
     Progress17 = false, -- Trial of the Flood
     Progress18 = false, -- Primal Storms Core
-    Progress19 = false, -- Sparks of Life
+    Progress19 = false, -- Primal Storms Elementals
+    Progress20 = false, -- Sparks of Life
     Warfront1 = false, -- Arathi Highlands
     Warfront2 = false, -- Darkshores
     KeystoneReportTarget = "EXPORT",
@@ -2533,7 +2534,9 @@ hoverTooltip.ShowDragonflightRenownTooltip = function (cell, arg, ...)
   indicatortip:AddHeader(ClassColorise(t.Class, toon), L["Dragonflight Renown"])
 
   local majorFactionIDs = C_MajorFactions.GetMajorFactionIDs(LE_EXPANSION_DRAGONFLIGHT)
-  for _, factionID in ipairs(majorFactionIDs) do
+
+  local factionIDs = SI:GetModule("Progress").TrackedQuest[index].factionIDs
+  for _, factionID in ipairs(factionIDs) do
     if t.Progress[index][factionID] then
       indicatortip:AddLine(
         C_MajorFactions.GetMajorFactionData(factionID).name,
@@ -2541,6 +2544,42 @@ hoverTooltip.ShowDragonflightRenownTooltip = function (cell, arg, ...)
       )
     else
       indicatortip:AddLine(C_MajorFactions.GetMajorFactionData(factionID).name, LOCKED)
+    end
+  end
+
+  for _, factionID in ipairs(majorFactionIDs) do
+    if not tContains(factionIDs, factionID) then
+      if t.Progress[index][factionID] then
+        indicatortip:AddLine(
+          C_MajorFactions.GetMajorFactionData(factionID).name,
+          format("%s %s (%s/%s)", COVENANT_SANCTUM_TAB_RENOWN, unpack(t.Progress[index][factionID]))
+        )
+      else
+        indicatortip:AddLine(C_MajorFactions.GetMajorFactionData(factionID).name, LOCKED)
+      end
+    end
+  end
+
+  finishIndicator()
+end
+
+hoverTooltip.ShowAidingTheAccordTooltip = function (cell, arg, ...)
+  -- Should be in Module Progress
+  local toon, index = unpack(arg)
+  local t = SI.db.Toons[toon]
+  if not t or not t.Progress or not t.Progress[index] then return end
+  if not t or not t.Quests then return end
+  openIndicator(2, "LEFT", "RIGHT")
+  indicatortip:AddHeader(ClassColorise(t.Class, toon), L["Aiding the Accord"])
+
+  if t.Progress[index].isComplete then
+    indicatortip:AddLine("\124T" .. READY_CHECK_READY_TEXTURE .. ":0|t")
+  elseif t.Progress[index].isFinish then
+    indicatortip:AddLine("\124T" .. READY_CHECK_WAITING_TEXTURE .. ":0|t")
+  elseif t.Progress[index].leaderboardCount and t.Progress[index].leaderboardCount > 0 then
+    for i = 1, t.Progress[index].leaderboardCount do
+      indicatortip:AddLine("")
+      indicatortip:SetCell(i + 1, 1, t.Progress[index][i], nil, "LEFT", 2)
     end
   end
 
@@ -2622,6 +2661,73 @@ hoverTooltip.ShowPrimalStormsCoreTooltip = function (cell, arg, ...)
   finishIndicator()
 end
 
+hoverTooltip.ShowPrimalStormsElementalsTooltip = function (cell, arg, ...)
+  -- Should be in Module Progress
+  local toon, index = unpack(arg)
+  local t = SI.db.Toons[toon]
+  if not t or not t.Progress or not t.Progress[index] then return end
+  if not t or not t.Quests then return end
+  openIndicator(2, "LEFT", "RIGHT")
+
+  local P = SI:GetModule("Progress")
+  local totalDone = 0
+  for _, questID in ipairs(P.TrackedQuest[index].relatedQuest) do
+    if t.Progress[index][questID] then
+      totalDone = totalDone + 1
+    end
+  end
+
+  local toonstr = (db.Tooltip.ShowServer and toon) or strsplit(' ', toon)
+
+  indicatortip:AddHeader(ClassColorise(t.Class, toonstr), string.format("%d/%d", totalDone, #P.TrackedQuest[index].relatedQuest))
+
+  local earthColor = YELLOW_FONT_COLOR_CODE
+  local waterColor = "|cff42a4f5"
+  local airColor = "|cffe4f2f5"
+  local fireColor = ORANGE_FONT_COLOR_CODE
+
+  local stringNameElementals = {
+    fireColor .. L["Emblazion"] .. FONT_COLOR_CODE_CLOSE,
+    fireColor .. L["Infernum"] .. FONT_COLOR_CODE_CLOSE,
+    fireColor .. L["Kain Firebrand"] .. FONT_COLOR_CODE_CLOSE,
+    fireColor .. L["Neela Firebane"] .. FONT_COLOR_CODE_CLOSE,
+    waterColor .. L["Crystalus"] .. FONT_COLOR_CODE_CLOSE,
+    waterColor .. L["Frozion"] .. FONT_COLOR_CODE_CLOSE,
+    waterColor .. L["Rouen Icewind"] .. FONT_COLOR_CODE_CLOSE,
+    waterColor .. L["Iceblade Trio"] .. FONT_COLOR_CODE_CLOSE,
+    earthColor .. L["Bouldron"] .. FONT_COLOR_CODE_CLOSE,
+    earthColor .. L["Gravlion"] .. FONT_COLOR_CODE_CLOSE,
+    earthColor .. L["Grizzlerock"] .. FONT_COLOR_CODE_CLOSE,
+    earthColor .. L["Zurgaz Corebreaker"] .. FONT_COLOR_CODE_CLOSE,
+    airColor .. L["Gaelzion"] .. FONT_COLOR_CODE_CLOSE,
+    airColor .. L["Karantun"] .. FONT_COLOR_CODE_CLOSE,
+    airColor .. L["Pipspark Thundersnap"] .. FONT_COLOR_CODE_CLOSE,
+    airColor .. L["Voraazka"] .. FONT_COLOR_CODE_CLOSE,
+  }
+
+  local typeElementals = {
+    fireColor .. L["Fire"] .. FONT_COLOR_CODE_CLOSE,
+    waterColor .. L["Water"] .. FONT_COLOR_CODE_CLOSE,
+    earthColor .. L["Earth"] .. FONT_COLOR_CODE_CLOSE,
+    airColor .. L["Air"] .. FONT_COLOR_CODE_CLOSE,
+  }
+
+  local IDs = P.TrackedQuest[index].relatedQuest
+  indicatortip:AddLine()
+  for i, questID in ipairs(IDs) do
+    if i%4 == 1 then
+      indicatortip:AddLine()
+      indicatortip:AddLine(typeElementals[math.floor(i/4)+1])
+    end
+    indicatortip:AddLine(
+      stringNameElementals[i],
+      t.Progress[index][questID] and REDFONT .. ALREADY_LOOTED .. FONTEND or GREENFONT .. AVAILABLE .. FONTEND
+    )
+  end
+
+  finishIndicator()
+end
+
 hoverTooltip.ShowKeyReportTarget = function (cell, arg, ...)
   openIndicator(2, "LEFT", "RIGHT")
   indicatortip:AddHeader(GOLDFONT..L["Keystone report target"]..FONTEND, SI.db.Tooltip.KeystoneReportTarget)
@@ -2650,7 +2756,7 @@ end
 function SI:OnInitialize()
   local versionString = GetAddOnMetadata("SavedInstances", "version")
   --[==[@debug@
-  if versionString == "10.0.5-18-geb39089" then
+  if versionString == "10.0.6-1-g66745ed" then
     versionString = "Dev"
   end
   --@end-debug@]==]

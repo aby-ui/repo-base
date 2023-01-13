@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2485, "DBM-Party-Dragonflight", 7, 1202)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20221018020559")
+mod:SetRevision("20230108015722")
 mod:SetCreatureID(189232)
 mod:SetEncounterID(2609)
 --mod:SetUsedIcons(1, 2, 3)
@@ -31,6 +31,8 @@ mod:RegisterEventsInCombat(
 --]]
 local warnBurnout								= mod:NewCastAnnounce(373087, 4)
 local warnInferno								= mod:NewCastAnnounce(384823, 3)
+local warnBaitBoulder							= mod:NewBaitAnnounce(372107, 3, nil, nil, nil, nil, 8)
+local warnBaitAdd								= mod:NewBaitAnnounce(372863, 3, nil, nil, nil, nil, 8)
 
 local specWarnSearingBlows						= mod:NewSpecialWarningDefensive(372858, nil, nil, nil, 1, 2)
 local specWarnMoltenBoulder						= mod:NewSpecialWarningDodge(372107, nil, nil, nil, 1, 2)
@@ -83,10 +85,12 @@ function mod:SPELL_CAST_START(args)
 		specWarnMoltenBoulder:Show()
 		specWarnMoltenBoulder:Play("shockwave")
 		timerMoltenBoulderCD:Start()
+		warnBaitBoulder:ScheduleVoice(13.4, "bait")--3.5 seconds before
 	elseif spellId == 372863 then
 		specWarnRitualofBlazebinding:Show()
 		specWarnRitualofBlazebinding:Play("killmob")
 		timerRitualofBlazebindingCD:Start()
+		warnBaitAdd:ScheduleVoice(29.2, "bait")--3.5 seconds before
 	elseif spellId == 373017 and self:CheckInterruptFilter(args.sourceGUID, false, true) then
 		if not castsPerGUID[args.sourceGUID] then
 			castsPerGUID[args.sourceGUID] = 0

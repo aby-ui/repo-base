@@ -1668,4 +1668,3 @@ L["STRING_WIPE_ERROR1"] = "已經下令滅團 Re。"
 L["STRING_WIPE_ERROR2"] = "我們不在團隊首領戰中。"
 L["STRING_WIPE_ERROR3"] = "無法結束首領戰。"
 L["STRING_YES"] = "是"
-

@@ -157,6 +157,13 @@ L["Virtual stacks display in one place items that actually spread over several b
 L["Virtual stacks"] = true
 L["When checked, right-clicking on an empty space of a bag opens the configuration panel."] = true
 
+-- core/Constants.lua
+L["Engineering"] = true
+L["Tailoring"] = true
+L["Leatherworking"] = true
+L["Mining"] = true
+L["Herbalism"] = true
+
 -- core/Core.lua
 L["Warning: You are using an alpha or beta version of AdiBags without displaying Lua errors. If anything goes wrong, AdiBags (or any other addon causing some error) will simply stop working for apparently no reason. Please either enable the display of Lua errors or install an error handler addon like BugSack or Swatter."] = true
 
@@ -376,6 +383,11 @@ L["enabled"] = true
 ------------------------ frFR ------------------------
 local locale = GetLocale()
 if locale == 'frFR' then
+L["Engineering"] = "Ingénierie"
+L["Tailoring"] = "Couture"
+L["Leatherworking"] = "Travail du cuir"
+L["Mining"] = "Minage"
+L["Herbalism"] = "Herboristerie"
 L["Add a dropdown menu to bags that allow to hide the sections."] = "Ajoute un menu déroulant aux sacs pour cacher les sections."
 L["Add association"] = "Ajouter l'association"
 L["Add more information in tooltips related to items in your bags."] = "Ajoute des informations additionnelles dans les bulles d'aides des objets de vos sacs."
@@ -627,6 +639,11 @@ L["Which color scheme should be used to display the item level ?"] = "Quel thèm
 
 ------------------------ deDE ------------------------
 elseif locale == 'deDE' then
+L["Engineering"] = "Ingenieurskunst"
+L["Tailoring"] = "Schneiderei"
+L["Leatherworking"] = "Lederverarbeitung"
+L["Mining"] = "Bergbau"
+L["Herbalism"] = "Kräuterkunde"
 L["Add a dropdown menu to bags that allow to hide the sections."] = "Fügt den Taschen ein Dropdown-Menü hinzu, welches es erlaubt die Abteilung zu verstecken."
 L["Add association"] = "Füge Zuweisung hinzu"
 L["Add more information in tooltips related to items in your bags."] = "Füge mehr Informationen bezüglich der Items in deinen Taschen zum Tooltip hinzu"
@@ -797,6 +814,11 @@ L["When shift is held down"] = "Wenn Umschalt gedrückt ist"
 
 ------------------------ ruRU ------------------------
 elseif locale == 'ruRU' then
+L["Engineering"] = "Инженерное дело"
+L["Tailoring"] = "Портняжное дело"
+L["Leatherworking"] = "Кожевничество"
+L["Mining"] = "Горное дело"
+L["Herbalism"] = "Травничество"
 L["Add a dropdown menu to bags that allow to hide the sections."] = "Добавить выпадающее меню для сумок, в котором можно настроить отображение секций."
 L["Add association"] = "Добавить объединение"
 L["Add more information in tooltips related to items in your bags."] = "Добавить Дополнительную информацию во всплывающих подсказках, касающихся предметов, в вашей сумке"
@@ -968,6 +990,11 @@ L["When shift is held down"] = "Когда кнопка Shift нажата"
 
 ------------------------ esES ------------------------
 elseif locale == 'esES' then
+L["Engineering"] = "Ingeniería"
+L["Tailoring"] = "Sastrería"
+L["Leatherworking"] = "Peletería"
+L["Mining"] = "Minería"
+L["Herbalism"] = "Herboristería"
 L["Adjust the maximum height of the bags, relative to screen size."] = "Ajustar al maximo la altura de las bolsas, en relación a el tamaño de la pantalla."
 L["Allow you manually redefine the section in which an item should be put. Simply drag an item on the section title."] = "Permite redefinir manualmente la sección en la que un objeto debe situarse. Solo arrastra un objeto dentro del título de la sección"
 L["Always"] = "Siempre"
@@ -1064,6 +1091,11 @@ L["Use this to adjust the quality-based border opacity. 100% means fully opaque.
 
 ------------------------ zhTW ------------------------
 elseif locale == 'zhTW' then
+L["Engineering"] = "工程學"
+L["Tailoring"] = "裁縫"
+L["Leatherworking"] = "製皮"
+L["Mining"] = "採礦"
+L["Herbalism"] = "草藥學"
 L["Add a dropdown menu to bags that allow to hide the sections."] = "增加下拉式選單來隱藏類別" -- Needs review
 L["Add association"] = "新增關聯"
 L["Add more information in tooltips related to items in your bags."] = "顯示物品的額外資訊提示"
@@ -1318,6 +1350,11 @@ L["Which color scheme should be used to display the item level ?"] = "應該使�
 
 ------------------------ zhCN ------------------------
 elseif locale == 'zhCN' then
+L["Engineering"] = "工程学"
+L["Tailoring"] = "裁缝"
+L["Leatherworking"] = "制皮"
+L["Mining"] = "采矿"
+L["Herbalism"] = "草药学"
 L["Add a dropdown menu to bags that allow to hide the sections."] = "给背包添加下拉菜单, 允许隐藏分组."
 L["Add association"] = "添加过滤"
 L["Add more information in tooltips related to items in your bags."] = "显示物品的额外提示信息"
@@ -1570,6 +1607,11 @@ L["Which color scheme should be used to display the item level ?"] = "应该使�
 L["(Blizzard's) Sort items"] = "(系统自带的)背包整理"
 ------------------------ koKR ------------------------
 elseif locale == 'koKR' then
+L["Engineering"] = "기계공학"
+L["Tailoring"] = "재봉술"
+L["Leatherworking"] = "가죽세공"
+L["Mining"] = "채광"
+L["Herbalism"] = "약초채집"
 L["%s is: %s."] = "%s|1은;는; %s입니다."
 L["... including incomplete stacks"] = "... 불완전 중첩 포함"
 L["6.0"] = "6.0"
@@ -1842,6 +1884,11 @@ L["You can block auto-deposit ponctually by pressing a modified key while talkin
 
 ------------------------ ptBR ------------------------
 elseif locale == 'ptBR' then
+L["Engineering"] = "Engenharia"
+L["Tailoring"] = "Alfaiataria"
+L["Leatherworking"] = "Couraria"
+L["Mining"] = "Mineração"
+L["Herbalism"] = "Herborismo"
 L["Add a dropdown menu to bags that allow to hide the sections."] = "Adicione um menu retrátil nas bolsas que permitem esconder as seções"
 L["Add association"] = "Adicionar associação"
 L["Add more information in tooltips related to items in your bags."] = "Adicionar mais informação nas janelas de saque relacionadas aos itens em suas bolsas"

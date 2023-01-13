@@ -70,15 +70,15 @@ local function showRealDate(curseDate)
 end
 
 DBM = {
-	Revision = parseCurseDate("20230104061343"),
+	Revision = parseCurseDate("20230112000809"),
 }
 
 local fakeBWVersion, fakeBWHash
 local bwVersionResponseString = "V^%d^%s"
 -- The string that is shown as version
 if isRetail then
-	DBM.DisplayVersion = "10.0.17 alpha"
-	DBM.ReleaseRevision = releaseDate(2023, 1, 4) -- the date of the latest stable version that is available, optionally pass hours, minutes, and seconds for multiple releases in one day
+	DBM.DisplayVersion = "10.0.20 alpha"
+	DBM.ReleaseRevision = releaseDate(2023, 1, 10) -- the date of the latest stable version that is available, optionally pass hours, minutes, and seconds for multiple releases in one day
 	fakeBWVersion, fakeBWHash = 259, "3fbb48c"
 elseif isClassic then
 	DBM.DisplayVersion = "1.14.29 alpha"
@@ -89,8 +89,8 @@ elseif isBCC then
 	DBM.ReleaseRevision = releaseDate(2022, 8, 1) -- the date of the latest stable version that is available, optionally pass hours, minutes, and seconds for multiple releases in one day
 	fakeBWVersion, fakeBWHash = 41, "287b8dd"
 elseif isWrath then
-	DBM.DisplayVersion = "3.4.23 alpha"
-	DBM.ReleaseRevision = releaseDate(2022, 12, 13) -- the date of the latest stable version that is available, optionally pass hours, minutes, and seconds for multiple releases in one day
+	DBM.DisplayVersion = "3.4.24 alpha"
+	DBM.ReleaseRevision = releaseDate(2023, 1, 10) -- the date of the latest stable version that is available, optionally pass hours, minutes, and seconds for multiple releases in one day
 	fakeBWVersion, fakeBWHash = 41, "287b8dd"
 end
 DBM.HighestRelease = DBM.ReleaseRevision --Updated if newer version is detected, used by update nags to reflect critical fixes user is missing on boss pulls
@@ -338,6 +338,7 @@ DBM.DefaultOptions = {
 	DontPlayCountdowns = false,
 	DontSendYells = false,
 	BlockNoteShare = false,
+	DontAutoGossip = false,
 	DontShowPT2 = false,
 	DontShowPTCountdownText = false,
 	DontPlayPTCountdown = false,
@@ -2655,6 +2656,22 @@ function DBM:IsTrivial(customLevel)
 	return false
 end
 
+function DBM:GetGossipID()
+	if self.Options.DontAutoGossip then return false end
+	local table = C_GossipInfo.GetOptions()
+	if table[1] and table[1].gossipOptionID then
+		return table[1].gossipOptionID
+	else
+		return false
+	end
+end
+
+function DBM:SelectGossip(gossipOptionID)
+	if gossipOptionID and not self.Options.DontAutoGossip then
+		C_GossipInfo.SelectOption(gossipOptionID)
+	end
+end
+
 ---------------
 --  Options  --
 ---------------
@@ -3545,7 +3562,11 @@ function DBM:LoadMod(mod, force)
 	local loaded, reason = LoadAddOn(mod.modId)
 	if not loaded then
 		if reason then
-			self:AddMsg(L.LOAD_MOD_ERROR:format(tostring(mod.name), tostring(_G["ADDON_"..reason or ""])))
+			if reason == "DISABLED" then
+				self:AddMsg(L.LOAD_MOD_DISABLED:format(mod.name))
+			else
+				self:AddMsg(L.LOAD_MOD_ERROR:format(tostring(mod.name), tostring(_G["ADDON_"..reason or ""])))
+			end
 		else
 			self:Debug("LoadAddOn failed and did not give reason")
 		end
@@ -6978,6 +6999,8 @@ bossModPrototype.GetUnitIdFromCID = DBM.GetUnitIdFromCID
 bossModPrototype.GetUnitIdFromGUID = DBM.GetUnitIdFromGUID
 bossModPrototype.CheckNearby = DBM.CheckNearby
 bossModPrototype.IsTrivial = DBM.IsTrivial
+bossModPrototype.GetGossipID = DBM.GetGossipID
+bossModPrototype.SelectGossip = DBM.SelectGossip
 
 do
 	local TargetScanning = private:GetModule("TargetScanning")

@@ -143,7 +143,6 @@ function RSEntityStateHandler.SetDeadNpc(npcID, loadingAddon)
 		end
 
 		-- Extracts quest id if we don't have it
-		-- Avoids shift-left-click events
 		if (not loadingAddon and RSConstants.DEBUG_MODE) then
 			if (not npcInfo.questID and not RSNpcDB.GetNpcQuestIdFound(npcID)) then
 				RSLogger:PrintDebugMessage(string.format("NPC [%s]. Buscando questID...", npcID))
@@ -163,7 +162,7 @@ function RSEntityStateHandler.SetDeadNpc(npcID, loadingAddon)
 	
 		-- Disable overlay icons if enabled
 		if (RSGeneralDB.HasOverlayActive(npcID) and RSNpcDB.IsNpcKilled(npcID)) then
-			RSGeneralDB.RemoveOverlayActive()
+			RSGeneralDB.RemoveOverlayActive(npcID)
 			RSMinimap.RemoveOverlay(npcID)
 		end
 		
@@ -349,7 +348,7 @@ function RSEntityStateHandler.SetContainerOpen(containerID, loadingAddon)
 	
 		-- Disable overlay icons if enabled
 		if (RSGeneralDB.HasOverlayActive(containerID) and RSContainerDB.IsContainerOpened(containerID)) then
-			RSGeneralDB.RemoveOverlayActive()
+			RSGeneralDB.RemoveOverlayActive(containerID)
 			RSMinimap.RemoveOverlay(containerID)
 		end
 		
@@ -448,7 +447,7 @@ function RSEntityStateHandler.SetEventCompleted(eventID, loadingAddon)
 
 	-- Disable overlay icons if enabled
 	if (RSGeneralDB.HasOverlayActive(eventID) and RSEventDB.IsEventCompleted(eventID)) then
-		RSGeneralDB.RemoveOverlayActive()
+		RSGeneralDB.RemoveOverlayActive(eventID)
 		RSMinimap.RemoveOverlay(eventID)
 	end
 		

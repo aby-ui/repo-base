@@ -42,17 +42,16 @@ end
 function PetBar:UpdateOverrideBar()
 end
 
-if Addon:IsBuild('retail', 'wrath') then
-    function PetBar:GetDisplayConditions()
-        return '[@pet,exists,nopossessbar]show;hide'
+function PetBar:GetDisplayConditions()
+    -- workaround: filter out channeling of eye of kilrog when playing a warlock
+    -- as it doesn't trigger the possess bar condition properly if you already
+    -- have a pet summoned
+    if UnitClassBase("player") == "WARLOCK" then
+        local eyeOfKilrogg = GetSpellInfo(126)
+        return ('[channeling:%s]hide;[@pet,exists,nopossessbar]show;hide'):format(eyeOfKilrogg)
     end
-else
-    function PetBar:GetDisplayConditions()
-        if self:IsOverrideBar() then
-            return '[@pet,exists][bonusbar:5]show;hide'
-        end
-        return '[@pet,exists,nobonusbar:5]show;hide'
-    end
+
+    return '[@pet,exists,nopossessbar]show;hide'
 end
 
 function PetBar:GetDefaults()

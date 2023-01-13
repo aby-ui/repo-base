@@ -407,6 +407,7 @@ L.SpamBlockNoHudMap			= "Do not show HudMap"
 L.SpamBlockNoNameplate		= "Do not show Nameplate Auras"
 L.SpamBlockNoYells			= "Do not send chat yells"
 L.SpamBlockNoNoteSync		= "Do not accept shared notes"
+L.SpamBlockAutoGossip		= "Do not automatically handle gossip dialogs"
 
 L.Area_Restore				= "DBM Restore Options (Whether DBM restores previous user state when mods finish)"
 L.SpamBlockNoIconRestore	= "Do not save icon states and restore them on combat end"

@@ -173,6 +173,9 @@ function SpellFlyout:OnLoad()
 	self:SetAttribute("_onhide", [[ self:CallMethod("OnHide");  self:Hide(true) ]])
 
 	self:RegisterEvent("PLAYER_LOGIN")
+	self:RegisterEvent("SPELL_FLYOUT_UPDATE")
+	self:RegisterEvent("PLAYER_REGEN_ENABLED")
+
 	self.OnLoad = nil
 end
 
@@ -184,6 +187,13 @@ function SpellFlyout:CURRENT_SPELL_CAST_CHANGED()
 	self:ForShown("UpdateState")
 end
 
+function SpellFlyout:PLAYER_REGEN_ENABLED()
+	if self.needsFlyoutUpdates then
+		self:UpdateKnownFlyouts()
+		self.needsFlyoutUpdates = nil
+	end
+end
+
 function SpellFlyout:SPELL_UPDATE_COOLDOWN()
 	self:ForShown("UpdateCooldown")
 end
@@ -192,7 +202,11 @@ function SpellFlyout:SPELL_UPDATE_USABLE()
 	self:ForShown("UpdateUsable")
 end
 
-function SpellFlyout:SPELL_FLYOUT_UPDATE()
+function SpellFlyout:SPELL_FLYOUT_UPDATE(_, flyoutID)
+	if flyoutID then
+		self:UpdateFlyout(flyoutID)
+	end
+
 	self:ForShown("Update")
 end
 
@@ -391,59 +405,101 @@ SpellFlyout.SetBorderSize = SpellFlyout_SetBorderSize
 -- Bartender4 and Dominos implement roughly the same lookup here
 -- but we've chosen to precalculate the array because the ID list is fairly sparse (23 in total)
 function SpellFlyout:UpdateKnownFlyouts()
-	local maxSlots = 0
+	if InCombatLockdown() then
+		self.needsFlyoutUpdates = true
+		return
+	end
 
-	for _, flyoutID in ipairs(VALID_FLYOUT_IDS) do
-		local _, _, numSlots, isKnown = GetFlyoutInfo(flyoutID)
+	local slotsNeeded = 0
+
+	for i = 1, #VALID_FLYOUT_IDS do
+		local numSlots = self:UpdateFlyoutInfo(VALID_FLYOUT_IDS[i])
+
+		if numSlots > slotsNeeded then
+			slotsNeeded = numSlots
+		end
+	end
+
+	self:Embiggen(slotsNeeded)
+end
+
+function SpellFlyout:UpdateFlyout(flyoutID)
+	if InCombatLockdown() then
+		self.needsFlyoutUpdates = true
+		return
+	end
+
+	local numSlots = self:UpdateFlyoutInfo(flyoutID)
+
+	if numSlots > #self.buttons then
+		self:Embiggen(numSlots)
+		return true
+	end
+
+	return false
+end
+
+function SpellFlyout:UpdateFlyoutInfo(flyoutID)
+	local _, _, numSlots, isKnown = GetFlyoutInfo(flyoutID)
+
+	self:Execute(([[
+		local flyoutID = %d
+		local numSlots = %d
+		local isKnown = %q == "true"
+
+		local data = FLYOUT_INFO[flyoutID] or newtable()
+		data.numSlots = numSlots
+		data.isKnown = isKnown
+
+		FLYOUT_INFO[flyoutID] = data
+
+		-- clear the known state of any newly unused slots
+		for i = numSlots + 1, #data do
+			data[i].isKnown = false
+		end
+	]]):format(
+		flyoutID,
+		numSlots,
+		tostring(isKnown)
+	))
+
+	for slotID = 1, numSlots do
+		local spellID, _, isSlotKnown = GetFlyoutSlotInfo(flyoutID, slotID)
+
+		if isSlotKnown then
+			local petIndex, petName = GetCallPetSpellInfo(spellID)
+			if petIndex and not (petName and petName ~= "") then
+				isSlotKnown = false
+			end
+		end
 
 		self:Execute(([[
 			local flyoutID = %d
+			local slotID = %d
+			local spellID = %d
+			local isKnown = %q == "true"
 
-			local data = FLYOUT_INFO[flyoutID] or newtable()
-			data.numSlots = %d
-			data.isKnown = %q == "true"
+			local data = FLYOUT_INFO[flyoutID][slotID] or newtable()
+			data.spellID = spellID
+			data.isKnown = isKnown
 
-			FLYOUT_INFO[flyoutID] = data
+			FLYOUT_INFO[flyoutID][slotID] = data
 		]]):format(
 			flyoutID,
-			numSlots,
-			tostring(isKnown)
+			slotID,
+			spellID,
+			tostring(isSlotKnown)
 		))
-
-		for slotID = 1, numSlots do
-			local spellID, _, isSlotKnown = GetFlyoutSlotInfo(flyoutID, slotID)
-
-			-- if isSlotKnown then
-			-- 	local petIndex, petName = GetCallPetSpellInfo(spellID)
-			-- 	if petIndex and not (petName and petName ~= "") then
-			-- 		isSlotKnown = false
-			-- 	end
-			-- end
-
-			self:Execute(([[
-				local flyoutID = %d
-				local slotID = %d
-
-				local data = FLYOUT_INFO[flyoutID][slotID] or newtable()
-				data.spellID = %d
-				data.isKnown = %q == "true"
-
-				FLYOUT_INFO[flyoutID][slotID] = data
-			]]):format(
-				flyoutID,
-				slotID,
-				spellID,
-				tostring(isSlotKnown)
-			))
-		end
-
-		maxSlots = math.max(maxSlots, numSlots)
 	end
 
-	-- create any additional buttons we will need
+	return numSlots
+end
+
+-- create any additional flyout buttons that we need
+function SpellFlyout:Embiggen(size)
 	local buttons = self.buttons
 
-	for i = #buttons + 1, maxSlots do
+	for i = #buttons + 1, size do
 		local button = createSpellFlyoutButton(self, i)
 
 		self:SetFrameRef("flyoutSlotToAdd", button)

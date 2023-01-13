@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod("AlgetharAcademyTrash", "DBM-Party-Dragonflight", 5)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20221230025544")
+mod:SetRevision("20230110014321")
 --mod:SetModelID(47785)
 mod:SetZone(2526)
 
@@ -122,13 +122,12 @@ function mod:SPELL_AURA_REMOVED(args)
 end
 
 function mod:GOSSIP_SHOW()
-	local table = C_GossipInfo.GetOptions()
-	if table[1] and table[1].gossipOptionID then
-		local gossipOptionID = table[1].gossipOptionID
+	local gossipOptionID = self:GetGossipID()
+	if gossipOptionID then
 		DBM:Debug("GOSSIP_SHOW triggered with a gossip ID of: "..gossipOptionID)
 		--Black, Bronze, Blue, Red, Green
 		if self.Options.AGBuffs and (gossipOptionID == 107065 or gossipOptionID == 107081 or gossipOptionID == 107082 or gossipOptionID == 107088 or gossipOptionID == 107083) then -- Buffs
-			C_GossipInfo.SelectOption(gossipOptionID)
+			self:SelectGossip(gossipOptionID)
 		end
 	end
 end

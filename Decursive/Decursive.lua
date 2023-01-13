@@ -1,7 +1,7 @@
 --[[
     This file is part of Decursive.
 
-    Decursive (v 2.7.8.12-2-g8a095be) add-on for World of Warcraft UI
+    Decursive (v 2.7.8.13-3-ga7591ae) add-on for World of Warcraft UI
     Copyright (C) 2006-2019 John Wellesz (Decursive AT 2072productions.com) ( http://www.2072productions.com/to/decursive.php )
 
     Decursive is free software: you can redistribute it and/or modify
@@ -24,7 +24,7 @@
     Decursive is distributed in the hope that it will be useful,
     but WITHOUT ANY WARRANTY.
 
-    This file was last updated on 2020-08-28T10:13:24Z
+    This file was last updated on 2023-01-10T12:00:52Z
 --]]
 -------------------------------------------------------------------------------
 
@@ -573,7 +573,7 @@ do
     local CureOrder;
     local sorting = function (a, b)
 
-        CureOrder = D.classprofile.CureOrder;
+        CureOrder = D:GetCureOrderTable();
 
         return CureOrder[a.Type] * 10000 - a.Applications < CureOrder[b.Type] * 10000 - b.Applications;
     end
@@ -684,12 +684,12 @@ do
 
 
                 -- We have a match for this type and we decided (checked) to
-                -- cure it NOTE: self.classprofile.CureOrder[DEBUFF_TYPE] is set
+                -- cure it NOTE: self:GetCureOrderTable()[DEBUFF_TYPE] is set
                 -- to FALSE when the type is unchecked and to < 0 when there is
                 -- no spell available for the type or when the spell is gone
                 -- (it happens for warlocks or when using the same profile with
                 -- several characters)
-                --if (self.classprofile.CureOrder[Debuff.Type] and self.classprofile.CureOrder[Debuff.Type] > 0) then
+                --if (self:GetCureOrderTable()[Debuff.Type] and self:GetCureOrderTable()[Debuff.Type] > 0) then
                 if self:GetCureTypeStatus(Debuff.Type) then
 
 
@@ -877,6 +877,6 @@ end
 
 
 
-T._LoadedFiles["Decursive.lua"] = "2.7.8.12-2-g8a095be";
+T._LoadedFiles["Decursive.lua"] = "2.7.8.13-3-ga7591ae";
 
 -- Sin

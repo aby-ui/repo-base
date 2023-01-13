@@ -548,6 +548,22 @@ function RSConfigDB.SetMaxSeenTimeFilter(value, clearBak)
 	end
 end
 
+function RSConfigDB.IsShowingHuntingPartyRareNPCs()
+	return private.db.map.displayHuntingPartyRaresNpcIcons
+end
+
+function RSConfigDB.SetShowingHuntingPartyRareNPCs(value)
+	private.db.map.displayHuntingPartyRaresNpcIcons = value
+end
+
+function RSConfigDB.IsShowingPrimalStormRareNPCs()
+	return private.db.map.displayPrimalStormRaresNpcIcons
+end
+
+function RSConfigDB.SetShowingPrimalStormNPCs(value)
+	private.db.map.displayPrimalStormRaresNpcIcons = value
+end
+
 ---============================================================================
 -- Container filters database
 ---============================================================================
@@ -674,6 +690,14 @@ function RSConfigDB.SetMaxSeenContainerTimeFilter(value, clearBak)
 	if (clearBak) then
 		private.db.map.maxSeenContainerTimeBak = nil
 	end
+end
+
+function RSConfigDB.IsShowingNotTrackeableContainers()
+	return private.db.map.displayNotTrackeableContainerIcons
+end
+
+function RSConfigDB.SetShowingNotTrackeableContainers(value)
+	private.db.map.displayNotTrackeableContainerIcons = value
 end
 
 ---============================================================================

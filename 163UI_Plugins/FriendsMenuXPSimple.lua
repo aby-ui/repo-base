@@ -8,7 +8,7 @@ U1PLUG["FriendsMenuXPSimple"] = function()
             do return end
 
         else
-            local notSelf = (name ~= U1UnitFullName("player") and name ~= UnitName("player"))
+            local notSelf = (name ~= U1UnitFullName("player") and name ~= UnitName("player")) and unit ~= "player"
             local listFrame = _G["DropDownList"..UIDROPDOWNMENU_MENU_LEVEL];
             if listFrame then listFrame.numButtons = listFrame.numButtons - 1; end
 
@@ -34,8 +34,27 @@ U1PLUG["FriendsMenuXPSimple"] = function()
                 })
             end
 
+            if notSelf and isSameRealm and not unit then
+                local nameOnly = name:gsub("%-"..GetRealmName(), "")
+                if C_FriendList.GetFriendInfo(nameOnly) then
+                    UIDropDownMenu_AddButton({
+                        text = REMOVE_FRIEND,
+                        func = function()
+                            C_FriendList.RemoveFriend(nameOnly)
+                            U1Message(format("|Hplayer:%s|h[%s]|h已从好友名单中删除", nameOnly, nameOnly))
+                        end,
+                        notCheckable = true,
+                    })
+                elseif isPlayer then
+                    UIDropDownMenu_AddButton({
+                        text = ADD_FRIEND,
+                        func = function() C_FriendList.AddFriend(nameOnly) end,
+                        notCheckable = true,
+                    })
+                end
+            end
 
-            if notSelf and not currChatType then
+            if not currChatType then
                 UIDropDownMenu_AddButton({
                     text = LOCALE_zhCN and "获取名字" or "Get Name",
                     func = function()

@@ -223,30 +223,27 @@ local function OnPlayerTargetChanged()
 				RSGeneralDB.UpdateAlreadyFoundEntityPlayerPosition(npcID)
 			end
 
-			if (unitClassification ~= "rare" and unitClassification ~= "rareelite") then
-				-- Check the questID asociated to see if its completed
-				local npcInfo = RSNpcDB.GetInternalNpcInfo(npcID)
-				if (npcInfo and npcInfo.questID) then
-					local completed = false
-					for i, questID in ipairs (npcInfo.questID) do
-						if (C_QuestLog.IsQuestFlaggedCompleted(questID)) then
-							completed = true
-							break
-						end
+			-- Check the questID asociated to see if its completed
+			local npcInfo = RSNpcDB.GetInternalNpcInfo(npcID)
+			if (npcInfo and npcInfo.questID) then
+				local completed = false
+				for i, questID in ipairs (npcInfo.questID) do
+					if (C_QuestLog.IsQuestFlaggedCompleted(questID)) then
+						completed = true
+						break
 					end
-
-					if (completed) then
-						RSLogger:PrintDebugMessage(string.format("Encontrado NPC [%s] sin dragon plateado que se ha detectado como muerto gracias a su mision completada.", npcID))
-						RSEntityStateHandler.SetDeadNpc(npcID)
-					else
-						RSLogger:PrintDebugMessage(string.format("Encontrado NPC [%s] sin dragon plateado que sigue siendo rare NPC (por no haber completado su mision asociada).", npcID))
-						RSGeneralDB.UpdateAlreadyFoundEntityTime(npcID)
-					end
-				else
-					RSEntityStateHandler.SetDeadNpc(npcID)
 				end
-			else
-				RSGeneralDB.UpdateAlreadyFoundEntityTime(npcID)
+
+				if (completed) then
+					RSLogger:PrintDebugMessage(string.format("Target NPC [%s] con mision completada, se marca como muerto.", npcID))
+					RSEntityStateHandler.SetDeadNpc(npcID)
+				else
+					RSLogger:PrintDebugMessage(string.format("Target NPC [%s] con mision SIN completar.", npcID))
+					RSGeneralDB.UpdateAlreadyFoundEntityTime(npcID)
+				end
+			elseif (unitClassification ~= "rare" and unitClassification ~= "rareelite") then
+				RSLogger:PrintDebugMessage(string.format("Target NPC [%s] sin dragon plateado, se marca como muerto.", npcID))
+				RSEntityStateHandler.SetDeadNpc(npcID)
 			end
 		end
 	end	

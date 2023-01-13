@@ -55,62 +55,63 @@ end
 ---============================================================================
 
 local function GetStormInvasionAtlasName(npcID, mapID)
-  if (RSUtils.Contains(RSConstants.FIRE_STORM_EVENTS_NPCS, npcID)) then
-    return RSConstants.FIRE_STORM_ATLAS 
-  elseif (RSUtils.Contains(RSConstants.WATER_STORM_EVENTS_NPCS, npcID)) then
-    return RSConstants.WATER_STORM_ATLAS 
-  elseif (RSUtils.Contains(RSConstants.EARTH_STORM_EVENTS_NPCS, npcID)) then
-    return RSConstants.EARTH_STORM_ATLAS 
-  elseif (RSUtils.Contains(RSConstants.AIR_STORM_EVENTS_NPCS, npcID)) then
-    return RSConstants.AIR_STORM_ATLAS
-  end
+	if (RSUtils.Contains(RSConstants.FIRE_STORM_EVENTS_NPCS, npcID)) then
+    	return RSConstants.FIRE_STORM_ATLAS 
+  	elseif (RSUtils.Contains(RSConstants.WATER_STORM_EVENTS_NPCS, npcID)) then
+    	return RSConstants.WATER_STORM_ATLAS 
+  	elseif (RSUtils.Contains(RSConstants.EARTH_STORM_EVENTS_NPCS, npcID)) then
+    	return RSConstants.EARTH_STORM_ATLAS 
+  	elseif (RSUtils.Contains(RSConstants.AIR_STORM_EVENTS_NPCS, npcID)) then
+    	return RSConstants.AIR_STORM_ATLAS
+  	end
   
-  return nil
+  	return nil
 end
 
 local function GetStormInvasionXY(npcID, mapID)
-  local npcStormAtlasName = GetStormInvasionAtlasName(npcID, mapID) 
-  if (not npcStormAtlasName) then
-    return nil
-  end
+	local npcStormAtlasName = GetStormInvasionAtlasName(npcID, mapID) 
+  	if (not npcStormAtlasName) then
+    	return nil
+  	end
    
-  local areaPOIs = GetAreaPOIsForPlayerByMapIDCached(mapID);
-  for _, areaPoiID in ipairs(areaPOIs) do
-    local poiInfo = C_AreaPoiInfo.GetAreaPOIInfo(mapID, areaPoiID);
-    if (poiInfo and poiInfo.atlasName == npcStormAtlasName) then
-      local x, y = poiInfo.position:GetXY()
-      local mapNpcInfo = RSNpcDB.GetInternalNpcInfoByMapID(npcID, mapID)
-      if (not mapNpcInfo or not mapNpcInfo.overlay) then
-        return x, y
-      else
-        local xyDistances = {}
-        for _, coordinatePair in ipairs (mapNpcInfo.overlay) do
-          local coordx, coordy =  strsplit("-", coordinatePair)
-          local distance = RSUtils.DistanceBetweenCoords(coordx, x, coordy, y)
-          if (distance > 0.01) then
-            xyDistances[coordinatePair] = distance
-          end
-        end
-  
-        if (RSUtils.GetTableLength(xyDistances) == 0) then
-          return x, y
-        end
-  
-        local distances = {}
-        for xy, distance in pairs (xyDistances) do
-          table.insert(distances, distance)
-        end
-        
-        local min = math.min(unpack(distances))
-        for xy, distance in pairs (xyDistances) do
-          if (distance == min) then
-            local xo, yo = strsplit("-", xy)
-            return xo, yo
-          end
-        end
-      end
-    end
-  end
+  	local areaPOIs = GetAreaPOIsForPlayerByMapIDCached(mapID);
+  	for _, areaPoiID in ipairs(areaPOIs) do
+    	local poiInfo = C_AreaPoiInfo.GetAreaPOIInfo(mapID, areaPoiID);
+  		
+  		if (poiInfo and poiInfo.isPrimaryMapForPOI and poiInfo.atlasName == npcStormAtlasName) then
+	      	local x, y = poiInfo.position:GetXY()
+	      	local mapNpcInfo = RSNpcDB.GetInternalNpcInfoByMapID(npcID, mapID)
+	      	if (not mapNpcInfo or not mapNpcInfo.overlay) then
+	        	return x, y
+	      	else
+	        	local xyDistances = {}
+	        	for _, coordinatePair in ipairs (mapNpcInfo.overlay) do
+	          		local coordx, coordy =  strsplit("-", coordinatePair)
+	          		local distance = RSUtils.DistanceBetweenCoords(coordx, x, coordy, y)
+          			if (distance > 0.01) then
+	            		xyDistances[coordinatePair] = distance
+          			end
+	        	end
+	  
+        		if (RSUtils.GetTableLength(xyDistances) == 0) then
+        			return x, y
+	        	end
+	  
+	        	local distances = {}
+	        	for xy, distance in pairs (xyDistances) do
+	          		table.insert(distances, distance)
+	        	end
+	        
+	        	local min = math.min(unpack(distances))
+	        	for xy, distance in pairs (xyDistances) do
+	          		if (distance == min) then
+	            		local xo, yo = strsplit("-", xy)
+	            		return xo, yo
+	          		end
+	        	end
+	    	end
+    	end
+	end
 end
 
 ---============================================================================
@@ -125,16 +126,15 @@ function RSNpcPOI.GetNpcPOI(npcID, mapID, npcInfo, alreadyFoundInfo)
 	POI.grouping = true
 	POI.name = RSNpcDB.GetNpcName(npcID)
 	POI.mapID = mapID
-	if (alreadyFoundInfo and alreadyFoundInfo.mapID == mapID) then
+	if (GetStormInvasionAtlasName(npcID, mapID)) then
+    	POI.x, POI.y = GetStormInvasionXY(npcID, mapID)
+  	elseif (alreadyFoundInfo and alreadyFoundInfo.mapID == mapID) then
 		POI.x = alreadyFoundInfo.coordX
 		POI.y = alreadyFoundInfo.coordY
-	else
-	  if (GetStormInvasionAtlasName(npcID, mapID)) then
-	    POI.x, POI.y = GetStormInvasionXY(npcID, mapID)
-	  else
-		  POI.x, POI.y = RSNpcDB.GetInternalNpcCoordinates(npcID, mapID)
-		end
+  	else
+	  	POI.x, POI.y = RSNpcDB.GetInternalNpcCoordinates(npcID, mapID)
 	end
+	
 	POI.foundTime = alreadyFoundInfo and alreadyFoundInfo.foundTime
 	POI.isDead = RSNpcDB.IsNpcKilled(npcID)
 	POI.isDiscovered = POI.isDead or alreadyFoundInfo ~= nil
@@ -142,6 +142,7 @@ function RSNpcPOI.GetNpcPOI(npcID, mapID, npcInfo, alreadyFoundInfo)
 	POI.achievementIDs = RSAchievementDB.GetNotCompletedAchievementIDsByMap(npcID, mapID)
 	if (npcInfo) then
 		POI.worldmap = npcInfo.worldmap
+		POI.factionID = npcInfo.factionID
 	end
 	
 	-- Textures
@@ -182,6 +183,18 @@ local function IsNpcPOIFiltered(npcID, mapID, artID, zoneQuestID, questTitles, v
 	-- Skip if the entity is filtered
 	if (RSConfigDB.IsNpcFiltered(npcID) and not RSNpcDB.IsWorldMap(npcID) and (not RSConfigDB.IsNpcFilteredOnlyOnWorldMap() or (RSConfigDB.IsNpcFilteredOnlyOnWorldMap() and not RSGeneralDB.IsRecentlySeen(npcID)))) then
 		RSLogger:PrintDebugMessageEntityID(npcID, string.format("Saltado NPC [%s]: Filtrado en opciones.", npcID))
+		return true
+	end
+	
+	-- Skip if hunting party rare and is filtered
+	if (not RSConfigDB.IsShowingHuntingPartyRareNPCs() and RSUtils.Contains(RSConstants.HUNTING_PARTY_NPCS, npcID)) then
+		RSLogger:PrintDebugMessageEntityID(npcID, string.format("Saltado NPC [%s]: Filtrado NPC de grupo de caza.", npcID))
+		return true
+	end
+	
+	-- Skip if primal storm rare and is filtered
+	if (not RSConfigDB.IsShowingPrimalStormRareNPCs() and (RSUtils.Contains(RSConstants.FIRE_STORM_EVENTS_NPCS, npcID) or RSUtils.Contains(RSConstants.WATER_STORM_EVENTS_NPCS, npcID) or RSUtils.Contains(RSConstants.AIR_STORM_EVENTS_NPCS, npcID) or RSUtils.Contains(RSConstants.EARTH_STORM_EVENTS_NPCS, npcID))) then
+		RSLogger:PrintDebugMessageEntityID(npcID, string.format("Saltado NPC [%s]: Filtrado NPC de tormenta prismatica.", npcID))
 		return true
 	end
 
@@ -343,9 +356,18 @@ function RSNpcPOI.GetMapAlreadyFoundNpcPOI(npcID, alreadyFoundInfo, mapID, quest
 
 	-- Then checks with the internal found information just in case its a multizone
 	-- Its possible that the player is opening a map where this NPC can show up, but the last time seen was in a different map
-	if (not correctMap and (not npcInfo or not RSNpcDB.IsInternalNpcInMap(npcID, mapID))) then
-		RSLogger:PrintDebugMessageEntityID(npcID, string.format("Saltando NPC [%s]: En distinta zona.", npcID))
-		return
+	if (not correctMap) then
+		if (not npcInfo or not RSNpcDB.IsInternalNpcInMap(npcID, mapID)) then
+			RSLogger:PrintDebugMessageEntityID(npcID, string.format("Saltando NPC [%s]: En distinta zona.", npcID))
+			return
+		-- Skip if it doesnt have coordinates. This could happend if it is a custom NPC
+		elseif (not npcInfo.x or not npcInfo.y) then
+			local x, y = RSNpcDB.GetInternalNpcCoordinates(npcID, mapID)
+			if (not x or not y) then
+				RSLogger:PrintDebugMessageEntityID(npcID, string.format("Saltado NPC [%s]: No disponía de coordenadas.", npcID))
+				return
+			end
+		end
 	end
 
 	-- Skip if common filters

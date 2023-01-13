@@ -20,11 +20,14 @@ local parseSectionInfoForSpellID = function(sectionInfo)
 end
 
 
---this function is called when the player clicks on a link in the chat window to open a section in the encounter journal
-function Details222.EJCache.OnClickEncounterJournalLink(tag, journalType, id, difficultyId)
-    journalType = tonumber(journalType)
-    id = tonumber(id)
-    difficultyId = tonumber(difficultyId)
+---this function is called when the player clicks on a link in the chat window to open a section in the encounter journal
+---Details! then will check if that spell linked did damage to the raid and show a small box with the damage done
+---@param tag any tag isn't used
+---@param journalTypeString string
+---@param idString string
+function Details222.EJCache.OnClickEncounterJournalLink(tag, journalTypeString, idString)
+    local journalType = tonumber(journalTypeString)
+    local id = tonumber(idString)
 
     local instanceId, encounterId, sectionId, tierIndex = EJ_HandleLinkPath(journalType, id)
     if (sectionId) then

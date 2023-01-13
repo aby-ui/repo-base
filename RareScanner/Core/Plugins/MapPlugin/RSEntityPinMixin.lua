@@ -32,13 +32,15 @@ function RSEntityPinMixin:OnLoad()
 	self:SetScalingLimits(1, 0.75, 1.0);
 end
 
-function RSEntityPinMixin:OnAcquired(POI)
+function RSEntityPinMixin:OnAcquired(POI, dataProvider)
 	self:UseFrameLevelType("PIN_FRAME_LEVEL_VIGNETTE", self:GetMap():GetNumActivePinsByTemplate("RSEntityPinTemplate"));
 	self.POI = POI
+	self.dataProvider = dataProvider
 	self.Texture:SetTexture(POI.Texture)
 	self.Texture:SetScale(RSConfigDB.GetIconsWorldMapScale())
 	self:SetPosition(RSUtils.FixCoord(POI.x), RSUtils.FixCoord(POI.y));
 	self:SetPassThroughButtons("MiddleButton");
+	MapPinHighlight_CheckHighlightPin(self:GetHighlightType(), self, self.Texture, AREAPOI_HIGHLIGHT_PARAMS);
 end
 
 function RSEntityPinMixin:OnMouseEnter()
@@ -198,4 +200,15 @@ end
 function RSEntityPinMixin:OnReleased()
 	RSTooltip.ReleaseTooltip(self.tooltip)
 	self.tooltip = nil
+end
+
+function RSEntityPinMixin:GetHighlightType() -- override
+	local _, bountyFactionID, bountyFrameType = self.dataProvider:GetBountyInfo();
+	if (bountyFrameType == BountyFrameType.ActivityTracker) then
+		if (self.POI.factionID and RSUtils.Contains(self.POI.factionID, bountyFactionID)) then
+			return MapPinHighlightType.SupertrackedHighlight;
+		end
+	end
+
+	return MapPinHighlightType.None;
 end

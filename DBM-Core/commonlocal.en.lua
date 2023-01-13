@@ -13,6 +13,7 @@ CL.INTERMISSION						= "Intermission"--No blizz global for this, and will probab
 CL.NO_DEBUFF						= "Not %s"--For use in places like info frame where you put "Not Spellname"
 CL.ALLY								= "Ally"--Such as "Move to Ally"
 CL.ALLIES							= "Allies"--Such as "Move to Allies"
+CL.CLEAR							= "Clear"
 CL.SAFE								= "Safe"
 CL.NOTSAFE							= "Not Safe"
 CL.SEASONAL							= "Seasonal"--Used for option headers to label options that apply to seasonal mechanics (Such as season of mastery on classic era)

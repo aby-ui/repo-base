@@ -15,6 +15,8 @@ do
 	localization = localization:gsub("frFR", FRFR):gsub("koKR", KOKR)
 	localization = localization:gsub("ruRU", RURU):gsub("zhCN", ZHCN)
 	localization = localization:gsub("zhTW", ZHTW)
+
+
 	fieldText.localizations = localization
 
 	local t = {}

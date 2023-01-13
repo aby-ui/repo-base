@@ -166,7 +166,7 @@ function P:UpdatePosition()
 	for guid, info in pairs(self.groupInfo) do
 		local frame = info.bar
 		if E.db.position.detached then
-			frame:SetParent(UIParent);
+			frame:SetParent(UIParent)
 			E.LoadPosition(frame)
 			frame:Show()
 		else
@@ -194,8 +194,8 @@ end
 
 function P:UpdateCompactFrameSystemSettings()
 	if E.isDF then
-		self.useRaidStylePartyFrames = EditModeManagerFrame:UseRaidStylePartyFrames();
-		self.keepGroupsTogether = EditModeManagerFrame:ShouldRaidFrameShowSeparateGroups();
+		self.useRaidStylePartyFrames = EditModeManagerFrame:UseRaidStylePartyFrames()
+		self.keepGroupsTogether = EditModeManagerFrame:ShouldRaidFrameShowSeparateGroups()
 	else
 		self.useRaidStylePartyFrames = C_CVar and C_CVar.GetCVarBool("useCompactPartyFrames") or GetCVarBool("useCompactPartyFrames")
 		self.keepGroupsTogether = CompactRaidFrameManager_GetSetting("KeepGroupsTogether")
