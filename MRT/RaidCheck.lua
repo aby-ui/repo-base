@@ -307,7 +307,7 @@ end
 if ExRT.isLK then
 	module.db.classicBuffs = {
 		{"druid","Druid",136078,{[48470]=9,[26991]=8,[21850]=7,[21849]=6,[1126]=1,[5232]=2,[5234]=4,[6756]=3,[8907]=5,[9884]=6,[9885]=7,[26990]=8,[48469]=9,[69381]=9}},	--Gift of the Wild
-		{"int","Int",135932,{[43002]=7,[27126]=6,[10157]=5,[10156]=4,[1461]=3,[1460]=2,[1459]=1,[23028]=5,[27127]=6,[42995]=7}},	--Arcane Intellect
+		{"int","Int",135932,{[43002]=7,[27126]=6,[10157]=5,[10156]=4,[1461]=3,[1460]=2,[1459]=1,[23028]=5,[27127]=6,[42995]=7,[61316]=3,[61024]=7}},	--Arcane Intellect
 		{"ap","AP",132333,{[6673]=1,[5242]=2,[6192]=3,[11549]=4,[11550]=5,[11551]=6,[25289]=7,[2048]=8,[47436]=9}},	--Battle Shout
 		{"spirit","Spirit",135946,{[27681]=4,[32999]=5,[48074]=6,[14752]=1,[14818]=2,[14819]=3,[27841]=4,[25312]=5,[48073]=6}},	--Prayer of Spirit
 		{"armor","Armor",135926,{[588]=1,[7128]=2,[602]=3,[1006]=4,[10951]=5,[10952]=6,[25431]=7,[48040]=8,[48168]=9}},	--Inner Fire
@@ -1502,6 +1502,9 @@ do
 		local kitNow, kitMax = 0, 1
 		local kitType = 0
 		local timeLeft
+		if ExRT.isClassic then
+			return kitNow, kitMax, timeLeft, kitType
+		end
 		for _,itemSlotID in pairs(KitSlots) do
 			inspectScantip:SetInventoryItem("player", itemSlotID)
 
@@ -1538,6 +1541,11 @@ do
 	}
 	local oilTypes = nil
 	function module:OilCheck()
+		local oilMH, oilOH = 0, 0
+		if ExRT.isClassic then
+			return oilMH, oilOH
+		end
+
 		if not oilTypes then
 			oilTypes = ExRT.is10 and {
 			} or {
@@ -1556,8 +1564,6 @@ do
 				end
 			end
 		end
-
-		local oilMH, oilOH = 0, 0
 
 		for _,itemSlotID in pairs(OilSlots) do
 			local tooltipData = C_TooltipInfo.GetInventoryItem("player", itemSlotID)
@@ -2063,19 +2069,19 @@ function module.frame:UpdateFont()
 	end
 	for i=1,40 do
 		local line = self.lines[i]
-		line.name:SetFont(VMRT.RaidCheck.ReadyCheckFont or ExRT.F.defFont,VMRT.RaidCheck.ReadyCheckFontSize or 12)
-		line.mini.name:SetFont(VMRT.RaidCheck.ReadyCheckFont or ExRT.F.defFont,VMRT.RaidCheck.ReadyCheckFontSize or 12)
+		line.name:SetFont(VMRT.RaidCheck.ReadyCheckFont or ExRT.F.defFont,VMRT.RaidCheck.ReadyCheckFontSize or 12,"")
+		line.mini.name:SetFont(VMRT.RaidCheck.ReadyCheckFont or ExRT.F.defFont,VMRT.RaidCheck.ReadyCheckFontSize or 12,"")
 
 		for i,key in pairs(RCW_iconsList) do
-			line[key].bigText:SetFont(VMRT.RaidCheck.ReadyCheckFont or ExRT.F.defFont,(VMRT.RaidCheck.ReadyCheckFontSize or 12)-2)
+			line[key].bigText:SetFont(VMRT.RaidCheck.ReadyCheckFont or ExRT.F.defFont,(VMRT.RaidCheck.ReadyCheckFontSize or 12)-2,"")
 		end
 	end
-	self.title:SetFont(VMRT.RaidCheck.ReadyCheckFont or ExRT.F.defFont,VMRT.RaidCheck.ReadyCheckFontSize or 12)
-	self.timeLeftLine.time:SetFont(VMRT.RaidCheck.ReadyCheckFont or ExRT.F.defFont,VMRT.RaidCheck.ReadyCheckFontSize or 12)
+	self.title:SetFont(VMRT.RaidCheck.ReadyCheckFont or ExRT.F.defFont,VMRT.RaidCheck.ReadyCheckFontSize or 12,"")
+	self.timeLeftLine.time:SetFont(VMRT.RaidCheck.ReadyCheckFont or ExRT.F.defFont,VMRT.RaidCheck.ReadyCheckFontSize or 12,"")
 	--[[
 	if self.headers then
 		for i=1,#self.headers do
-			self.headers[i]:SetFont(VMRT.RaidCheck.ReadyCheckFont or ExRTFontNormal:GetFont() or ExRT.F.defFont,(VMRT.RaidCheck.ReadyCheckFontSize or 12)-2)
+			self.headers[i]:SetFont(VMRT.RaidCheck.ReadyCheckFont or ExRTFontNormal:GetFont() or ExRT.F.defFont,(VMRT.RaidCheck.ReadyCheckFontSize or 12)-2,"")
 		end
 	end
 	]]

@@ -1483,6 +1483,9 @@ function module:IsAzeriteItemEnabled()
 	return false
 end
 
+local EQUIPPED_FIRST = 1
+local EQUIPPED_LAST = 19
+
 function module.main:ENCOUNTER_START()
 	if ExRT.isClassic then
 		return

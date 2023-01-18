@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(1687, "DBM-Party-Legion", 5, 767)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20220116042005")
+mod:SetRevision("20230117063410")
 mod:SetCreatureID(91007)
 mod:SetEncounterID(1793)
 
@@ -64,7 +64,7 @@ end
 
 function mod:SPELL_AURA_APPLIED(args)
 	local spellId = args.spellId
-	if spellId == 200732 then
+	if spellId == 200154 then
 		if args:IsPlayer() then
 			specWarnBurningHatred:Show()
 			specWarnBurningHatred:Play("targetyou")

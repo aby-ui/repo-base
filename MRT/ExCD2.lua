@@ -5330,6 +5330,7 @@ do
 		]],subevents={RANGE_MISSED=true,SPELL_PERIODIC_MISSED=true,SWING_MISSED=[[
 			local meleeStr = GetSpellInfo(6603)
 			return function (timestamp,event,hideCaster,sourceGUID,sourceName,sourceFlags,sourceFlags2,destGUID,destName,destFlags,destFlags2,missType,isOffHand,amountMissed,critical)
+				if not eventsView.SPELL_MISSED then return end	--temp fix
 				return eventsView.SPELL_MISSED(timestamp,event,hideCaster,sourceGUID,sourceName,sourceFlags,sourceFlags2,destGUID,destName,destFlags,destFlags2,6603,meleeStr,1,missType,isOffHand,amountMissed,critical)
 			end
 		]]}},

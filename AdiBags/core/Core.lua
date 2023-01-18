@@ -55,6 +55,9 @@ _G[addonName] = addon
 --------------------------------------------------------------------------------
 
 --[===[@alpha@
+---@type AdiDebug
+AdiDebug = AdiDebug
+
 if AdiDebug then
 	AdiDebug:Embed(addon, addonName)
 else
@@ -367,6 +370,10 @@ end
 
 function addon:BAG_UPDATE(event, bag)
 	updatedBags[bag] = true
+	if addon.isWrath then
+		self:SendMessage('AdiBags_BagUpdated', updatedBags)
+		wipe(updatedBags)
+	end
 end
 
 function addon:BAG_UPDATE_DELAYED(event)

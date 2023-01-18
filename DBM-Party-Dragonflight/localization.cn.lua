@@ -1,4 +1,4 @@
---Mini Dragon <流浪者酒馆-Brilla@金色平原> 20221128
+--Mini Dragon <流浪者酒馆-Brilla@金色平原> 20230116
 --夏一可，暴雪娱乐
 
 if GetLocale() ~= "zhCN" then return end
@@ -153,17 +153,26 @@ L:SetGeneralLocalization({
 -----------------------
 -- Vexamus --
 -----------------------
---L= DBM:GetModLocalization(9999)
+L= DBM:GetModLocalization(2509)
+
+L:SetMiscLocalization({
+	VexRP		= "啊！找到了！很久以前，蓝龙军团的成员过载了一头奥术生物，意外创造出了一具强大的造物，名为维克萨姆斯。它当时就掀起了一场浩劫。"
+})
+
 
 -----------------------
--- Accidental Amalgamation --
+-- Overgrown Ancient --
 -----------------------
---L= DBM:GetModLocalization(9999)
+L= DBM:GetModLocalization(2512)
+
+L:SetMiscLocalization({
+	TreeRP	= "完美，我们正准备——等等，艾基斯塔兹！生命法术太浓了！你做了什么？"
+})
 
 -----------------------
--- Headmaster --
+-- Echo of Doragosa --
 -----------------------
---L= DBM:GetModLocalization(9999)
+--L= DBM:GetModLocalization(2514)
 
 ---------
 --Trash--
@@ -172,6 +181,10 @@ L = DBM:GetModLocalization("AlgetharAcademyTrash")
 
 L:SetGeneralLocalization({
 	name =	"艾杰斯亚学院小怪"
+})
+
+L:SetOptionLocalization({
+	AGBuffs		= "与龙族 NPC 交互时自动选择交谈以激活增益"
 })
 
 -----------------------
@@ -185,17 +198,17 @@ L:SetGeneralLocalization({
 -----------------------
 -- Talash Greywing --
 -----------------------
---L= DBM:GetModLocalization(9999)
+--L= DBM:GetModLocalization(2483)
 
 -----------------------
 -- Umbrelskul --
 -----------------------
---L= DBM:GetModLocalization(9999)
+--L= DBM:GetModLocalization(2508)
 
 -----------------------
 -- Azureblade --
 -----------------------
---L= DBM:GetModLocalization(9999)
+--L= DBM:GetModLocalization(2505)
 
 ---------
 --Trash--
@@ -204,6 +217,10 @@ L = DBM:GetModLocalization("TheAzurevaultTrash")
 
 L:SetGeneralLocalization({
 	name =	"碧蓝魔馆小怪"
+})
+
+L:SetOptionLocalization({
+	AGBook			= "与魔法书交互时自动选择传送"
 })
 
 -----------------------
@@ -222,7 +239,14 @@ L:SetGeneralLocalization({
 -----------------------
 -- Kyrakka and Erkhart Stormvein --
 -----------------------
---L= DBM:GetModLocalization(2503)
+L= DBM:GetModLocalization(2503)
+
+L:SetMiscLocalization({
+	North	= "向北",
+	West	= "向西",
+	South	= "向南",
+	East	= "向东"
+})
 
 ---------
 --Trash--
@@ -230,7 +254,7 @@ L:SetGeneralLocalization({
 L = DBM:GetModLocalization("RubyLifePoolsTrash")
 
 L:SetGeneralLocalization({
-	name =	"红玉新生法地小怪"
+	name =	"红玉新生法池小怪"
 })
 
 -----------------------
@@ -239,22 +263,22 @@ L:SetGeneralLocalization({
 -----------------------
 -- Watcher Irideus --
 -----------------------
---L= DBM:GetModLocalization(9999)
+--L= DBM:GetModLocalization(2504)
 
 -----------------------
 -- Gulping Goliath --
 -----------------------
---L= DBM:GetModLocalization(9999)
+--L= DBM:GetModLocalization(2507)
 
 -----------------------
 -- Khajin the Unyielding --
 -----------------------
---L= DBM:GetModLocalization(9999)
+--L= DBM:GetModLocalization(2510)
 
 -----------------------
 -- Primal Tsunami --
 -----------------------
---L= DBM:GetModLocalization(9999)
+--L= DBM:GetModLocalization(2511)
 
 ---------
 --Trash--

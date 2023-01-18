@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod("SanguineDepthsTrash", "DBM-Party-Shadowlands", 8)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20220920232426")
+mod:SetRevision("20230117063410")
 --mod:SetModelID(47785)
 
 mod.isTrashMod = true
@@ -9,7 +9,7 @@ mod.isTrashMod = true
 mod:RegisterEvents(
 	"SPELL_CAST_START 320991 321038 324103 326827 328170 326836",
 	"SPELL_CAST_SUCCESS 324086 334558",
-	"SPELL_AURA_APPLIED 334673 321038 324089 324086",
+	"SPELL_AURA_APPLIED 334673 321038 324089 326836",
 	"SPELL_AURA_REMOVED 326827"
 )
 

@@ -33,7 +33,14 @@ local gridClass, gridProto, gridParentProto = addon:NewClass("Grid", "LayeredReg
 
 function addon:CreateGridFrame(...) return gridClass:Create(...) end
 
--- OnCreate is called every time a new grid is created via addon:CreateGridFrame().
+-- Type definitions for the grid.
+
+---@class Grid A grid for organizing frames in a grid pattern.
+gridProto = gridProto
+---@cast gridProto +LayeredRegion, +ABEvent-1.0
+
+---@param name string The name of this grid.
+---@param parent Frame The parent frame of this grid.
 function gridProto:OnCreate(name, parent)
   self:SetParent(parent)
   gridParentProto.OnCreate(self)

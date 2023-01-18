@@ -1,11 +1,11 @@
 local mod	= DBM:NewMod(2472, "DBM-Party-Dragonflight", 1, 1196)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20221206015003")
+mod:SetRevision("20230114200950")
 mod:SetCreatureID(186116)--194745 for Rotfang Hyena
 mod:SetEncounterID(2567)
 --mod:SetUsedIcons(1, 2, 3)
-mod:SetHotfixNoticeRev(20221205000000)
+mod:SetHotfixNoticeRev(20230114000000)
 --mod:SetMinSyncRevision(20211203000000)
 --mod.respawnTime = 29
 
@@ -45,10 +45,10 @@ local specWarnGutShot							= mod:NewSpecialWarningDefensive(384343, nil, nil, n
 --local specWarnGTFO							= mod:NewSpecialWarningGTFO(340324, nil, nil, nil, 1, 8)
 
 --mod:AddTimerLine(DBM:EJ_GetSectionInfo(24883))
-local timerEnsnaringTrapCD						= mod:NewCDTimer(19.4, 384148, nil, nil, nil, 3)--Trap going out
+local timerEnsnaringTrapCD						= mod:NewCDTimer(17, 384148, nil, nil, nil, 3)--Trap going out
 local timerMeatTossCD							= mod:NewCDTimer(21.8, 384416, nil, nil, nil, 3)
-local timerCallHyenasCD							= mod:NewCDTimer(35, 384827, nil, nil, nil, 1)--Need actual CD
-local timerMastersCallCD						= mod:NewCDTimer(35, 384638, nil, nil, nil, 4, nil, DBM_COMMON_L.INTERRUPT_ICON)--Need actual CD
+local timerCallHyenasCD							= mod:NewCDTimer(31.6, 384827, nil, nil, nil, 1)
+--local timerMastersCallCD						= mod:NewCDTimer(35, 384638, nil, nil, nil, 4, nil, DBM_COMMON_L.INTERRUPT_ICON)--Doesn't seem to have an actual CD?
 local timerGutShotCD							= mod:NewCDTimer(21.8, 384343, nil, nil, nil, 5, nil, DBM_COMMON_L.TANK_ICON)
 
 --local berserkTimer							= mod:NewBerserkTimer(600)
@@ -68,14 +68,13 @@ function mod:OnCombatStart(delay)
 	timerGutShotCD:Start(12-delay)
 	timerMeatTossCD:Start(20.5-delay)
 	timerCallHyenasCD:Start(31-delay)
-	timerMastersCallCD:Start(37-delay)
+--	timerMastersCallCD:Start(37-delay)--Not timer based?
 	if self.Options.NPAuraOnFixate or self.Options.NPAuraOnMastersCall or self.Options.NPAuraOnEnsnaringTrap or self.Options.NPAuraOnHunterleadersTactics then
 		DBM:FireEvent("BossMod_EnableHostileNameplates")
 	end
 	if self.Options.RangeFrame then
 		DBM.RangeCheck:Show(4)
 	end
-	DBM:AddMsg("still missing timers for a 2nd Call Hyenas and second Master's call due to undertuning of mythic 0 dungeons, if you see these casts and are logging, please share with DBM")
 end
 
 function mod:OnCombatEnd()

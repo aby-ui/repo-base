@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2498, "DBM-Party-Dragonflight", 3, 1198)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20221217213243")
+mod:SetRevision("20230117042742")
 mod:SetCreatureID(186616)
 mod:SetEncounterID(2637)
 mod:SetUsedIcons(8)
@@ -143,7 +143,7 @@ end
 
 function mod:SPELL_AURA_REMOVED(args)
 	local spellId = args.spellId
-	if spellId == 361966 then--Lanced!
+	if spellId == 387155 then--Lanced!
 		--Resets these timers
 		if self:IsMythic() then
 			timerSummonSaboteurCD:Start(5.6, self.vb.addCount+1)

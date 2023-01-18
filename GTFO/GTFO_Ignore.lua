@@ -41,6 +41,12 @@ if (not (GTFO.ClassicMode or GTFO.BurningCrusadeMode or GTFO.WrathMode)) then
 		desc = "Eye of Corruption (8.3 BFA)",
 		isDefault = true,
 	}
+
+	GTFO.IgnoreSpellCategory["IcyGround"] = {
+		-- 10.0 Sennarth
+		spellID = 372055,
+		desc = "Icy Ground (Sennarth - Dragonflight)"
+	}
 end
 
 -- Scanner ignore list
@@ -119,3 +125,5 @@ GTFO.IgnoreScan["382541"] = true; -- Surge
 GTFO.IgnoreScan["391282"] = true; -- Crackling Energy
 GTFO.IgnoreScan["387333"] = true; -- Storm Surge
 GTFO.IgnoreScan["396328"] = true; -- Quaking Pillar
+--GTFO.IgnoreScan["375873"] = true; -- Wildfire
+

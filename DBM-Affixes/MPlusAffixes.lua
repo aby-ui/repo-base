@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod("MPlusAffixes", "DBM-Affixes")
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20230110213310")
+mod:SetRevision("20230116010542")
 --mod:SetModelID(47785)
 mod:SetZone(2516, 2526, 2515, 2521, 1477, 1571, 1176, 960)--All of the S1 DF M+ Dungeons
 
@@ -41,6 +41,7 @@ mod:GroupSpells(396363, 396369, 396364)--Thundering with the two charge spells
 --Antispam IDs for this mod: 1 run away, 2 dodge, 3 dispel, 4 incoming damage, 5 you/role, 6 misc, 7 gtfo, 8 personal aggregated alert
 
 local thunderingTotal = 0
+local playerThundering = false
 
 local function yellRepeater(self, text, total)
 	total = total + 1
@@ -82,33 +83,29 @@ function mod:SPELL_AURA_APPLIED(args)
 	elseif spellId == 350209 and args:IsPlayer() and self:AntiSpam(3, 8) then
 		specWarnSpitefulFixate:Show()
 		specWarnSpitefulFixate:Play("targetyou")
-	elseif spellId == 396369 then
+	elseif spellId == 396369 or spellId == 396364 then
 		if self:AntiSpam(30, 1) then
 			thunderingTotal = 0
 		end
 		thunderingTotal = thunderingTotal + 1
 		if args:IsPlayer() then
-			specWarnPositiveCharge:Show()
-			specWarnPositiveCharge:Play("positive")
-			timerPositiveCharge:Start()
+			playerThundering = true
 			self:Unschedule(yellRepeater)
-			local formatedIcon = DBM_CORE_L.AUTO_YELL_CUSTOM_POSITION:format(6, "")
+			local icon
+			if spellId == 396364 then
+				specWarnNegativeCharge:Show()
+				specWarnNegativeCharge:Play("negative")
+				timerNegativeCharge:Start()
+				icon = 7
+			else
+				specWarnPositiveCharge:Show()
+				specWarnPositiveCharge:Play("positive")
+				timerPositiveCharge:Start()
+				icon = 6
+			end
+			local formatedIcon = DBM_CORE_L.AUTO_YELL_CUSTOM_POSITION:format(icon, "")
 			yellRepeater(self, formatedIcon, 0)
-			yellThunderingFades:Countdown(15, 5, 6)--Start icon spam with count at 5 remaining
-		end
-	elseif spellId == 396364 then
-		if self:AntiSpam(30, 1) then
-			thunderingTotal = 0
-		end
-		thunderingTotal = thunderingTotal + 1
-		if args:IsPlayer() then
-			specWarnNegativeCharge:Show()
-			specWarnNegativeCharge:Play("negative")
-			timerNegativeCharge:Start()
-			self:Unschedule(yellRepeater)
-			local formatedIcon = DBM_CORE_L.AUTO_YELL_CUSTOM_POSITION:format(7, "")
-			yellRepeater(self, formatedIcon, 0)
-			yellThunderingFades:Countdown(15, 5, 7)--Start icon spam with count at 5 remaining
+			yellThunderingFades:Countdown(15, 5, icon)--Start icon spam with count at 5 remaining
 		end
 	end
 end
@@ -120,13 +117,16 @@ function mod:SPELL_AURA_REMOVED(args)
 	if spellId == 396369 or spellId == 396364 then
 		thunderingTotal = thunderingTotal - 1
 		--Your debuff is gone, OR all debuffs but one are gone and you're the one with it
-		if args:IsPlayer() or (thunderingTotal == 1 and DBM:UnitDebuff("player", 396369, 396364))  then
-			warnThunderingFades:Show()
+		if args:IsPlayer() or (thunderingTotal == 1 and DBM:UnitDebuff("player", 396369, 396364)) then
+			if playerThundering then--Because it's still possible to get double clear messages/yells
+				warnThunderingFades:Show()
+				playerThundering = false
+				yellThundering:Yell(DBM_COMMON_L.CLEAR)
+			end
 			timerPositiveCharge:Stop()
 			timerNegativeCharge:Stop()
 			self:Unschedule(yellRepeater)
 			yellThunderingFades:Cancel()
-			yellThundering:Yell(DBM_COMMON_L.CLEAR)
 		end
 	end
 end

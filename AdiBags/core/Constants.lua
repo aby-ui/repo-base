@@ -285,3 +285,28 @@ addon.DEFAULT_SETTINGS = {
 		},
 	},
 }
+
+--- Constants used by annotations that also can be used by the addon itself.
+
+---@enum ItemBindType The binding types for items.
+Enum.ItemBindType = {
+  LE_ITEM_BIND_NONE = 0,
+  LE_ITEM_BIND_ON_ACQUIRE = 1,
+  LE_ITEM_BIND_ON_EQUIP = 2,
+  LE_ITEM_BIND_ON_USE = 3,
+  LE_ITEM_BIND_QUEST = 4,
+}
+
+---@enum ExpansionType The expansion type for items.
+Enum.ExpansionType = {
+  LE_EXPANSION_CLASSIC = 0,
+  LE_EXPANSION_BURNING_CRUSADE = 1,
+  LE_EXPANSION_WRATH_OF_THE_LICH_KING = 2,
+  LE_EXPANSION_CATACLYSM = 3,
+  LE_EXPANSION_MISTS_OF_PANDARIA = 4,
+  LE_EXPANSION_WARLORDS_OF_DRAENOR = 5,
+  LE_EXPANSION_LEGION = 6,
+  LE_EXPANSION_BATTLE_FOR_AZEROTH = 7,
+  LE_EXPANSION_SHADOWLANDS = 8,
+  LE_EXPANSION_DRAGONFLIGHT = 9,
+}

@@ -1631,12 +1631,14 @@
 
 -- /run local a,b=Details.tooltip.header_statusbar,0.3;a[1]=b;a[2]=b;a[3]=b;a[4]=0.8;
 
-		function Details:AddTooltipSpellHeaderText (headerText, headerColor, amount, iconTexture, L, R, T, B, separator)
-
+		function Details:AddTooltipSpellHeaderText (headerText, headerColor, amount, iconTexture, L, R, T, B, separator, iconSize)
 			if (separator and separator == true) then
 				GameCooltip:AddLine ("", "", nil, nil, 1, 1, 1, 1, 8)
-
 				return
+			end
+
+			if (type(iconSize) ~= "number") then
+				iconSize = 14
 			end
 
 			if (Details.tooltip.show_amount) then
@@ -1646,7 +1648,7 @@
 			end
 
 			if (iconTexture) then
-				GameCooltip:AddIcon (iconTexture, 1, 1, 14, 14, L or 0, R or 1, T or 0, B or 1)
+				GameCooltip:AddIcon (iconTexture, 1, 1, iconSize, iconSize, L or 0, R or 1, T or 0, B or 1)
 			end
 		end
 

@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2491, "DBM-VaultoftheIncarnates", nil, 1200)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20230113024550")
+mod:SetRevision("20230117031931")
 mod:SetCreatureID(184986)
 mod:SetEncounterID(2605)
 mod:SetUsedIcons(1, 2, 3, 4, 5, 6, 7, 8)
@@ -12,7 +12,7 @@ mod:SetHotfixNoticeRev(20230112000000)
 mod:RegisterCombat("combat")
 
 mod:RegisterEventsInCombat(
-	"SPELL_CAST_START 390548 373678 382563 373487 374022 372456 375450 374691 374215 376669 397338 374430 374623 374624 374622 391019 392125 392192 392152 391268 393314 393295 393296 392098 393459 394719 393429 395893 394416",
+	"SPELL_CAST_START 390548 373678 382563 373487 374022 372456 375450 374691 374215 376669 397338 374430 374623 374624 374622 391019 392125 392192 392152 391268 393314 393295 393296 392098 393459 394719 393429 395893 394416 393309",
 	"SPELL_CAST_SUCCESS 375825 375828 375824 375792 373415",
 	"SPELL_AURA_APPLIED 371971 372158 373494 372458 372514 372517 374779 374380 374427 391056 390920 391419 396109 396113 396106 396085 396241 391696",
 	"SPELL_AURA_APPLIED_DOSE 372158 374321",
@@ -23,17 +23,6 @@ mod:RegisterEventsInCombat(
 	"UNIT_SPELLCAST_SUCCEEDED boss1"
 )
 
---TODO, also add a stack too high warning on https://www.wowhead.com/beta/spell=373535/lightning-crash when strategies and tuning are established
---TODO, See how things play out with WA/BW on handling some of this bosses mechanics, right now drycode is steering clear of computational/solving for things and sticking to just showing them
---TODO, is https://www.wowhead.com/beta/npc=190807/seismic-rupture tangible or invisible script bunny
---TODO, is https://www.wowhead.com/beta/npc=190586/seismic-pillar tangible/in need of killing or no?
---TODO, GTFO https://www.wowhead.com/beta/spell=374705/seismic-rupture ?
---TODO, revisit thunder strike automation. May want to combine warnings to generalized warning instead of saying soak/avoid
---TODO, target scan https://www.wowhead.com/beta/spell=374622/storm-front ?
---TODO, announce https://www.wowhead.com/beta/spell=391555/raging-inferno spawns on mythic? They spawn from Searing
---TODO, smart change checker for https://www.wowhead.com/beta/spell=391272/icy-tempest on mythic
---TODO, verify Dark Clouds mechanic on mythic
---TODO, add https://www.wowhead.com/beta/spell=374321/breaking-gravel if requires an actual tank swap to clear
 --[[
 (ability.id = 390548 or ability.id = 373678 or ability.id = 382563 or ability.id = 392125 or ability.id = 373487 or ability.id = 373329
  or ability.id = 374022 or ability.id = 392192 or ability.id = 392152 or ability.id = 372456 or ability.id = 375450 or ability.id = 395893

@@ -1014,6 +1014,14 @@ GTFO.SpellID["219498"] = {
   sound = 3;
 };
 
+GTFO.SpellID["224333"] = {
+  --desc = "Fel Detonation (Felbound Enforcer)";
+  applicationOnly = true;
+  sound = 3;
+  tankSound = 0;
+  test = true;
+};
+
 GTFO.SpellID["209378"] = {
   --desc = "Whirling Blades (Imacu'tya)";
   applicationOnly = true;
@@ -1043,14 +1051,13 @@ GTFO.SpellID["224333"] = {
 GTFO.SpellID["209630"] = {
   --desc = "Piercing Gale (Advisor Melandrus)";
   sound = 3;
-  test = true;
 };
 
 GTFO.SpellID["209628"] = {
   --desc = "Piercing Gale (Advisor Melandrus)";
   sound = 3;
-  test = true;
 };
+
 
 
 -- ************************

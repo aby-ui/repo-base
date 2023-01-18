@@ -159,7 +159,7 @@ local function setup()
         ct.maxLevel:SetPoint("TOPLEFT", 85, -12)
 
         ------ 不相干的一个功能 ------
-        if Locale_zhCN then
+        if LOCALE_zhCN then
             local maxTrivialLevel = self.currentRecipeInfo and self.currentRecipeInfo.maxTrivialLevel
             if maxTrivialLevel and maxTrivialLevel > 0 then
                 ct.maxLevel:SetFormattedText("（技能提升上限：|cff00ff00%d|r）", maxTrivialLevel)

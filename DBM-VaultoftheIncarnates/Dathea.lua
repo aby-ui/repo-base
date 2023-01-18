@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2502, "DBM-VaultoftheIncarnates", nil, 1200)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20230113011759")
+mod:SetRevision("20230117031931")
 mod:SetCreatureID(189813)
 mod:SetEncounterID(2635)
 mod:SetUsedIcons(8, 7, 6, 5, 4)
@@ -14,7 +14,7 @@ mod:RegisterCombat("combat")
 mod:RegisterEventsInCombat(
 	"SPELL_CAST_START 387849 388302 376943 388410 375580 387943 385812 384273 387627 391382 395501",
 --	"SPELL_CAST_SUCCESS",
-	"SPELL_SUMMON 384757 384757",
+	"SPELL_SUMMON 387857",
 	"SPELL_AURA_APPLIED 391686 375580",
 	"SPELL_AURA_APPLIED_DOSE 375580",
 --	"SPELL_AURA_REMOVED",
@@ -24,9 +24,6 @@ mod:RegisterEventsInCombat(
 	"UNIT_SPELLCAST_SUCCEEDED boss1"
 )
 
---TODO, refine range checker to not be needed at all times if a determinate pre warning can be detected or scheduled for new conductive marks going out, and all being gone
---TODO, add unstable gusts?
---TODO, how to handle Incubating Seeds, 50 yards is a big radius. can players avoid it by moving away or is it a "kill it very hard and very fast" thing https://www.wowhead.com/beta/spell=389049/incubating-seed
 --[[
 (ability.id = 387849 or ability.id = 388302 or ability.id = 376943 or ability.id = 388410 or ability.id = 375580) and type = "begincast"
  or ability.id = 391600 and type = "cast" and source.id = 189813

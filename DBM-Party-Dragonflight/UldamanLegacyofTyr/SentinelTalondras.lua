@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2484, "DBM-Party-Dragonflight", 2, 1197)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20220820005632")
+mod:SetRevision("20230117042742")
 mod:SetCreatureID(184124)
 mod:SetEncounterID(2557)
 mod:SetUsedIcons(1, 2, 3)
@@ -14,7 +14,7 @@ mod:RegisterCombat("combat")
 mod:RegisterEventsInCombat(
 	"SPELL_CAST_START 372719 372600 372623 372701",
 	"SPELL_CAST_SUCCESS 372718",
-	"SPELL_AURA_APPLIED 382071",
+	"SPELL_AURA_APPLIED 382071 372718",
 --	"SPELL_AURA_APPLIED_DOSE",
 	"SPELL_AURA_REMOVED 382071 372600"
 --	"SPELL_PERIODIC_DAMAGE",

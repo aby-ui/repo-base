@@ -67,6 +67,10 @@ local FAMILY_ICONS = addon.FAMILY_ICONS
 -- (bag,slot) <=> slotId conversion
 --------------------------------------------------------------------------------
 
+-- TODO(lobato): Check if nil is ever used as a return value, assert instead of returning nil if not
+---@param bag number A bag id
+---@param slot number A slot id that belongs to a bag
+---@return slotId|nil slotID A unique id for the given bag and slot
 function addon.GetSlotId(bag, slot)
 	if bag and slot then
 		return bag * 100 + slot

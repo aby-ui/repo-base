@@ -64,8 +64,7 @@ if (WOW_PROJECT_ID ~= WOW_PROJECT_MAINLINE and not isExpansion_Dragonflight()) t
 end
 
 local major = "LibOpenRaid-1.0"
---local CONST_LIB_VERSION = 87
-local CONST_LIB_VERSION = 92 --this is a rollback version, due to some zero hour bug issues
+local CONST_LIB_VERSION = 93
 
 if (not LIB_OPEN_RAID_MAX_VERSION) then
     LIB_OPEN_RAID_MAX_VERSION = CONST_LIB_VERSION
@@ -97,6 +96,11 @@ local unpack = table.unpack or _G.unpack
 
     local CONST_CVAR_TEMPCACHE = "LibOpenRaidTempCache"
     local CONST_CVAR_TEMPCACHE_DEBUG = "LibOpenRaidTempCacheDebug"
+
+    --delay to request all data from other players
+    local CONST_REQUEST_ALL_DATA_COOLDOWN = 30
+    --delay to send all data to other players
+    local CONST_SEND_ALL_DATA_COOLDOWN = 30
 
     --show failures (when the function return an error) results to chat
     local CONST_DIAGNOSTIC_ERRORS = false
@@ -764,7 +768,7 @@ end
         openRaidLib.internalCallback.TriggerEvent("talentUpdate")
     end
     local delayedTalentChange = function()
-        openRaidLib.Schedules.NewUniqueTimer(0.5 + math.random(), talentChangedCallback, "TalentChangeEventGroup", "talentChangedCallback_Schedule")
+        openRaidLib.Schedules.NewUniqueTimer(math.random(3, 6), talentChangedCallback, "TalentChangeEventGroup", "talentChangedCallback_Schedule")
     end
 
     local eventFunctions = {
@@ -789,7 +793,7 @@ end
                 --the group has changed, trigger a long timer to send full data
                 --as the timer is unique, a new change to the group will replace and refresh the time
                 --using random time, players won't trigger all at the same time
-                local randomTime = 0.3 + math.random(0, 0.7)
+                local randomTime = 5 + math.random() + math.random(1, 5)
                 openRaidLib.Schedules.NewUniqueTimer(randomTime, openRaidLib.mainControl.SendFullData, "mainControl", "sendFullData_Schedule")
             end
 
@@ -1124,12 +1128,14 @@ end
 
     --send a request to all players in the group to send their data
     function openRaidLib.RequestAllData()
+        --the the player isn't in group, don't send the request
 		if (not IsInGroup()) then
 			return
 		end
 
         openRaidLib.requestAllInfoCooldown = openRaidLib.requestAllInfoCooldown or 0
 
+        --check if the player can sent another request
         if (openRaidLib.requestAllInfoCooldown > GetTime()) then
             return
         end
@@ -1137,22 +1143,30 @@ end
         openRaidLib.commHandler.SendCommData(CONST_COMM_FULLINFO_PREFIX)
         diagnosticComm("RequestAllInfo| " .. CONST_COMM_FULLINFO_PREFIX) --debug
 
-        openRaidLib.requestAllInfoCooldown = GetTime() + 5
+        openRaidLib.requestAllInfoCooldown = GetTime() + CONST_REQUEST_ALL_DATA_COOLDOWN
         return true
+    end
+
+    --this function handles the request from another player to send all data
+    function openRaidLib.commHandler.SendFullData()
+        openRaidLib.mainControl.SendFullData()
     end
 
     openRaidLib.commHandler.RegisterComm(CONST_COMM_FULLINFO_PREFIX, function(data, sourceName)
         openRaidLib.sendRequestedAllInfoCooldown = openRaidLib.sendRequestedAllInfoCooldown or 0
 
-        --some player in the group requested  all information from all players
+        --check if there's some delay before sending the data
         if (openRaidLib.sendRequestedAllInfoCooldown > GetTime()) then
+            --reschedule the function call
+            openRaidLib.Schedules.NewUniqueTimer(openRaidLib.sendRequestedAllInfoCooldown - GetTime(), openRaidLib.commHandler.SendFullData, "CommHandler", "sendFullData_Schedule")
             return
         end
 
-        openRaidLib.Schedules.NewUniqueTimer(random() + math.random(0, 3), openRaidLib.mainControl.SendFullData, "mainControl", "sendFullData_Schedule")
-        openRaidLib.sendRequestedAllInfoCooldown = GetTime() + 5
-    end)
+        openRaidLib.Schedules.NewUniqueTimer(math.random(1, 6), openRaidLib.commHandler.SendFullData, "CommHandler", "sendFullData_Schedule")
 
+        --set the delay for the next request
+        openRaidLib.sendRequestedAllInfoCooldown = GetTime() + CONST_SEND_ALL_DATA_COOLDOWN
+    end)
 
 --------------------------------------------------------------------------------------------------------------------------------
 --~player general ~info ~unit

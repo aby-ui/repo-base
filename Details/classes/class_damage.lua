@@ -12,6 +12,7 @@
 	local Translit = LibStub("LibTranslit-1.0")
 	local gump = Details.gump
 	local _ = nil
+	local detailsFramework = DetailsFramework
 	local addonName, Details222 = ...
 
 -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -490,6 +491,7 @@ end
 		}
 
 		setmetatable(newDamageActor, atributo_damage)
+		detailsFramework:Mixin(newDamageActor, Details222.Mixins.ActorMixin)
 
 		return newDamageActor
 	end
@@ -6287,6 +6289,7 @@ end
 
 function Details.refresh:r_atributo_damage (este_jogador, shadow)
 	--restaura metas do ator
+		detailsFramework:Mixin(este_jogador, Details222.Mixins.ActorMixin)
 		setmetatable(este_jogador, Details.atributo_damage)
 		este_jogador.__index = Details.atributo_damage
 	--restaura as metas dos containers

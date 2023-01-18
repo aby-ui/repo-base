@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2142, "DBM-Party-BfA", 6, 1001)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20220217031102")
+mod:SetRevision("20230117063410")
 mod:SetCreatureID(133379, 133944)
 mod:SetEncounterID(2124)
 mod:SetUsedIcons(8)
@@ -169,7 +169,7 @@ function mod:SPELL_CAST_START(args)
 		specWarnStaticShock:Show()
 		specWarnStaticShock:Play("aesoon")
 		--timerStaticShockCD:Start()
-	elseif spellId == 267818 and self:CheckInterruptFilter(args.sourceGUID, false, true) then
+	elseif spellId == 263318 and self:CheckInterruptFilter(args.sourceGUID, false, true) then
 		specWarnJolt:Show(args.sourceName)
 		specWarnJolt:Play("kickcast")
 	elseif spellId == 263775 and self:CheckInterruptFilter(args.sourceGUID, false, true) then

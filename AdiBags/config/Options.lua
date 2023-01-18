@@ -320,7 +320,7 @@ local function GetOptions()
 		name = addonName..' DEV',
 		--@end-debug@]===]
 		--@non-debug@
-		name = addonName..' v1.10.5',
+		name = addonName..' v1.10.6',
 		--@end-non-debug@
 		type = 'group',
 		handler = addon:GetOptionHandler(addon),

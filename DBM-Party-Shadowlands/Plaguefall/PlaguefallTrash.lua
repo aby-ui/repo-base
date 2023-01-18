@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod("PlaguefallTrash", "DBM-Party-Shadowlands", 2)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20220803233609")
+mod:SetRevision("20230117063410")
 --mod:SetModelID(47785)
 
 mod.isTrashMod = true
@@ -9,7 +9,7 @@ mod.isTrashMod = true
 mod:RegisterEvents(
 	"SPELL_CAST_START 328016 328177 327584 327581 330403 327233 328986 318949 319070 328338 328475",
 	"SPELL_CAST_SUCCESS 320517",
-	"SPELL_AURA_APPLIED 328015 320072 320103",
+	"SPELL_AURA_APPLIED 328015 320072 320103 336451",
 	"SPELL_AURA_REMOVED 320103"
 )
 

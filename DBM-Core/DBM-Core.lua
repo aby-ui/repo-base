@@ -70,27 +70,27 @@ local function showRealDate(curseDate)
 end
 
 DBM = {
-	Revision = parseCurseDate("20230112000809"),
+	Revision = parseCurseDate("20230117193910"),
 }
 
 local fakeBWVersion, fakeBWHash
 local bwVersionResponseString = "V^%d^%s"
 -- The string that is shown as version
 if isRetail then
-	DBM.DisplayVersion = "10.0.20 alpha"
-	DBM.ReleaseRevision = releaseDate(2023, 1, 10) -- the date of the latest stable version that is available, optionally pass hours, minutes, and seconds for multiple releases in one day
+	DBM.DisplayVersion = "10.0.21 alpha"
+	DBM.ReleaseRevision = releaseDate(2023, 1, 17) -- the date of the latest stable version that is available, optionally pass hours, minutes, and seconds for multiple releases in one day
 	fakeBWVersion, fakeBWHash = 259, "3fbb48c"
 elseif isClassic then
-	DBM.DisplayVersion = "1.14.29 alpha"
-	DBM.ReleaseRevision = releaseDate(2022, 11, 28) -- the date of the latest stable version that is available, optionally pass hours, minutes, and seconds for multiple releases in one day
+	DBM.DisplayVersion = "1.14.30 alpha"
+	DBM.ReleaseRevision = releaseDate(2023, 1, 17) -- the date of the latest stable version that is available, optionally pass hours, minutes, and seconds for multiple releases in one day
 	fakeBWVersion, fakeBWHash = 41, "287b8dd"
 elseif isBCC then
 	DBM.DisplayVersion = "2.6.0 alpha"--When TBC returns (and it will one day). It'll probably be game version 2.6
-	DBM.ReleaseRevision = releaseDate(2022, 8, 1) -- the date of the latest stable version that is available, optionally pass hours, minutes, and seconds for multiple releases in one day
+	DBM.ReleaseRevision = releaseDate(2023, 1, 17) -- the date of the latest stable version that is available, optionally pass hours, minutes, and seconds for multiple releases in one day
 	fakeBWVersion, fakeBWHash = 41, "287b8dd"
 elseif isWrath then
-	DBM.DisplayVersion = "3.4.24 alpha"
-	DBM.ReleaseRevision = releaseDate(2023, 1, 10) -- the date of the latest stable version that is available, optionally pass hours, minutes, and seconds for multiple releases in one day
+	DBM.DisplayVersion = "3.4.25 alpha"
+	DBM.ReleaseRevision = releaseDate(2023, 1, 17) -- the date of the latest stable version that is available, optionally pass hours, minutes, and seconds for multiple releases in one day
 	fakeBWVersion, fakeBWHash = 41, "287b8dd"
 end
 DBM.HighestRelease = DBM.ReleaseRevision --Updated if newer version is detected, used by update nags to reflect critical fixes user is missing on boss pulls

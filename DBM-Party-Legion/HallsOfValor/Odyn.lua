@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(1489, "DBM-Party-Legion", 4, 721)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20221228064846")
+mod:SetRevision("20230117042742")
 mod:SetCreatureID(95676)
 mod:SetEncounterID(1809)
 mod:SetHotfixNoticeRev(20221228000000)
@@ -10,7 +10,7 @@ mod:SetMinSyncRevision(20221228000000)
 mod:RegisterCombat("combat")
 
 mod:RegisterEventsInCombat(
-	"SPELL_CAST_START 198263 198077 198750",
+	"SPELL_CAST_START 198072 198263 198077 198750",
 	"SPELL_CAST_SUCCESS 197961",
 	"SPELL_AURA_APPLIED 197963 197964 197965 197966 197967",
 	"UNIT_SPELLCAST_SUCCEEDED boss1"

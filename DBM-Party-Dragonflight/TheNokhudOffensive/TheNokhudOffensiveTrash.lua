@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod("TheNokhudOffensiveTrash", "DBM-Party-Dragonflight", 3)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20230109004131")
+mod:SetRevision("20230117042742")
 --mod:SetModelID(47785)
 mod.isTrashMod = true
 
@@ -95,11 +95,3 @@ function mod:SPELL_AURA_APPLIED(args)
 	end
 end
 mod.SPELL_AURA_APPLIED_DOSE = mod.SPELL_AURA_APPLIED
-
-function mod:SPELL_AURA_REMOVED(args)
-	local spellId = args.spellId
-	if spellId == 339525 and args:IsPlayer() then
-
-	end
-end
---]]

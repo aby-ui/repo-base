@@ -17,7 +17,7 @@ addon.Cooldowns = {
     -- Death Knight
 
     [47528] = {default = true, duration = 15, class = "DEATHKNIGHT"}, -- Mind Freeze
-    [48265] = {duration = 45, class = "DEATHKNIGHT"}, -- Death's Advance
+    [48265] = {duration = 45, class = "DEATHKNIGHT", charges = 2}, -- Death's Advance
     [48707] = {duration = 60, class = "DEATHKNIGHT"}, -- Anti-Magic Shell
     [49576] = {duration = 25, class = "DEATHKNIGHT", charges = 2}, -- Death Grip
     [51052] = {duration = 120, class = "DEATHKNIGHT"}, -- Anti-Magic Zone
@@ -32,7 +32,7 @@ addon.Cooldowns = {
     [48792] = {duration = 120, class = "DEATHKNIGHT"}, -- Icebound Fortitude
     [383269] = {duration = 120, class = "DEATHKNIGHT"}, -- Abomination's Limb
     [48743] = {duration = 120, class = "DEATHKNIGHT"}, -- Death Pact
-    [43265] = {duration = 30, class = "DEATHKNIGHT"}, -- Death and Decay
+    [43265] = {duration = 30, class = "DEATHKNIGHT", charges = 2}, -- Death and Decay
 		[152280] = {parent = 43265, duration = 20, specID = {252}}, -- Defile
 
 		-- Blood
@@ -79,7 +79,7 @@ addon.Cooldowns = {
     [191427] = {duration = 180, class = "DEMONHUNTER"}, -- Metamorphosis
 		[187827] = {parent = 191427, duration = 180}, -- Metamorphosis (Vengeance)
     [196718] = {duration = 180, class = "DEMONHUNTER"}, -- Darkness
-    [198793] = {duration = 25, class = "DEMONHUNTER"}, -- Vengeful Retreat
+    [198793] = {duration = {default = 25, [577] = 20}, class = "DEMONHUNTER"}, -- Vengeful Retreat
     [205604] = {duration = 60, class = "DEMONHUNTER"}, -- Reverse Magic
     [206803] = {duration = 60, class = "DEMONHUNTER"}, -- Rain from Above
     [212800] = {duration = 60, class = "DEMONHUNTER"}, -- Blur
@@ -130,7 +130,7 @@ addon.Cooldowns = {
 			[123040] = {parent = 34433, duration = 60}, -- Mindbender (Discipline)
 			[200174] = {parent = 34433, duration = 60}, -- Mindbender (Shadow)
 		[47536] = {duration = 90, class = "PRIEST", specID = {256}}, -- Rapture
-		[62618] = {duration = 180, class = "PRIEST", specID = {256}}, -- Power Word: Barrier
+		[62618] = {duration = 90, class = "PRIEST", specID = {256}}, -- Power Word: Barrier
 		[197862] = {duration = 60, class = "PRIEST", specID = {256}}, -- Archangel
 		[197871] = {duration = 60, class = "PRIEST", specID = {256}}, -- Dark Archangel
 		[204263] = {duration = 45, class = "PRIEST", specID = {256, 257}}, -- Shining Force
@@ -165,7 +165,7 @@ addon.Cooldowns = {
     -- Paladin
 
     [633] = {duration = 420, class = "PALADIN"}, -- Lay on Hands
-    [642] = {duration = 300, class = "PALADIN"}, -- Divine Shield
+    [642] = {duration = 210, class = "PALADIN"}, -- Divine Shield
     [853] = {duration = 60, class = "PALADIN"}, -- Hammer of Justice
     [1022] = {duration = 300, class = "PALADIN", charges = 2}, -- Blessing of Protection
 		[204018] = {parent = 1022, duration = 180}, -- Blessing of Spellwarding
@@ -209,7 +209,7 @@ addon.Cooldowns = {
 
 		-- Retribution
 
-		[184662] = {duration = 120, class = "PALADIN", specID = {70}}, -- Shield of Vengeance
+		[184662] = {duration = 60, class = "PALADIN", specID = {70}}, -- Shield of Vengeance
 		[205191] = {duration = 60, class = "PALADIN", specID = {70}}, -- Eye for an Eye
 		[255937] = {duration = 45, class = "PALADIN", specID = {70}}, -- Wake of Ashes
 			[384052] = {parent = 255937, duration = 15}, -- Radiant Decree
@@ -337,7 +337,7 @@ addon.Cooldowns = {
     [20707] = {duration = 600, class = "WARLOCK"}, -- Soulstone
     [30283] = {duration = 60, class = "WARLOCK"}, -- Shadowfury
     [104773] = {duration = 180, class = "WARLOCK"}, -- Unending Resolve
-    [108416] = {duration = 60, class = "WARLOCK"}, -- Dark Pact
+    [108416] = {duration = 45, class = "WARLOCK"}, -- Dark Pact
     [119910] = {default = true, duration = 24, class = "WARLOCK"}, -- Spell Lock (Command Demon)
 		[19647] = {parent = 119910}, -- Spell Lock (Felhunter)
 		[119911] = {parent = 119910}, -- Optical Blast (Command Demon)
@@ -476,7 +476,7 @@ addon.Cooldowns = {
     [53480] = {duration = 60, class = "HUNTER"}, -- Roar of Sacrifice
     [109304] = {duration = 120, class = "HUNTER"}, -- Exhilaration
     [131894] = {duration = 60, class = "HUNTER"}, -- A Murder of Crows
-    [186257] = {duration = {default = 180, [253] = 120, [255] = 144}, class = "HUNTER"}, -- Aspect of the Cheetah
+    [186257] = {duration = 180, class = "HUNTER"}, -- Aspect of the Cheetah
     [186265] = {duration = 180, class = "HUNTER"}, -- Aspect of the Turtle
     [187650] = {duration = 25, class = "HUNTER"}, -- Freezing Trap
 		[203340] = {parent = 187650}, -- Diamond Ice
@@ -603,7 +603,7 @@ addon.Cooldowns = {
     [381623] = {duration = 60, class = "ROGUE", specID = {63}, charges = 3}, -- Thistle Tea
     [385616] = {duration = 45, class = "ROGUE"}, -- Echoing Reprimand
     [1776] = {duration = 20, class = "ROGUE"}, -- Gouge
-    [2094] = {duration = 120, class = "ROGUE"}, -- Blind
+    [2094] = {duration = {default = 120, [260] = 90}, class = "ROGUE"}, -- Blind
     [385408] = {duration = 90, class = "ROGUE"}, -- Sepsis
     [212182] = {duration = 180, class = "ROGUE", specID = {259, 260}}, -- Smoke Bomb
 		[359053] = {parent = 212182, duration = 120, specID = {261}}, -- Smoke Bomb (Subtlety)
@@ -698,7 +698,7 @@ addon.Cooldowns = {
     [360995] = {duration = 16, class = "EVOKER"}, -- Verdant Embrace
     [357214] = {duration = 90, class = "EVOKER"}, -- Wing Buffet
     [368970] = {duration = 90, class = "EVOKER"}, -- Tail Swipe
-    [351338] = {default = true, duration = 20, class = "EVOKER"}, -- Quell
+    [351338] = {default = true, duration = {default = 40, [1467] = 20}, class = "EVOKER"}, -- Quell
     [374251] = {duration = 60, class = "EVOKER"}, -- Cauterizing Flame
     [360806] = {duration = 15, class = "EVOKER"}, -- Sleep Walk
     [370553] = {duration = 120, class = "EVOKER"}, -- Tip the Scales

@@ -36,6 +36,7 @@ local CBH = LibStub('CallbackHandler-1.0')
 
 -- Event dispatching and messagging
 
+---@type ABEvent-1.0
 local eventLib = LibStub:NewLibrary("ABEvent-1.0", 1)
 
 local events = CBH:New(eventLib, 'RegisterEvent', 'UnregisterEvent', 'UnregisterAllEvents')

@@ -191,6 +191,17 @@ do
 			[371339] = {tier = {[562] = 3, [476] = 1, [519] = 2}}, --Phial of Elemental Chaos
 		}
 
+		LIB_OPEN_RAID_ALL_POTIONS = {
+			[370511] = 1, --Refreshing Healing Potion
+			[371039] = 1, --Potion of Withering Vitality
+			[370607] = 1, --Aerated Mana Potion
+			[371024] = 1, --Elemental Potion of Power
+			[371028] = 1, --Elemental Potion of Ultimate Power
+			[371033] = 1, --Potion of Frozen Focus
+			[371125] = 1, --Potion of the Hushed Zephyr
+			[371052] = 1, --Potion of Chilled Clarity
+		}
+
 		--spellId of healing from potions
 		LIB_OPEN_RAID_HEALING_POTIONS = {
 			[370511] = 1, --Refreshing Healing Potion

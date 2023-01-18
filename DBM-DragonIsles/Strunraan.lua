@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2515, "DBM-DragonIsles", nil, 1205)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20230106003243")
+mod:SetRevision("20230117031931")
 mod:SetCreatureID(193534)
 mod:SetEncounterID(2651)
 mod:SetReCombatTime(20)
@@ -55,7 +55,7 @@ end
 
 function mod:SPELL_CAST_START(args)
 	local spellId = args.spellId
-	if spellId == 338858 then
+	if spellId == 387191 then
 		warnEmpoweredStorm:Show()
 		timerEmpoweredStormCD:Start()
 	elseif spellId == 389951 then

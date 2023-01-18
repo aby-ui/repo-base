@@ -944,6 +944,7 @@ DF.CrowdControlSpells = {
 	[122] = "MAGE", --Frost Nova
 	[157997] = "MAGE", --Ice Nova
 	[31661] = "MAGE", --Dragon's Breath
+	[157981] = "MAGE", --Blast Wave
 	
 	[205364] = "PRIEST", --Mind Control (talent)
 	[605] = "PRIEST", --Mind Control

@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod("TirnaScitheTrash", "DBM-Party-Shadowlands", 3)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20220920232426")
+mod:SetRevision("20230117063410")
 --mod:SetModelID(47785)
 
 mod.isTrashMod = true
@@ -9,7 +9,7 @@ mod.isTrashMod = true
 mod:RegisterEvents(
 	"SPELL_CAST_START 321968 324909 324923 324914 324776 340305 340304 340300 340160 340189 326046 325418 331718",
 	"SPELL_CAST_SUCCESS 325418 340544 322938",
-	"SPELL_AURA_APPLIED 322557 324914 324776 325224 340288 326046",
+	"SPELL_AURA_APPLIED 322557 324914 324776 325224 340288 326046 322486",
 	"SPELL_AURA_APPLIED_DOSE 340288"
 )
 
@@ -151,7 +151,7 @@ function mod:SPELL_AURA_APPLIED(args)
 	elseif spellId == 322486 then
 		if args:IsPlayer() then
 			specWarnOvergrowth:Show()
-			specWarnOvergrowth:Play("movemelee")--Eh most accurate way to say move into melee for now, TODO, switch to movemelee
+			specWarnOvergrowth:Play("movemelee")
 		else
 			warnOvergrowth:Show(args.destName)
 		end

@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2480, "DBM-VaultoftheIncarnates", nil, 1200)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20221228062737")
+mod:SetRevision("20230115051456")
 mod:SetCreatureID(184972)
 mod:SetEncounterID(2587)
 mod:SetUsedIcons(1, 2, 3, 4, 5)
@@ -23,9 +23,6 @@ mod:RegisterEventsInCombat(
 --	"UNIT_SPELLCAST_SUCCEEDED boss1"
 )
 
---TODO, adjust tank debuff check code for tank debuff to match CD and correct stack swap count based on the math
---TODO, continue to review auto stopping timers after x casts. need to see normal and LFR first to make sure not cutting timers off that should't be on them yet
---TODO, initial big add timers on mythic if it matters enough, but it's first boss so meh
 --[[
 (ability.id = 370307 or ability.id = 390715 or ability.id = 394917 or ability.id = 370615 or ability.id = 396023) and type = "begincast"
  or (ability.id = 396022 or ability.id = 394917) and type = "cast"

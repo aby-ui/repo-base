@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(1487, "DBM-Party-Legion", 4, 721)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20221225234319")
+mod:SetRevision("20230117042742")
 mod:SetCreatureID(95674, 99868)--First engage, Second engage
 mod:SetEncounterID(1807)
 mod:DisableEEKillDetection()--ENCOUNTER_END fires a wipe when fenryr casts stealth and runs to new location (P2)
@@ -13,7 +13,7 @@ mod:RegisterEventsInCombat(
 	"SPELL_CAST_START 196838 196543 197558",
 	"SPELL_CAST_SUCCESS 196567 196512 207707",
 	"SPELL_AURA_APPLIED 197556 196838",
-	"SPELL_AURA_REMOVED 196838",
+	"SPELL_AURA_REMOVED 197556 196838",
 	"UNIT_DIED"
 )
 

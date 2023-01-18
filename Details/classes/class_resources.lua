@@ -22,6 +22,7 @@ local AceLocale = LibStub("AceLocale-3.0")
 local Loc = AceLocale:GetLocale ( "Details" )
 local _
 local addonName, Details222 = ...
+local detailsFramework = DetailsFramework
 
 local gump = 			_detalhes.gump
 
@@ -84,6 +85,7 @@ function atributo_energy:NovaTabela (serial, nome, link)
 		spells = container_habilidades:NovoContainer (container_energy),
 	}
 	
+	detailsFramework:Mixin(_new_energyActor, Details222.Mixins.ActorMixin)
 	setmetatable(_new_energyActor, atributo_energy)
 	
 	return _new_energyActor
@@ -1520,6 +1522,7 @@ function atributo_energy:ColetarLixo (lastevent)
 end
 
 function _detalhes.refresh:r_atributo_energy (este_jogador, shadow)
+	detailsFramework:Mixin(este_jogador, Details222.Mixins.ActorMixin)
 	setmetatable(este_jogador, _detalhes.atributo_energy)
 	este_jogador.__index = _detalhes.atributo_energy
 
@@ -1527,7 +1530,7 @@ function _detalhes.refresh:r_atributo_energy (este_jogador, shadow)
 
 	if (shadow and not shadow.powertype) then
 		shadow.powertype = este_jogador.powertype
-	end	
+	end
 end
 
 function _detalhes.clear:c_atributo_energy (este_jogador)

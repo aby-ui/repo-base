@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod("RubyLifePoolsTrash", "DBM-Party-Dragonflight", 7)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20230101231943")
+mod:SetRevision("20230117042742")
 --mod:SetModelID(47785)
 mod.isTrashMod = true
 
@@ -120,7 +120,7 @@ end
 
 function mod:SPELL_AURA_REMOVED(args)
 	local spellId = args.spellId
-	if spellId == 339525 and args:IsPlayer() then
+	if spellId == 373693 and args:IsPlayer() then
 		yellLivingBombFades:Cancel()
 	end
 end

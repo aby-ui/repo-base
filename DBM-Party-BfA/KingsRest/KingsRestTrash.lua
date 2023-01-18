@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod("KingsRestTrash", "DBM-Party-BfA", 3)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20220920232426")
+mod:SetRevision("20230117063410")
 --mod:SetModelID(47785)
 
 mod.isTrashMod = true
@@ -17,6 +17,7 @@ mod:RegisterEvents(
 
 --TODO, target scan Deadeye Shot?
 --TODO, target scan Poison Barrage?
+--TODO, verify Wail of Mourning event, not sure if applied or start
 local warnAxeBarrage				= mod:NewCastAnnounce(270084, 4)
 local warnAxeShadowWhirl			= mod:NewCastAnnounce(270872, 3)
 local warnBloodedLeap				= mod:NewCastAnnounce(270482, 3)
@@ -96,18 +97,12 @@ function mod:SPELL_CAST_START(args)
 	elseif spellId == 270293 and self:AntiSpam(3, 5) then
 		specWarnPurificationStrike:Show()
 		specWarnPurificationStrike:Play("watchstep")
-	elseif spellId == 270930 and self:AntiSpam(3, 5) then
-		specWarnDarkShot:Show()
-		specWarnDarkShot:Play("watchstep")
 	elseif spellId == 270284 then
 		specWarnPurificationBeam:Show()
 		specWarnPurificationBeam:Play("behindmob")
 	elseif spellId == 270514 and self:AntiSpam(3, 5) then
 		specWarnGroundCrush:Show()
 		specWarnGroundCrush:Play("watchstep")
-	elseif spellId == 271561 and self:AntiSpam(4, 7) then
-		specWarnWailofMourning:Show()
-		specWarnWailofMourning:Play("aesoon")
 	elseif spellId == 270507 then
 		self:ScheduleMethod(0.1, "BossTargetScanner", args.sourceGUID, "BarrageTarget", 0.1, 8)
 	end
@@ -142,6 +137,9 @@ function mod:SPELL_AURA_APPLIED(args)
 		specWarnFixate:Show()
 		specWarnFixate:Play("justrun")
 		yellFixate:Yell()
+	elseif spellId == 271561 and self:AntiSpam(4, 7) then
+		specWarnWailofMourning:Show()
+		specWarnWailofMourning:Play("aesoon")
 	end
 end
 
@@ -163,6 +161,9 @@ function mod:SPELL_CAST_SUCCESS(args)
 	elseif spellId == 270497 then
 		specWarnHealingTideTotem:Show()
 		specWarnHealingTideTotem:Play("attacktotem")
+	elseif spellId == 270930 and self:AntiSpam(3, 5) then
+		specWarnDarkShot:Show()
+		specWarnDarkShot:Play("watchstep")
 	end
 end
 

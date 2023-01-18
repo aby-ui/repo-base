@@ -3,15 +3,15 @@ local L		= mod:GetLocalizedStrings()
 
 mod.statTypes = "normal,heroic,mythic,challenge,timewalker"
 
-mod:SetRevision("20221127051031")
+mod:SetRevision("20230117042742")
 mod:SetCreatureID(75829)
 mod:SetEncounterID(1688)
 
 mod:RegisterCombat("combat")
 
 mod:RegisterEventsInCombat(
-	"SPELL_CAST_START 152801",
-	"SPELL_AURA_APPLIED 152979 153067",
+	"SPELL_CAST_START 152801 153067",
+	"SPELL_AURA_APPLIED 152979",
 	"SPELL_AURA_REMOVED 152979",
 	"SPELL_PERIODIC_DAMAGE 153070",
 	"SPELL_ABSORBED 153070"

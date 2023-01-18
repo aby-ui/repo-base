@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2489, "DBM-Party-Dragonflight", 4, 1199)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20221213054234")
+mod:SetRevision("20230117042742")
 mod:SetCreatureID(189478)--Forgemaster Gorek
 mod:SetEncounterID(2612)
 --mod:SetUsedIcons(1, 2, 3)
@@ -16,7 +16,7 @@ mod:RegisterEventsInCombat(
 	"SPELL_CAST_SUCCESS 374635 374842 374534",
 	"SPELL_AURA_APPLIED 374842 374534",
 --	"SPELL_AURA_APPLIED_DOSE",
-	"SPELL_AURA_REMOVED 374534"
+	"SPELL_AURA_REMOVED 374534 374842"
 --	"SPELL_PERIODIC_DAMAGE",
 --	"SPELL_PERIODIC_MISSED",
 --	"UNIT_SPELLCAST_SUCCEEDED boss1"

@@ -1950,7 +1950,7 @@ module.frame.sf:Hide()
 
 ELib:FixPreloadFont(module.frame,function() 
 	if VMRT then
-		module.frame.text:SetFont(GameFontWhite:GetFont(),11)
+		module.frame.text:SetFont(GameFontWhite:GetFont(),11,"")
 		module.frame:UpdateFont() 
 		return true
 	end
@@ -1959,7 +1959,7 @@ end)
 function module.frame:UpdateFont()
 	local font = VMRT and VMRT.Note and VMRT.Note.FontName or MRT.F.defFont
 	local size = VMRT and VMRT.Note and VMRT.Note.FontSize or 12
-	local outline = VMRT and VMRT.Note and VMRT.Note.Outline and "OUTLINE"
+	local outline = VMRT and VMRT.Note and VMRT.Note.Outline and "OUTLINE" or ""
 	local isValidFont = self.text:SetFont(font,size,outline)
 	if not isValidFont then 
 		self.text:SetFont(GameFontNormal:GetFont(),size,outline)
@@ -2035,7 +2035,7 @@ end)
 
 
 module.frame.text = module.frame:CreateFontString(nil,"ARTWORK")
-module.frame.text:SetFont(MRT.F.defFont, 12)
+module.frame.text:SetFont(MRT.F.defFont, 12, "")
 module.frame.text:SetPoint("TOPLEFT",5,-5)
 module.frame.text:SetPoint("BOTTOMRIGHT",-5,5)
 module.frame.text:SetJustifyH("LEFT")

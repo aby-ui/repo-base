@@ -135,6 +135,7 @@ addon.Spells = {
     [390195] = { type = BUFF_OFFENSIVE }, -- Chaos Theory
     [370970] = { type = ROOT }, -- The Hunt (Root)
 	[320338] = { type = DEBUFF_OFFENSIVE, nounitFrames = true, nonameplates = true }, -- Essence Break
+	[354610] = { type = IMMUNITY }, -- Glimpse
 
     -- Druid
 
@@ -198,6 +199,7 @@ addon.Spells = {
 	[357170] = { type = BUFF_DEFENSIVE }, -- Time Dilation
     [375087] = { type = BUFF_OFFENSIVE }, -- Dragonrage
 	[383005] = { type = DEBUFF_OFFENSIVE }, -- Chrono Loop
+	[372048] = { type = DEBUFF_OFFENSIVE }, -- Oppressing Roar
     [360806] = { type = CROWD_CONTROL }, -- Sleep Walk
 	[372245] = { type = CROWD_CONTROL }, -- Terror of the Skies
 	[355689] = { type = ROOT }, -- Landslide
@@ -478,6 +480,7 @@ addon.Spells = {
 	[193359] = { type = BUFF_OFFENSIVE }, -- True Bearing
     [193357] = { type = BUFF_OFFENSIVE }, -- Ruthless Precision
 	[343142] = { type = BUFF_OFFENSIVE }, -- Dreadblades
+	[319504] = { type = DEBUFF_OFFENSIVE, nounitFrames = true, nonameplates = true }, -- Shiv
 
     -- Shaman
 
@@ -531,8 +534,12 @@ addon.Spells = {
         [207498] = { type = BUFF_DEFENSIVE, parent = 207495 }, -- Ancestral Protection (Player)
 	[356738] = { type = ROOT }, -- Earth Unleashed
 	[285515] = { type = ROOT }, -- Surge of Power (Root)
+	[356824] = { type = DEBUFF_OFFENSIVE }, -- Water Unleashed
+	[188389] = { type = DEBUFF_OFFENSIVE }, -- Flame Shock
 
     -- Warlock
+
+    [113942] = { type = BUFF_OTHER }, -- Demonic Gateway
     [386997] = { type = DEBUFF_OFFENSIVE }, -- Soul Rot
     [710] = { type = CROWD_CONTROL }, -- Banish
     [5484] = { type = CROWD_CONTROL }, -- Howl of Terror
@@ -566,6 +573,7 @@ addon.Spells = {
     [387633] = { type = BUFF_SPEED_BOOST }, -- Demonic Momentum (Soulburn)
     [199890] = { type = DEBUFF_OFFENSIVE, nounitframes = true, nonameplates = true }, -- Curse of Tongues
     [199954] = { type = DEBUFF_OFFENSIVE, nounitFrames = true, nonameplates = true }, -- Bane of Fragility
+	[702] = { type = DEBUFF_OFFENSIVE }, -- Curse of Weakness
 
     -- Warrior
 
@@ -578,6 +586,7 @@ addon.Spells = {
         [316595] = { type = CROWD_CONTROL, parent = 5246 }, -- Menace (Prot Talent), other targets
     [12975] = { type = BUFF_DEFENSIVE }, -- Last Stand
     [18499] = { type = BUFF_OTHER }, -- Berserker Rage
+		[384100] = { type = BUFF_OTHER, parent = 18499 }, -- Berserker Shout
     [23920] = { type = IMMUNITY_SPELL }, -- Spell Reflection
         [335255] = { type = IMMUNITY_SPELL, parent = 23920 }, -- Spell Reflection (Misshapen Mirror Legendary)
     [132168] = { type = CROWD_CONTROL }, -- Shockwave
@@ -614,6 +623,7 @@ addon.Spells = {
         [348436] = { type = BUFF_OTHER, parent = 314646 }, -- (20k mana vendor item)
         [167152] = { type = BUFF_OTHER, parent = 314646 }, -- Refreshment (mage food)
 	[377362] = { type = IMMUNITY }, -- Precognition
+	[240559] = { type = DEBUFF_OFFENSIVE, nonameplates = true }, -- Grievous Wound (Mythic Plus Affix)
 
     -- Racials
 

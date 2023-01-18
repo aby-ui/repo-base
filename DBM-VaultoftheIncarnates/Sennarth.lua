@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2482, "DBM-VaultoftheIncarnates", nil, 1200)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20230111234922")
+mod:SetRevision("20230117031931")
 mod:SetCreatureID(187967)
 mod:SetEncounterID(2592)
 mod:SetUsedIcons(1, 2, 3)
@@ -15,7 +15,7 @@ mod:RegisterEventsInCombat(
 	"SPELL_CAST_START 371976 372082 373405 374112 373027 371983 372539",
 	"SPELL_CAST_SUCCESS 372238 181113 396792",
 	"SPELL_SUMMON 372242 372843",
-	"SPELL_AURA_APPLIED 371976 372082 372030 372044 385083 373048",
+	"SPELL_AURA_APPLIED 371976 372082 372030 372044 385083 373048 374104",
 	"SPELL_AURA_APPLIED_DOSE 372030 385083",
 	"SPELL_AURA_REMOVED 371976 372082 372030 373048",
 	"SPELL_AURA_REMOVED_DOSE 372030",
@@ -26,9 +26,6 @@ mod:RegisterEventsInCombat(
 	"CHAT_MSG_RAID_BOSS_EMOTE"
 )
 
---TODO, GTFO for icy Ground?
---TODO, I cannot be bothered to do these timers. After 3 hours on boss logs (yet again), decided not to bother with more accurate approach. Half assed will have to be good enough
---TODO, timers need more work, but it'll be helpful when phase change events added to combat log or at very least transcriptor for easier table reading.
 --[[
 (ability.id = 371976 or ability.id = 372082 or ability.id = 373405 or ability.id = 373027 or ability.id = 371983) and type = "begincast"
  or (ability.id = 372238 or ability.id = 372648) and type = "cast"

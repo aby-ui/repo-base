@@ -2044,12 +2044,80 @@ function _detalhes:CreateListPanel()
 end
 
 
+--this table store addons which want to replace the keystone command
+--more than one addon can be registered and all of them will be called when the user type /keystone
+--is up to the user to decide which addon to use
+local keystoneCallbacks = {}
+
+---register an addon and a callback function to be called when the user type /keystone
+---@param addonObject table
+---@param memberName string
+---@param ... any
+---@return boolean true if the addon was registered, false if it was already registered and got unregistered
+function Details:ReplaceKeystoneCommand(addonObject, memberName, ...)
+	--check if the parameters passed are valid types
+	if (type(addonObject) ~= "table") then
+		error("Details:ReplaceKeystoneCommand: addonObject must be a table")
+
+	elseif (type(memberName) ~= "string") then
+		error("Details:ReplaceKeystoneCommand: memberName must be a string")
+
+	elseif (type(addonObject[memberName]) ~= "function") then
+		error("Details:ReplaceKeystoneCommand: t[memberName] doesn't point to a function.")
+	end
+
+	--check if the addonObject is already registered and remove it
+	for i = #keystoneCallbacks, 1, -1 do
+		if (keystoneCallbacks[i].addonObject == addonObject) then
+			--check if the memberName is the same
+			if (keystoneCallbacks[i].memberName == memberName) then
+				tremove(keystoneCallbacks, i)
+				return false
+			end
+		end
+	end
+
+	local payload = {...}
+
+	keystoneCallbacks[#keystoneCallbacks+1] = {
+		addonObject = addonObject,
+		memberName = memberName,
+		payload = payload
+	}
+
+	return true
+end
+
 if (WOW_PROJECT_ID == WOW_PROJECT_MAINLINE) then
 	SLASH_KEYSTONE1 = "/keystone"
 	SLASH_KEYSTONE2 = "/keys"
 	SLASH_KEYSTONE3 = "/key"
 
 	function SlashCmdList.KEYSTONE(msg, editbox)
+		--if there is addons registered to use the keystone command, call them and do not show the default frame from details!
+		if (#keystoneCallbacks > 0) then
+			--loop through all registered addons and call their callback function
+			local bCallbackSuccess = false
+			for i = 1, #keystoneCallbacks do
+				local thisCallback = keystoneCallbacks[i]
+
+				local addonObject = thisCallback.addonObject
+				local memberName = thisCallback.memberName
+				local payload = thisCallback.payload
+
+				if (type(addonObject[memberName]) == "function") then
+					local result = DetailsFramework:Dispatch(addonObject[memberName], unpack(payload)) --uses xpcall
+					if (result ~= false) then
+						bCallbackSuccess = true
+					end
+				end
+			end
+
+			if (bCallbackSuccess) then
+				return
+			end
+		end
+
 		local openRaidLib = LibStub:GetLibrary("LibOpenRaid-1.0")
 		if (openRaidLib) then
 			if (not DetailsKeystoneInfoFrame) then
@@ -2158,7 +2226,7 @@ if (WOW_PROJECT_ID == WOW_PROJECT_MAINLINE) then
 							line.keystoneLevelText.text = level
 							line.dungeonNameText.text = mapName
 							DetailsFramework:TruncateText(line.dungeonNameText, 240)
-							line.classicDungeonNameText.text = mapNameChallenge or ""
+							line.classicDungeonNameText.text = "" --mapNameChallenge
 							DetailsFramework:TruncateText(line.classicDungeonNameText, 120)
 							line.inMyParty = inMyParty > 0
 							line.inMyGuild = isGuildMember

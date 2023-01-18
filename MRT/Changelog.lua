@@ -1,6 +1,15 @@
 local GlobalAddonName, ExRT = ...
 
 ExRT.Options.Changelog = [=[
+v.4720
+* Added temporary fix for sending long notes (beware: sending takes some time)
+* Loot History: added support for group loot
+* Fixes
+
+v.4720-LK
+* Visual Note: added ulduar visual maps
+* Fixes
+
 v.4710
 * 10.0.2 Update
 * Fixes

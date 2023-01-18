@@ -1,5 +1,5 @@
 --[[
-Copyright 2011-2022 João Cardoso
+Copyright 2011-2023 João Cardoso
 BagBrother is distributed under the terms of the GNU General Public License (Version 3).
 As a special exception, the copyright holders of this addon do not give permission to
 redistribute and/or modify it.

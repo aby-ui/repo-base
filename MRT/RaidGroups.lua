@@ -182,7 +182,7 @@ function module.options:Load()
 				edit.index = i
 				edit:Point("TOPLEFT",355,-40-(i-1)*14):OnChange(EditOnChange)
 
-				edit:SetFont(edit:GetFont(),10)
+				edit:SetFont(edit:GetFont(),10,"")
 				edit:SetEnabled(false)
 		
 				edit:SetMovable(true)

@@ -1,8 +1,8 @@
---	10.12.2022
+--	13.01.2023
 
 local GlobalAddonName, MRT = ...
 
-MRT.V = 4710
+MRT.V = 4720
 MRT.T = "R"
 
 MRT.Slash = {}			--> функции вызова из коммандной строки
@@ -74,7 +74,7 @@ MRT.GDB = {}
 -------------> upvalues <-------------
 local pcall, unpack, pairs, coroutine, assert, next = pcall, unpack, pairs, coroutine, assert, next
 local GetTime, IsEncounterInProgress, CombatLogGetCurrentEventInfo = GetTime, IsEncounterInProgress, CombatLogGetCurrentEventInfo
-local SendAddonMessage, strsplit = C_ChatInfo.SendAddonMessage, strsplit
+local SendAddonMessage, strsplit, tremove = C_ChatInfo.SendAddonMessage, strsplit, tremove
 local C_Timer_NewTicker, debugprofilestop = C_Timer.NewTicker, debugprofilestop
 
 if MRT.T == "D" then
@@ -712,6 +712,47 @@ do
 	end
 end
 
+--temp fix
+local sendPending = {}
+local sendPrev = 0
+local sendTmr
+local _SendAddonMessage = SendAddonMessage
+local SEND_LIMIT = 10
+local sendLimit = SEND_LIMIT
+local function send(self)
+	if self then
+		sendTmr = nil
+	end
+	local t = debugprofilestop()
+	sendLimit = sendLimit + floor((t - sendPrev)/1000)
+	if sendLimit > SEND_LIMIT then
+		sendLimit = SEND_LIMIT
+	end
+	if sendLimit <= 0 then
+		if not sendTmr then
+			sendTmr = C_Timer.NewTimer(0.5, send)
+		end
+		return
+	end
+	for i=1,#sendPending do
+		if sendLimit > 0 then
+			sendLimit = sendLimit - 1
+			_SendAddonMessage(unpack(sendPending[1]))
+			tremove(sendPending, 1)
+			sendPrev = debugprofilestop()
+		else
+			if not sendTmr then
+				sendTmr = C_Timer.NewTimer(0.5, send)
+			end
+			return
+		end
+	end
+end
+SendAddonMessage = function (...)
+	sendPending[#sendPending+1] = {...}
+	send()
+end
+
 function MRT.F.SendExMsg(prefix, msg, tochat, touser, addonPrefix)
 	addonPrefix = addonPrefix or "EXRTADD"
 	msg = msg or ""
@@ -728,6 +769,7 @@ function MRT.F.SendExMsg(prefix, msg, tochat, touser, addonPrefix)
 		SendAddonMessage(addonPrefix, prefix .. "\t" .. msg, chat_type, playerName)
 	end
 end
+
 
 function MRT.F.GetExMsg(sender, prefix, ...)
 	if prefix == "needversion" then

@@ -3,7 +3,7 @@ local L		= mod:GetLocalizedStrings()
 
 mod.statTypes = "heroic,mythic,challenge"
 
-mod:SetRevision("20221016002954")
+mod:SetRevision("20230117063410")
 mod:SetCreatureID(114790)
 mod:SetEncounterID(2017)
 mod:SetUsedIcons(1, 2, 3)
@@ -14,7 +14,7 @@ mod:RegisterCombat("combat")
 
 mod:RegisterEventsInCombat(
 	"SPELL_CAST_START 229151 229083",
-	"SPELL_CAST_SUCCESS 229610",
+	"SPELL_CAST_SUCCESS 229610 230084",
 	"SPELL_AURA_APPLIED 229159 229241",
 	"SPELL_AURA_REMOVED 229159",
 --	"SPELL_PERIODIC_DAMAGE",
@@ -122,7 +122,7 @@ function mod:SPELL_CAST_SUCCESS(args)
 			end
 		end
 	elseif spellId == 230084 then--Stabilize Rift
-		DBM:Debug("THE RIFT")
+		DBM:Debug("THE RIFT")--Why is this here?
 	end
 end
 

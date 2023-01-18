@@ -7,7 +7,7 @@ end
 local mod	= DBM:NewMod(dungeonID, "DBM-Party-BfA", 5, 1001)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20221230022007")
+mod:SetRevision("20230117063410")
 mod:SetCreatureID(creatureID)
 mod:SetEncounterID(encounterID)
 
@@ -114,7 +114,7 @@ function mod:SPELL_CAST_START(args)
 		--timerSteelTempestCD:Start()
 	elseif spellId == 261428 then
 		--timerHangmansNooseCD:Start()
-	elseif spellId == 260954 then
+--	elseif spellId == 260954 then
 		--timerIronGazeCD:Start()
 	end
 end

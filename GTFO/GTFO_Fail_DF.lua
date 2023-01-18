@@ -197,12 +197,6 @@ GTFO.SpellID["369232"] = {
   sound = 3;
 };
 
-GTFO.SpellID["393753"] = {
-  --desc = "Languid Bloom (Taresh)";
-  applicationOnly = true;
-  sound = 3;
-};
-
 GTFO.SpellID["393598"] = {
   --desc = "Storm Wing (Gethrel the South Wind)";
   sound = 3;
@@ -566,6 +560,48 @@ GTFO.SpellID["387243"] = {
   sound = 3;
 };
 
+GTFO.SpellID["388182"] = {
+  --desc = "Boulder Toss (Mahg the Trampler)";
+  applicationOnly = true;
+  sound = 3;
+};
+
+GTFO.SpellID["395862"] = {
+  --desc = "Saliva Salvo (The Red Gulper)";
+  sound = 3;
+};
+
+GTFO.SpellID["389762"] = {
+  --desc = "Deep Freeze (Liskanoth)";
+  sound = 3;
+  applicationOnly = true;
+};
+
+GTFO.SpellID["389289"] = {
+  --desc = "Glacial Storm (Liskanoth)";
+  sound = 3;
+};
+
+GTFO.SpellID["393917"] = {
+  --desc = "Icestorm (Conjured Icestorm)";
+  sound = 3;
+};
+
+GTFO.SpellID["392295"] = {
+  --desc = "Aqua Barrage (Ergburk)";
+  sound = 3;
+};
+
+GTFO.SpellID["392304"] = {
+  --desc = "Tail Sweep (Khomuur)";
+  sound = 3;
+};
+
+GTFO.SpellID["390560"] = {
+  --desc = "River Spout (Norbett)";
+  sound = 3;
+};
+
 --- *******************
 --- * Ruby Life Pools *
 --- *******************
@@ -647,6 +683,7 @@ GTFO.SpellID["391301"] = {
 GTFO.SpellID["391308"] = {
   --desc = "Rending Swoop (Boolk)";
   sound = 3;
+  applicationOnly = true;
 };
 
 GTFO.SpellID["390834"] = {
@@ -1530,6 +1567,12 @@ GTFO.SpellID["374025"] = {
 
 GTFO.SpellID["395894"] = {
   --desc = "Erupting Bedrock (Kurog Grimtotem)";
+  sound = 3;
+};
+
+GTFO.SpellID["391022"] = {
+  --desc = "Frigid Torrent (Kurog Grimtotem)";
+  applicationOnly = true;
   sound = 3;
 };
 

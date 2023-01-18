@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2510, "DBM-Party-Dragonflight", 8, 1204)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20221207232203")
+mod:SetRevision("20230117042742")
 mod:SetCreatureID(189727)
 mod:SetEncounterID(2617)
 --mod:SetUsedIcons(1, 2, 3)
@@ -107,19 +107,12 @@ end
 
 function mod:SPELL_AURA_APPLIED(args)
 	local spellId = args.spellId
-	if spellId == 361966 and self:CheckDispelFilter("magic") then
+	if spellId == 385963 and self:CheckDispelFilter("magic") then
 		specWarnFrostShock:Show(args.destName)
 		specWarnFrostShock:Play("helpdispel")
 	end
 end
 --mod.SPELL_AURA_APPLIED_DOSE = mod.SPELL_AURA_APPLIED
-
-function mod:SPELL_AURA_REMOVED(args)
-	local spellId = args.spellId
-	if spellId == 361966 then
-
-	end
-end
 
 --[[
 function mod:SPELL_PERIODIC_DAMAGE(_, _, _, _, destGUID, _, _, _, spellId, spellName)

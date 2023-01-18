@@ -5564,13 +5564,16 @@ do
 	local function MultilineEditBoxOnFrameClick(self)
 		self:GetParent().EditBox:SetFocus()
 	end
-	local function Widget_Font(self,font,size,...)
+	local function Widget_Font(self,font,size,params,...)
 		if font == 'x' then
 			font = self.EditBox:GetFont() or DEFAULT_FONT
 		end
-		self.EditBox:SetFont(font,size,...)
+		if not params then
+			params = ""
+		end
+		self.EditBox:SetFont(font,size,params,...)
 		if self.EditBox.ColoredText then
-			self.EditBox.ColoredText:SetFont(font,size,...)
+			self.EditBox.ColoredText:SetFont(font,size,params,...)
 		end
 		return self
 	end

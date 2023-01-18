@@ -30,14 +30,15 @@ function AutoDisplay:HookBaseUI()
 	-- bag APIs
 	if Addon.Frames:IsEnabled('inventory') then
 	self:StopIf(_G, 'OpenAllBags', self:Show('inventory'))
-	self:StopIf(_G, 'CloseAllBags', self:Hide('inventory'))
 	self:StopIf(_G, 'ToggleAllBags', self:Toggle('inventory'))
 	self:StopIf(_G, 'OpenBackpack', self:ShowBag('inventory', BACKPACK_CONTAINER))
-	self:StopIf(_G, 'CloseBackpack', self:HideBag('inventory', BACKPACK_CONTAINER))
 	self:StopIf(_G, 'ToggleBackpack', self:ToggleBag('inventory', BACKPACK_CONTAINER))
-	self:StopIf(_G, 'ToggleBag', function(bag) return Addon.Frames:ToggleBag(self:Bag2Frame(bag)) end)
 	self:StopIf(_G, 'OpenBag', function(bag) return Addon.Frames:ShowBag(self:Bag2Frame(bag)) end)
-	self:StopIf(_G, 'CloseBag', function(bag) return Addon.Frames:HideBag(self:Bag2Frame(bag)) end)
+	self:StopIf(_G, 'ToggleBag', function(bag) return Addon.Frames:ToggleBag(self:Bag2Frame(bag)) end)
+
+	hooksecurefunc('CloseBag', function(bag) Addon.Frames:HideBag(self:Bag2Frame(bag)) end)
+	hooksecurefunc('CloseBackpack', self:HideBag('inventory', BACKPACK_CONTAINER))
+	hooksecurefunc('CloseAllBags', self:Hide('inventory'))
 
 	end
 	-- banking frames
@@ -48,14 +49,14 @@ function AutoDisplay:HookBaseUI()
 
 	self:StopIf(PlayerInteractionFrameManager, 'ShowFrame', function(manager, type)
 		return type == Interactions.Banker and Addon.Frames:Show('bank') or
-					 type == Interactions.GuildBanker and Addon.Frames:Show('guild') or
-					 type == Interactions.VoidStorageBanker and Addon.Frames:Show('vault')
+			   type == Interactions.GuildBanker and Addon.Frames:Show('guild') or
+			   type == Interactions.VoidStorageBanker and Addon.Frames:Show('vault')
 	end)
 
 	self:StopIf(PlayerInteractionFrameManager, 'HideFrame', function(manager, type)
 		return type == Interactions.Banker and Addon.Frames:Hide('bank') or
-					 type == Interactions.GuildBanker and Addon.Frames:Hide('guild') or
-					 type == Interactions.VoidStorageBanker and Addon.Frames:Hide('vault')
+			   type == Interactions.GuildBanker and Addon.Frames:Hide('guild') or
+			   type == Interactions.VoidStorageBanker and Addon.Frames:Hide('vault')
 	end)
 
 	BankFrame:SetScript('OnEvent', function(frame, event, ...) -- only way in classic

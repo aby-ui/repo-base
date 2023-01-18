@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2437, "DBM-Party-Shadowlands", 9, 1194)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20221016002954")
+mod:SetRevision("20230117063410")
 mod:SetCreatureID(175616)
 mod:SetEncounterID(2425)
 mod:SetHotfixNoticeRev(20220405000000)
@@ -112,7 +112,7 @@ end
 
 function mod:SPELL_AURA_REMOVED(args)
 	local spellId = args.spellId
-	if spellId == 322681 then
+	if spellId == 345770 then
 		if args:IsPlayer() then
 			warnInpoundContrabandEnded:Show()
 		end

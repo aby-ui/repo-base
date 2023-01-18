@@ -118,6 +118,7 @@ function containerProto:OnCreate(name, isBank, bagObject)
 	self.firstLoad = true
 
 	self.buttons = {}
+	---@type {[number]: {[number]: ItemInfo}}
 	self.content = {}
 	self.stacks = {}
 	self.sections = {}
@@ -128,6 +129,8 @@ function containerProto:OnCreate(name, isBank, bagObject)
 	self.sameChanged = {}
 
 	self.itemGUIDtoItem = {}
+	---@type Frame|Grid
+	self.Content = {}
 
 	local ids
 	for bagId in pairs(BAG_IDS[isBank and "BANK" or "BAGS"]) do
@@ -561,7 +564,7 @@ local function FindBagWithRoom(self, itemFamily)
 	for bag in pairs(self:GetBagIds()) do
 		local numFree, family = GetContainerNumFreeSlots(bag)
 		if numFree and numFree > 0 then
-			if band(family, itemFamily) ~= 0 then
+			if family and band(family, itemFamily) ~= 0 then
 				return bag
 			elseif not fallback then
 				fallback = bag
@@ -578,7 +581,7 @@ do
 		local bag = FindBagWithRoom(self, GetItemFamily(item))
 		if not bag then return end
 		wipe(slots)
-		GetContainerFreeSlots(bag, slots)
+		slots = GetContainerFreeSlots(bag)
 		return GetSlotId(bag, slots[1])
 	end
 end
@@ -673,6 +676,7 @@ end
 -- Bag content scanning
 --------------------------------------------------------------------------------
 
+---@param bag number The id of the bag to update.
 function containerProto:UpdateContent(bag)
 	self:Debug('UpdateContent', bag)
 	local added, removed, changed, sameChanged = self.added, self.removed, self.changed, self.sameChanged
@@ -698,6 +702,7 @@ function containerProto:UpdateContent(bag)
 		if not itemId or (link and addon.IsValidItemLink(link)) then
 			local slotData = content[slot]
 			if not slotData then
+				---@type ItemInfo
 				slotData = {
 					bag = bag,
 					slot = slot,
@@ -1101,7 +1106,7 @@ function containerProto:PrepareSections(columnWidth, sections)
 end
 
 local function FindFittingSection(maxWidth, sections)
-	local bestScore, bestIndex = math.huge
+	local bestScore, bestIndex = math.huge, nil
 	for index, section in ipairs(sections) do
 		local wasted = maxWidth - section:GetWidth()
 		if wasted >= 0 and wasted < bestScore then
@@ -1121,10 +1126,11 @@ local COLUMN_SPACING = ceil((ITEM_SIZE + ITEM_SPACING) / 2)
 local ROW_SPACING = ITEM_SPACING*2
 local SECTION_SPACING = COLUMN_SPACING / 2
 
+---@return number, number
 function containerProto:LayoutSections(maxHeight, columnWidth, minWidth, sections)
 	if addon.db.profile.gridLayout then
 		self.Content:Update()
-		return
+		return 0, 0
 	end
 	self:Debug('LayoutSections', maxHeight, columnWidth, minWidth)
 	local heights, widths, rows = { 0 }, {}, {}

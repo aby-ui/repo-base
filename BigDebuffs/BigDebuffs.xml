@@ -79,7 +79,7 @@
                         </Anchor>
                     </Anchors>
                 </FontString>
-                <Texture parentKey="flash" hidden="false" alpha="0" alphaMode="ADD" atlas="bags-glow-flash" useAtlasSize="true">
+				 <Texture parentKey="flash" hidden="false" alpha="0" alphaMode="ADD" atlas="bags-glow-flash" useAtlasSize="true">
                     <Anchors>
                         <Anchor point="CENTER"/>
                     </Anchors>

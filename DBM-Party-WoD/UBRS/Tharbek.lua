@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(1228, "DBM-Party-WoD", 8, 559)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20200806142123")
+mod:SetRevision("20230117063410")
 mod:SetCreatureID(79912, 80098)--80098 is mount(Ironbarb Skyreaver), 79912 is boss
 mod:SetEncounterID(1759)
 mod:SetBossHPInfoToHighest(false)
@@ -11,7 +11,7 @@ mod:RegisterCombat("combat")
 mod:RegisterEventsInCombat(
 	"SPELL_CAST_SUCCESS 162090",
 	"SPELL_AURA_APPLIED 161833",
-	"SPELL_PERIODIC_DAMAGE 161989",
+	"SPELL_PERIODIC_DAMAGE 161833",
 	"SPELL_ABSORBED 161989",
 	"UNIT_SPELLCAST_SUCCEEDED boss1",
 	"UNIT_TARGETABLE_CHANGED",

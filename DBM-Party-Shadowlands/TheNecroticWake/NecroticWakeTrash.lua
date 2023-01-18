@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod("NecroticWakeTrash", "DBM-Party-Shadowlands", 1)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20220920232426")
+mod:SetRevision("20230117063410")
 --mod:SetModelID(47785)
 
 mod.isTrashMod = true
@@ -149,7 +149,7 @@ function mod:SPELL_AURA_APPLIED(args)
 	elseif spellId == 338353 and args:IsDestTypePlayer() and self:CheckDispelFilter("disease") and self:AntiSpam(3, 5) then
 		specWarnGoresplatterDispel:Show(args.destName)
 		specWarnGoresplatterDispel:Play("helpdispel")
-	elseif spellId == 340288 and args:IsDestTypePlayer() then
+	elseif spellId == 338357 and args:IsDestTypePlayer() then
 		local amount = args.amount or 1
 		if amount >= 2 then
 			warnTenderize:Show(args.destName, args.amount or 1)

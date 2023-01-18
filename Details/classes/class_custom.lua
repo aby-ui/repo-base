@@ -47,31 +47,31 @@
 		return combatContainers [attribute]
 	end
 
-	function classCustom:RefreshWindow (instance, combat, force, export)
+	function classCustom:RefreshWindow(instanceObject, combatObject, force, export)
 		--get the custom object
-		local custom_object = instance:GetCustomObject()
+		local customObject = instanceObject:GetCustomObject()
 
-		if (not custom_object) then
-			return instance:ResetAttribute()
+		if (not customObject) then
+			return instanceObject:ResetAttribute()
 		end
 
 		--save the custom name in the instance
-		instance.customName = custom_object:GetName()
+		instanceObject.customName = customObject.name
 
 		--get the container holding the custom actor objects for this instance
-		local instance_container = classCustom:GetInstanceCustomActorContainer (instance)
+		local instance_container = classCustom:GetInstanceCustomActorContainer (instanceObject)
 
-		local last_shown = classCustom._InstanceLastCustomShown [instance:GetId()]
-		if (last_shown and last_shown ~= custom_object:GetName()) then
+		local last_shown = classCustom._InstanceLastCustomShown [instanceObject:GetId()]
+		if (last_shown and last_shown ~= customObject:GetName()) then
 			instance_container:WipeCustomActorContainer()
 		end
-		classCustom._InstanceLastCustomShown [instance:GetId()] = custom_object:GetName()
+		classCustom._InstanceLastCustomShown [instanceObject:GetId()] = customObject:GetName()
 
-		local last_combat_shown = classCustom._InstanceLastCombatShown [instance:GetId()]
-		if (last_combat_shown and last_combat_shown ~= combat) then
+		local last_combat_shown = classCustom._InstanceLastCombatShown [instanceObject:GetId()]
+		if (last_combat_shown and last_combat_shown ~= combatObject) then
 			instance_container:WipeCustomActorContainer()
 		end
-		classCustom._InstanceLastCombatShown [instance:GetId()] = combat
+		classCustom._InstanceLastCombatShown [instanceObject:GetId()] = combatObject
 
 		--declare the main locals
 		local total = 0
@@ -79,65 +79,69 @@
 		local amount = 0
 
 		--check if is a custom script (if has .script)
-		if (custom_object:IsScripted()) then
-
+		if (customObject:IsScripted()) then
 			--be save reseting the values on every refresh
 			instance_container:ResetCustomActorContainer()
 
 			local func
+			local scriptTypeName = "search"
 
-			if (_detalhes.custom_function_cache [instance.customName]) then
-				func = _detalhes.custom_function_cache [instance.customName]
+			if (_detalhes.custom_function_cache [instanceObject.customName]) then
+				func = _detalhes.custom_function_cache [instanceObject.customName]
 			else
 				local errortext
-				func, errortext = loadstring (custom_object.script)
+				func, errortext = loadstring (customObject.script)
 				if (func) then
 					DetailsFramework:SetEnvironment(func)
-					_detalhes.custom_function_cache [instance.customName] = func
+					_detalhes.custom_function_cache [instanceObject.customName] = func
 				else
-					_detalhes:Msg("|cFFFF9900error compiling code for custom display " .. (instance.customName or "") ..  " |r:", errortext)
+					_detalhes:Msg("|cFFFF9900error compiling code for custom display " .. (instanceObject.customName or "") ..  " |r:", errortext)
 				end
 
-				if (custom_object.tooltip) then
-					local tooltip_script, errortext = loadstring (custom_object.tooltip)
+				if (customObject.tooltip) then
+					local tooltip_script, errortext = loadstring (customObject.tooltip)
 					if (tooltip_script) then
 						DetailsFramework:SetEnvironment(tooltip_script)
-						_detalhes.custom_function_cache [instance.customName .. "Tooltip"] = tooltip_script
+						_detalhes.custom_function_cache [instanceObject.customName .. "Tooltip"] = tooltip_script
 					else
-						_detalhes:Msg("|cFFFF9900error compiling tooltip code for custom display " .. (instance.customName or "") ..  " |r:", errortext)
+						_detalhes:Msg("|cFFFF9900error compiling tooltip code for custom display " .. (instanceObject.customName or "") ..  " |r:", errortext)
 					end
+					scriptTypeName = "tooltip"
 				end
 
-				if (custom_object.total_script) then
-					local total_script, errortext = loadstring (custom_object.total_script)
+				if (customObject.total_script) then
+					local total_script, errortext = loadstring (customObject.total_script)
 					if (total_script) then
 						DetailsFramework:SetEnvironment(total_script)
-						_detalhes.custom_function_cache [instance.customName .. "Total"] = total_script
+						_detalhes.custom_function_cache [instanceObject.customName .. "Total"] = total_script
 					else
-						_detalhes:Msg("|cFFFF9900error compiling total code for custom display " .. (instance.customName or "") ..  " |r:", errortext)
+						_detalhes:Msg("|cFFFF9900error compiling total code for custom display " .. (instanceObject.customName or "") ..  " |r:", errortext)
 					end
+					scriptTypeName = "total"
 				end
 
-				if (custom_object.percent_script) then
-					local percent_script, errortext = loadstring (custom_object.percent_script)
+				if (customObject.percent_script) then
+					local percent_script, errortext = loadstring (customObject.percent_script)
 					if (percent_script) then
 						DetailsFramework:SetEnvironment(percent_script)
-						_detalhes.custom_function_cache [instance.customName .. "Percent"] = percent_script
+						_detalhes.custom_function_cache [instanceObject.customName .. "Percent"] = percent_script
 					else
-						_detalhes:Msg("|cFFFF9900error compiling percent code for custom display " .. (instance.customName or "") ..  " |r:", errortext)
+						_detalhes:Msg("|cFFFF9900error compiling percent code for custom display " .. (instanceObject.customName or "") ..  " |r:", errortext)
 					end
+					scriptTypeName = "percent"
 				end
 			end
 
 			if (not func) then
 				_detalhes:Msg(Loc ["STRING_CUSTOM_FUNC_INVALID"], func)
-				_detalhes:EndRefresh (instance, 0, combat, combat [1])
+				_detalhes:EndRefresh (instanceObject, 0, combatObject, combatObject [1])
 			end
 
-			local okey, _total, _top, _amount = pcall (func, combat, instance_container, instance)
+			local okey, _total, _top, _amount = pcall (func, combatObject, instance_container, instanceObject)
 			if (not okey) then
-				_detalhes:Msg("|cFFFF9900error on custom display function|r:", _total)
-				return _detalhes:EndRefresh (instance, 0, combat, combat [1])
+				local errorText = _total
+				_detalhes:Msg("|cFFFF9900error on display " .. customObject:GetName() .. " (" .. scriptTypeName .. ")|r:", errorText)
+				return _detalhes:EndRefresh(instanceObject, 0, combatObject, combatObject[1])
 			end
 
 			total = _total or 0
@@ -146,20 +150,20 @@
 
 		else --does not have a .script
 			--get the attribute
-			local attribute = custom_object:GetAttribute() --"damagedone"
+			local attribute = customObject:GetAttribute() --"damagedone"
 
 			--get the custom function(actor, source, target, spellid)
 			local func = classCustom [attribute]
 
 			--get the combat container
 			local container_index = self:GetCombatContainerIndex (attribute)
-			local combat_container = combat [container_index]._ActorTable
+			local combat_container = combatObject [container_index]._ActorTable
 
 			--build container
-			total, top, amount = classCustom:BuildActorList (func, custom_object.source, custom_object.target, custom_object.spellid, combat, combat_container, container_index, instance_container, instance, custom_object)
+			total, top, amount = classCustom:BuildActorList (func, customObject.source, customObject.target, customObject.spellid, combatObject, combat_container, container_index, instance_container, instanceObject, customObject)
 		end
 
-		if (custom_object:IsSpellTarget()) then
+		if (customObject:IsSpellTarget()) then
 			amount = classCustom._TargetActorsProcessedAmt
 			total = classCustom._TargetActorsProcessedTotal
 			top = classCustom._TargetActorsProcessedTop
@@ -167,21 +171,21 @@
 
 		if (amount == 0) then
 			if (force) then
-				if (instance:IsGroupMode()) then
-					for i = 1, instance.rows_fit_in_window  do
-						Details.FadeHandler.Fader(instance.barras [i], "in", Details.fade_speed)
+				if (instanceObject:IsGroupMode()) then
+					for i = 1, instanceObject.rows_fit_in_window  do
+						Details.FadeHandler.Fader(instanceObject.barras [i], "in", Details.fade_speed)
 					end
 				end
 			end
-			instance:EsconderScrollBar()
-			return _detalhes:EndRefresh (instance, total, combat, nil)
+			instanceObject:EsconderScrollBar()
+			return _detalhes:EndRefresh (instanceObject, total, combatObject, nil)
 		end
 
 		if (amount > #instance_container._ActorTable) then
 			amount = #instance_container._ActorTable
 		end
 
-		combat.totals [custom_object:GetName()] = total
+		combatObject.totals [customObject:GetName()] = total
 
 		instance_container:Sort()
 		instance_container:Remap()
@@ -189,10 +193,10 @@
 		if (export) then
 
 			-- key name value need to be formated
-			if (custom_object) then
+			if (customObject) then
 
-				local percent_script = _detalhes.custom_function_cache [instance.customName .. "Percent"]
-				local total_script = _detalhes.custom_function_cache [instance.customName .. "Total"]
+				local percent_script = _detalhes.custom_function_cache [instanceObject.customName .. "Percent"]
+				local total_script = _detalhes.custom_function_cache [instanceObject.customName .. "Total"]
 				local okey
 
 				for index, actor in ipairs(instance_container._ActorTable) do
@@ -200,20 +204,20 @@
 					local percent, ptotal
 
 					if (percent_script) then
-						okey, percent = pcall (percent_script, floor(actor.value), top, total, combat, instance, actor)
+						okey, percent = pcall (percent_script, floor(actor.value), top, total, combatObject, instanceObject, actor)
 						if (not okey) then
 							_detalhes:Msg("|cFFFF9900percent script error|r:", percent)
-							return _detalhes:EndRefresh (instance, 0, combat, combat [1])
+							return _detalhes:EndRefresh (instanceObject, 0, combatObject, combatObject [1])
 						end
 					else
 						percent = format ("%.1f", floor(actor.value) / total * 100)
 					end
 
 					if (total_script) then
-						local okey, value = pcall (total_script, floor(actor.value), top, total, combat, instance, actor)
+						local okey, value = pcall (total_script, floor(actor.value), top, total, combatObject, instanceObject, actor)
 						if (not okey) then
 							_detalhes:Msg("|cFFFF9900total script error|r:", value)
-							return _detalhes:EndRefresh (instance, 0, combat, combat [1])
+							return _detalhes:EndRefresh (instanceObject, 0, combatObject, combatObject [1])
 						end
 
 						if (type(value) == "number") then
@@ -244,11 +248,11 @@
 			return total, instance_container._ActorTable, top, amount, "report_name"
 		end
 
-		instance:RefreshScrollBar (amount)
+		instanceObject:RefreshScrollBar (amount)
 
-		classCustom:Refresh (instance, instance_container, combat, force, total, top, custom_object)
+		classCustom:Refresh (instanceObject, instance_container, combatObject, force, total, top, customObject)
 
-		return _detalhes:EndRefresh (instance, total, combat, combat [container_index])
+		return _detalhes:EndRefresh (instanceObject, total, combatObject, combatObject [container_index])
 
 	end
 
@@ -915,44 +919,29 @@
 		end
 	end
 
-	function classCustom:ToolTip (instance, bar_number, row_object, keydown)
+	function classCustom:ToolTip (instanceObject, barNumber, rowObject, keydown)
 		--get the custom object
-		local custom_object = instance:GetCustomObject()
+		local customObject = instanceObject:GetCustomObject()
 
-		if (custom_object.notooltip) then
+		if (customObject.notooltip) then
 			return
 		end
 
 		--get the actor
-		local actor = self.my_actor
+		local actorObject = self.my_actor
 
-		local r, g, b
-		if (actor.id) then
-			local school_color = _detalhes.school_colors [actor.classe]
-			if (not school_color) then
-				school_color = _detalhes.school_colors ["unknown"]
-			end
-			r, g, b = unpack(school_color)
+		if (actorObject.id) then
+			_detalhes:AddTooltipSpellHeaderText (select(1, _GetSpellInfo(actorObject.id)), "yellow", 1, select(3, _GetSpellInfo(actorObject.id)), 0.90625, 0.109375, 0.15625, 0.875, false, 18)
 		else
-			r, g, b = actor:GetClassColor()
+			_detalhes:AddTooltipSpellHeaderText (customObject:GetName(), "yellow", 1, customObject:GetIcon(), 0.90625, 0.109375, 0.15625, 0.875, false, 18)
 		end
 
-		if (actor.id) then
-			_detalhes:AddTooltipSpellHeaderText (select(1, _GetSpellInfo(actor.id)), "yellow", 1, select(3, _GetSpellInfo(actor.id)), 0.90625, 0.109375, 0.15625, 0.875)
-		else
-			_detalhes:AddTooltipSpellHeaderText (custom_object:GetName(), "yellow", 1, custom_object:GetIcon(), 0.90625, 0.109375, 0.15625, 0.875)
-		end
-
-		--GameCooltip:AddStatusBar (100, 1, r, g, b, 1)
 		_detalhes:AddTooltipHeaderStatusbar (1, 1, 1, 0.6)
 
-		if (custom_object:IsScripted()) then
-			if (custom_object.tooltip) then
-				local func = _detalhes.custom_function_cache [instance.customName .. "Tooltip"]
-				if (func) then
-
-				end
-				local okey, errortext = pcall (func, actor, instance.showing, instance, keydown)
+		if (customObject:IsScripted()) then
+			if (customObject.tooltip) then
+				local func = _detalhes.custom_function_cache [instanceObject.customName .. "Tooltip"]
+				local okey, errortext = pcall(func, actorObject, instanceObject.showing, instanceObject, keydown)
 				if (not okey) then
 					_detalhes:Msg("|cFFFF9900error on custom display tooltip function|r:", errortext)
 					return false
@@ -960,14 +949,14 @@
 			end
 		else
 			--get the attribute
-			local attribute = custom_object:GetAttribute()
+			local attribute = customObject:GetAttribute()
 			local container_index = classCustom:GetCombatContainerIndex (attribute)
 
 			--get the tooltip function
 			local func = classCustom [attribute .. "Tooltip"]
 
 			--build the tooltip
-			func (_, actor, custom_object.target, custom_object.spellid, instance.showing, instance)
+			func (_, actorObject, customObject.target, customObject.spellid, instanceObject.showing, instanceObject)
 		end
 
 		return true
@@ -1169,113 +1158,109 @@
 	end
 
 	function _detalhes:AddDefaultCustomDisplays()
-
 		local PotionUsed = {
 			name = Loc ["STRING_CUSTOM_POT_DEFAULT"],
 			icon = [[Interface\ICONS\INV_Potion_03]],
 			attribute = false,
 			spellid = false,
-			author = "Details!",
+			author = "Terciob",
 			desc = Loc ["STRING_CUSTOM_POT_DEFAULT_DESC"],
 			source = false,
 			target = false,
-			script_version = 6,
+			script_version = 8,
+			import_string = "1EvBVnkoq4FlxKwDWDjCn6Q0kfD7kL(YwruUMOLK7JaoGPX3rSrgZwLV4F73yJ5LMxjPDfBBzHXZZZmEMhg7p0FHVxoRGhH9x57HkeRzCFVhWcejn)x89YWWROIG8iojt47LYIqPYWFGslW9LHcwM(3cuk83i2MvibCdHMlq0iSm8lYqhhh5e5e9s0pydsS2jjLX4w6hAREnhlk4uzyVEYWbdYfCc9fNeghm2Q3NCgM0RVb2)qd3Vn8MBSvohwYN6P8GCIVxmopY3ZBn7vz4RRzkMid3cXNmKJiXYWICm8BKmmJjim4LXfkKGyynqomnIvqfyUJVNgLpG4UkW2pQljV6Fg2tIyu)Nh(N3(5H367rrBW(EZn8CjqCyRkdNMsIv7vce)fSqD3oCSKnZw9V4ifNIkYfSn3ZOWwkfZBXYstA4Qz9vrvzmI2OYiAJUPV5hfBhmaq3K22qYJalJemUcEds1omLKlMLSuqsjITJvwLR9xBIo6jSq)QPGXwp84IXUt9cgVyX3DVB5Ihd(BxV7TlXnMzGfYLzJKtsuOg03qGQGsTXtYqeEU1bWhs(GBMidlVgmGrt3cffPOTaX1l(foRiRXesIm0QfcJCZFszXC9sSST1KI2SGQltsy13G8yC1Uje9jO0C8(MV)tANP17)a3XRksacvKjiBWVjNFe4lxXsT911cAE0oMGnbpfc1wy1RCH9S33Z6mYb97rZfnHuv7hdCscdQrbFfHO)Qq3IcScEqghBSd2CZzQkxrEtfjrDF6ROTWFhECSmjaniTs)hK41jG6kWVn7(LEbZNTWD2ZbUpyFCC0PJwOC2Kq1LUFtZjZD)(jJNQR9kOe8c85xMMMqRTm8Vay6mjBiBMgSoqqmn(8gnyakoUzpvu1BB6ep763rDB0444)rPU2UvTVoqNCr88WKVl9MxAN5v2xEYUYRPNulJQJb34(vFFCo71k9WsT0PU3fmB(Jph89XUpemE6utVH3okQNPBuJZc0Q0YpvEYwrdNS7yTDJRV4IBd5kNr4lTzPdSBq(bogTr0D3PPJzGdA9ShFf(a6fZStPvOD7f7PRu(4eX4x1QdxDOTRcZ1fwDs05891)SLTUszmvoXU7EVtjJtA07rBSujQvz2zlnAnRz1Th(BHVHb6)t5tGPdlh3EuZC3hCCw942ibCkJvfc9rFemwQGKvpf9Bt87mt9XMGUEK33POENfX)5iA)HksFPIYVtr4par32H)ZWHW6xE8IYqmYixwf5U0e2f8jQNqQ0NUut1KpfYIwTbQJD474gfRSQ5NAEhZpMdY7yQUDsb8cwJjVSwC632boywTc)fLo4ou0)Po2engoDQOiFfcoy07rCPQ12x47))d",
 			script = [[
-				--init:
-				local combat, instance_container, instance = ...
+				local combatObject, customContainer, instanceObject = ...
 				local total, top, amount = 0, 0, 0
-
+				
 				--get the misc actor container
-				local misc_container = combat:GetActorList ( DETAILS_ATTRIBUTE_MISC )
-
+				local listOfUtilityActors = combatObject:GetActorList(DETAILS_ATTRIBUTE_MISC)
+				
 				--do the loop:
-				for _, player in ipairs( misc_container ) do
-
+				for _, actorObject in ipairs(listOfUtilityActors) do
 					--only player in group
-					if (player:IsGroupPlayer()) then
-
-						local found_potion = false
-
+					if (actorObject:IsGroupPlayer()) then
+						local bFoundPotion = false
+						
 						--get the spell debuff uptime container
-						local debuff_uptime_container = player.debuff_uptime and player.debuff_uptime_spells and player.debuff_uptime_spells._ActorTable
-						if (debuff_uptime_container) then
+						local debuffUptimeContainer = actorObject:GetSpellContainer("debuff")
+						if (debuffUptimeContainer) then
 							--potion of focus (can't use as pre-potion, so, its amount is always 1
-							local focus_potion = debuff_uptime_container [DETAILS_FOCUS_POTION_ID]
-
-							if (focus_potion) then
+							local focusPotion = debuffUptimeContainer:GetSpell(DETAILS_FOCUS_POTION_ID)
+							if (focusPotion) then
 								total = total + 1
-								found_potion = true
+								bFoundPotion = true
 								if (top < 1) then
 									top = 1
 								end
 								--add amount to the player
-								instance_container:AddValue (player, 1)
+								customContainer:AddValue(actorObject, 1)
 							end
 						end
-
+						
 						--get the spell buff uptime container
-						local buff_uptime_container = player.buff_uptime and player.buff_uptime_spells and player.buff_uptime_spells._ActorTable
-						if (buff_uptime_container) then
-							for spellId, _ in pairs(DetailsFramework.PotionIDs) do
-								local potionUsed = buff_uptime_container [spellId]
-
-								if (potionUsed) then
-									local used = potionUsed.activedamt
+						local buffUptimeContainer = actorObject:GetSpellContainer("buff")
+						if (buffUptimeContainer) then
+							for spellId, potionPower in pairs(LIB_OPEN_RAID_ALL_POTIONS) do
+								local spellTable = buffUptimeContainer:GetSpell(spellId)
+								if (spellTable) then
+									local used = spellTable.activedamt
 									if (used and used > 0) then
 										total = total + used
-										found_potion = true
+										bFoundPotion = true
 										if (used > top) then
 											top = used
 										end
-
+										
 										--add amount to the player
-										instance_container:AddValue (player, used)
+										customContainer:AddValue(actorObject, used)
 									end
 								end
 							end
 						end
-
-						if (found_potion) then
+						
+						if (bFoundPotion) then
 							amount = amount + 1
 						end
 					end
 				end
-
+				
 				--return:
 				return total, top, amount
 				]],
 
 			tooltip = [[
-			--init:
-			local player, combat, instance = ...
+				local actorObject, combatObject, instanceObject = ...
 
-			--get the debuff container for potion of focus
-			local debuff_uptime_container = player.debuff_uptime and player.debuff_uptime_spells and player.debuff_uptime_spells._ActorTable
-			if (debuff_uptime_container) then
-				local focus_potion = debuff_uptime_container [DETAILS_FOCUS_POTION_ID]
-				if (focus_potion) then
-				local name, _, icon = GetSpellInfo(DETAILS_FOCUS_POTION_ID)
-				GameCooltip:AddLine(name, 1) --can use only 1 focus potion (can't be pre-potion)
-				_detalhes:AddTooltipBackgroundStatusbar()
-				GameCooltip:AddIcon (icon, 1, 1, _detalhes.tooltip.line_height, _detalhes.tooltip.line_height)
-				end
-			end
-
-			--get the misc actor container
-			local buff_uptime_container = player.buff_uptime and player.buff_uptime_spells and player.buff_uptime_spells._ActorTable
-			if (buff_uptime_container) then
-				for spellId, _ in pairs(DetailsFramework.PotionIDs) do
-					local potionUsed = buff_uptime_container [spellId]
-
-					if (potionUsed) then
-						local name, _, icon = GetSpellInfo(spellId)
-						GameCooltip:AddLine(name, potionUsed.activedamt)
-						_detalhes:AddTooltipBackgroundStatusbar()
-						GameCooltip:AddIcon (icon, 1, 1, _detalhes.tooltip.line_height, _detalhes.tooltip.line_height)
+				local iconSize = 20
+				
+				local buffUptimeContainer = actorObject:GetSpellContainer("buff")
+				if (buffUptimeContainer) then
+					for spellId, potionPower in pairs(LIB_OPEN_RAID_ALL_POTIONS) do
+						local spellTable = buffUptimeContainer:GetSpell(spellId)
+						if (spellTable) then
+							local used = spellTable.activedamt
+							if (used and used > 0) then
+								local spellName, _, spellIcon = GetSpellInfo(spellId)
+								GameCooltip:AddLine(spellName, used)
+								GameCooltip:AddIcon(spellIcon, 1, 1, iconSize, iconSize)
+								Details:AddTooltipBackgroundStatusbar()
+							end
+						end
 					end
 				end
-			end
-			]]
+			]],
+
+			total_script = [[
+				local value, top, total, combat, instance = ...
+				return math.floor(value) .. " "
+			]],
+
+			percent_script = [[
+				local value, top, total, combat, instance = ...
+				value = math.floor(value)
+				return ""
+			]],
 		}
 
 		local have = false
@@ -1304,82 +1289,65 @@
 			icon = [[Interface\ICONS\INV_Stone_04]],
 			attribute = false,
 			spellid = false,
-			author = "Details! Team",
+			author = "Terciob",
 			desc = Loc ["STRING_CUSTOM_HEALTHSTONE_DEFAULT_DESC"],
 			source = false,
 			target = false,
 			script = [[
-			--get the parameters passed
-			local combat, instance_container, instance = ...
-			--declade the values to return
-			local total, top, amount = 0, 0, 0
-
-			--do the loop
-			local AllHealCharacters = combat:GetActorList (DETAILS_ATTRIBUTE_HEAL)
-			for index, character in ipairs(AllHealCharacters) do
-				local AllSpells = character:GetSpellList()
-				local found = false
-				for spellid, spell in pairs(AllSpells) do
-					if (DETAILS_HEALTH_POTION_LIST [spellid]) then
-						instance_container:AddValue (character, spell.total)
-						total = total + spell.total
-						if (top < spell.total) then
-							top = spell.total
+				local combatObject, instanceContainer, instanceObject = ...
+				local total, top, amount = 0, 0, 0
+				
+				local listOfHealingActors = combatObject:GetActorList(DETAILS_ATTRIBUTE_HEAL)
+				for _, actorObject in ipairs(listOfHealingActors) do
+					local listOfSpells = actorObject:GetSpellList()
+					local found = false
+					
+					for spellId, spellTable in pairs(listOfSpells) do
+						if (LIB_OPEN_RAID_HEALING_POTIONS[spellId]) then
+							instanceContainer:AddValue(actorObject, spellTable.total)
+							total = total + spellTable.total
+							if (top < spellTable.total) then
+								top = spellTable.total
+							end
+							found = true
 						end
-						found = true
+					end
+					
+					if (found) then
+						amount = amount + 1
 					end
 				end
-
-				if (found) then
-					amount = amount + 1
-				end
-			end
-			--loop end
-			--return the values
-			return total, top, amount
+				
+				return total, top, amount
 			]],
+
 			tooltip = [[
-				--get the parameters passed
-				local actor, combat, instance = ...
-
-				--get the cooltip object (we dont use the convencional GameTooltip here)
-				local GameCooltip = GameCooltip
-				local R, G, B, A = 0, 0, 0, 0.75
-
-				local hs = actor:GetSpell (6262)
-				if (hs) then
-					GameCooltip:AddLine(select(1, GetSpellInfo(6262)),  _detalhes:ToK(hs.total))
-					GameCooltip:AddIcon (select(3, GetSpellInfo(6262)), 1, 1, _detalhes.tooltip.line_height, _detalhes.tooltip.line_height)
-					GameCooltip:AddStatusBar (100, 1, R, G, B, A)
+				local actorObject, combatObject, instanceObject = ...
+				local spellContainer = actorObject:GetSpellContainer("spell")
+				
+				local iconSize = 20
+				
+				local allHealingPotions = {6262}
+				for spellId, potionPower in pairs(LIB_OPEN_RAID_ALL_POTIONS) do
+					allHealingPotions[#allHealingPotions+1] = spellId
 				end
-
-				local pot = actor:GetSpell (DETAILS_HEALTH_POTION_ID)
-				if (pot) then
-					GameCooltip:AddLine(select(1, GetSpellInfo(DETAILS_HEALTH_POTION_ID)),  _detalhes:ToK(pot.total))
-					GameCooltip:AddIcon (select(3, GetSpellInfo(DETAILS_HEALTH_POTION_ID)), 1, 1, _detalhes.tooltip.line_height, _detalhes.tooltip.line_height)
-					GameCooltip:AddStatusBar (100, 1, R, G, B, A)
+				
+				for i = 1, #allHealingPotions do
+					local spellId = allHealingPotions[i]
+					local spellTable = spellContainer:GetSpell(spellId)
+					if (spellTable) then
+						local spellName, _, spellIcon = GetSpellInfo(spellId)
+						GameCooltip:AddLine(spellName, Details:ToK(spellTable.total))
+						GameCooltip:AddIcon(spellIcon, 1, 1, iconSize, iconSize)
+						GameCooltip:AddStatusBar (100, 1, 0, 0, 0, 0.75)
+					end
 				end
-
-				local pot = actor:GetSpell (DETAILS_HEALTH_POTION2_ID)
-				if (pot) then
-					GameCooltip:AddLine(select(1, GetSpellInfo(DETAILS_HEALTH_POTION2_ID)),  _detalhes:ToK(pot.total))
-					GameCooltip:AddIcon (select(3, GetSpellInfo(DETAILS_HEALTH_POTION2_ID)), 1, 1, _detalhes.tooltip.line_height, _detalhes.tooltip.line_height)
-					GameCooltip:AddStatusBar (100, 1, R, G, B, A)
-				end
-
-				local pot = actor:GetSpell (DETAILS_REJU_POTION_ID)
-				if (pot) then
-					GameCooltip:AddLine(select(1, GetSpellInfo(DETAILS_REJU_POTION_ID)),  _detalhes:ToK(pot.total))
-					GameCooltip:AddIcon (select(3, GetSpellInfo(DETAILS_REJU_POTION_ID)), 1, 1, _detalhes.tooltip.line_height, _detalhes.tooltip.line_height)
-					GameCooltip:AddStatusBar (100, 1, R, G, B, A)
-				end
-
-				--Cooltip code
 			]],
 			percent_script = false,
 			total_script = false,
-			script_version = 16,
+			script_version = 18,
 		}
+
 --	/run _detalhes:AddDefaultCustomDisplays()
 		local have = false
 		for _, custom in ipairs(self.custom) do

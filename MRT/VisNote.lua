@@ -385,7 +385,7 @@ function module.options:Load()
 	ELib:Border(self.tool_select_text,2,.24,.25,.30,1)
 	self.tool_select_text.texture:Hide()
 	self.tool_select_text.text = self.tool_select_text:CreateFontString(nil,"ARTWORK","GameFontWhite")
-	self.tool_select_text.text:SetFont(self.tool_select_text.text:GetFont(),10)
+	self.tool_select_text.text:SetFont(self.tool_select_text.text:GetFont(),10,"")
 	self.tool_select_text.text:SetPoint("CENTER")
 	self.tool_select_text.text:SetText("TEXT")
 
@@ -793,7 +793,7 @@ function module.options:Load()
 		curr_map = arg2
 		curr_data[2] = arg2
 	end
-	self.SelectMapDropDown.Text:SetFont(self.SelectMapDropDown.Text:GetFont(),8)
+	self.SelectMapDropDown.Text:SetFont(self.SelectMapDropDown.Text:GetFont(),8,"")
 
 	local function ZoneNameFromMap(mapID)
 		return (C_Map.GetMapInfo(mapID or 0) or {}).name or ("Map ID "..mapID)
@@ -1023,6 +1023,25 @@ function module.options:Load()
 		{L.S_ZoneT29VotI..": "..L.bossName[2614],{2126,0.51,0.51,1.5}},
 		{L.S_ZoneT29VotI..": "..L.bossName[2605],{2124,0.50,0.50,1.5}},
 		{L.S_ZoneT29VotI..": "..L.bossName[2607],{2125,0.54,0.5,1}},
+		{"Flame Leviathan",{"Interface/AddOns/"..GlobalAddonName.."/mediaclassic/uld1"}},
+		{"Razorscale",{"Interface/AddOns/"..GlobalAddonName.."/mediaclassic/uld2"}},
+		{"XT-002 Deconstructor",{"Interface/AddOns/"..GlobalAddonName.."/mediaclassic/uld3"}},
+		{"Assembly of Iron",{"Interface/AddOns/"..GlobalAddonName.."/mediaclassic/uld4"}},
+		{"Kologarn",{"Interface/AddOns/"..GlobalAddonName.."/mediaclassic/uld5"}},
+
+		--191-200
+		{"Auriaya",{"Interface/AddOns/"..GlobalAddonName.."/mediaclassic/uld6"}},
+		{"Hodir",{"Interface/AddOns/"..GlobalAddonName.."/mediaclassic/uld7"}},
+		{"Thorim",{"Interface/AddOns/"..GlobalAddonName.."/mediaclassic/uld8"}},
+		{"Freya",{"Interface/AddOns/"..GlobalAddonName.."/mediaclassic/uld9"}},
+		{"Mimiron",{"Interface/AddOns/"..GlobalAddonName.."/mediaclassic/uld10"}},
+		{"General Vezax",{"Interface/AddOns/"..GlobalAddonName.."/mediaclassic/uld11"}},
+		{"Yogg-Saron",{"Interface/AddOns/"..GlobalAddonName.."/mediaclassic/uld12"}},
+		{"Yogg-Saron room 1",{"Interface/AddOns/"..GlobalAddonName.."/mediaclassic/uld13"}},
+		{"Yogg-Saron room 2",{"Interface/AddOns/"..GlobalAddonName.."/mediaclassic/uld14"}},
+		{"Yogg-Saron room 3",{"Interface/AddOns/"..GlobalAddonName.."/mediaclassic/uld15"}},
+
+		--201-210
 	}
 	local mapsSorted = {
 		1,
@@ -1048,6 +1067,7 @@ function module.options:Load()
 			{"Icecrown Citadel",160,161,162,163,164,165,166,167},
 			{"Onyxia's Lair",169},
 			{"Trial of the Crusader",158,159},
+			{"Ulduar [visual]",186,187,188,189,190,191,192,193,194,195,196,197,198,199,200},
 			{"Ulduar",152,153,154,155,156,157},
 			{"The Eye of Eternity",170},
 			{"The Obsidian Sanctum",171},
@@ -3369,14 +3389,14 @@ function module:UnpackString(str,sender)
 			if not module.db.await then
 				return
 			end
-			local mapIDstr,restStr = str:match("^..([^"..string.char(254)..string.char(255).."]+)[^"..string.char(255).."]-("..string.char(255)..".-)$")
+			local mapIDstr = str:match("^..([^"..string.char(254)..string.char(255).."]+)")
 			c = 0
 			for i=1,#mapIDstr do
 				c = c * 253 + mapIDstr:sub(i,i):byte() + (i > 1 and -1 or 0)
 				--function Convert(n)local res={} repeat table.insert(res,1,n%253) n=floor(n/253) until n==0 for i=2,#res do res[i]=res[i]+1 end return unpack(res) end
 			end
 			module.db.await[2] = c
-			str = restStr
+			str = str:sub(2+#mapIDstr+1)
 		end
 	end
 	if not module.db.await then
@@ -3610,13 +3630,13 @@ do
 	frame.border = ExRT.lib:Shadow(frame,20)
 
 	frame.label = frame:CreateFontString(nil,"OVERLAY","GameFontWhiteSmall")
-	frame.label:SetFont(frame.label:GetFont(),10)
+	frame.label:SetFont(frame.label:GetFont(),10,"")
 	frame.label:SetPoint("TOP",0,-4)
 	frame.label:SetTextColor(1,1,1,1)
 	frame.label:SetText("MRT: "..L.VisualNote)
 
 	frame.player = frame:CreateFontString(nil,"OVERLAY","GameFontWhiteSmall")
-	frame.player:SetFont(frame.player:GetFont(),10)
+	frame.player:SetFont(frame.player:GetFont(),10,"")
 	frame.player:SetPoint("TOP",0,-16)
 	frame.player:SetTextColor(1,1,1,1)
 	frame.player:SetText("MyName-MyRealm")

@@ -8593,7 +8593,7 @@ detailsFramework.CastFrameFunctions = {
 		self.value = self.empowered and (GetTime() - self.spellStartTime) or (self.spellEndTime - GetTime())
 		self.maxValue = self.spellEndTime - self.spellStartTime
 
-		if (self.value < 0 or self.value >= self.maxValue) then
+		if (self.value < 0 or self.value > self.maxValue) then
 			self.value = 0
 		end
 

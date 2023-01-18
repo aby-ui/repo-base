@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod("Azuregos", "DBM-WorldEvents", 3)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20220116191047")
+mod:SetRevision("20230117031931")
 mod:SetCreatureID(121820)--121820 TW ID, 6109 classic ID
 --mod:SetModelID(17887)
 
@@ -44,7 +44,7 @@ function mod:SPELL_CAST_START(args)
 end
 
 function mod:SPELL_CAST_SUCCESS(args)
-	if args.spellId == 243784 then
+	if args.spellId == 243835 then
 		specWarnReflection:Show()
 		specWarnReflection:Play("stilldanger")
 		--pull:176.7, 31.3, 23.1, 20.8, 30.6, 26.2, 25.5, 15.7, 33.1, 30.1

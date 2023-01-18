@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2474, "DBM-Party-Dragonflight", 1, 1196)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20221206015003")
+mod:SetRevision("20230114200950")
 mod:SetCreatureID(186121)
 mod:SetEncounterID(2569)
 mod:SetUsedIcons(8)
@@ -27,7 +27,7 @@ mod:RegisterEventsInCombat(
  or ability.id = 373944 and type = "summon"
  or type = "dungeonencounterstart" or type = "dungeonencounterend"
 --]]
---TODO, longer pulls for decaying strength timer
+--TODO, longer pulls for decaying strength timer (needs more data, single pull with 3 casts but still all over the place)
 local warnDecayigStrength						= mod:NewSpellAnnounce(373960, 3)
 
 local specWarnRotburstTotem						= mod:NewSpecialWarningSwitch(373944, nil, nil, nil, 1, 2)
@@ -35,7 +35,7 @@ local specWarnChokingRotcloud					= mod:NewSpecialWarningDodge(376170, nil, nil,
 local specWarnDecaystrike						= mod:NewSpecialWarningDefensive(373917, nil, nil, nil, 1, 2)
 --local specWarnGTFO							= mod:NewSpecialWarningGTFO(340324, nil, nil, nil, 1, 8)
 
-local timerDecayingStrengthCD					= mod:NewCDTimer(35, 373960, nil, nil, nil, 2)
+local timerDecayingStrengthCD					= mod:NewCDTimer(69.2, 373960, nil, nil, nil, 2)--Likely still bugged
 local timerRotburstTotemCD						= mod:NewCDTimer(18.2, 373944, nil, nil, nil, 1, nil, DBM_COMMON_L.DAMAGE_ICON)--18-21
 local timerChokingRotcloutCD					= mod:NewCDTimer(42.5, 376170, nil, nil, nil, 3, nil, DBM_COMMON_L.MYTHIC_ICON)
 local timerDecayStrikeCD						= mod:NewCDTimer(19.4, 373917, nil, "Tank|Healer", nil, 5, nil, DBM_COMMON_L.TANK_ICON)
@@ -81,7 +81,7 @@ function mod:SPELL_CAST_START(args)
 	local spellId = args.spellId
 	if spellId == 373960 then
 		warnDecayigStrength:Show()
---		timerDecayingStrengthCD:Start()
+--		timerDecayingStrengthCD:Start()--69.2, 100.8
 	elseif spellId == 376170 then
 		specWarnChokingRotcloud:Show()
 		specWarnChokingRotcloud:Play("shockwave")

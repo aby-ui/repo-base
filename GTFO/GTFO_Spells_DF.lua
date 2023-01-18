@@ -33,12 +33,8 @@ GTFO.SpellID["390326"] = {
 
 GTFO.SpellID["372339"] = {
   --desc = "Lava";
-  soundFunction = function() 
-	if (GTFO.Settings.IgnoreOptions and GTFO.Settings.IgnoreOptions["Lava"]) then
-		return 0;
-	end
-	return 1;
-  end;
+  category = "Lava";
+  sound = 1;
 };
 
 GTFO.SpellID["393577"] = {
@@ -193,6 +189,17 @@ GTFO.SpellID["377838"] = {
 GTFO.SpellID["393562"] = {
   --desc = "Lava Pool (Zhurtan the Riverboiler)";
   sound = 1; -- Ground AOE spawned by a mob, not be ignored like other "lava pools"
+};
+
+GTFO.SpellID["393753"] = {
+  --desc = "Languid Bloom (Taresh)";
+  sound = 1;
+};
+
+GTFO.SpellID["389287"] = {
+  --desc = "Glacial Storm (Liskanoth)";
+  applicationOnly = true;
+  sound = 1;
 };
 
 --- *******************
@@ -638,6 +645,7 @@ GTFO.SpellID["371514"] = {
 GTFO.SpellID["372055"] = {
   --desc = "Icy Ground (Sennarth)";
   sound = 2;
+  category = "IcyGround";
 };
 
 GTFO.SpellID["371836"] = {
@@ -742,8 +750,9 @@ GTFO.SpellID["375883"] = {
 
 GTFO.SpellID["375873"] = {
   --desc = "Wildfire (Broodkeeper Diurna)";
+  applicationOnly = true;
+  minimumStacks = 1;
   sound = 1;
-  spellType = "SPELL_AURA_REFRESH"; -- Only alert when refreshing, being hit more than once
 };
 
 GTFO.SpellID["375578"] = {
@@ -765,6 +774,24 @@ GTFO.SpellID["394583"] = {
 GTFO.SpellID["392196"] = {
   --desc = "Scattered Charge (Raszageth)";
   sound = 4;
+};
+
+GTFO.SpellID["388659"] = {
+	--desc = "Tempest Wing (Raszageth)";
+	test = true;
+	soundFunction = function() 
+		-- Alert if hit more than 5 times
+		if (not GTFO.VariableStore.TempestWing) then
+			GTFO.VariableStore.TempestWing = 0;
+		end
+		if (GTFO.VariableStore.TempestWing == 0) then
+			GTFO_AddEvent("ResetTempestWingCounter", 5, function() GTFO.VariableStore.TempestWing = 0; end);
+		end
+		GTFO.VariableStore.TempestWing = GTFO.VariableStore.TempestWing + 1;
+		if (GTFO.VariableStore.TempestWing > 5) then
+			return 1;
+		end
+	end;
 };
 
 end

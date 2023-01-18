@@ -3,7 +3,7 @@ local L		= mod:GetLocalizedStrings()
 
 mod.statTypes = "normal,heroic,mythic,challenge,timewalker"
 
-mod:SetRevision("20230107210947")
+mod:SetRevision("20230117063410")
 mod:SetCreatureID(74366, 74475)--74366 Forgemaster Gog'duh, 74475 Magmolatus
 mod:SetEncounterID(1655)
 mod:SetMainBossID(74475)
@@ -106,7 +106,7 @@ function mod:SPELL_CAST_START(args)
 end
 
 function mod:SPELL_PERIODIC_DAMAGE(_, _, _, _, destGUID, _, _, _, spellId, spellName)
-	if spellId == 15011 and destGUID == UnitGUID("player") and self:AntiSpam(2, 1) then--need to check spell ids again
+	if spellId == 150011 and destGUID == UnitGUID("player") and self:AntiSpam(2, 1) then--need to check spell ids again
 		specWarnMagmaBarrage:Show(spellName)
 		specWarnMagmaBarrage:Play("watchfeet")
 	end

@@ -2,7 +2,7 @@
 ## X-Min-Interface: 100002
 ## X-Min-Interface-Classic: 11403
 ## X-Min-Interface-BCC: 20504
-## X-Min-Interface-Wrath: 30400
+## X-Min-Interface-Wrath: 30401
 
 ## Title:|cffffd200Deadly Boss Mods|r |cff69ccf0Core|r
 ## Title-zhCN:|cffffd200Deadly Boss Mods|r |cff69ccf0核心|r
@@ -21,7 +21,7 @@
 ## LoadOnDemand: 0
 ## DefaultState: enabled
 ## Author: MysticalOS, QartemisT
-## Version: c6253f1
+## Version: 8f1ca2c
 ## X-Website: https://deadlybossmods.com
 
 Libs\LibLatency\LibLatency.xml

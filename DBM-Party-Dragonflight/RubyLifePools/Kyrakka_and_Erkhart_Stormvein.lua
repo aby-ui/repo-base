@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2503, "DBM-Party-Dragonflight", 7, 1202)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20230109214834")
+mod:SetRevision("20230116222317")
 mod:SetCreatureID(190484, 190485)
 mod:SetEncounterID(2623)
 --mod:SetUsedIcons(1, 2, 3)
@@ -24,8 +24,6 @@ mod:RegisterEventsInCombat(
 --	"UNIT_SPELLCAST_SUCCEEDED boss1"
 )
 
---TODO, Flamespit, does target scan work?
---TODO, more with winds of change?
 --[[
 (ability.id = 381605 or ability.id = 381602 or ability.id = 381525 or ability.id = 381517 or ability.id = 381512 or ability.id = 385558 or ability.id = 381516) and type = "begincast"
  or type = "death" and (target.id = 193435 or target.id = 190485)
@@ -62,7 +60,6 @@ mod:AddInfoFrameOption(381862, true)--Infernocore
 
 mod.vb.windDirection = 0
 
---Seems to work?
 function mod:SpitTarget(targetname)
 	if not targetname then return end
 	warnFlamespit:Show(targetname)
@@ -70,16 +67,6 @@ function mod:SpitTarget(targetname)
 		yellFlamespit:Yell()
 	end
 end
-
---Seems not to work
---[[
-function mod:BreathTarget(targetname)
-	if not targetname then return end
-	if targetname == UnitName("player") then
-		yellRoaringFirebreath:Yell()
-	end
-end
---]]
 
 --Count started at 0 because count is incremented in success event not start
 local directions = {
@@ -116,11 +103,10 @@ end
 
 function mod:SPELL_CAST_START(args)
 	local spellId = args.spellId
-	if spellId == 381605 or spellId == 381602 then--381605 confirmed, 381602 unknown
+	if spellId == 381605 or spellId == 381602 then--One is for bosses split and one is for bosses combined.
 		self:ScheduleMethod(0.2, "BossTargetScanner", args.sourceGUID, "SpitTarget", 0.1, 8, true)
 		timerFlamespitCD:Start(self.vb.phase == 1 and 21.1 or 15)
 	elseif spellId == 381525 then
---		self:ScheduleMethod(0.2, "BossTargetScanner", args.sourceGUID, "BreathTarget", 0.1, 8, true)
 		specWarnRoaringFirebreath:Show()
 		specWarnRoaringFirebreath:Play("breathsoon")
 		timerRoaringFirebreathCD:Start(18)--18-27

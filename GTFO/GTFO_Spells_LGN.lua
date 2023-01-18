@@ -914,6 +914,11 @@ GTFO.SpellID["211391"] = {
   sound = 1;
 };
 
+GTFO.SpellID["209512"] = {
+  --desc = "Disrupting Energy (Guardian Construct)";
+  sound = 1;
+};
+
 -- ************************
 -- * Vault of the Wardens *
 -- ************************
