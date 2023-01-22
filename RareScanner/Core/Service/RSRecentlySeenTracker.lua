@@ -103,7 +103,7 @@ function RSRecentlySeenTracker.RemoveRecentlySeen(entityID)
 	local entityInfo = recently_seen_entities[entityID]
 	
 	if (not entityInfo) then
-		return
+		return nil
 	end
 	
 	-- If its an entity that spawns only in one spot
@@ -111,7 +111,7 @@ function RSRecentlySeenTracker.RemoveRecentlySeen(entityID)
 		RSLogger:PrintDebugMessage(string.format("RemoveRecentlySeen[%s] (mono)", entityID))
 		recently_seen_entities[entityID] = nil
 		RSGeneralDB.DeleteRecentlySeen(entityID)
-		return
+		return nil
 	end
 	
 	-- If its an entity that spawns in multiple spots at the same time
@@ -130,7 +130,7 @@ function RSRecentlySeenTracker.RemoveRecentlySeen(entityID)
 	
 	-- If for whatever reason it couldnt get the players coordinates it will be empty
 	if (RSUtils.GetTableLength(xyDistances) == 0) then
-		return
+		return nil
 	end
 	
 	-- And removes the closest to the player
@@ -152,7 +152,7 @@ function RSRecentlySeenTracker.RemoveRecentlySeen(entityID)
 				recently_seen_entities[entityID][xy] = nil
 			end
 			
-			break
+			return x, y
 		end
 	end
 end

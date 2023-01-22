@@ -51,7 +51,7 @@ function CM:IsVersionCompatible(serializationVersion)
 	return serializationVersion and serializationVersion >= self.SERIALIZATION_VERSION
 end
 
-local aceUserNameFix = CM.isAceComm and E.userName or E.userNameWithRealm
+local aceUserNameFix = CM.isAceComm and E.userName or gsub(E.userNameWithRealm, " ", "")
 
 local CLASS_TREE_IDS = {
 	["WARRIOR"] = 850,

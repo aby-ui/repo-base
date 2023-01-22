@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2503, "DBM-Party-Dragonflight", 7, 1202)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20230116222317")
+mod:SetRevision("20230120053943")
 mod:SetCreatureID(190484, 190485)
 mod:SetEncounterID(2623)
 --mod:SetUsedIcons(1, 2, 3)
@@ -15,7 +15,7 @@ mod:RegisterCombat("combat")
 mod:RegisterEventsInCombat(
 	"SPELL_CAST_START 381605 381602 381525 381517 381512 385558 381516",
 	"SPELL_CAST_SUCCESS 381517",
-	"SPELL_AURA_APPLIED 381515 181089",
+	"SPELL_AURA_APPLIED 381515 181089 381862",
 --	"SPELL_AURA_APPLIED_DOSE",
 --	"SPELL_AURA_REMOVED"
 --	"SPELL_PERIODIC_DAMAGE",
@@ -33,6 +33,7 @@ mod:RegisterEventsInCombat(
 --Kyrakka
 mod:AddTimerLine(DBM:EJ_GetSectionInfo(25365))
 local warnFlamespit								= mod:NewTargetNoFilterAnnounce(381605, 3)
+local warnInfernoCore							= mod:NewYouAnnounce(381862, 4)
 
 local yellFlamespit								= mod:NewYell(381605)
 local specWarnRoaringFirebreath					= mod:NewSpecialWarningDodge(381525, nil, nil, nil, 2, 2)
@@ -151,6 +152,8 @@ function mod:SPELL_AURA_APPLIED(args)
 		timerFlamespitCD:Restart(2.2)--3.6 now?
 		timerRoaringFirebreathCD:Restart(7.3)--9.7 now?
 		--Rest not reset
+	elseif spellId == 381862 and args:IsPlayer() then
+		warnInfernoCore:Show()
 	end
 end
 --mod.SPELL_AURA_APPLIED_DOSE = mod.SPELL_AURA_APPLIED

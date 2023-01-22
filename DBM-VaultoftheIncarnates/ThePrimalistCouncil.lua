@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2486, "DBM-VaultoftheIncarnates", nil, 1200)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20230110214257")
+mod:SetRevision("20230118201728")
 mod:SetCreatureID(187771, 187768, 187772, 187767)
 mod:SetEncounterID(2590)
 mod:SetUsedIcons(1, 2)
@@ -27,7 +27,7 @@ mod:RegisterEventsInCombat(
  or (ability.id = 386440 or ability.id = 386375 or ability.id = 386370 or ability.id = 386289) and type = "applybuff"
 --]]
 --General
-local specWarnGTFO								= mod:NewSpecialWarningGTFO(340324, nil, nil, nil, 1, 8)
+local specWarnGTFO								= mod:NewSpecialWarningGTFO(371514, nil, nil, nil, 1, 8)
 
 --local berserkTimer							= mod:NewBerserkTimer(600)
 --Kadros Icewrath
@@ -129,17 +129,13 @@ local function checkMyAxe(self)
 	if icon then
 		specWarnMeteorAxe:Show(self:IconNumToTexture(icon))
 		specWarnMeteorAxe:Play("mm"..icon)
-		yellMeteorAxe		= mod:NewShortPosYell(374043, nil, nil, nil, "YELL")
-		yellMeteorAxeFades	= mod:NewIconFadesYell(374043, nil, nil, nil, "YELL")
 		yellMeteorAxe:Yell(icon, icon)
 		yellMeteorAxeFades:Countdown(374039, nil, icon)
-	else--No icon setter?
+	else--No icon setter? Just use red icon for both targets
 		specWarnMeteorAxe:Show("")
 		specWarnMeteorAxe:Play("targetyou")
-		yellMeteorAxe	= mod:NewShortYell(374043, nil, nil, nil, "YELL")
-		yellMeteorAxeFades	= mod:NewShortFadesYell(374043, nil, nil, nil, "YELL")
-		yellMeteorAxe:Yell()
-		yellMeteorAxeFades:Countdown(374039)
+		yellMeteorAxe:Yell(7, 7)
+		yellMeteorAxeFades:Countdown(374039, nil, 7)
 	end
 end
 

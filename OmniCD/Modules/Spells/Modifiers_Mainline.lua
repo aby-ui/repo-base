@@ -406,6 +406,8 @@ E.spell_merged = {
 	[93985] = 106839,
 	[97547] = 78675,
 	[220543] = 15487,
+	[347008] = 119898,
+	[91807] = 47482,
 
 	[338035] = 338142,
 	[338018] = 338142,
@@ -1077,7 +1079,6 @@ local class_set_bonus = {
 	]]
 }
 
-
 E.item_set_bonus = {
 	[200354] = class_set_bonus.DRUID,
 	[200356] = class_set_bonus.DRUID,
@@ -1090,6 +1091,10 @@ E.item_set_bonus = {
 	[200387] = class_set_bonus.HUNTER,
 	[200389] = class_set_bonus.HUNTER,
 	[200391] = class_set_bonus.HUNTER,
+	]]
+	--[[ TEST SET
+	[198595] = {[1468]={384565, 2}},
+	[198593] = {[1468]={384565, 2}},
 	]]
 }
 

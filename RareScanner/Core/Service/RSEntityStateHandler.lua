@@ -120,7 +120,7 @@ function RSEntityStateHandler.SetDeadNpc(npcID, loadingAddon)
 	local npcInfo = RSNpcDB.GetInternalNpcInfo(npcID)
 	if (npcInfo) then
 		-- Remove recently seen
-		RSRecentlySeenTracker.RemoveRecentlySeen(npcID)
+		local x, y = RSRecentlySeenTracker.RemoveRecentlySeen(npcID)
 	
 		-- If the npc belongs to several zones we have to use the players zone
 		if (RSNpcDB.IsInternalNpcMultiZone(npcID)) then
@@ -168,7 +168,7 @@ function RSEntityStateHandler.SetDeadNpc(npcID, loadingAddon)
 		
 		-- Refresh minimap
 		if (not loadingAddon) then
-			RSMinimap.RefreshEntityState(npcID)
+			RSMinimap.HideIcon(npcID, x, y)
 		end
 		
 	-- If we dont have this entity in our database we can ignore it
@@ -301,7 +301,7 @@ function RSEntityStateHandler.SetContainerOpen(containerID, loadingAddon)
 	local containerInfo = RSContainerDB.GetInternalContainerInfo(containerID)
 	if (containerInfo) then
 		-- Remove recently seen
-		RSRecentlySeenTracker.RemoveRecentlySeen(containerID)
+		local x, y = RSRecentlySeenTracker.RemoveRecentlySeen(containerID)
 	
 		-- If the container belongs to several zones we have to use the players zone
 		if (RSContainerDB.IsInternalContainerMultiZone(containerID)) then
@@ -354,7 +354,7 @@ function RSEntityStateHandler.SetContainerOpen(containerID, loadingAddon)
 		
 		-- Refresh minimap
 		if (not loadingAddon) then
-			RSMinimap.RefreshEntityState(containerID)
+			RSMinimap.HideIcon(containerID, x, y)
 		end
 		
 	-- If we dont have this entity in our database we can ignore it
@@ -380,7 +380,7 @@ function RSEntityStateHandler.SetEventCompleted(eventID, loadingAddon)
 	end
 
 	-- Remove recently seen
-	RSRecentlySeenTracker.RemoveRecentlySeen(eventID)
+	local x, y = RSRecentlySeenTracker.RemoveRecentlySeen(eventID)
 
 	local eventAlreadyFound = RSGeneralDB.GetAlreadyFoundEntity(eventID)
 	local eventInternalInfo = RSEventDB.GetInternalEventInfo(eventID)
@@ -453,6 +453,6 @@ function RSEntityStateHandler.SetEventCompleted(eventID, loadingAddon)
 		
 	-- Refresh minimap
 	if (not loadingAddon) then
-		RSMinimap.RefreshEntityState(eventID)
+		RSMinimap.HideIcon(eventID, x, y)
 	end
 end

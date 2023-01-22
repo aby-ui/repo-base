@@ -159,6 +159,15 @@ function RSUtils.TextColor(text, color)
 	return string.format("|cff%s%s|r", color, text)
 end
 
+---
+-- @param #number Number to round
+-- @param #decimals Number of decimals
+-- @return Rounded number
+---
+function RSUtils.Round(number, decimals)
+    return (("%%.%df"):format(decimals)):format(number)
+end
+
 ---============================================================================
 -- Adjust coordinates to the new format
 ---============================================================================

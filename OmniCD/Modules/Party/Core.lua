@@ -11,7 +11,7 @@ function P:Enable()
 		return
 	end
 
-	if not E.isDF then
+	if not E.isDF and not E.isWOTLKC341 then
 		self:RegisterEvent('CVAR_UPDATE')
 	end
 	self:RegisterEvent('UI_SCALE_CHANGED')

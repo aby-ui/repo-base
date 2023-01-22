@@ -229,12 +229,19 @@ function RSMinimap.RefreshEntityState(entityID)
 	end
 end
 
-function RSMinimap.HideIcon(entityID)
+function RSMinimap.HideIcon(entityID, x, y)
 	if (pinFramesPool) then
 		for pin in pinFramesPool:EnumerateActive() do
 			local POI = pin.POI
-			if (POI.entityID == entityID) then
+			if (x ~= nil and y ~= nil) then
+				if (POI.entityID == entityID and tostring(POI.x) == x and tostring(POI.y) == y) then
+					HBD_Pins:RemoveMinimapIcon(RSMinimap, pin)
+					pinFramesPool:Release(pin)
+					break
+				end
+			elseif (POI.entityID == entityID) then
 				HBD_Pins:RemoveMinimapIcon(RSMinimap, pin)
+				pinFramesPool:Release(pin)
 				break
 			end
 		end

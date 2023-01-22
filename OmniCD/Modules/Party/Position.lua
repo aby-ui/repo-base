@@ -281,6 +281,13 @@ do
 					P.keepGroupsTogether = CompactRaidFrameManager_GetSetting("KeepGroupsTogether")
 				end
 			end)
+
+			if E.isWOTLKC341 then
+				hooksecurefunc("RaidOptionsFrame_UpdatePartyFrames", function()
+					P.useRaidStylePartyFrames = GetDisplayedAllyFrames() == "raid"
+					P:HookFunc()
+				end)
+			end
 		end
 
 		self.hooked = true

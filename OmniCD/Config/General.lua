@@ -87,7 +87,7 @@ function E:SetFontProperties(fontString, db, size)
 		fontString:SetShadowColor(0, 0, 0, 0)
 	end
 	flag = db.font == "Homespun" and "MONOCHROMEOUTLINE" or flag
-	flag = (E.isDF or E.TocVersion == 30401) and flagFixForDF[flag] or flag
+	flag = (E.isDF or E.isWOTLKC341) and flagFixForDF[flag] or flag
 	fontString:SetFont(LSM:Fetch("font", db.font), size or db.size, flag)
 end
 

@@ -3,6 +3,7 @@ local P, CM, CD = E.Party, E.Comm, E.Cooldowns
 
 local pairs, type = pairs, type
 local UnitExists, UnitGUID, UnitClass, UnitIsDeadOrGhost, UnitIsConnected, GetRaidRosterInfo, UnitRace, GetUnitName, UnitLevel = UnitExists, UnitGUID, UnitClass, UnitIsDeadOrGhost, UnitIsConnected, GetRaidRosterInfo, UnitRace, GetUnitName, UnitLevel
+local C_PvP_IsRatedSoloShuffle = E.isDF and C_PvP and C_PvP.IsRatedSoloShuffle or E.Noop
 local UPDATE_ROSTER_DELAY = 2
 local MSG_INFO_REQUEST_DELAY = UPDATE_ROSTER_DELAY + 1
 
@@ -27,7 +28,6 @@ P.userInfo.talentData = {}
 P.userInfo.shadowlandsData = {}
 P.userInfo.callbackTimers = {}
 P.userInfo.spellModRates = {}
-P.userInfo.queuedCdrOnStart = {}
 
 local RAID_UNIT = {
 	"raid1", "raid2", "raid3", "raid4", "raid5", "raid6", "raid7", "raid8", "raid9", "raid10",
@@ -278,7 +278,6 @@ local function UpdateRosterInfo(force)
 				shadowlandsData = {},
 				callbackTimers = {},
 				spellModRates = {},
-				queuedCdrOnStart = {},
 			}
 			P.groupInfo[guid] = info
 
@@ -344,7 +343,7 @@ function P:GROUP_JOINED(arg1,arg2)
 	end
 	self.joinedNewGroup = true
 
-	if self.isInArena and C_PvP.IsRatedSoloShuffle() then
+	if self.isInArena and C_PvP_IsRatedSoloShuffle() then
 		self:ResetAllIcons("joinedPvP")
 		if not self.callbackTimers.arenaTicker then
 			self:RegisterEvent('PLAYER_REGEN_DISABLED')

@@ -259,7 +259,7 @@ E.spell_db = {
 		{ ["class"]="ROGUE",["type"]="cc",["buff"]=359053,["spec"]=true,["name"]="Smoke Bomb",["duration"]=120,["icon"]=458733,["spellID"]=359053, },
 		{ ["class"]="ROGUE",["type"]="defensive",["buff"]=11327,["name"]="Vanish",["duration"]=120,["icon"]=132331,["spellID"]=1856, },
 		{ ["class"]="ROGUE",["type"]="offensive",["buff"]=212283,["spec"]=261,["name"]="Symbols of Death",["duration"]=30,["icon"]=252272,["spellID"]=212283, },
-		{ ["class"]="ROGUE",["type"]="other",["buff"]=2983,["name"]="Sprint",["duration"]=0,["icon"]=132307,["spellID"]=2983, },
+		{ ["class"]="ROGUE",["type"]="other",["buff"]=2983,["name"]="Sprint",["duration"]=120,["icon"]=132307,["spellID"]=2983, },
 
 
 		{ ["class"]="ROGUE",["type"]="offensive",["buff"]=385424,["spec"]={385424,321078},["maxRanks"]=1,["name"]="Serrated Bone Spike",["charges"]=3,["ID"]=3,["duration"]=30,["icon"]=3578230,["spellID"]=385424, },
@@ -2703,6 +2703,8 @@ E.spell_db = {
 		{ ["class"]="TRINKET",["type"]="trinket",["name"]="Dragon Games Equipment",["buff"]=386692,["duration"]=120,["icon"]=4641307,["spellID"]=386692,["item"]=193719, },
 		{ ["class"]="TRINKET",["type"]="trinket",["name"]="Bonemaw's Big Toe",["buff"]=397400,["duration"]=120,["icon"]=133718,["spellID"]=397400,["item"]=110012, },
 		{ ["class"]="TRINKET",["type"]="trinket",["name"]="Cataclysmic Punch",["buff"]=392359,["duration"]=120,["icon"]=133718,["spellID"]=392359,["item"]=200868, },
+
+		{ ["class"]="TRINKET",["type"]="consumable",["name"]="Refreshing Healing Potion",["buff"]=370511,["duration"]=300,["icon"]=4497595,["spellID"]=370511,["item"]=nil, }, --["item"]=191378
 	},
 }
 

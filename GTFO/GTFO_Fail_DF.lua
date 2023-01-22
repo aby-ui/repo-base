@@ -602,6 +602,54 @@ GTFO.SpellID["390560"] = {
   sound = 3;
 };
 
+GTFO.SpellID["390955"] = {
+  --desc = "Splashing Magma (Grand Flame)";
+  sound = 3;
+  applicationOnly = true;
+};
+
+GTFO.SpellID["390970"] = {
+  --desc = "Splashing Magma (Grand Flame)";
+  sound = 3;
+  applicationOnly = true;
+};
+
+
+GTFO.SpellID["391353"] = {
+  --desc = "Plowed";
+  applicationOnly = true;
+  sound = 3;
+};
+
+GTFO.SpellID["391301"] = {
+  --desc = "Wind Barrage (Boolk)";
+  sound = 3;
+};
+
+GTFO.SpellID["391308"] = {
+  --desc = "Rending Swoop (Boolk)";
+  sound = 3;
+  applicationOnly = true;
+};
+
+GTFO.SpellID["390834"] = {
+  --desc = "Primal Rend (Sarana)";
+  applicationOnly = true;
+  sound = 3;
+};
+
+GTFO.SpellID["390778"] = {
+  --desc = "Mammoth Charge (Blitztusk)";
+  applicationOnly = true;
+  sound = 3;
+};
+
+GTFO.SpellID["390766"] = {
+  --desc = "Mammoth Crush (Blitztusk)";
+  applicationOnly = true;
+  sound = 3;
+};
+
 --- *******************
 --- * Ruby Life Pools *
 --- *******************
@@ -664,46 +712,6 @@ GTFO.SpellID["392399"] = {
   sound = 3;
 };
 
-GTFO.SpellID["391967"] = {
-  --desc = "Electrical Overload (The Raging Tempest)";
-  sound = 3;
-};
-
-GTFO.SpellID["391353"] = {
-  --desc = "Plowed";
-  applicationOnly = true;
-  sound = 3;
-};
-
-GTFO.SpellID["391301"] = {
-  --desc = "Wind Barrage (Boolk)";
-  sound = 3;
-};
-
-GTFO.SpellID["391308"] = {
-  --desc = "Rending Swoop (Boolk)";
-  sound = 3;
-  applicationOnly = true;
-};
-
-GTFO.SpellID["390834"] = {
-  --desc = "Primal Rend (Sarana)";
-  applicationOnly = true;
-  sound = 3;
-};
-
-GTFO.SpellID["390778"] = {
-  --desc = "Mammoth Charge (Blitztusk)";
-  applicationOnly = true;
-  sound = 3;
-};
-
-GTFO.SpellID["390766"] = {
-  --desc = "Mammoth Crush (Blitztusk)";
-  applicationOnly = true;
-  sound = 3;
-};
-
 --- ************************
 --- * The Nokhud Offensive *
 --- ************************
@@ -743,6 +751,11 @@ GTFO.SpellID["384186"] = {
 	GTFO_AddEvent("LSRagingTemp", 3);
 	return 0;
   end
+};
+
+GTFO.SpellID["391967"] = {
+  --desc = "Electrical Overload (The Raging Tempest)";
+  sound = 3;
 };
 
 GTFO.SpellID["387629"] = {

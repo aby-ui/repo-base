@@ -25,6 +25,8 @@ local RSMinimap = private.ImportLib("RareScannerMinimap")
 local RSMap = private.ImportLib("RareScannerMap")
 local RSTooltip = private.ImportLib("RareScannerTooltip")
 local RSGuidePOI = private.ImportLib("RareScannerGuidePOI")
+local RSTomtom = private.ImportLib("RareScannerTomtom")
+local RSWaypoints = private.ImportLib("RareScannerWaypoints")
 
 RareScannerDataProviderMixin = CreateFromMixins(MapCanvasDataProviderMixin);
 
@@ -198,8 +200,16 @@ function RareScannerDataProviderMixin:RefreshAllData(fromOnShow)
 						RSMinimap.RefreshEntityState(POI.entityID)
 					end
 				elseif (button == "RightButton") then
+		-- Add waypoint
+					if (IsShiftKeyDown()) then
+						if (RSConfigDB.IsAddingWorldMapTomtomWaypoints()) then
+							RSTomtom.AddWorldMapTomtomWaypoint(POI.mapID, POI.x, POI.y, POI.name)
+						end
+						if (RSConfigDB.IsAddingWorldMapIngameWaypoints()) then
+							RSWaypoints.AddWorldMapWaypoint(POI.mapID, POI.x, POI.y)
+						end
 					-- If already showing a guide toggle it first
-					if (self:GetMap():GetNumActivePinsByTemplate("RSGuideTemplate") > 0) then	
+					elseif (self:GetMap():GetNumActivePinsByTemplate("RSGuideTemplate") > 0) then	
 						self:GetMap():RemoveAllPinsByTemplate("RSGuideTemplate");
 											
 						local guideEntityID = RSGeneralDB.GetGuideActive()

@@ -20,14 +20,14 @@ do
 	L["Silence"] = LOC_TYPE_SILENCE
 	L["Disrm, Root, Silence"] = format("%s, %s, %s", L["Disarm"], L["Root"], L["Silence"])
 	L["Main Hand"] = INVTYPE_WEAPONMAINHAND
-	L["Trinket, Main Hand"] = format("%s, %s", L["Trinket"], L["Main Hand"])
+	L["Consumables"] = BAG_FILTER_CONSUMABLES
+	L["Trinket, Main Hand"] = format("%s, %s, %s", L["Trinket"], L["Main Hand"], L["Consumables"])
 	L["Signature Ability"] = COVENANT_PREVIEW_RACIAL_ABILITY or "Signature Ability"
 	L["Essence"] = AZERITE_ESSENCE_ITEM_TYPE or "Essence"
 	L["Max"] = MAXIMUM
 	L["Spells"] = type(SPELLS) == "string" and SPELLS or L["Spells"]
 	L["Highlighting"] = HIGHLIGHTING:gsub(":", "")
 	L["Custom"] = CUSTOM
-	L["Consumables"] = BAG_FILTER_CONSUMABLES
 end
 
 E.L_CFG_ZONE = {

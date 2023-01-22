@@ -13,7 +13,8 @@ Addon:NewModule('LDB', LDB:NewDataObject(ADDON .. 'Launcher', {
 	icon = 'Interface/Addons/BagBrother/Art/' .. ADDON .. '-Big',
 
 	OnEnable = function(self)
-		self:RegisterEvent('BAG_UPDATE_DELAYED', 'OnUpdate')
+		--self:RegisterEvent('BAG_UPDATE_DELAYED', 'OnUpdate') blizzard screwed this event on wrath now
+		self:RegisterEvent('BAG_UPDATE', 'OnUpdate')
 	end,
 
 	OnClick = function(self, button)

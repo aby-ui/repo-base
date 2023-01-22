@@ -6,7 +6,7 @@
 ## SavedVariables: Bagnon_Sets
 ## Dependencies: BagBrother
 ## OptionalDeps: WoWUnit
-## Version: 10.0.15
+## Version: 10.0.16
 
 src\main.xml
 

@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod("TheAzurevaultTrash", "DBM-Party-Dragonflight", 6)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20230110014321")
+mod:SetRevision("20230122060315")
 --mod:SetModelID(47785)
 mod:SetZone(2515)
 
@@ -30,10 +30,9 @@ local warnErraticGrowth						= mod:NewTargetNoFilterAnnounce(375596, 2)
 local specWarnUnstablePower					= mod:NewSpecialWarningDodge(374885, nil, nil, nil, 2, 2)
 local specWarnForbiddenKnowledge			= mod:NewSpecialWarningDodge(371358, nil, nil, nil, 2, 2)
 local specWarnNullStomp						= mod:NewSpecialWarningDodge(386526, false, nil, 2, 2, 2)
+local specWarnShoulderSlam					= mod:NewSpecialWarningDodge(391136, false, nil, nil, 2, 2)
 local specWarnCrystallineRupture			= mod:NewSpecialWarningDodge(370766, nil, nil, nil, 2, 2)
 local specWarnWildEruption					= mod:NewSpecialWarningDodge(375652, nil, nil, nil, 2, 2)
---local specWarnShoulderSlam					= mod:NewSpecialWarningMoveAway(391136, nil, nil, nil, 1, 2)
---local yellShoulderSlam						= mod:NewYell(391136)
 local specWarnSplinteringShards				= mod:NewSpecialWarningMoveAway(371007, nil, nil, nil, 1, 2)
 local yellSplinteringShards					= mod:NewYell(371007)
 local yellErraticGrowth						= mod:NewYell(375596)
@@ -47,24 +46,15 @@ mod:AddBoolOption("AGBook", true)
 
 --Antispam IDs for this mod: 1 run away, 2 dodge, 3 dispel, 4 incoming damage, 5 you/role, 6 misc
 
---[[
-function mod:ShoulderSlamTarget(targetname)
-	if not targetname then return end
-	if targetname == UnitName("player") then
-		if self:AntiSpam(4, 5) then
-			specWarnShoulderSlam:Show()
-			specWarnShoulderSlam:Play("runout")
-		end
-		yellShoulderSlam:Yell()
-	end
-end
---]]
-
 function mod:SPELL_CAST_START(args)
 	local spellId = args.spellId
-	if spellId == 391136 then
-		warnShoulderSlam:Show()
---		self:ScheduleMethod(0.1, "BossTargetScanner", args.sourceGUID, "ShoulderSlamTarget", 0.1, 8)
+	if spellId == 391136 and self:AntiSpam(3, 2) then
+		if self.Options.SpecWarn391136dodge then
+			specWarnShoulderSlam:Show()
+			specWarnShoulderSlam:Play("watchstep")
+		else
+			warnShoulderSlam:Show()
+		end
 	elseif spellId == 370764 and self:AntiSpam(5, 6) then
 		warnPiercingShards:Show()
 	elseif spellId == 377105 and self:AntiSpam(3, 6) then
@@ -83,7 +73,7 @@ function mod:SPELL_CAST_START(args)
 		specWarnMysticVapors:Show(args.sourceName)
 		specWarnMysticVapors:Play("kickcast")
 	elseif spellId == 386546 then
-		if self.Options.SpecWarn386546interrupt and  self:CheckInterruptFilter(args.sourceGUID, false, true) then
+		if self.Options.SpecWarn386546interrupt and self:CheckInterruptFilter(args.sourceGUID, false, true) then
 			specWarnWakingBane:Show(args.sourceName)
 			specWarnWakingBane:Play("kickcast")
 		elseif self:AntiSpam(3, 5) then

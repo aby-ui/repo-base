@@ -424,6 +424,7 @@ if not E.preCata then
 			local specID = GetSpecID(info, 0)
 			return select(4,GetSpecializationInfoByID(specID))
 		end,
+		iconCoords = E.BORDERLESS_TCOORDS,
 		name = function(info)
 			local specID = GetSpecID(info, 0)
 			return select(2,GetSpecializationInfoByID(specID))
@@ -460,6 +461,7 @@ local customSpellGroup = {
 		local id = GetSpellID(info,0)
 		return select(2,GetSpellTexture(id))
 	end,
+	iconCoords = E.BORDERLESS_TCOORDS,
 	name = function(info)
 		local id = GetSpellID(info,0)
 		return GetSpellInfo(id)

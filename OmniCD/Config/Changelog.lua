@@ -1,6 +1,9 @@
 local E, L, C = select(2, ...):unpack()
 
 if E.isClassic then E.changelog = [=[
+v1.14.3.2740
+	version update
+
 v1.14.3.2724
 	Fixed sync for cross realm group members
 
@@ -14,30 +17,18 @@ v2.5.4.2722
 Previous changes can be found in the CHANGELOG file
 ]=]
 elseif E.isWOTLKC then E.changelog = [=[
-v3.4.1.2733
-	Compatibility updates for 3.4.1
+v3.4.1.2740
+	Fixed Set bonus inspection
+	Added Season 6 tier set bonuses
 
-v3.4.0.2724
-	Fixed sync for cross realm group members
-
-v3.4.0.2723
-	The correct talents will show for whichever spec your group member has active on inital inspection
-
-v3.4.0.2722
-	Wrath of the Lich King Classic release. (Build 45435)
+Previous changes can be found in the CHANGELOG file
 ]=]
 else E.changelog = [=[
-v10.0.2.2735
-	Cds will correctly reset inbetween solo shuffle rounds #3
-	Desperate Prayer has been added to Sync
-	Fixed Dracthyr racials for Alliance
-	Returned option to exclude player spells on Extra Bars
-	JANUARY 3/9, 2023 Hotfixes
+v10.0.2.2740
+	Non-PvP talent changes made by non-synced units are now updated instantly
+	Fixed item inspection
 
-v10.0.2.2730
-	Dragonflight
-
-Full list of changes can be found in the CHANGELOG file
+Previous changes can be found in the CHANGELOG file
 
 ]=]
 end

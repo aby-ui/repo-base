@@ -25,12 +25,12 @@ GTFO = {
 		TrivialDamagePercent = 2; -- Minimum % of HP lost required for an alert to be trivial
 		SoundOverrides = { "", "", "", "" }; -- Override table for GTFO sounds
 	};
-	Version = "5.0.3"; -- Version number (text format)
+	Version = "5.0.4"; -- Version number (text format)
 	VersionNumber = 0; -- Numeric version number for checking out-of-date clients (placeholder until client is detected)
-	RetailVersionNumber = 50003; -- Numeric version number for checking out-of-date clients (retail)
+	RetailVersionNumber = 50004; -- Numeric version number for checking out-of-date clients (retail)
 	ClassicVersionNumber = 50000; -- Numeric version number for checking out-of-date clients (Vanilla classic)
 	BurningCrusadeVersionNumber = 50000; -- Numeric version number for checking out-of-date clients (TBC classic)
-	WrathVersionNumber = 50000; -- Numeric version number for checking out-of-date clients (Wrath classic)
+	WrathVersionNumber = 50004; -- Numeric version number for checking out-of-date clients (Wrath classic)
 	DataLogging = nil; -- Indicate whether or not the addon needs to run the datalogging function (for hooking)
 	DataCode = "4"; -- Saved Variable versioning, change this value to force a reset to default
 	CanTank = nil; -- The active character is capable of tanking

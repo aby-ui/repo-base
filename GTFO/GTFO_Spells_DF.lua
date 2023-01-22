@@ -733,6 +733,13 @@ GTFO.SpellID["391711"] = {
   negatingDebuffSpellID = 391696;
 };
 
+GTFO.SpellID["373535"] = {
+  --desc = "Lightning Crash (Kurog Grimtotem)";
+  applicationOnly = true;
+  minimumStacks = 2;
+  sound = 4;
+};
+
 GTFO.SpellID["375883"] = {
   --desc = "Greatstaff's Wrath (Broodkeeper Diurna)";
   sound = 1;

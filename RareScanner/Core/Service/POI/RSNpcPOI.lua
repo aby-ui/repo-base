@@ -77,40 +77,55 @@ local function GetStormInvasionXY(npcID, mapID)
   	local areaPOIs = GetAreaPOIsForPlayerByMapIDCached(mapID);
   	for _, areaPoiID in ipairs(areaPOIs) do
     	local poiInfo = C_AreaPoiInfo.GetAreaPOIInfo(mapID, areaPoiID);
-  		
-  		if (poiInfo and poiInfo.isPrimaryMapForPOI and poiInfo.atlasName == npcStormAtlasName) then
-	      	local x, y = poiInfo.position:GetXY()
-	      	local mapNpcInfo = RSNpcDB.GetInternalNpcInfoByMapID(npcID, mapID)
-	      	if (not mapNpcInfo or not mapNpcInfo.overlay) then
-	        	return x, y
-	      	else
-	        	local xyDistances = {}
-	        	for _, coordinatePair in ipairs (mapNpcInfo.overlay) do
-	          		local coordx, coordy =  strsplit("-", coordinatePair)
-	          		local distance = RSUtils.DistanceBetweenCoords(coordx, x, coordy, y)
-          			if (distance > 0.01) then
-	            		xyDistances[coordinatePair] = distance
-          			end
-	        	end
-	  
-        		if (RSUtils.GetTableLength(xyDistances) == 0) then
-        			return x, y
-	        	end
-	  
-	        	local distances = {}
-	        	for xy, distance in pairs (xyDistances) do
-	          		table.insert(distances, distance)
-	        	end
-	        
-	        	local min = math.min(unpack(distances))
-	        	for xy, distance in pairs (xyDistances) do
-	          		if (distance == min) then
-	            		local xo, yo = strsplit("-", xy)
-	            		return xo, yo
-	          		end
-	        	end
+    	if (poiInfo) then
+	    	local isPrimaryMapForPOI = poiInfo.isPrimaryMapForPOI
+    		local x, y = poiInfo.position:GetXY()
+	    	
+	    	-- Fix primatyMapForPOI for event in Cobalt Galery and The primalist future
+	    	if (not isPrimaryMapForPOI) then
+	    		if (mapID == RSConstants.THE_AZURE_SPAN and RSUtils.Round(x, 2) == "0.47" and RSUtils.Round(y, 2) == "0.22") then
+	    			isPrimaryMapForPOI = true
+	    		elseif (mapID == RSConstants.THE_PRIMALIST_FUTURE) then
+	    			isPrimaryMapForPOI = true
+	    		end
+	    	-- Fix primatyMapForPOI for event in Valdrakken/The primalist future
+	    	elseif (mapID == RSConstants.VALDRAKKEN and RSUtils.Round(x, 2) == "0.60" and RSUtils.Round(y, 2) == "0.82") then
+    			isPrimaryMapForPOI = false
+			end
+	    	
+	  		if (isPrimaryMapForPOI and poiInfo.atlasName == npcStormAtlasName) then
+		      	local mapNpcInfo = RSNpcDB.GetInternalNpcInfoByMapID(npcID, mapID)
+		      	if (not mapNpcInfo or not mapNpcInfo.overlay) then
+		        	return x, y
+		      	else
+		        	local xyDistances = {}
+		        	for _, coordinatePair in ipairs (mapNpcInfo.overlay) do
+		          		local coordx, coordy =  strsplit("-", coordinatePair)
+		          		local distance = RSUtils.DistanceBetweenCoords(coordx, x, coordy, y)
+	          			if (distance > 0.01) then
+		            		xyDistances[coordinatePair] = distance
+	          			end
+		        	end
+		  
+	        		if (RSUtils.GetTableLength(xyDistances) == 0) then
+	        			return x, y
+		        	end
+		  
+		        	local distances = {}
+		        	for xy, distance in pairs (xyDistances) do
+		          		table.insert(distances, distance)
+		        	end
+		        
+		        	local min = math.min(unpack(distances))
+		        	for xy, distance in pairs (xyDistances) do
+		          		if (distance == min) then
+		            		local xo, yo = strsplit("-", xy)
+		            		return xo, yo
+		          		end
+		        	end
+		    	end
 	    	end
-    	end
+	    end
 	end
 end
 
@@ -236,8 +251,8 @@ local function IsNpcPOIFiltered(npcID, mapID, artID, zoneQuestID, questTitles, v
 	
 	-- Skip if storm NPC and the event isn't up
 	if (GetStormInvasionAtlasName(npcID, mapID) and not GetStormInvasionXY(npcID, mapID)) then
-    RSLogger:PrintDebugMessageEntityID(npcID, string.format("Saltado NPC [%s]: Invasión de tormentas que no esta activa.", npcID))
-    return true
+	    RSLogger:PrintDebugMessageEntityID(npcID, string.format("Saltado NPC [%s]: Invasión de tormentas [%s] que no esta activa.", npcID, GetStormInvasionAtlasName(npcID, mapID)))
+	    return true
 	end
 
 	-- A 'not discovered' NPC will be setted as killed when the kill is detected while loading the addon and its questID is completed

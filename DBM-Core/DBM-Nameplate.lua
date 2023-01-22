@@ -210,7 +210,7 @@ end
 
 --isGUID: guid or name (bool)
 --ie, anchored to UIParent Center (ie player is in center) and to bottom of nameplate aura.
-function nameplateFrame:Show(isGUID, unit, spellId, texture, duration, desaturate)
+function nameplateFrame:Show(isGUID, unit, spellId, texture, duration, desaturate, forceDBM)
 	-- nameplate icons are disabled;
 	if DBM.Options.DontShowNameplateIcons then return end
 
@@ -221,7 +221,7 @@ function nameplateFrame:Show(isGUID, unit, spellId, texture, duration, desaturat
 	local currentTexture = tonumber(texture) or texture or GetSpellTexture(spellId)
 
 	-- Supported by nameplate mod, passing to their handler;
-	if self:SupportedNPMod() then
+	if self:SupportedNPMod() and not forceDBM then
 		DBM:FireEvent("BossMod_ShowNameplateAura", isGUID, unit, currentTexture, duration, desaturate)
 		DBM:Debug("DBM.Nameplate Found supported NP mod, only sending Show callbacks", 3)
 		return
@@ -269,11 +269,11 @@ function nameplateFrame:Show(isGUID, unit, spellId, texture, duration, desaturat
 end
 
 --Friendly is still being kept around for world bosses, for now anyways, but args being swapped.
-function nameplateFrame:Hide(isGUID, unit, spellId, texture, force, isHostile, isFriendly)
+function nameplateFrame:Hide(isGUID, unit, spellId, texture, force, isHostile, isFriendly, forceDBM)
 	--Texture Id passed as string so as not to get confused with spellID for GetSpellTexture
 	local currentTexture = tonumber(texture) or texture or GetSpellTexture(spellId)
 
-	if self:SupportedNPMod() then
+	if self:SupportedNPMod() and not forceDBM then
 		DBM:Debug("DBM.Nameplate Found supported NP mod, only sending Hide callbacks", 3)
 
 		if force then

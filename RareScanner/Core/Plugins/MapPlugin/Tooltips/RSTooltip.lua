@@ -364,7 +364,11 @@ local function AddLootTooltip(tooltip, pin)
 
 			-- fill with white spaces
 			if (j <= 9) then
-				tooltip:SetCell(line, j+1, " ", nil, "LEFT", 10-j, nil, nil, nil, nil, 30 * (10 - j), 30 * (10 - j))
+				if (RSUtils.GetTableLength(itemsIDsFiltered) > 10) then
+					tooltip:SetCell(line, j+1, " ", nil, "LEFT", 10-j, nil, nil, nil, nil, 20 * (10 - j), 20 * (10 - j))
+				else
+					tooltip:SetCell(line, j+1, " ", nil, "LEFT", 10-j, nil, nil, nil, nil, 30 * (10 - j), 30 * (10 - j))
+				end
 			end
 
 			tooltip:AddSeparator(1)

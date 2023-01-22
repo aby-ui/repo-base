@@ -10,8 +10,11 @@ local C_Traits_GetNodeInfo = C_Traits and C_Traits.GetNodeInfo
 local C_Soulbinds_GetConduitSpellID = C_Soulbinds and C_Soulbinds.GetConduitSpellID
 
 local InspectQueueFrame = CreateFrame("Frame")
-local InspectTooltip = CreateFrame("GameTooltip", "OmniCDInspectToolTip", nil, "GameTooltipTemplate")
-InspectTooltip:SetOwner(UIParent, "ANCHOR_NONE")
+local InspectTooltip, tooltipData
+if not E.isDF then
+	InspectTooltip = CreateFrame("GameTooltip", "OmniCDInspectToolTip", nil, "GameTooltipTemplate")
+	InspectTooltip:SetOwner(UIParent, "ANCHOR_NONE")
+end
 
 local LibDeflate = LibStub("LibDeflate")
 local INSPECT_DELAY = 2
@@ -22,6 +25,7 @@ local nextInquiryTime = 0
 local elapsedTime = 0
 local isPaused
 local queriedGUID
+local _
 
 local queueEntries = {}
 local staleEntries = {}
@@ -296,15 +300,43 @@ function E:IsEssenceRankUpgraded(id)
 	return id and id ~= CM.essencePowerIDs[id]
 end
 
+local function GetNumTooltipLines()
+	if InspectTooltip then
+		return InspectTooltip:NumLines()
+	end
+	return tooltipData and tooltipData.lines and #tooltipData.lines or 0
+end
+
+local function GetTooltipLineData(i)
+	local lineData
+	if tooltipData then
+		lineData = tooltipData.lines[i]
+		return lineData, lineData.leftText
+	elseif InspectTooltip then
+		lineData = _G["OmniCDInspectToolTipTextLeft" .. i]
+		return lineData, lineData:GetText()
+	end
+end
+
+local function GetTooltipLineTextColor(lineData)
+	if not lineData then
+		return 1, 1, 1
+	elseif tooltipData then
+		return lineData.leftColor.r, lineData.leftColor.g, lineData.leftColor.b
+	elseif InspectTooltip then
+		return lineData:GetTextColor()
+	end
+end
+
 local ITEM_LEVEL = string.gsub(ITEM_LEVEL,"%%d","(%%d+)")
 
 local function FindAzeriteEssencePower(info, specID, list)
 	local heartOfAzerothLevel
 	local majorID
 
-	for j = 2, math.min(16, InspectTooltip:NumLines()) do
-		local tooltipLine = _G["OmniCDInspectToolTipTextLeft" .. j]
-		local text = tooltipLine:GetText()
+	local numLines = math.min(16, GetNumTooltipLines())
+	for j = 2, numLines do
+		local lineData, text = GetTooltipLineData(j)
 		if text and text ~= "" then
 			if not heartOfAzerothLevel then
 				heartOfAzerothLevel = strmatch(text, ITEM_LEVEL)
@@ -314,7 +346,7 @@ local function FindAzeriteEssencePower(info, specID, list)
 			elseif j > 10 then
 				for essenceID, essencePowers in pairs(E.essenceData) do
 					if strfind(text, essencePowers.name .. "$") == 1 then
-						local r, _, b = tooltipLine:GetTextColor()
+						local r, _, b = GetTooltipLineTextColor(lineData)
 						local rank = 3
 						if r < .01 then
 							rank = 2
@@ -324,7 +356,7 @@ local function FindAzeriteEssencePower(info, specID, list)
 							rank = 1
 						end
 
-						if not majorID and _G["OmniCDInspectToolTipTextLeft" .. (j - 1)]:GetText() == " " then
+						if not majorID and GetTooltipLineData(j - 1) == " " then
 							majorID = essencePowers[rank]
 							local rank1 = essencePowers[1]
 							info.talentData[rank1] = "AE"
@@ -351,7 +383,7 @@ local function FindAzeriteEssencePower(info, specID, list)
 						local minorID = essencePowers[rank + 4]
 						if E.essMinorStrive[minorID] then
 
-							local mult = (90.1 - ((heartOfAzerothLevel - 87) * 0.3)) / 100
+							local mult = (90.1 - ((heartOfAzerothLevel - 117) * 0.15)) / 100
 							if P.isInPvPInstance then
 								mult = 0.2 + mult * 0.8
 							end
@@ -371,8 +403,9 @@ local function FindAzeriteEssencePower(info, specID, list)
 end
 
 local function FindAzeritePower(info, list)
-	for j = 10, InspectTooltip:NumLines() do
-		local text = _G["OmniCDInspectToolTipTextLeft" .. j]:GetText()
+	local numLines = GetNumTooltipLines()
+	for j = 10, numLines do
+		local _, text = GetTooltipLineData(j)
 		if text and text ~= "" and strfind(text, "^-") == 1 then
 			for _, v in pairs(E.spell_cxmod_azerite) do
 				if strfind(text, v.name .. "$") == 3 then
@@ -388,10 +421,10 @@ end
 local S_ITEM_SET_NAME = "^" .. ITEM_SET_NAME:gsub("([%(%)])", "%%%1"):gsub("%%%d?$?d", "(%%d+)"):gsub("%%%d?$?s", "(.+)") .. "$"
 
 local function FindSetBonus(info, specBonus, list)
-
 	local bonusID, numRequired = specBonus[1], specBonus[2]
-	for j = 10, InspectTooltip:NumLines() do
-		local text = _G["OmniCDInspectToolTipTextLeft" .. j]:GetText()
+	local numLines = GetNumTooltipLines()
+	for j = 10, numLines do
+		local _, text = GetTooltipLineData(j)
 		if text and text ~= "" then
 			local name, numEquipped, numFullSet = strmatch(text, S_ITEM_SET_NAME)
 			if name and numEquipped and numFullSet then
@@ -400,7 +433,7 @@ local function FindSetBonus(info, specBonus, list)
 					info.talentData[bonusID] = "S"
 					if list then list[#list + 1] = bonusID .. ":S" end
 				end
-				return specBonus
+				return bonusID
 			end
 		end
 	end
@@ -446,12 +479,14 @@ local runeforgeBaseItems = {
 	[15] = { 173242, 173242, 173242, 173242 },
 }
 
-
-
-
-
-
-
+--[[
+if we're separating player insepct:
+	local itemID = GetInventoryItemID(unit, slotID)
+	local itemLink = GetInventoryItemLink(unit, slotID)
+	local itemLocation = ItemLocation:CreateFromEquipmentSlot(slotID)
+	local isRuenforgeBaseItem = C_LegendaryCrafting.IsValidRuneforgeBaseItem(itemLocation)
+	local isRuneforgeLegendary = C_LegendaryCrafting.IsRuneforgeLegendary(itemLocation)
+]]
 local function GetEquippedItemData(info, unit, specID, list)
 	local moveToStale
 	local numRuneforge = 0
@@ -461,9 +496,7 @@ local function GetEquippedItemData(info, unit, specID, list)
 
 	for i = 1, NUM_INVSLOTS do
 		local slotID = INVSLOT_INDEX[i]
-
-		InspectTooltip:SetInventoryItem(unit, slotID)
-		local _, itemLink = InspectTooltip:GetItem()
+		local itemLink = GetInventoryItemLink(unit, slotID)
 		if itemLink then
 			local itemID, _,_,_,_,_, subclassID = GetItemInfoInstant(itemLink)
 			if itemID then
@@ -475,14 +508,24 @@ local function GetEquippedItemData(info, unit, specID, list)
 					local isCraftedRuneforgeLegendary = numRuneforge <= 2
 						and runeforgeBaseItems[slotID]
 						and itemID == runeforgeBaseItems[slotID][subclassID]
-
+					if InspectTooltip then
+						InspectTooltip:SetInventoryItem(unit, slotID)
+					else --[[https://wowpedia.fandom.com/wiki/Patch_10.0.2/API_changes#Tooltip_Changes]]
+						tooltipData = C_TooltipInfo.GetInventoryItem(unit, slotID)
+						if tooltipData then
+							TooltipUtil.SurfaceArgs(tooltipData)
+							for _, line in ipairs(tooltipData.lines) do
+							    TooltipUtil.SurfaceArgs(line)
+							end
+						end
+					end
 					if equipBonusID then
 						info.talentData[equipBonusID] = true
 						if list then list[#list + 1] = equipBonusID .. ":S" end
 					end
 					if tierSetBonus then
-						local specBonus = tierSetBonus[specID]
-						if specBonus and numTierSetBonus < 2 and specBonus ~= foundTierSpecBonus then
+						local specBonus = E.preCata and tierSetBonus or tierSetBonus[specID]
+						if specBonus and numTierSetBonus < 2 and specBonus[1] ~= foundTierSpecBonus then
 							foundTierSpecBonus = FindSetBonus(info, specBonus, list)
 							if foundTierSpecBonus then
 								numTierSetBonus = numTierSetBonus + 1
@@ -508,6 +551,9 @@ local function GetEquippedItemData(info, unit, specID, list)
 					elseif C_AzeriteEmpoweredItem.IsAzeriteEmpoweredItemByID(itemLink) then
 						FindAzeritePower(info, list)
 					end
+					if InspectTooltip then
+						InspectTooltip:ClearLines()
+					end
 				else
 					itemID = E.item_merged[itemID] or itemID
 					info.itemData[itemID] = true
@@ -518,7 +564,6 @@ local function GetEquippedItemData(info, unit, specID, list)
 			end
 		end
 		if list and i == 12 then list[#list + 1] = "^E" end
-		InspectTooltip:ClearLines()
 	end
 
 	return moveToStale
@@ -671,7 +716,7 @@ end) or (E.isWOTLKC and function(info, inspectUnit, isInspect)
 		end
 	end
 
-	local talentGroup = GetActiveTalentGroup and GetActiveTalentGroup(true, nil)
+	local talentGroup = GetActiveTalentGroup and GetActiveTalentGroup(isInspect, nil)
 	for tabIndex = 1, 3 do
 		for talentIndex = 1, MAX_NUM_TALENTS do
 			local name, _,_,_, currentRank = GetTalentInfo(tabIndex, talentIndex, isInspect, inspectUnit, talentGroup)

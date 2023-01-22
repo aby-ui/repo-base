@@ -12,7 +12,7 @@
 --]]
 
 local ADDON, Addon = ...
-local Events = Addon:NewModule('Events')
+local Events = Addon:NewModule('Events', 'MutexDelay-1.0')
 local C = LibStub('C_Everywhere').Container
 
 
@@ -28,7 +28,7 @@ function Events:OnEnable()
 	end
 
 	self:RegisterEvent('BAG_UPDATE')
-	self:RegisterEvent('BAG_UPDATE_DELAYED', 'UpdateBags')
+	--self:RegisterEvent('BAG_UPDATE_DELAYED', 'UpdateBags') blizzard screwed this event on wrath now
 	self:RegisterEvent('PLAYERBANKSLOTS_CHANGED')
 	self:RegisterMessage('CACHE_BANK_OPENED')
 	self:UpdateSize(BACKPACK_CONTAINER)
@@ -37,6 +37,7 @@ end
 
 function Events:BAG_UPDATE(event, bag)
 	self.queue[bag] = true
+	self:Delay(0, 'UpdateBags')
 end
 
 function Events:PLAYERBANKSLOTS_CHANGED()

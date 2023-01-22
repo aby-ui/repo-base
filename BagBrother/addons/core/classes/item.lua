@@ -58,7 +58,8 @@ function Item:Construct()
 	b.Cooldown, b.QuestBorder = _G[name .. 'Cooldown'], _G[name .. 'IconQuestTexture']
 	b.UpdateTooltip = self.OnEnter
 
-	b.newitemglowAnim:SetLooping('NONE')
+	--b.newitemglowAnim:SetLooping('NONE')
+	b.BattlepayItemTexture:Hide()
 	b.IconOverlay:SetAtlas('AzeriteIconFrame')
 	b.QuestBorder:SetTexture(TEXTURE_ITEM_QUEST_BANG)
 	b.IconGlow:SetTexture('Interface/Buttons/UI-ActionButton-Border')
@@ -466,7 +467,7 @@ function Item:IsNew()
 end
 
 function Item:IsPaid()
-	return C.IsBattlePayItem(self:GetBag(), self:GetID())
+	return C.IsBattlePayItem and C.IsBattlePayItem(self:GetBag(), self:GetID())
 end
 
 function Item:IsUpgrade()
