@@ -26,6 +26,8 @@ L["|cffeda55fRight-Click|r to toggle performance profiling window."] = "|cffeda5
 L["|cffeda55fShift-Click|r to pause addon execution."] = "|cffeda55fShift + 左键|r暂停插件执行。"
 L["|cFFFF0000Not|r Item Bonus Id Equipped"] = "|cFFFF0000非|r 已装备物品增益ID"
 L["|cFFFF0000Not|r Player Name/Realm"] = "|cFFFF0000非|r 玩家名字/服务器"
+--[[Translation missing --]]
+L["|cFFFF0000Not|r Spell Known"] = "|cFFFF0000Not|r Spell Known"
 L["|cFFffcc00Extra Options:|r %s"] = "|cFFffcc00额外选项：|r%s"
 L["|cFFffcc00Extra Options:|r None"] = "|cFFffcc00额外选项：|r无"
 L[ [=[• |cff00ff00Player|r, |cff00ff00Target|r, |cff00ff00Focus|r, and |cff00ff00Pet|r correspond directly to those individual unitIDs.
@@ -41,22 +43,16 @@ L[ [=[• |cff00ff00Player|r, |cff00ff00Target|r, |cff00ff00Focus|r, and |cff00f
 • |cffffff00智能队伍|r会根据你目前的组队情况调整，未组队时自动匹配"玩家"，在小队中时匹配"小队"（包括"玩家"），在团队中时匹配"团队"。
 
 |cffffff00*|r黄色的单位设置会为每个匹配的单位创建克隆，同时为光环提供动态信息。]=]
---[[Translation missing --]]
-L["1. Profession 1. Accessory"] = "1. Profession 1. Accessory"
---[[Translation missing --]]
-L["1. Profession 2. Accessory"] = "1. Profession 2. Accessory"
---[[Translation missing --]]
-L["1. Professsion Tool"] = "1. Professsion Tool"
+L["1. Profession 1. Accessory"] = "专业1配饰1"
+L["1. Profession 2. Accessory"] = "专业1配饰2"
+L["1. Professsion Tool"] = "专业1工具"
 L["10 Man Raid"] = "10人团队"
 L["10 Player Raid"] = "10人团队副本"
 L["10 Player Raid (Heroic)"] = "10人团队副本（英雄）"
 L["10 Player Raid (Normal)"] = "10人团队副本（普通）"
---[[Translation missing --]]
-L["2. Profession 1. Accessory"] = "2. Profession 1. Accessory"
---[[Translation missing --]]
-L["2. Profession 2. Accessory"] = "2. Profession 2. Accessory"
---[[Translation missing --]]
-L["2. Professsion Tool"] = "2. Professsion Tool"
+L["2. Profession 1. Accessory"] = "专业2配饰1"
+L["2. Profession 2. Accessory"] = "专业2配饰2"
+L["2. Professsion Tool"] = "专业2工具"
 L["20 Man Raid"] = "20人团队"
 L["20 Player Raid"] = "20人团队副本"
 L["25 Man Raid"] = "25人团队"
@@ -226,6 +222,8 @@ L["Buff/Debuff"] = "增益/减益光环"
 L["Buffed/Debuffed"] = "获得增益/减益效果"
 L["Burning Crusade"] = "燃烧的远征"
 L["Buru the Gorger"] = "吞咽者布鲁"
+--[[Translation missing --]]
+L["Callback function"] = "Callback function"
 L["Can be used for e.g. checking if \"boss1target\" is the same as \"player\"."] = "可以用来检测类似于一号首领的目标（boss1target）是不是玩家自身（player）之类的信息。"
 L["Cancel"] = "取消"
 L[ [=[Cannot change secure frame in combat lockdown. Find more information:
@@ -245,14 +243,10 @@ L["Caster's Target"] = "施法者目标"
 L["Cataclysm"] = "大地的裂变"
 L["Ceil"] = "向上取整"
 L["Center"] = "中间"
---[[Translation missing --]]
-L["Center, then alternating bottom and top"] = "Center, then alternating bottom and top"
---[[Translation missing --]]
-L["Center, then alternating left and right"] = "Center, then alternating left and right"
---[[Translation missing --]]
-L["Center, then alternating right and left"] = "Center, then alternating right and left"
---[[Translation missing --]]
-L["Center, then alternating top and bottom"] = "Center, then alternating top and bottom"
+L["Center, then alternating bottom and top"] = "居中，然后交替底下和顶上"
+L["Center, then alternating left and right"] = "居中，然后交替左边和右边"
+L["Center, then alternating right and left"] = "居中，然后交替右边和左边"
+L["Center, then alternating top and bottom"] = "居中，然后交替顶上和底下"
 L["Centered Horizontal"] = "水平居中"
 L["Centered Horizontal, then Centered Vertical"] = "水平居中，然后垂直居中"
 L["Centered Horizontal, then Down"] = "水平居中，然后向下"
@@ -340,8 +334,7 @@ L["Custom Grow"] = "自定义生长"
 L["Custom Sort"] = "自定义排序"
 L["Custom Text Function"] = "自定义文本函数"
 L["Custom Trigger Combination"] = "自定义触发器组合"
---[[Translation missing --]]
-L["Custom Variables"] = "Custom Variables"
+L["Custom Variables"] = "自定义变量"
 L["Daakara"] = "达卡拉"
 L["Damage"] = "伤害"
 L["Damage Shield"] = "护盾(如:荆棘术)伤害"
@@ -393,8 +386,7 @@ L["Down, then Centered Horizontal"] = "向下，然后水平居中"
 L["Down, then Left"] = "向下，然后向左"
 L["Down, then Right"] = "向下，然后向右"
 L["Dragonflight"] = "巨龙时代"
---[[Translation missing --]]
-L["Dragonriding"] = "Dragonriding"
+L["Dragonriding"] = "驭龙术"
 L["Drain"] = "引导性吸取"
 L["Dropdown Menu"] = "下拉菜单"
 L["Dumping table"] = "转存表"
@@ -505,6 +497,8 @@ L["Flex Raid"] = "弹性团队"
 L["Flip"] = "翻转"
 L["Floor"] = "向下取整"
 L["Focus"] = "焦点目标"
+--[[Translation missing --]]
+L["Font"] = "Font"
 L["Font Size"] = "字体尺寸"
 L["Forbidden function or table: %s"] = "已禁止的函数或表：%s"
 L["Foreground"] = "前景"
@@ -544,12 +538,9 @@ L["Gluth"] = "格拉斯"
 L["Golemagg the Incinerator"] = "焚化者古雷曼格"
 L["Gothik the Harvester"] = "收割者戈提克"
 L["Gradient"] = "梯度"
---[[Translation missing --]]
-L["Gradient Color"] = "Gradient Color"
---[[Translation missing --]]
-L["Gradient Enabled"] = "Gradient Enabled"
---[[Translation missing --]]
-L["Gradient Orientation"] = "Gradient Orientation"
+L["Gradient Color"] = "渐变颜色"
+L["Gradient Enabled"] = "渐变已启用"
+L["Gradient Orientation"] = "渐变方向"
 L["Gradient Pulse"] = "梯度脉动"
 L["Grand Widow Faerlina"] = "黑女巫法琳娜"
 L["Grid"] = "盒"
@@ -610,8 +601,7 @@ L["Hit Rating"] = "命中等级"
 L["Hodir"] = "霍迪尔"
 L["Holy Resistance"] = "神圣抗性"
 L["Horde"] = "部落"
---[[Translation missing --]]
-L["Horizontal"] = "Horizontal"
+L["Horizontal"] = "水平"
 L["Hostile"] = "敌对"
 L["Hostility"] = "敌对"
 L["Humanoid"] = "人形态"
@@ -763,8 +753,14 @@ Intermissions are .5
 E.g. 1;2;1;2;2.5;3]=] ] = "符合冒险指南的阶段。转阶段为.5。例如1;2;1;2;2.5;3"
 L["Max Char "] = "最大字符数"
 L["Max Charges"] = "最大充能次数"
+--[[Translation missing --]]
+L["Max Health"] = "Max Health"
+--[[Translation missing --]]
+L["Max Power"] = "Max Power"
 L["Maximum"] = "最大"
 L["Maximum Estimate"] = "最大预估"
+--[[Translation missing --]]
+L["Media"] = "Media"
 L["Medium"] = "中"
 L["Melee Haste (%)"] = "攻速百分比"
 L["Message"] = "信息"
@@ -1145,6 +1141,8 @@ L["Standing"] = "级别"
 L["Star Shake"] = "摇动"
 L["Start Now"] = "现在开始"
 L["Status"] = "状态"
+--[[Translation missing --]]
+L["Status Bar"] = "Status Bar"
 L["Stolen"] = "偷取"
 L["Stop"] = "停止"
 L["Strength"] = "力量"
@@ -1185,6 +1183,8 @@ L["Text"] = "文本"
 L["Text-to-speech"] = "文本转语音"
 L["Texture Function"] = "材质函数"
 L["Texture Function (fallback state)"] = "材质函数（后备状态）"
+--[[Translation missing --]]
+L["Texture Rotation"] = "Texture Rotation"
 L["Thaddius"] = "塔迪乌斯"
 L["The aura has overwritten the global '%s', this might affect other auras."] = "此光环覆盖了全局变量'%s'，可能会影响其他光环。"
 L["The Battle for Mount Hyjal"] = "海加尔山之战"
@@ -1306,8 +1306,7 @@ L["Values/Remaining Time below this value are displayed as no progress."] = "值
 L["Vault of Archavon"] = "阿尔卡冯的宝库"
 L["Versatility (%)"] = "全能 (%)"
 L["Versatility Rating"] = "全能等级"
---[[Translation missing --]]
-L["Vertical"] = "Vertical"
+L["Vertical"] = "垂直"
 L["Vesperon"] = "维斯匹隆"
 L["Viscidus"] = "维希度斯"
 L["Visibility"] = "可见性"

@@ -41,15 +41,17 @@ local Alerts = {
 
 -- Hook to update the 'SpellAlert' animation.
 local function UpdateSpellAlert(Button)
-	local Overlay = Button.overlay
+	-- Retail: Button.SpellActivationAlert
+	-- Classic: Button.overlay
+	local Region = Button.SpellActivationAlert or Button.overlay
 
-	if not Overlay or not Overlay.spark then
+	if not Region or not Region.spark then
 		return
 	end
 
 	local Shape = Button.__MSQ_Shape
 
-	if Overlay.__MSQ_Shape ~= Shape then
+	if Region.__MSQ_Shape ~= Shape then
 		local Glow, Ants
 
 		if Shape and Alerts[Shape] then
@@ -60,14 +62,14 @@ local function UpdateSpellAlert(Button)
 			Ants = Alerts.Square.Ants
 		end
 
-		Overlay.innerGlow:SetTexture(Glow)
-		Overlay.innerGlowOver:SetTexture(Glow)
-		Overlay.outerGlow:SetTexture(Glow)
-		Overlay.outerGlowOver:SetTexture(Glow)
-		Overlay.spark:SetTexture(Glow)
-		Overlay.ants:SetTexture(Ants)
+		Region.innerGlow:SetTexture(Glow)
+		Region.innerGlowOver:SetTexture(Glow)
+		Region.outerGlow:SetTexture(Glow)
+		Region.outerGlowOver:SetTexture(Glow)
+		Region.spark:SetTexture(Glow)
+		Region.ants:SetTexture(Ants)
 
-		Overlay.__MSQ_Shape = Shape
+		Region.__MSQ_Shape = Shape
 	end
 end
 
@@ -105,17 +107,17 @@ function API:AddSpellAlert(Shape, Glow, Ants)
 		return
 	end
 
-	local Overlay = Alerts[Shape] or {}
+	local Region = Alerts[Shape] or {}
 
 	if type(Glow) == "string" then
-		Overlay.Glow = Glow
+		Region.Glow = Glow
 	end
 
 	if type(Ants) == "string" then
-		Overlay.Ants = Ants
+		Region.Ants = Ants
 	end
 
-	Alerts[Shape] = Overlay
+	Alerts[Shape] = Region
 end
 
 -- Retrieves a 'SpellAlert' texture set.
@@ -127,9 +129,9 @@ function API:GetSpellAlert(Shape)
 		return
 	end
 
-	local Overlay = Alerts[Shape]
+	local Region = Alerts[Shape]
 
-	if Overlay then
-		return Overlay.Glow, Overlay.Ants
+	if Region then
+		return Region.Glow, Region.Ants
 	end
 end

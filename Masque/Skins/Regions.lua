@@ -35,7 +35,8 @@ local WOW_CLASSIC = not WOW_RETAIL
 
 local Legacy = {
 	-- [ BACKGROUND (-1) ]
-	-- Only provided by default for MultiActionBars in Classic.
+	-- [CLASSIC_ONLY]
+	-- Only used on MultiBar buttons.
 	Backdrop = {
 		Name = "FloatingBG",
 		Type = "Texture",
@@ -70,6 +71,7 @@ local Legacy = {
 	},
 	SlotIcon = {
 		CanHide = true,
+		CanMask = true,
 		Ignore = true,
 	},
 	-- [ ARTWORK (-1) ]
@@ -79,8 +81,8 @@ local Legacy = {
 	},
 	-- [ ARTWORK (0) ]
 	Normal = {
-		--Key = "NormalTexture", -- Conflicts with some add-ons.
 		Func = "GetNormalTexture",
+		--Key = "NormalTexture", -- Conflicts with some add-ons and button types.
 		Name = "NormalTexture",
 		Type = "Texture",
 		CanHide = true,
@@ -94,6 +96,7 @@ local Legacy = {
 	},
 	Pushed = {
 		Func = "GetPushedTexture",
+		Key = (WOW_RETAIL and "PushedTexture") or nil, -- Retail Only
 		Type = "Texture",
 		CanMask = true,
 		Iterate = true,
@@ -101,7 +104,7 @@ local Legacy = {
 	},
 	-- [ ARTWORK (1) ]
 	Flash = {
-		-- Key = "Flash", -- Conflics with item buttons.
+		-- Key = "Flash", -- Conflicts with item buttons.
 		Name = "Flash",
 		Type = "Texture",
 		CanMask = true,
@@ -127,8 +130,8 @@ local Legacy = {
 		Iterate = true,
 		NoColor = true,
 		Aura = {
-			Key = "count",
-			Name = "Count",
+			Key = (WOW_RETAIL and "Count") or "count", -- Retail -> "Count", Classic -> "count"
+			Name = (WOW_CLASSIC and "Count") or nil, -- Classic Only
 			Type = "FontString",
 			Iterate = true,
 			NoColor = true,
@@ -142,8 +145,8 @@ local Legacy = {
 		},
 	},
 	Duration = {
-		Key = "duration",
-		Name = "Duration",
+		Key = (WOW_RETAIL and "Duration") or "duration", -- Retail -> "Duration", Classic -> "duration"
+		Name = (WOW_CLASSIC and "Duration") or nil, -- Classic Only
 		Type = "FontString",
 		Iterate = true,
 		NoColor = true,
@@ -151,6 +154,7 @@ local Legacy = {
 	-- [ OVERLAY (0) ]
 	Checked = {
 		Func = "GetCheckedTexture",
+		Key = (WOW_RETAIL and "CheckedTexture") or nil, -- Retail Only
 		Type = "Texture",
 		Iterate = true,
 	},
@@ -178,19 +182,30 @@ local Legacy = {
 			Iterate = true,
 			NoColor = true,
 		},
-		Debuff = {
-			Key = (WOW_RETAIL and "Border") or nil, -- Retail Only
+		Debuff = { -- Classic Only
 			Name = "Border",
 			Type = "Texture",
 			Iterate = true,
 			NoColor = true,
 		},
-		Enchant = {
-			Key = (WOW_RETAIL and "Border") or nil, -- Retail Only
+		Enchant = { -- Classic Only
 			Name = "Border",
 			Type = "Texture",
 			Iterate = true,
+			NoColor = true,
 		},
+	},
+	DebuffBorder = { -- Retail Only
+		Key = "DebuffBorder",
+		Type = "Texture",
+		Iterate = true,
+		NoColor = true,
+	},
+	EnchantBorder = { -- Retail Only
+		Key = "TempEnchantBorder",
+		Type = "Texture",
+		Iterate = true,
+		NoColor = true,
 	},
 	IconBorder = {
 		Key = "IconBorder",
@@ -212,9 +227,8 @@ local Legacy = {
 		Type = "Texture",
 		Iterate = true,
 	},
-	AutoCastable = { -- Only used by Pet buttons.
+	AutoCastable = {
 		Key = "AutoCastable",
-		-- Name = "AutoCastable",
 		Type = "Texture",
 		Iterate = true,
 	},
@@ -231,14 +245,8 @@ local Legacy = {
 		Iterate = true,
 	},
 	-- [ OVERLAY (2) ]
-	IconOverlay2 = {
-		Key = "IconOverlay",
-		Type = "Texture",
-		Iterate = true,
-		NoColor = true,
-		NoTexture = true,
-	},
 	QuestBorder = {
+		Key = (WOW_RETAIL and "IconQuestTexture") or nil, -- Retail Only
 		Name = "IconQuestTexture",
 		Type = "Texture",
 	},
@@ -247,17 +255,9 @@ local Legacy = {
 		Type = "Texture",
 		NoColor = true,
 	},
-	-- LevelLinkLockIcon = {}, -- Unsupported, no reason to.
+	-- LevelLinkLockIcon = {}, -- Unsupported
 	-- [ OVERLAY (4) ]
 	SearchOverlay = {
-		Key = "searchOverlay",
-		Name = "SearchOverlay",
-		Type = "Texture",
-		CanMask = true,
-		Iterate = true,
-		UseColor = true,
-	},
-	ContextOverlay = {
 		Key = "searchOverlay",
 		Name = "SearchOverlay",
 		Type = "Texture",
@@ -273,11 +273,19 @@ local Legacy = {
 	},
 	-- [ HIGHLIGHT (0) ]
 	Highlight = {
+		Key = (WOW_RETAIL and "HighlightTexture") or nil, -- Retail Only
 		Func = "GetHighlightTexture",
 		Type = "Texture",
 		CanMask = true,
 		Iterate = true,
 		UseColor = true,
+		Item = {
+			Func = "GetHighlightTexture",
+			Type = "Texture",
+			CanMask = true,
+			Iterate = true,
+			UseColor = true,
+		},
 	},
 	-- [ FRAME ]
 	AutoCastShine = { -- Only used by Pet buttons.
@@ -289,6 +297,10 @@ local Legacy = {
 		Key = "cooldown",
 		Name = "Cooldown",
 		Type = "Cooldown",
+		Item = {
+			Name = "Cooldown",
+			Type = "Cooldown",
+		},
 	},
 	ChargeCooldown = {
 		Key = "chargeCooldown",
@@ -356,6 +368,8 @@ local Aura = {
 	Count = Legacy.Count.Aura,
 	Duration = Legacy.Duration,
 	Border = Legacy.Border.Aura,
+	DebuffBorder = (WOW_RETAIL and Legacy.DebuffBorder) or nil, -- Retail Only
+	EnchantBorder = (WOW_RETAIL and Legacy.EnchantBorder) or nil, -- Retail Only
 	Highlight = Legacy.Highlight, -- Unused
 	Cooldown = Legacy.Cooldown,
 	ChargeCooldown = Legacy.ChargeCooldown,
@@ -369,6 +383,7 @@ local Debuff = {
 	Count = Legacy.Count.Aura,
 	Duration = Legacy.Duration,
 	Border = Legacy.Border.Debuff,
+	DebuffBorder = (WOW_RETAIL and Legacy.DebuffBorder) or nil, -- Retail Only
 	Highlight = Legacy.Highlight, -- Unused
 	Cooldown = Legacy.Cooldown,
 	ChargeCooldown = Legacy.ChargeCooldown,
@@ -382,6 +397,7 @@ local Enchant = {
 	Count = Legacy.Count.Aura,
 	Duration = Legacy.Duration,
 	Border = Legacy.Border.Enchant,
+	EnchantBorder = (WOW_RETAIL and Legacy.EnchantBorder) or nil, -- Retail Only
 	Highlight = Legacy.Highlight, -- Unused
 	Cooldown = Legacy.Cooldown,
 	ChargeCooldown = Legacy.ChargeCooldown,
@@ -409,8 +425,8 @@ local Item = {
 	SearchOverlay = Legacy.SearchOverlay,
 	ContextOverlay = Legacy.ContextOverlay,
 	JunkIcon = Legacy.JunkIcon,
-	Highlight = Legacy.Highlight,
-	Cooldown = Legacy.Cooldown,
+	Highlight = Legacy.Highlight.Item,
+	Cooldown = Legacy.Cooldown.Item,
 	ChargeCooldown = Legacy.ChargeCooldown,
 }
 

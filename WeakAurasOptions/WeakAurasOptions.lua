@@ -299,8 +299,6 @@ local function CreateNewGroupFromSelection(regionType, resetChildPositions)
     local oldParentData = WeakAuras.GetData(oldParent)
     if (oldParent) then
       local oldIndex = childButton:GetGroupOrder()
-      print("CHILD ID", childId, "OLD PARENT", oldParent, "OLD INDEX", oldIndex)
-      print("###", oldParentData.controlledChildren[oldIndex])
 
       tremove(oldParentData.controlledChildren, oldIndex)
       WeakAuras.Add(oldParentData)
@@ -996,12 +994,13 @@ function OptionsPrivate.SortDisplayButtons(filter, overrideReset, id)
           child.frame:Show()
           child:AcquireThumbnail()
           frame.buttonsScroll:AddChild(child)
+        else
+          if not child.frame:IsShown() then
+            child.frame:Show()
+            child:AcquireThumbnail()
+          end
+          tinsert(frame.buttonsScroll.children, child)
         end
-        if not child.frame:IsShown() then
-          child.frame:Show()
-          child:AcquireThumbnail()
-        end
-        tinsert(frame.buttonsScroll.children, child)
       elseif child then
         child.frame:Hide()
         if child.ReleaseThumbnail then
@@ -1051,6 +1050,7 @@ function OptionsPrivate.SortDisplayButtons(filter, overrideReset, id)
                   child.frame:Show()
                   child:AcquireThumbnail()
                   frame.buttonsScroll:AddChild(child)
+                  buttonsShown[slug] = true
                 end
                 if not child.frame:IsShown() then
                   child.frame:Show()

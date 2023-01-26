@@ -8,7 +8,7 @@ KT.L = CoreBuildLocale()
 local cNote = "|cff00ffe3"
 local cBold = "|cff00ffe3"
 
-if GetLocale() == "zhCN" or GetLocale() == "zhTW" then
+if GetLocale() == "zhCN" then
     --------------- Filters.lua -----------------
     KT.L["Filter"] = "筛选"
     KT.L[" Quests"] = " 任务"

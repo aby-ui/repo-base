@@ -34,17 +34,11 @@ local function SBuff_SecondsToTimeAbbrev(seconds)
     end
 end
 
-local function updateAll(buttons, func)
-    for _, btn in ipairs(buttons) do
-        func(btn, btn.buttonInfo)
-    end
-end
-
 --- 初始化和编辑模式修改布局时调用
 local updateWidthAndPoint = function(btn)
     local d = btn.aby_duration
-    d:SetSize(max(100, btn.duration:GetWidth()), 10) --高度无所谓, 靠SetJustifyH
-    local point, obj, rel, x, y = btn.duration:GetPoint(1)
+    d:SetSize(max(100, btn.Duration:GetWidth()), 10) --高度无所谓, 靠SetJustifyH
+    local point, obj, rel, x, y = btn.Duration:GetPoint(1)
     d:ClearAllPoints()
     if point == "BOTTOM" then y = (y or 0) + 1 end --底部有点太紧
     d:SetPoint(point, obj, rel, x, y)
@@ -62,9 +56,10 @@ local function updateFontAlpha(btn)
     btn.aby_duration:SetShadowOffset(1, -1)
     if private.cfg_show then
         btn.aby_duration:SetAlpha(private.cfg_showsec and 1 or 0)
-        btn.duration:SetAlpha(private.cfg_showsec and 0 or 1) --btn.duration.SetFormattedText = noop --也可以noop, 因为secure调用, 所以不会污染
+        btn.Duration:SetAlpha(private.cfg_showsec and 0 or 1) --btn.Duration.SetFormattedText = noop --也可以noop, 因为secure调用, 所以不会污染
     else
         btn.aby_duration:SetAlpha(0)
+        btn.Duration:SetAlpha(1)
     end
 end
 
@@ -73,6 +68,9 @@ local NA_buttonInfo = { duration = 0 }
 
 --- 精确到秒, 10分钟以上是否显示秒
 local function updateDurationWithSeconds(self, timeLeft)
+    if self.isExample then
+        return;
+    end
     local duration = self.aby_duration;
     if timeLeft and private.cfg_show and private.cfg_showsec then
         duration:SetFormattedText(SBuff_SecondsToTimeAbbrev(timeLeft));
@@ -82,7 +80,10 @@ local function updateDurationWithSeconds(self, timeLeft)
 end
 
 --- 没有的时候显示N/A
-local function updateExpirationTimeToNA(self, buttonInfo)
+local function updateExpirationTimeToNA(self, buttonInfo, forEditMode)
+    if self.isExample and not forEditMode then
+        return;
+    end
     if buttonInfo and buttonInfo.duration == 0 then
         if private.cfg_show then
             --非showsec的时候显示在默认数字上
@@ -90,12 +91,12 @@ local function updateExpirationTimeToNA(self, buttonInfo)
             if private.cfg_showsec then
                 self.aby_duration:SetText(str)
             else
-                self.duration:SetText(str)
-                if str ~= "" then self.duration:Show() end
+                self.Duration:SetText(str)
+                if str ~= "" then self.Duration:Show() end
             end
         else
             if not private.cfg_showsec then
-                self.duration:Hide()
+                --self.Duration:Hide()
             end
         end
     end
@@ -103,14 +104,14 @@ end
 
 --- 编辑模式的示例
 local function updateEditModeExample(btn)
-    local text = (btn.duration:GetText() or ""):match("%d+")
+    local text = (btn.Duration:GetText() or ""):match("%d+")
 
     local n = tonumber(text or 1) or 1
     n = n - 3
 
     local d = btn.aby_duration
     if n < 0 then
-        return updateExpirationTimeToNA(btn, NA_buttonInfo)
+        return updateExpirationTimeToNA(btn, NA_buttonInfo, true)
     end
 
     local timeLeft
@@ -124,44 +125,53 @@ local function updateEditModeExample(btn)
     d:SetFormattedText(SBuff_SecondsToTimeAbbrev(timeLeft))
 end
 
-local allAuras, allExamples = {}, {}
-
-local function hookPoolAcquireAuraButton(btn, frameType, template)
-    if template == "DeadlyDebuffFrame" then
-        return
-    end
-
+local function hookPoolAcquireAuraButton(btn)
     btn.aby_duration = btn:CreateFontString(nil, "BACKGROUND")
-    btn.aby_duration:SetFont(btn.duration:GetFont())
+    btn.aby_duration:SetFont(btn.Duration:GetFont())
     updateFontAlpha(btn)
     updateWidthAndPoint(btn)
 
-    hooksecurefunc(btn.duration, "SetPoint", function(self) updateWidthAndPoint(self:GetParent()) end)
+    hooksecurefunc(btn.Duration, "SetPoint", function(self) updateWidthAndPoint(self:GetParent()) end)
 
-    if template ~= "ExampleAuraTemplate"  and template ~= "ExampleDebuffTemplate" then
-        tinsert(allAuras, btn)
-        hooksecurefunc(btn, "UpdateDuration", updateDurationWithSeconds)
-        hooksecurefunc(btn, "UpdateExpirationTime", updateExpirationTimeToNA)
-        updateExpirationTimeToNA(btn, btn.buttonInfo)
-
-    else
-        --only initialize once, no need to hook, but remember to update format
-        tinsert(allExamples, btn)
-        updateEditModeExample(btn)
-    end
+    hooksecurefunc(btn, "UpdateDuration", updateDurationWithSeconds)
+    hooksecurefunc(btn, "UpdateExpirationTime", updateExpirationTimeToNA)
+    --updateExpirationTimeToNA(btn, btn.buttonInfo)
 end
 
-CoreUIHookPoolCollection(BuffFrame.auraPool, hookPoolAcquireAuraButton)
-CoreUIHookPoolCollection(DebuffFrame.auraPool, hookPoolAcquireAuraButton)
-hooksecurefunc(BuffFrame, "OnEditModeEnter", function()
-    for _, btn in ipairs(allExamples) do
-        updateEditModeExample(btn)
-    end
-end)
+local function hookOnEditModeEnter(self)
+    C_Timer.After(0.1, function()
+        for _, btn in ipairs(self.auraFrames) do
+            updateFontAlpha(btn)
+            updateEditModeExample(btn)
+        end
+    end)
+end
+hooksecurefunc(BuffFrame, "OnEditModeEnter", hookOnEditModeEnter)
+hooksecurefunc(DebuffFrame, "OnEditModeEnter", hookOnEditModeEnter)
+
+local function hookOnEditModeExit(self)
+    C_Timer.After(0.1, function()
+        for _, btn in ipairs(self.auraFrames) do
+            updateFontAlpha(btn)
+            updateWidthAndPoint(btn)
+        end
+    end)
+end
+hooksecurefunc(BuffFrame, "OnEditModeExit", hookOnEditModeExit)
+hooksecurefunc(DebuffFrame, "OnEditModeExit", hookOnEditModeExit)
+
+local function updateAll(func)
+    for _, btn in ipairs(BuffFrame.auraFrames) do func(btn, btn.buttonInfo) end
+    for _, btn in ipairs(DebuffFrame.auraFrames) do func(btn, btn.buttonInfo) end
+end
+
+updateAll(hookPoolAcquireAuraButton)
 
 function private:UpdateConfig()
-    updateAll(allAuras, updateFontAlpha)
-    updateAll(allExamples, updateFontAlpha)
-    updateAll(allAuras, updateExpirationTimeToNA)
-    updateAll(allExamples, updateEditModeExample)
+    updateAll(function(btn, info)
+        updateFontAlpha(btn)
+        if not self.isExample then
+            updateExpirationTimeToNA(btn, info)
+        end
+    end)
 end

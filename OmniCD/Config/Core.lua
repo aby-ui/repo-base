@@ -43,6 +43,9 @@ local changelog = E.changelog:gsub("^[ \t\n]*", E.HEX_C[WOW_PROJECT_ID]):gsub("\
 	end
 end):gsub("\t", "\32\32\32\32\32\32\32\32")
 
+local getGlobalOption = function(info) return E.global[ info[#info] ] end
+local setGlobalOption = function(info, value) E.global[ info[#info] ] = value end
+
 
 local function GetOptions()
 	if not E.options then
@@ -112,6 +115,8 @@ local function GetOptions()
 							name = L["Login Message"],
 							order = 11,
 							type = "toggle",
+							get = getGlobalOption,
+							set = setGlobalOption,
 						},
 						notifyNew = {
 							disabled = not E.useVersionCheck,
@@ -119,6 +124,8 @@ local function GetOptions()
 							desc = L["Send a chat message when a newer version is found."],
 							order = 12,
 							type = "toggle",
+							get = getGlobalOption,
+							set = setGlobalOption,
 						},
 
 						minusScale = {

@@ -1,4 +1,4 @@
-## Interface: 100002
+## Interface: 100005
 ## Title: Details!: Compare 2.0
 ## Notes: Replace the Compare tab in the player breakdown window.
 ## RequiredDeps: Details

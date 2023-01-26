@@ -1,4 +1,4 @@
-## Interface: 100002
+## Interface: 100005
 ## Title: DressingSlots
 ## Notes: Extends the dressing room with extra functionality.
 ## Version: 1.4.0

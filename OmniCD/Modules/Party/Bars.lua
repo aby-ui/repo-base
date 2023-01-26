@@ -74,8 +74,10 @@ local function CooldownBarFrame_OnEvent(self, event, ...)
 			return
 		end
 
-		if spellID == 384255 and not CM.syncedGroupMembers[guid] then
-			CM:EnqueueInspect(nil, guid)
+		if spellID == 384255 then
+			if not CM.syncedGroupMembers[guid] then
+				CM:EnqueueInspect(nil, guid)
+			end
 		elseif P.spell_enabled[spellID] or E.spell_modifiers[spellID] then
 			E.ProcessSpell(spellID, guid)
 		end
@@ -571,7 +573,7 @@ function P:UpdateUnitBar(guid, isUpdateBarsOrGRU)
 								if modData then
 									for j = 1, #modData, 2 do
 										local tal = modData[j]
-										local rank = info.talentData[tal]
+										local rank = self:IsTalentForPvpStatus(tal, info)
 										if rank then
 											local mult = modData[j+1]
 											mult = type(mult) == "table" and (mult[rank] or mult[1]) or mult

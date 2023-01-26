@@ -293,7 +293,7 @@ function P:UpdateSpellsOption(id, oldClass, oldType, class, stype, force)
 	for moduleName in pairs(E.moduleOptions) do
 		local module = E[moduleName]
 		if module.AddSpellPicker then
-			module:Refresh()
+			module:Refresh(true)
 		end
 	end
 end

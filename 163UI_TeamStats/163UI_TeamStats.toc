@@ -1,4 +1,4 @@
-## Interface: 100002
+## Interface: 100005
 ## Title: |cff880303[爱不易]|r [已废弃插件]
 ## Notes: 插件已改名,此为空插件,防止玩家本地未删除旧插件
 ## X-Vendor: AbyUI

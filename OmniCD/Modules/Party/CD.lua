@@ -117,7 +117,7 @@ local function UpdateCdByReducer(info, t, isHolyPriest)
 			duration = type(duration) == "table" and (duration[talentRank] or duration[1]) or duration
 			for spellID, icon in pairs(info.spellIcons) do
 				if icon.active and spellID ~= 1856 and (BOOKTYPE_CATEGORY[icon.category] or icon.category == "COVENANT") then
-					P:UpdateCooldown(icon, E.isSL and P.isPvP and 10 or duration)
+					P:UpdateCooldown(icon, P.isPvP and duration/2 or duration)
 				end
 			end
 		end
@@ -970,7 +970,7 @@ registeredEvents['SPELL_CAST_SUCCESS'][157982] = function(info)
 	if info.talentData[392162] then
 		for _, icon in pairs(info.spellIcons) do
 			if icon and icon.active and E.BOOKTYPE_CATEGORY[icon.category] then
-				P:UpdateCooldown(icon, 3)
+				P:UpdateCooldown(icon, 4)
 			end
 		end
 	end
@@ -1428,7 +1428,7 @@ local function ReduceNaturalMendingCD(info, _, spellID)
 				end
 			end
 			if  isTrueShotActive then
-				rCD = rCD * 0.03
+				rCD = rCD * 0.05
 				P:UpdateCooldown(trueShotIcon, rCD)
 			end
 		end
@@ -1919,6 +1919,14 @@ end
 
 
 
+local monkBrews = {
+	386276,
+	115203,
+	322507,
+	119582,
+	115399,
+}
+
 
 registeredEvents['SPELL_AURA_APPLIED'][386276] = function(info, _,_, destGUID)
 	if info.spec == 268 and info.spellIcons[386276] then
@@ -1941,9 +1949,12 @@ end
 
 local function ReduceBonedustBrewCD(info, _,_, destGUID)
 	if info.auras.bonedustTargetGUID and info.auras.bonedustTargetGUID[destGUID] then
-		local icon = info.spellIcons[386276]
-		if icon and icon.active then
-			P:UpdateCooldown(icon, 1)
+		for i = 1, 5 do
+			local id = monkBrews[i]
+			local icon = info.spellIcons[id]
+			if icon and icon.active then
+				P:UpdateCooldown(icon, 1)
+			end
 		end
 	end
 end
@@ -2155,14 +2166,6 @@ registeredEvents['SPELL_DAMAGE'][322109] = function(info, _,_,_,_, destFlags, _,
 	end
 end
 
-
-local monkBrews = {
-	386276,
-	115203,
-	322507,
-	119582,
-	115399,
-}
 
 local function ReduceBrewCD(destInfo, _,_,_,_,_, timestamp)
 	local talentRank = destInfo.talentData[386937]
@@ -2550,48 +2553,50 @@ registeredUserEvents['SPELL_AURA_APPLIED'][25771] = registeredEvents['SPELL_AURA
 registeredUserEvents['SPELL_AURA_REMOVED'][25771] = registeredEvents['SPELL_AURA_REMOVED'][25771]
 
 
+--[[
+	WOES
+		Free procs (e.g. Divine Purpose, not cost reducers e.g. SealofClarity) are consumed with BastionofLight
+			> NOVEMBER 28, 2022 Hotfixed
+		Righteous Protector incorrectly applies CDR when BastionofLight and (DivinePurpose or ShiningLight) buffs are active at the same time
+		but correctly ignores CDR when singular buffs are up.
+			> NOVEMBER 28, 2022 Hotfixed
+				> DivinePurpose and ShiningLight applies full CDR whenever it's consumed for 'Righteous Protector' only
+		Righteous Protector incorrectly applies double the amount of CDR to Guardian of the Forgotten Queen in PvP
+		Fist of Justice randomly skips CDR outside of it's ICD
+		Divine purpose applies a small amount of CDR incorrectly
+		Empyrean Power applies a small amount of CDR incorrectly
+		Empyrean Power + Fires of Justice incorrectly applies 3 sec CDR (w/ rank2 FoJ)
+		Fires of Justice (consume 1 less HP) doesn't reduce CDR
+		Resolute Defender ignores free spender procs and applies full CDR to Divine Shield and Ardent Defender
+		It's a complete mess
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+		Patch 10.0.5 Avenging Crusader is now a holy power spender
+			> bugged ofc LOL. CDR doesn't work on HoJ w/ FoJ
+]]
 local holyPowerSpenders = {
 	--[[
 	[85673] = {
 		234299, nil, 3.0, 853, { "BastionofLight", 0, "DivinePurpose", 0, "ShiningLight", 0, "FireofJustice", -1, "SealofClarity", -1 },
 		392928, nil, 3.0, 633, { "DivinePurpose", 0, "SealofClarity", -1 },
 		385422, nil, 1.0, { 31850, 642 }, nil, { "BastionofLight", 0, "DivinePurpose", 0, "ShiningLight", 0 "SealofClarity", -0.33 },
-		204074, nil, 1.5, { 31884, 216331, 231895, 389539, 86659, 228049 }, { "BastionofLight", 0, "DivinePurpose", 0, "ShiningLight", 0, "SealofClarity", -0.5 },
+		204074, nil, 1.5, { 31884, 231895, 389539, 86659, 228049 }, { "BastionofLight", 0, "DivinePurpose", 0, "ShiningLight", 0, "SealofClarity", -0.5 },
 	},
 	[53600] = {
 		234299, nil, 3.0, 853, { "BastionofLight", 0, "DivinePurpose", 0, "FireofJustice", -1, "SealofClarity", -1 },
 		392928, nil, 3.0, 633, { "DivinePurpose", 0, "SealofClarity", -1 },
 		385422, nil, 1.0, { 31850, 642 }, nil, { "BastionofLight", 0, "DivinePurpose", 0, "SealofClarity", -0.33 },
-		204074, nil, 1.5, { 31884, 216331, 231895, 389539, 86659, 228049 }, { "BastionofLight", 0, "DivinePurpose", 0, "SealofClarity", -0.5 },
+		204074, nil, 1.5, { 31884, 231895, 389539, 86659, 228049 }, { "BastionofLight", 0, "DivinePurpose", 0, "SealofClarity", -0.5 },
 	},
 	[152262] = {
 		234299, nil, 3.0, 853, { "DivinePurpose", 0, "FireofJustice", -1 },
 		392928, nil, 3.0, 633, { "DivinePurpose", 0 },
 		385422, nil, 1.0, { 31850, 642 }, nil, { "DivinePurpose", 0 },
-		204074, nil, 1.5, { 31884, 216331, 231895, 389539, 86659, 228049 }, { "DivinePurpose", 0 },
+		204074, nil, 1.5, { 31884, 231895, 389539, 86659, 228049 }, { "DivinePurpose", 0 },
 	},
 	[391054] = {
 		234299, 66,  3.0, 853, { "DivinePurpose", 0 },
 		385422, 66,  1.0, { 31850, 642 }, nil, { "DivinePurpose", 0 },
-		204074, 66,  1.5, { 31884, 216331, 231895, 389539, 86659, 228049 }, { "DivinePurpose", 0 },
+		204074, 66,  1.5, { 31884, 231895, 389539, 86659, 228049 }, { "DivinePurpose", 0 },
 	},
 	[85256] = {
 		234299, nil, 3.0, 853, { "DivinePurpose", 0, "FireofJustice", -1 },
@@ -2615,29 +2620,33 @@ local holyPowerSpenders = {
 		234299, nil, 3.0, 853, { "DivinePurpose", 0, "SealofClarity", -1 },
 		392928, nil, 3.0, 633, { "DivinePurpose", 0, "SealofClarity", -1 },
 	},
+	[216331] = {
+		234299, nil, 5.0, 853, { "DivinePurpose", 0, "SealofClarity", -1 },
+		392928, nil, 5.0, 633, { "DivinePurpose", 0, "SealofClarity", -1 },
+	},
 	]]
 	[85673] = {
 		234299, nil, 3.0, 853, { "BastionofLight", 0, "DivinePurpose", -2.7, "ShiningLight", -2.7, "SealofClarity", -1 },
 		392928, nil, 3.0, 633, { "DivinePurpose", -2.7 },
 		385422, nil, 1.0, { 31850, 642 }, nil,
-		204074, nil, 1.5, { 31884, 216331, 231895, 389539, 86659, 228049 }, { "BastionofLight", {"DivinePurpose", "ShiningLight"}, "DivinePurpose", .01, "ShiningLight", .01, "SealofClarity", -0.5  },
+		204074, nil, 1.5, { 31884, 231895, 389539, 86659, 228049 }, { "BastionofLight", {"DivinePurpose", "ShiningLight"}, "DivinePurpose", .01, "ShiningLight", .01, "SealofClarity", -0.5  },
 	},
 	[53600] = {
 		234299, nil, 3.0, 853, { "BastionofLight", 0, "DivinePurpose", -2.7, "SealofClarity", -1 },
 		392928, nil, 3.0, 633, { "DivinePurpose", -2.7 },
 		385422, nil, 1.0, { 31850, 642 }, nil,
-		204074, nil, 1.5, { 31884, 216331, 231895, 389539, 86659, 228049 }, { "BastionofLight", {"DivinePurpose"}, "DivinePurpose", .01, "SealofClarity", -0.5 },
+		204074, nil, 1.5, { 31884, 231895, 389539, 86659, 228049 }, { "BastionofLight", {"DivinePurpose"}, "DivinePurpose", .01, "SealofClarity", -0.5 },
 	},
 	[152262] = {
 		234299, nil, 3.0, 853, { "DivinePurpose", -2.7 },
 		392928, nil, 3.0, 633, { "DivinePurpose", -2.7 },
 		385422, nil, 1.0, { 31850, 642 }, nil,
-		204074, nil, 1.5, { 31884, 216331, 231895, 389539, 86659, 228049 }, "nil",
+		204074, nil, 1.5, { 31884, 231895, 389539, 86659, 228049 }, "nil",
 	},
 	[391054] = {
 		234299, 66,  3.0, 853, { "DivinePurpose", 0 },
 		385422, 66,  1.0, { 31850, 642 }, nil,
-		204074, 66,  1.5, { 31884, 216331, 231895, 389539, 86659, 228049 }, "nil",
+		204074, 66,  1.5, { 31884, 231895, 389539, 86659, 228049 }, "nil",
 	},
 	[85256] = {
 		234299, nil, 3.0, 853, { "DivinePurpose", -2.7 },
@@ -2661,9 +2670,15 @@ local holyPowerSpenders = {
 		234299, nil, 3.0, 853, { "DivinePurpose", -2.7, "SealofClarity", -1 },
 		392928, nil, 3.0, 633, { "DivinePurpose", -2.7, "SealofClarity", -1 },
 	},
+	[216331] = {
+		--[[
+		234299, nil, 5.0, 853, { "DivinePurpose", 0, "SealofClarity", -1 },
+		]]
+		392928, nil, 5.0, 633, { "DivinePurpose", 0, "SealofClarity", -1 },
+	},
 }
 
-
+--[[ For science... ]]
 for id, t in pairs(holyPowerSpenders) do
 	registeredEvents['SPELL_CAST_SUCCESS'][id] = function(info, _,_,_,_,_,_,_,_,_,_, timestamp)
 		for i= 1,#t,5 do
@@ -3995,23 +4010,23 @@ end
 
 
 local rageSpenders = {
-	[184367] = { 4.0, { 1719 } },
+	[184367] = { 4.0, { 1719, 228920 } },
 
-	[280735] = { 2.0, { 1719 }, { 316402, 0 } },
+	[280735] = { 2.0, { 1719, 228920 }, { 316402, 0 } },
 	[12294]	 = { 1.5, { 262161, 167105, 227847 }, nil, { "hasBattlelord", -0.5} },
 	[845]	 = { 1.0, { 262161, 167105, 227847 }, nil, { "hasBattlelord", -0.5} },
 	[772]	 = { 1.5, { 262161, 167105, 227847 }  },
-	[396719] = { 1.5, { 262161, 167105, 227847, 1719 }, { 384277, .5} },
+	[396719] = { 1.5, { 262161, 167105, 227847, 1719, 228920 }, { 384277, .5} },
 	[394062] = { 3.0, { 107574, 871 } },
 	[190456] = { 3.5, { 107574, 871 } },
 	[6572]	 = { 2.0, { 107574, 871}, { 390675, 1 }, { "hasRevenge", 0 } },
 	[1680]	 = { { [73]=3, ["d"]=2.0 }, { 262161, 167105, 227847, 107574, 871 }, { 385512, 1.5, 383082, .001 }	},
 	[163201] = { { [73]=4, ["d"]=2.0 }, { 262161, 167105, 227847, 107574, 871 }, nil, { "SuddenDeath", 0 } },
 	[281000] = { { [73]=4, ["d"]=2.0 }, { 262161, 167105, 227847, 107574, 871 }, nil, { "SuddenDeath", 0 } },
-	[1464]	 = { { [73]=2, ["d"]=1.0 }, { 262161, 167105, 227847, 107574, 871, 1719 }, { 383082, .5 } },
-	[2565]	 = { { [73]=3, ["d"]=1.5 }, { 262161, 167105, 227847, 107574, 871, 1719 } },
-	[202168] = { { [73]=1, ["d"]=0.5 }, { 262161, 167105, 227847, 107574, 871, 1719 }, nil, { "hasVictorious", 0 } },
-	[1715]	 = { { [73]=1, ["d"]=0.5 }, { 262161, 167105, 227847, 107574, 871, 1719 } },
+	[1464]	 = { { [73]=2, ["d"]=1.0 }, { 262161, 167105, 227847, 107574, 871, 1719, 228920 }, { 383082, .5 } },
+	[2565]	 = { { [73]=3, ["d"]=1.5 }, { 262161, 167105, 227847, 107574, 871, 1719, 228920 } },
+	[202168] = { { [73]=1, ["d"]=0.5 }, { 262161, 167105, 227847, 107574, 871, 1719, 228920 }, nil, { "hasVictorious", 0 } },
+	[1715]	 = { { [73]=1, ["d"]=0.5 }, { 262161, 167105, 227847, 107574, 871, 1719, 228920 } },
 }
 
 for id, t in pairs(rageSpenders) do
@@ -4031,11 +4046,9 @@ for id, t in pairs(rageSpenders) do
 			end
 		end
 		for _, spellID in pairs(target) do
-			if spellID ~= 107574 or info.spec == 73 then
-				local icon = info.spellIcons[spellID]
-				if icon and icon.active then
-					P:UpdateCooldown(icon, rCD)
-				end
+			local icon = info.spellIcons[spellID]
+			if icon and icon.active and (spellID ~= 107574 or info.spec == 73) and (spellID ~= 228920 or info.spec == 72) then
+				P:UpdateCooldown(icon, rCD)
 			end
 		end
 	end

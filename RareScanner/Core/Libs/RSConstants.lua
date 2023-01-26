@@ -24,8 +24,8 @@ RSConstants.LOOT_ITEM_ID = nil
 -- Current versions
 ---============================================================================
 
-RSConstants.CURRENT_DB_VERSION = 81
-RSConstants.CURRENT_LOOT_DB_VERSION = 92
+RSConstants.CURRENT_DB_VERSION = 82
+RSConstants.CURRENT_LOOT_DB_VERSION = 93
 
 ---============================================================================
 -- Current maps (newer)
@@ -83,6 +83,14 @@ RSConstants.ITEM_TYPE = {
 }
 
 ---============================================================================
+-- Types of entity filters
+---============================================================================
+
+RSConstants.ENTITY_FILTER_ALL = 1
+RSConstants.ENTITY_FILTER_WORLDMAP = 2
+RSConstants.ENTITY_FILTER_ALERTS = 3
+
+---============================================================================
 -- Addons default settings
 ---============================================================================
 
@@ -137,13 +145,10 @@ RSConstants.PROFILE_DEFAULTS = {
 			worldmapButton = true
 		},
 		rareFilters = {
-			filtersToggled = true,
-			filterOnlyMap = false
+			defaultNpcFilterType = RSConstants.ENTITY_FILTER_ALL
 		},
 		containerFilters = {
-			filtersToggled = true,
-			filterOnlyMap = false,
-			filterOnlyAlerts = true,
+			defaultContainerFilterType = RSConstants.ENTITY_FILTER_ALL
 		},
 		eventFilters = {
 			filtersToggled = true,

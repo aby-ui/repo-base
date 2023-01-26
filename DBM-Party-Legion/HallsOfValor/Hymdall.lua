@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(1485, "DBM-Party-Legion", 4, 721)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20230116001209")
+mod:SetRevision("20230126053639")
 mod:SetCreatureID(94960)
 mod:SetEncounterID(1805)
 mod:SetHotfixNoticeRev(20221127000000)
@@ -67,6 +67,7 @@ function mod:SPELL_CAST_START(args)
 		end
 	elseif spellId == 193092 then
 		warnSweep:Show()
+		timerSweepCD:Start()
 	end
 end
 

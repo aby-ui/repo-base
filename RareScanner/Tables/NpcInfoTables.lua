@@ -3073,7 +3073,7 @@ private.NPC_INFO = {
 	[193173] = { zoneID = 2023, artID = { 1705 }, x = 6297, y = 7983, overlay = { "6302-7988" }, displayID = 102874, questID = { 74015 } }; --Mikrin of the Raging Winds
 	[193188] = { zoneID = 2023, artID = { 1705 }, x = 6209, y = 1289, overlay = { "6180-1283" }, displayID = 108106, questID = { 73894 }, factionID = { 2507 } }; --Seeker Teryx
 	[193209] = { zoneID = 2023, artID = { 1705 }, x = 3141, y = 6384, overlay = { "3145-6392" }, displayID = 101441, questID = { 73901 }, factionID = { 2503 } }; --Zenet Avis <The Hard Wind>
-	[193212] = { zoneID = 2023, artID = { 1705 }, x = 7194, y = 4633, overlay = { "7145-4607","7220-4480","7300-4700" }, displayID = 108116, questID = { 69871 }, factionID = { 2503 } }; --Malsegan
+	[193212] = { zoneID = 2023, artID = { 1705 }, x = 7194, y = 4633, overlay = { "7145-4607","7220-4480","7300-4700" }, displayID = 108116, questID = { 74011 }, factionID = { 2503 } }; --Malsegan
 	[193215] = { zoneID = 2023, artID = { 1705 }, x = 2027, y = 4366, overlay = { "1980-4480","2020-4340","2100-4200" }, displayID = 108109, questID = { 74073 }, factionID = { 2510 } }; --Scaleseeker Mezeri
 	[193227] = { zoneID = 2023, artID = { 1705 }, x = 4309, y = 5548, overlay = { "4314-5572","4360-5440","4400-5680" }, displayID = 108122, questID = { 74026 }, factionID = { 2510 } }; --Ronsak the Decimator
 	[193231] = { zoneID = 2023, artID = { 1705 }, x = 9045, y = 3998, overlay = { "9000-4000" }, displayID = 104750, questID = { 73869 }, factionID = { 2507 } }; --Ancient Tundrafur
@@ -3191,5 +3191,24 @@ private.NPC_INFO = {
 				[2026] = { x = 5640, y = 6360, artID = { 1709 }, overlay = { "5580-6640","5640-6360","5680-6540","5720-6200","5540-6500","5840-6420","5780-6620" } };
 				[2118] = { x = 5561, y = 6512, artID = { 1709 }, overlay = { "5561-6512" } };
 			  }, displayID = 107479, questID = { 66975 } }; --Ketess the Pillager
-	[195851] = { zoneID = 2093, artID = { 1756 }, displayID = 109035 }; --Ukhel Deathspeaker
+	[201553] = { zoneID = 2024, artID = { 1707 }, x = 4798, y = 2348, overlay = { "4798-2348" }, questID = { 74545 }, factionID = { 2510 } }; --Grand Artificer Zeerak 74457
+	[201554] = { zoneID = 2024, artID = { 1707 }, x = 4713, y = 2576, overlay = { "4713-2576" }, questID = { 74536 }, factionID = { 2510 } }; --Unstable Arcanogolem 74455
+	[201555] = { zoneID = 2024, artID = { 1707 }, x = 4684, y = 2178, overlay = { "4684-2178" }, questID = { 74543 }, factionID = { 2510 } }; --Srivantor 74458
+	[201561] = { zoneID = 2024, artID = { 1707 }, x = 4389, y = 3095, overlay = { "4389-3095" }, questID = { 74544 }, factionID = { 2510 } }; --Motivator Kratho
+	[201542] = { zoneID = 2085, artID = { 1736 }, x = 6186, y = 3163, overlay = { "6186-3163" }, questID = { 74558 }, factionID = { 2510 } }; --Tikarr Frostclaw
+	[201543] = { zoneID = 2085, artID = { 1736 }, x = 5068, y = 6904, overlay = { "5068-6904" }, questID = { 74554 }, factionID = { 2510 } }; --Avalantus 74452
+	[201545] = { zoneID = 2085, artID = { 1736 }, x = 4677, y = 4243, overlay = { "4677-4243" }, questID = { 74553 }, factionID = { 2510 } }; --Shapemaster Za'lani
+	[201562] = { zoneID = 2085, artID = { 1736 }, x = 4843, y = 1682, overlay = { "4843-1682" }, questID = { 74556 }, factionID = { 2510 } }; --Shardwing
+	[201549] = { zoneID = 2025, artID = { 1708 }, x = 6209, y = 6003, overlay = { "6209-6003" }, questID = { 74561 }, factionID = { 2510 } }; --Morlash
+	[201550] = { zoneID = 2025, artID = { 1708 }, x = 5977, y = 6227, overlay = { "5977-6227" }, questID = { 74565 }, factionID = { 2510 } }; --Overloading Defense Matrix
+	[201552] = { zoneID = 2025, artID = { 1708 }, x = 5956, y = 5661, overlay = { "5956-5661" }, questID = { 74566 }, factionID = { 2510 } }; --Overseer Stonetongue
+	[201535] = { zoneID = 2023, artID = { 1705 }, x = 3704, y = 3815, overlay = { "3704-3815" }, questID = { 74552 }, factionID = { 2503 } }; --Bloodbeak the Ravenous
+	[201537] = { zoneID = 2023, artID = { 1705 }, x = 3544, y = 4088, overlay = { "3544-4088" }, questID = { 74549 }, factionID = { 2503 } }; --Groffnar
+	[201538] = { zoneID = 2023, artID = { 1705 }, x = 3384, y = 3870, overlay = { "3384-3870" }, questID = { 74548 }, factionID = { 2503 } }; --Huntmaster Yrgena
+	[201539] = { zoneID = 2023, artID = { 1705 }, x = 3338, y = 4161, overlay = { "3338-4161" }, questID = { 74547 }, factionID = { 2503 } }; --Stormcaller Narkena
+	[201540] = { zoneID = 2023, artID = { 1705 }, x = 3547, y = 3474, overlay = { "3547-3474" }, questID = { 74546 }, factionID = { 2503 } }; --Lurgan
+	[201556] = { zoneID = 2024, artID = { 1707 }, x = 5729, y = 6453, overlay = { "5729-6453" }, questID = { 74535 }, factionID = { 2511 } }; --Waterpots
+	[201557] = { zoneID = 2024, artID = { 1707 }, x = 5804, y = 6833, overlay = { "5804-6833" }, questID = { 74532 }, factionID = { 2511 } }; --Graniteclaw
+	[201558] = { zoneID = 2024, artID = { 1707 }, x = 5599, y = 6741, overlay = { "5599-6741" }, questID = { 74531 }, factionID = { 2511 } }; --Malgain Rockknell
+	[201559] = { zoneID = 2024, artID = { 1707 }, x = 6017, y = 6818, overlay = { "6017-6818" }, questID = { 74533 }, factionID = { 2511 } }; --Shiobhan Waterborn
 }

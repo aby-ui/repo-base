@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2431, "DBM-Shadowlands", nil, 1192)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20221206222943")
+mod:SetRevision("20230124042422")
 mod:SetCreatureID(167525)
 mod:SetEncounterID(2410)
 mod:SetReCombatTime(20)
@@ -12,7 +12,7 @@ mod:SetUsedIcons(1)
 mod:RegisterCombat("combat")
 
 mod:RegisterEventsInCombat(
-	"SPELL_CAST_START 338848 338846 338847",
+	"SPELL_CAST_START 338848 338846 338847 339240 339241",
 	"SPELL_CAST_SUCCESS 338851 338849",
 	"SPELL_AURA_APPLIED 338850 338847 338851",
 	"SPELL_AURA_REMOVED 338851"

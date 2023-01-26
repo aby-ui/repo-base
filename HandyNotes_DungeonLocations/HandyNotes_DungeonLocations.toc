@@ -1,8 +1,9 @@
-## Interface: 100002
+## Interface: 100005
 ## Title: HandyNotes: DungeonLocations
-## Version: 1.55a
-## Notes: Shows locations of old world dungeon and raid entrances
-## Author: Caliaha of Cairne
+## Version: 2.01
+## Notes: Shows locations of old and new world dungeon and raid entrances
+## Author: Caliaha of Cairne 
+## X-Updated-By: Shadowlands & Dragongflight by BadBoyBarny
 ## RequiredDeps: HandyNotes
 ## X-Curse-Project-ID: 102768
 ## SavedVariables: HandyNotes_DungeonLocationsDB

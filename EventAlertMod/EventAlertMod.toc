@@ -1,4 +1,4 @@
-﻿## Interface: 100002
+﻿## Interface: 100005
 ## Title: EventAlertMod
 ## Title-zhTW: [EventAlertMod] 法術監控觸發提示
 ## Title-zhCN: [EventAlertMod] 法术监控触发提示

@@ -18,7 +18,6 @@ local defaults = {
 		modules = {
 			['*'] = true,
 		},
-		enableScaling = true,
 		scale = 1,
 		poiScale = 0.9,
 		ejScale = 0.8,
@@ -94,13 +93,12 @@ function Mapster:OnEnable()
 	self:SecureHookScript(WorldMapFrame, "OnShow", "WorldMapFrame_OnShow")
 
 	-- hooks for scale
-	-- XXX: disabled on retail due to taint
-	if not WoWRetail or db.enableScaling then
-		if HelpPlate_Show then
-			self:SecureHook("HelpPlate_Show")
-			self:SecureHook("HelpPlate_Hide")
-			self:SecureHook("HelpPlate_Button_AnimGroup_Show_OnFinished")
-		end
+	if HelpPlate_Show then
+		self:SecureHook("HelpPlate_Show")
+		self:SecureHook("HelpPlate_Hide")
+		self:SecureHook("HelpPlate_Button_AnimGroup_Show_OnFinished")
+	end
+	if not WoWRetail then
 		self:RawHook(WorldMapFrame.ScrollContainer, "GetCursorPosition", "WorldMapFrame_ScrollContainer_GetCursorPosition", true)
 	end
 
@@ -222,10 +220,6 @@ end
 
 function Mapster:SetPosition()
 	if not WorldMapFrame:IsMaximized() then
-		-- override scale back to 1.0 for retail fix
-		if WoWRetail and not db.enableScaling then
-			db.scale = 1.0
-		end
 		LibWindow.RestorePosition(WorldMapFrame)
 	end
 end
@@ -235,9 +229,6 @@ function Mapster:WorldMapFrame_OnShow()
 end
 
 function Mapster:SetScale(force)
-	-- disabled on retail due to map taint
-	if WoWRetail and not db.enableScaling then return end
-
 	if WorldMapFrame:IsMaximized() and WorldMapFrame:GetScale() ~= 1 then
 		WorldMapFrame:SetScale(1)
 	elseif not WorldMapFrame:IsMaximized() and (WorldMapFrame:GetScale() ~= db.scale or force) then
@@ -246,11 +237,9 @@ function Mapster:SetScale(force)
 end
 
 function Mapster:WorldMapFrame_ScrollContainer_GetCursorPosition()
-	local x,y = self.hooks[WorldMapFrame.ScrollContainer].GetCursorPosition(WorldMapFrame.ScrollContainer)
-	local s = WorldMapFrame:GetScale()
-	if WoWClassic then
-		s = s * UIParent:GetEffectiveScale()
-	end
+	-- intentionally not calling the original function to avoid double-hooks with addons trying to fix the same thing
+	local x,y = GetCursorPosition()
+	local s = WorldMapFrame:GetEffectiveScale()
 	return x / s, y / s
 end
 

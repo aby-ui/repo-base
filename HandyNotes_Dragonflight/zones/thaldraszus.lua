@@ -28,6 +28,7 @@ local Safari = ns.node.Safari
 local Scoutpack = ns.node.Scoutpack
 local SignalTransmitter = ns.node.SignalTransmitter
 local Squirrel = ns.node.Squirrel
+local TuskarrTacklebox = ns.node.TuskarrTacklebox
 
 local Achievement = ns.reward.Achievement
 local Currency = ns.reward.Currency
@@ -66,8 +67,7 @@ map.nodes[59075874] = RareElite({
         Transmog({item = 200299, slot = L['1h_sword']}), -- Strange Clockwork Gladius
         Transmog({item = 200303, slot = L['staff']}), -- Dreamweaver Acolyte's Staff
         Transmog({item = 200758, slot = L['plate']}), -- Breastplate of Storied Antiquity
-        DC.WindborneVelocidrake.SpikedBack, --
-        DC.HighlandDrake.StripedPattern, --
+        DC.WindborneVelocidrake.SpikedBack, DC.HighlandDrake.StripedPattern,
         DC.HighlandDrake.CrestedBrow
     },
     pois = {POI({60755543, 60736211, 59225648, 59266104})} -- Titanic Reactors
@@ -82,11 +82,12 @@ map.nodes[31097121] = Rare({
 
 map.nodes[59847057] = Rare({ -- required 67030
     id = 193220,
-    quest = 69868,
-    note = L['spawns_hourly'],
+    quest = 73987,
+    note = L['spawns_periodically'],
     rewards = {
         Achievement({id = 16679, criteria = 56149}),
-        Transmog({item = 200138, slot = L['polearm']}) -- Ancient Dancer's Longspear
+        Transmog({item = 200138, slot = L['polearm']}), -- Ancient Dancer's Longspear
+        Transmog({item = 200147, slot = L['cloth']}) -- Web-Woven Robe
     }
 }) -- Broodweaver Araznae
 
@@ -116,7 +117,7 @@ map.nodes[52746732] = CRAGGRAVATEDELEMENTAL
 map.nodes[47675115] = Rare({ -- required 67030
     id = 193234,
     quest = 73990,
-    note = L['spawns_hourly'],
+    note = L['spawns_periodically'],
     rewards = {
         Achievement({id = 16446, criteria = 55398, note = L['pretty_neat_note']}),
         Achievement({id = 16679, criteria = 56147})
@@ -132,12 +133,24 @@ map.nodes[53374092] = Rare({
     }
 }) -- Goremaul the Gluttonous
 
-map.nodes[57828380] = Rare({ -- review
+map.nodes[59128380] = Rare({ -- review
     id = 193126,
     quest = 73881,
     rewards = {
-        Achievement({id = 16679, criteria = 56135}), --
-        Toy({item = 200148}) -- A Collection Of Me
+        Achievement({id = 16679, criteria = 56135}),
+        Transmog({item = 200202, slot = L['mail']}), -- Tomorrow's Chains
+        Transmog({item = 200126, slot = L['cloth']}), -- Mantle of Copious Chronologies
+        Toy({item = 200148}), -- A Collection Of Me
+        DC.CliffsideWylderdrake.NarrowStripesPattern, DC.HighlandDrake.StagHorns
+    },
+    pois = {
+        Path({
+            61268044, 61068044, 60758085, 60478099, 60078084, 59978045,
+            59268031, 59178048, 58718021, 58408056, 58408127, 57878120,
+            57568198, 57648326, 58338437, 58738449, 59438425, 60118349,
+            60028315, 60038298, 60598289, 60928214, 61058151, 61708119,
+            61628055, 61158042, 60778077, 60478100
+        })
     }
 }) -- Innumerable Ruination
 
@@ -146,8 +159,11 @@ map.nodes[62298177] = Rare({
     quest = 74066,
     note = L['lord_epochbrgl_note'],
     rewards = {
-        Achievement({id = 16679, criteria = 56157}), --
-        Toy({item = 200148}) -- A Collection Of Me
+        Achievement({id = 16679, criteria = 56157}),
+        Transmog({item = 200202, slot = L['mail']}), -- Tomorrow's Chains
+        Transmog({item = 200126, slot = L['cloth']}), -- Mantle of Copious Chronologies
+        Toy({item = 200148}), -- A Collection Of Me
+        DC.CliffsideWylderdrake.NarrowStripesPattern, DC.HighlandDrake.StagHorns
     },
     pois = {POI({61708120})} -- Entrance
 }) -- Lord Epochbrgl
@@ -155,72 +171,89 @@ map.nodes[62298177] = Rare({
 map.nodes[52895903] = Rare({
     id = 193246,
     quest = 74013,
-    note = L['spawns_hourly'],
-    rewards = {Achievement({id = 16679, criteria = 56141})}
+    note = L['spawns_periodically'],
+    rewards = {
+        Achievement({id = 16679, criteria = 56141}),
+        Transmog({item = 200257, slot = L['2h_mace']}) -- Decay Infused Branch
+    }
 }) -- Matriarch Remalla
 
 map.nodes[59806100] = Rare({ -- reqired 67030
     id = 193688,
-    quest = 69976,
-    note = L['spawns_hourly'],
+    quest = 74020,
+    note = L['spawns_periodically'],
     rewards = {
-        Achievement({id = 16679, criteria = 56140}) --
+        Achievement({id = 16679, criteria = 56140}),
+        Transmog({item = 200146, slot = L['1h_mace']}) -- Phenran's Discordant Smasher
     }
 }) -- Phenran
 
 map.nodes[57218420] = Rare({ -- reqired 67030 review
     id = 193210,
-    quest = 69866,
+    quest = 74021,
+    note = L['spawns_periodically'],
     rewards = {
-        Achievement({id = 16679, criteria = 56142}), --
-        Toy({item = 200148}) -- A Collection Of Me
+        Achievement({id = 16679, criteria = 56142}),
+        Transmog({item = 200202, slot = L['mail']}), -- Tomorrow's Chains
+        Transmog({item = 200126, slot = L['cloth']}), -- Mantle of Copious Chronologies
+        Toy({item = 200148}), -- A Collection Of Me
+        DC.CliffsideWylderdrake.NarrowStripesPattern, DC.HighlandDrake.StagHorns
     }
 }) -- Phleep
 
--- map.nodes[] = Rare({
---     id = 193130,
---     quest = nil,
---     rewards = {
---         Achievement({id = 16679, criteria = 56137}),
---     }
--- }) -- Pleasant Alpha
+map.nodes[37967903] = Rare({
+    id = 193130,
+    quest = 73889,
+    rewards = {
+        Achievement({id = 16679, criteria = 56137}) --
+    }
+}) -- Pleasant Alpha
 
--- map.nodes[] = Rare({
---     id = 193143,
---     quest = 69853,
---     rewards = {
---         Achievement({id = 16679, criteria = 56133}),
---     }
--- }) -- Razk'vex the Untamed
+map.nodes[50404840] = Rare({
+    id = 193143,
+    quest = 73892,
+    rewards = {
+        Achievement({id = 16679, criteria = 56133}) --
+    },
+    pois = {
+        Path({
+            53264403, 53344332, 52894297, 52414382, 51544449, 50594557, 50105027
+        })
+    }
+}) -- Razk'vex the Untamed
 
 map.nodes[40087014] = Rare({ -- reqiured 67030
     id = 193240,
-    quest = 69880,
-    note = L['spawns_hourly'],
+    quest = 74024,
+    note = L['spawns_periodically'],
     rewards = {Achievement({id = 16679, criteria = 56148})}
 }) -- Riverwalker Tamopo
 
 map.nodes[50005180] = Rare({ -- reqiured 67030 review
     id = 193666,
-    quest = 69966,
-    note = L['spawns_hourly'],
+    quest = 74025,
+    note = L['spawns_periodically'],
     rewards = {Achievement({id = 16679, criteria = 56151})}
 }) -- Rokmur
 
 map.nodes[37607780] = Rare({ -- reqiured 67030
     id = 193176,
-    quest = 69859,
-    note = L['in_cave'] .. '\n\n' .. L['spawns_hourly'],
+    quest = 74029,
+    note = L['spawns_periodically'] .. '\n\n' .. L['in_cave'],
     rewards = {
-        Achievement({id = 16679, criteria = 56150}), --
-        Toy({item = 200148}) -- A Collection Of Me
+        Achievement({id = 16679, criteria = 56150}),
+        Transmog({item = 200202, slot = L['mail']}), -- Tomorrow's Chains
+        Transmog({item = 200126, slot = L['cloth']}), -- Mantle of Copious Chronologies
+        Toy({item = 200148}), -- A Collection Of Me
+        DC.CliffsideWylderdrake.NarrowStripesPattern, DC.HighlandDrake.StagHorns
     },
     pois = {POI({38507640})} -- Cave entrance
 }) -- Sandana the Tempest
 
 map.nodes[47207895] = Rare({ -- review -- reqiured 67030
     id = 193258,
-    quest = 69886,
+    quest = 74035,
+    note = L['spawns_periodically'],
     rewards = {Achievement({id = 16679, criteria = 56144})},
     pois = {
         Path({
@@ -255,10 +288,11 @@ map.nodes[46267317] = Rare({
 map.nodes[35027001] = Rare({ -- reqiured 67030 review
     id = 193146,
     quest = 74036,
-    note = L['in_small_cave'] .. '\n\n' .. L['spawns_hourly'],
+    note = L['spawns_periodically'] .. '\n\n' .. L['in_small_cave'],
     rewards = {
         Achievement({id = 16679, criteria = 56146}),
-        Transmog({item = 200291, slot = L['leather']}) -- Waterlogged Racing Grips
+        Transmog({item = 200291, slot = L['leather']}), -- Waterlogged Racing Grips
+        DC.CliffsideWylderdrake.ShortHorns
     },
     pois = {POI({34896938})} -- Entrance
 }) -- Treasure-Mad Trambladd
@@ -665,9 +699,11 @@ map.nodes[38806831] = Scoutpack()
 map.nodes[41234798] = Scoutpack()
 map.nodes[50844623] = Scoutpack()
 map.nodes[52758333] = Scoutpack()
+map.nodes[55413167] = Scoutpack()
 map.nodes[55456797] = Scoutpack()
 map.nodes[55873598] = Scoutpack()
 map.nodes[55875138] = Scoutpack()
+map.nodes[56063178] = Scoutpack()
 map.nodes[58046702] = Scoutpack()
 map.nodes[59198794] = Scoutpack()
 map.nodes[59496912] = Scoutpack()
@@ -716,6 +752,14 @@ map.nodes[61305400] = MagicBoundChest({
     pois = {POI({59755371})}
 })
 map.nodes[62207180] = MagicBoundChest()
+
+-------------------------------------------------------------------------------
+------------------------------ TUSKARR TACKLEBOX ------------------------------
+-------------------------------------------------------------------------------
+
+map.nodes[37096833] = TuskarrTacklebox()
+map.nodes[35116768] = TuskarrTacklebox()
+map.nodes[35276672] = TuskarrTacklebox()
 
 -------------------------------------------------------------------------------
 --------------------------------- DRAGONRACES ---------------------------------
@@ -921,6 +965,21 @@ map.nodes[54285271] = PrettyNeat({
     rewards = {Achievement({id = 16446, criteria = 55389})}
 }) -- Iridescent Peafowl
 
+map.nodes[47675115 + 1] = PrettyNeat({
+    id = 193234,
+    note = L['spawns_periodically'],
+    isRare = true,
+    mapID = map.id,
+    rewards = {Achievement({id = 16446, criteria = 55398})}
+}) -- Eldoren the Reborn (node coords must be off by 00000001 from Rare)
+
+map.nodes[36757287 + 1] = PrettyNeat({
+    id = 193273,
+    isRare = true,
+    mapID = map.id,
+    rewards = {Achievement({id = 16446, criteria = 55399})}
+}) -- Liskron the Dazzling (node coords must be off by 00000001 from Rare)
+
 -------------------------------------------------------------------------------
 ------------------------------ A LEGENDARY ALBUM ------------------------------
 -------------------------------------------------------------------------------
@@ -1070,7 +1129,7 @@ map.nodes[44006480] = Safari({
 ------------------------ ELEMENTAL STORMS: THALDRASZUS ------------------------
 -------------------------------------------------------------------------------
 
-map.nodes[59005879] = ElementalStorm({
+map.nodes[60005870] = ElementalStorm({
     label = format('%s: %s', L['elemental_storm'], L['elemental_storm_tyrhold']),
     mapID = map.id,
     areaPOIs = {7245, 7246, 7247, 7248}
@@ -1149,6 +1208,38 @@ val.nodes[43757494] = Collectible({
 }) -- Mallard Ducklin
 
 ----------------------------- MISCELLANEOUS NPCs ------------------------------
+
+local Rumiastrasza = Class('Rumiastrasza', Collectible, {
+    id = 189479,
+    icon = 1500865,
+    quest = 67071, -- What a Long Sweet Trip It's Been
+    parent = map.id,
+    rewards = {
+        Item({item = 198132}) -- Recipe: Hoard of Draconic Delicacies
+    }
+}) -- Rumiastrasza
+
+function Rumiastrasza.getters:note()
+    local function status(questID, questLeg)
+        if C_QuestLog.IsQuestFlaggedCompleted(questID) then
+            return ns.status.Green(questLeg)
+        else
+            return ns.status.Red(questLeg)
+        end
+    end
+
+    local note = L['hoard_of_draconic_delicacies_note_start'] .. '\n'
+    note = note .. '\n' .. status(67047, 1) .. ' {quest:67047}' -- Warm Away These Shivers
+    note = note .. '\n' .. status(67063, 2) .. ' {quest:67063}' -- 10,000 Years Of Roasting
+    note = note .. '\n' .. status(67064, 3) .. ' {quest:67064}' -- Rambling Delight
+    note = note .. '\n' .. status(67065, 4) .. ' {quest:67065}' -- Future Fresh Fungi
+    note = note .. '\n' .. status(67066, 5) .. ' {quest:67066}' -- Delights To Delve For
+    note = note .. '\n' .. status(67067, 6) .. ' {quest:67067}' -- Navigating The Leapmaize
+    note = note .. '\n' .. status(67068, 7) .. ' {quest:67068}' -- Anything But A Breeze
+    return note .. '\n\n' .. L['hoard_of_draconic_delicacies_note_end']
+end
+
+val.nodes[61601180] = Rumiastrasza()
 
 val.nodes[25994004] = NPC({
     id = 195768,

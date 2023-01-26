@@ -169,4 +169,4 @@ L["LeaveGroup"] = "離開隊伍"
 L["Ignore Quest"] = "忽略此任務"
 L["right click to close this window"] = "右鍵點擊關閉本窗口"
 L["Invite Nearby Players"] = "邀請附近的玩家"
-
+L["Open World Quest Tracker Options Menu"] = "滑鼠指向這裡：顯示功能表"

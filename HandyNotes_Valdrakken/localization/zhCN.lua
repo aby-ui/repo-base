@@ -3,7 +3,7 @@ local L = LibStub("AceLocale-3.0"):NewLocale("HandyNotes_Valdrakken", "zhCN", fa
 if not L then return end
 -- Simplified Chinese localization by nbyang ( https://www.curseforge.com/members/nbyang )
 --  zhCN client: (NGA-男爵凯恩)
---  Last update: 2022/11/17
+--  Last update: 2022/11/29
 if L then
 ----------------------------------------------------------------------------------------------------
 -----------------------------------------------CONFIG-----------------------------------------------
@@ -32,7 +32,7 @@ L["config_barber"] = "美容师"
 L["config_barber_desc"] = "显示美容师的位置"
 
 L["config_craftingorders"] = "制造订单"
-L["config_craftingorders_desc"] = "显示制作订单的位置"
+L["config_craftingorders_desc"] = "显示制造订单的位置"
 
 L["config_flightmaster"] = "飞行管理员"
 L["config_flightmaster_desc"] = "显示飞行管理员的位置"
@@ -61,7 +61,7 @@ L["config_reforge"] = "物品升级"
 L["config_reforge_desc"] = "显示物品升级NPC的位置"
 
 L["config_rostrum"] = "幻形讲坛"
-L["config_rostrum_desc"] = "显示幻形讲坛的位置"
+L["config_rostrum_desc"] = "显示幻形讲台的位置"
 
 L["config_stablemaster"] = "兽栏管理员"
 L["config_stablemaster_desc"] = "显示兽栏管理员的位置"
@@ -103,8 +103,9 @@ L["Both"] = "同时显示"
 L["config_picons"] = "显示专业图标"
 L["config_picons_vendor_desc"] = "显示专业图标而不是商人图标"
 L["config_picons_trainer_desc"] = "显示专业图标而不是训练师图标"
--- L["config_use_old_picons"] = "Show the old profession icons"
--- L["config_use_old_picons_desc"] = "Show the old profession icons again instead of the new ones (before Dragonflight)."
+  
+L["config_use_old_picons"] = "显示旧职业图标"
+L["config_use_old_picons_desc"] = "显示旧职业图标而不是新的图标 (巨龙时代之前的)."
 
 L["config_restore_nodes"] = "恢复被隐藏的图标"
 L["config_restore_nodes_desc"] = "恢复被你隐藏掉的图标"
@@ -144,7 +145,7 @@ L["handler_tooltip_quest"] = "解锁任务"
 ----------------------------------------------DATABASE----------------------------------------------
 ----------------------------------------------------------------------------------------------------
 
-L["Crafting Orders"] = "制作订单"
+L["Crafting Orders"] = "制造订单"
 L["Mailbox"] = "邮箱"
 L["Portal to Dalaran"] = "通往达拉然"
 L["Portal to Jade Forest"] = "通往翡翠林"

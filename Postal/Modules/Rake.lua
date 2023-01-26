@@ -7,7 +7,7 @@ local money
 local flag = false
 
 function Postal_Rake:OnEnable()
-	if Postal.WOWClassic or Postal.WOWBCClassic or Postal.WOWWotLKClassic then
+	if Postal.WOWClassic or Postal.WOWBCClassic then
 		self:RegisterEvent("MAIL_SHOW")
 	else
 		Postal_Rake:RegisterEvent("PLAYER_INTERACTION_MANAGER_FRAME_SHOW")
@@ -32,7 +32,7 @@ end
 function Postal_Rake:MAIL_SHOW()
 	if not flag then
 		money = GetMoney()
-		if Postal.WOWClassic or Postal.WOWBCClassic or Postal.WOWWotLKClassic then
+		if Postal.WOWClassic or Postal.WOWBCClassic then
 			self:RegisterEvent("MAIL_CLOSED")
 		else
 			Postal_Rake:RegisterEvent("PLAYER_INTERACTION_MANAGER_FRAME_HIDE")
@@ -43,7 +43,7 @@ end
 
 function Postal_Rake:MAIL_CLOSED()
 	flag = false
-	if Postal.WOWClassic or Postal.WOWBCClassic or Postal.WOWWotLKClassic then
+	if Postal.WOWClassic or Postal.WOWBCClassic then
 		self:UnregisterEvent("MAIL_CLOSED")
 	else
 		self:UnregisterEvent("PLAYER_INTERACTION_MANAGER_FRAME_HIDE")

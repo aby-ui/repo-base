@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(1862, "DBM-TombofSargeras", nil, 875)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20220116041824")
+mod:SetRevision("20230124052137")
 mod:SetCreatureID(115844)
 mod:SetEncounterID(2032)
 --mod:SetUsedIcons(1)
@@ -13,11 +13,10 @@ mod:RegisterCombat("combat")
 mod:RegisterEventsInCombat(
 	"SPELL_CAST_START 233062",
 	"SPELL_CAST_SUCCESS 231363 233272",
-	"SPELL_AURA_APPLIED 233272 231363",
-	"SPELL_AURA_REMOVED 233272 231363",
+	"SPELL_AURA_APPLIED 233272 231363 232249",
+	"SPELL_AURA_REMOVED 233272 231363 232249",
 --	"SPELL_PERIODIC_DAMAGE",
 --	"SPELL_PERIODIC_MISSED",
-	"UNIT_AURA_UNFILTERED",
 	"UNIT_SPELLCAST_SUCCEEDED boss1"
 )
 
@@ -168,6 +167,18 @@ function mod:SPELL_AURA_APPLIED(args)
 				specWarnBurningArmorTaunt:Play("tauntboss")
 			end
 		end
+	elseif spellId == 232249 then
+		warnCrashingComet:CombinedShow(0.5, args.destName)--Multiple targets in heroic/mythic
+		if args:IsPlayer() then
+			specWarnCrashingComet:Show()
+			specWarnCrashingComet:Play("runout")
+			yellCrashingComet:Yell(5)
+			yellCrashingComet:Countdown(spellId)
+			timerCrashingComet:Start()
+			if self.Options.RangeFrame then
+				DBM.RangeCheck:Show(10)
+			end
+		end
 	end
 end
 --mod.SPELL_AURA_APPLIED_DOSE = mod.SPELL_AURA_APPLIED
@@ -186,35 +197,11 @@ function mod:SPELL_AURA_REMOVED(args)
 				DBM.RangeCheck:Hide()
 			end
 		end
-	elseif spellId == 230345 and args:IsPlayer() then
+	elseif spellId == 232249 and args:IsPlayer() then
 		yellCrashingComet:Cancel()
 		timerCrashingComet:Stop()
 		if self.Options.RangeFrame then
 			DBM.RangeCheck:Hide()
-		end
-	end
-end
-
-function mod:UNIT_AURA_UNFILTERED(uId)
-	local hasDebuff = DBM:UnitDebuff(uId, crashingComet)
-	local name = DBM:GetUnitFullName(uId)
-	if hasDebuff and not cometTable[name] then--Any version of comet
-		for i = 1, 40 do
-			if DBM:UnitDebuff(uId, 232249) then--Correct version of comet
-				cometTable[name] = true
-				warnCrashingComet:CombinedShow(0.5, name)--Multiple targets in heroic/mythic
-				if UnitIsUnit(uId, "player") then
-					specWarnCrashingComet:Show()
-					specWarnCrashingComet:Play("runout")
-					yellCrashingComet:Yell(5)
-					yellCrashingComet:Countdown(5)
-					timerCrashingComet:Start()
-					if self.Options.RangeFrame then
-						DBM.RangeCheck:Show(10, nil, nil, nil, nil, 5)
-					end
-				end
-				break
-			end
 		end
 	end
 end

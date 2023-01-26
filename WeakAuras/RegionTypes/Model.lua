@@ -113,7 +113,7 @@ end
 
 local function CreateModel()
   local frame = CreateFrame("PlayerModel", nil, UIParent)
-  frame.SetTransformFixed = WeakAuras.IsRetail() and  Private.ModelSetTransformFixed or frame.SetTransform
+  frame.SetTransformFixed = frame.GetResizeBounds and Private.ModelSetTransformFixed or frame.SetTransform -- TODO change test to WeakAuras.IsWrathOrRetail() after 3.4.1 release
   return frame
 end
 
@@ -279,27 +279,37 @@ local function modify(parent, region, data)
   end
 
   -- Rotate model
-  function region:Rotate(degrees)
-    region.rotation = degrees;
+  function region:SetAnimRotation(degrees)
+    region.animRotation = degrees
+    region:UpdateEffectiveRotation()
+  end
+
+  function region:SetRotation(degrees)
+    region.rotation = degrees
+    region:UpdateEffectiveRotation()
+  end
+
+  function region:UpdateEffectiveRotation()
+    region.effectiveRotation = region.animRotation or region.rotation
     if region.model then
       if data.api then
         region.model:SetTransformFixed(data.model_st_tx / 1000, data.model_st_ty / 1000, data.model_st_tz / 1000,
-          rad(data.model_st_rx), rad(data.model_st_ry), rad(degrees), data.model_st_us / 1000);
+          rad(data.model_st_rx), rad(data.model_st_ry), rad(region.effectiveRotation), data.model_st_us / 1000)
       else
-        region.model:SetFacing(rad(region.rotation));
+        region.model:SetFacing(rad(region.effectiveRotation))
       end
     end
   end
 
   if data.api then
-    region:Rotate(data.model_st_rz);
+    region:SetRotation(data.model_st_rz)
   else
-    region:Rotate(data.rotation);
+    region:SetRotation(data.rotation)
   end
 
   -- Get model rotation
-  function region:GetRotation()
-    return region.rotation;
+  function region:GetBaseRotation()
+    return region.rotation
   end
 
   function region:PreShow()

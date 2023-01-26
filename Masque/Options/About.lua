@@ -29,17 +29,18 @@ local Setup = Core.Setup
 -- Supporters
 ---
 
-local COLOR_1 = "|cff0070dd"
---local COLOR_2 = "|cffa335ee"
---local COLOR_3 = "|cffff8000"
+--local COLOR_1 = "|cffff8000"
+local COLOR_2 = "|cffa335ee"
+local COLOR_3 = "|cff0070dd"
 
 local Supporters = {
 	-- [1]
-	COLOR_1.."Amenitra|r",
-	COLOR_1.."S9th|r",
-	COLOR_1.."Stormseer|r",
 	-- [2]
+	COLOR_2.."Qissi|r",
 	-- [3]
+	COLOR_3.."Amenitra|r",
+	COLOR_3.."S9th|r",
+	COLOR_3.."Stormseer|r",
 }
 
 ----------------------------------------

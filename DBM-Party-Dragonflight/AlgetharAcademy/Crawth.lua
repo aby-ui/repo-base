@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2495, "DBM-Party-Dragonflight", 5, 1201)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20230101034007")
+mod:SetRevision("20230122214634")
 mod:SetCreatureID(191736)
 mod:SetEncounterID(2564)
 --mod:SetUsedIcons(1, 2, 3)
@@ -48,8 +48,6 @@ local timerSavagePeckCD							= mod:NewCDTimer(13.6, 376997, nil, "Tank|Healer",
 --local berserkTimer							= mod:NewBerserkTimer(600)
 
 mod:AddRangeFrameOption(4, 377004)
---mod:AddInfoFrameOption(361651, true)
---mod:AddSetIconOption("SetIconOnStaggeringBarrage", 361018, true, false, {1, 2, 3})
 
 function mod:GustTarget(targetname)
 	if not targetname then return end
@@ -59,7 +57,6 @@ function mod:GustTarget(targetname)
 end
 
 function mod:OnCombatStart(delay)
---	timerPlayBallCD:Start(1-delay)
 	timerSavagePeckCD:Start(3.6-delay)
 	timerDeafeningScreechCD:Start(10.1-delay)
 	timerOverpoweringGustCD:Start(15.7-delay)
@@ -69,9 +66,6 @@ function mod:OnCombatEnd()
 	if self.Options.RangeFrame then
 		DBM.RangeCheck:Hide()
 	end
---	if self.Options.InfoFrame then
---		DBM.InfoFrame:Hide()
---	end
 end
 
 function mod:SPELL_CAST_START(args)

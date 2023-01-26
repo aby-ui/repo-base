@@ -144,6 +144,7 @@ local function RenderLinks(str, nameOnly)
             if type == 'title' then return ns.color.Yellow(text) end
             if type == 'npc' then return ns.color.NPC(text) end
             if type == 'yell' then return ns.color.Red(text) end
+            if type == 'faction' then return ns.color.NPC(text) end
             if type == 'wq' then
                 local icon = ns.GetIconLink('world_quest', 16, 0, -1)
                 return icon .. ns.color.Yellow('[' .. text .. ']')

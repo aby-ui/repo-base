@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2354, "DBM-EternalPalace", nil, 1179)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20220823210137")
+mod:SetRevision("20230124045055")
 mod:SetCreatureID(152236)
 mod:SetEncounterID(2304)
 mod:SetUsedIcons(1, 2, 3, 4, 6, 7)
@@ -122,7 +122,7 @@ end
 
 function mod:SPELL_CAST_START(args)
 	local spellId = args.spellId
-	if spellId == 297398 then--Briny Bubble. 297398 verified, other two unknown (or spellId == 297402 or spellId == 297324)
+	if spellId == 297398 then--Briny Bubble. 297398 verified, other two unknown (or spellId 297402 or spellId 297324)
 		self.vb.spellPicker = 0
 		--Always 15.9 seconds after in all difficulties when shield is up, but when shield is down, it's 24 seconds after on easy but still 15.9 on hard
 		timerBarnacleBashCD:Start(not self.vb.shieldDown and self:IsEasy() and 23.9 or 15.9, 1)--start to success

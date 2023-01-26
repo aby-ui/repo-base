@@ -48,6 +48,7 @@ U1RegisterAddon("AbyBuff", {
                 text = "BUFF时间精确到秒",
                 callback = function(cfg, v, loading)
                     _G["AbyBuff"].cfg_showsec = v
+                    if v then SMALLER_AURA_DURATION_FONT_MIN_THRESHOLD = nil end --10.0.5
                     if not loading then _G['AbyBuff']:UpdateConfig() end
                 end,
                 {

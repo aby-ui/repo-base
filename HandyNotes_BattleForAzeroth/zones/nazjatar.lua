@@ -48,7 +48,7 @@ function Intro.getters:label()
     return GetAchievementCriteriaInfoByID(13709, 45756) -- Welcome to Nazjatar
 end
 
-if UnitFactionGroup('player') == 'Alliance' then
+if ns.faction == 'Alliance' then
     map.intro = Intro({
         quest = 56156,
         faction = 'Alliance',
@@ -699,7 +699,7 @@ map.nodes[28102670] = PetBattle({
 ------------------------------ PRISMATIC CRYSTALS -----------------------------
 -------------------------------------------------------------------------------
 
-local CRYSTAL_QUEST = UnitFactionGroup('player') == 'Horde' and 56560 or 56561
+local CRYSTAL_QUEST = ns.faction == 'Horde' and 56560 or 56561
 
 map.nodes[55154877] = Node({
     quest = CRYSTAL_QUEST,

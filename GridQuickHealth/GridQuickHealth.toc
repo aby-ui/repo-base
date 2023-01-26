@@ -1,4 +1,4 @@
-## Interface: 100002
+## Interface: 100005
 # Title: GridQuickHealth
 # Notes: 团队框体中的快速治疗功能
 ## Author: yleaf, warbaby

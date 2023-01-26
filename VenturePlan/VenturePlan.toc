@@ -1,4 +1,4 @@
-## Interface: 100002
+## Interface: 100005
 ## Title: Venture Plan
 ## Notes: Interface improvements for Adventures.
 ## Title-zhCN: |c0066ffff9.0随从_VenturePlan任务|r

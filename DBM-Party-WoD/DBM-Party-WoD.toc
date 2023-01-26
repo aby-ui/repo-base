@@ -1,4 +1,4 @@
-## Interface: 100002
+## Interface: 100005
 ## X-Min-Interface: 80000
 ## Title:|cffffe00a<|r|cffff7d0aDBM|r|cffffe00a>|r |cff69ccf0Dungeons (WoD)|r
 ## Title-koKR:|cffffe00a<|r|cffff7d0aDBM|r|cffffe00a>|r |cff69ccf0던전 (드군)|r
@@ -32,7 +32,7 @@
 ## X-DBM-Mod-MinCoreRevision: 20200524142133
 ## X-Curse-Project-ID: 314994
 ## X-WoWI-ID: 24904
-## Version: r59-9-ge59fb49
+## Version: r62-1-ge4f24aa
 ## X-DBM-Mod-MinExpansion: 5
 localization.en.lua
 localization.tw.lua

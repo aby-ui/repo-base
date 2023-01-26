@@ -169,7 +169,7 @@ local function ContainersOverlayEvents(event, ...)
         next frame instead.
     ]]
     -- bag frames
-    if event == "BAG_UPDATE_DELAYED" then
+    if event == "BAG_UPDATE" then
         for i=1,NUM_CONTAINER_FRAMES do
             for j=1,CanIMogIt.MAX_CONTAINER_ITEMS do
                 local frame = _G["ContainerFrame"..i.."Item"..j]
@@ -219,4 +219,4 @@ CanIMogIt.frame:AddOverlayEventFunction(ContainersOverlayEvents)
 -- hooksecurefunc(ContainerFrameItemButtonMixin, "UpdateItemUpgradeIcon", UpdateContainerIcon)
 hooksecurefunc("BankFrameItemButton_Update", UpdateContainerIcon)
 
-CanIMogIt:RegisterMessage("OptionUpdate", function () ContainersOverlayEvents("BAG_UPDATE_DELAYED") end)
+CanIMogIt:RegisterMessage("OptionUpdate", function () ContainersOverlayEvents("BAG_UPDATE") end)

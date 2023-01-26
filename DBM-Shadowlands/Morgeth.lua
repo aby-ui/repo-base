@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2456, "DBM-Shadowlands", nil, 1192)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20221206222943")
+mod:SetRevision("20230124042422")
 mod:SetCreatureID(178958)
 mod:SetEncounterID(2496)
 mod:SetReCombatTime(20)
@@ -47,7 +47,7 @@ end
 
 function mod:SPELL_CAST_START(args)
 	local spellId = args.spellId
-	if spellId == 338858 then
+	if spellId == 356430 then
 		specWarnIronGolem:Show()
 		timerIronGolemCD:Start()
 	elseif spellId == 353741 then

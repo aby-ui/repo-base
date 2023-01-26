@@ -103,7 +103,7 @@ local function PopulateContinentDropDown(mainFrame, continentDropDown)
 			end
 			
 			-- Ignore if filtered
-			if (not filtered and not filters[RSConstants.EXPLORER_FILTER_FILTERED] and RSConfigDB.IsNpcFiltered(npcID)) then
+			if (not filtered and not filters[RSConstants.EXPLORER_FILTER_FILTERED] and RSConfigDB.GetNpcFiltered(npcID) ~= nil) then
 				filtered = true
 			end
 			
@@ -470,7 +470,7 @@ function RSExplorerRareList:AddFilteredRareToList(npcID, npcInfo, npcName)
 	self.raresListInfo[npcID].mapID = npcInfo.zoneID
 	self.raresListInfo[npcID].displayID = npcInfo.displayID
 	self.raresListInfo[npcID].name = npcName
-	self.raresListInfo[npcID].filtered = RSConfigDB.IsNpcFiltered(npcID)
+	self.raresListInfo[npcID].filtered = RSConfigDB.GetNpcFiltered(npcID) ~= nil
 	self.raresListInfo[npcID].dead = RSNpcDB.IsNpcKilled(npcID)
 					
 	tinsert(self.raresList, npcID)
@@ -520,7 +520,7 @@ function RSExplorerRareList:UpdateRareList()
 				end
 				
 				-- Ignore if filtered
-				if (not filtered and not filters[RSConstants.EXPLORER_FILTER_FILTERED] and RSConfigDB.IsNpcFiltered(npcID)) then
+				if (not filtered and not filters[RSConstants.EXPLORER_FILTER_FILTERED] and RSConfigDB.GetNpcFiltered(npcID) ~= nil) then
 					filtered = true
 				end
 			
@@ -705,12 +705,12 @@ function RSExplorerRareListButton_OnClick(self, button)
 		mainFrame.RareNPCList:SelectNpc(self.npcID)
 	elseif (button == "RightButton") then
 		local npcName = RSNpcDB.GetNpcName(self.npcID)
-		if (RSConfigDB.IsNpcFiltered(self.npcID)) then
+		if (RSConfigDB.GetNpcFiltered(self.npcID) ~= nil) then
 			RSLogger:PrintMessage(AL["ENABLED_SEARCHING_RARE"]..npcName)
-			RSConfigDB.SetNpcFiltered(self.npcID, true)
+			RSConfigDB.DeleteNpcFiltered(self.npcID)
 		else
 			RSLogger:PrintMessage(AL["DISABLED_SEARCHING_RARE"]..npcName)
-			RSConfigDB.SetNpcFiltered(self.npcID, false)
+			RSConfigDB.SetNpcFiltered(self.npcID)
 		end
 		mainFrame:Refresh()
 	end
@@ -722,7 +722,7 @@ function RSExplorerRareListButton_OnEnter(self)
 	tooltip:SetOwner(self, "ANCHOR_LEFT")
 	tooltip:SetText(RSNpcDB.GetNpcName(self.npcID))
 	tooltip:AddLine(AL["EXPLORER_BUTTON_TOOLTIP1"], 1, 1, 1)
-	if (RSConfigDB.IsNpcFiltered(self.npcID)) then
+	if (RSConfigDB.GetNpcFiltered(self.npcID) ~= nil) then
 		tooltip:AddLine(AL["EXPLORER_BUTTON_TOOLTIP2"], 1, 1, 1)
 	else
 		tooltip:AddLine(AL["EXPLORER_BUTTON_TOOLTIP3"], 1, 1, 1)
@@ -1077,13 +1077,6 @@ function RSExplorerControl:Initialize(mainFrame)
 	self.AutoFilterCheckButton:SetChecked(RSConfigDB.IsAutoFilteringOnCollect())
 	self.AutoFilterCheckButton.func = function(self, checked)
 		RSConfigDB.SetAutoFilteringOnCollect(checked)
-	end
-	
-	self.FilterWorldmapCheckButton.Text:SetText(AL["FILTER_NPCS_ONLY_MAP"])
-	self.FilterWorldmapCheckButton.tooltip = AL["FILTER_NPCS_ONLY_MAP_DESC"]
-	self.FilterWorldmapCheckButton:SetChecked(RSConfigDB.IsNpcFilteredOnlyOnWorldMap())
-	self.FilterWorldmapCheckButton.func = function(self, checked)
-		RSConfigDB.SetNpcFilteredOnlyOnWorldMap(checked)
 	end
 end
 

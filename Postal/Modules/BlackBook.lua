@@ -66,7 +66,7 @@ function Postal_BlackBook:OnEnable()
 	end
 	self:HookScript(SendMailNameEditBox, "OnEditFocusGained")
 	--self:SecureHook("AutoComplete_Update") --abyui
-	if Postal.WOWClassic or Postal.WOWBCClassic or Postal.WOWWotLKClassic then
+	if Postal.WOWClassic or Postal.WOWBCClassic then
 		self:RegisterEvent("MAIL_SHOW")
 	else
 		Postal_BlackBook:RegisterEvent("PLAYER_INTERACTION_MANAGER_FRAME_SHOW")
@@ -105,7 +105,7 @@ function Postal_BlackBook:OnDisable()
 end
 
 function Postal_BlackBook:MAIL_SHOW()
-	if Postal.WOWClassic or Postal.WOWBCClassic or Postal.WOWWotLKClassic then
+	if Postal.WOWClassic or Postal.WOWBCClassic then
 		self:RegisterEvent("MAIL_CLOSED", "Reset")
 	else
 		Postal_BlackBook:RegisterEvent("PLAYER_INTERACTION_MANAGER_FRAME_HIDE", "Reset")
@@ -118,7 +118,7 @@ function Postal_BlackBook:MAIL_CLOSED()
 end
 
 function Postal_BlackBook:Reset(event)
-	if Postal.WOWClassic or Postal.WOWBCClassic or Postal.WOWWotLKClassic then
+	if Postal.WOWClassic or Postal.WOWBCClassic then
 		self:UnregisterEvent("MAIL_CLOSED")
 	else
 		self:UnregisterEvent("PLAYER_INTERACTION_MANAGER_FRAME_HIDE")

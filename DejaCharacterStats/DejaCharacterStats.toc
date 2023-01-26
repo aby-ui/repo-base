@@ -1,4 +1,4 @@
-## Interface: 100002
+## Interface: 100005
 ## Version: R100002r2
 ## Title: |TInterface\Addons\DejaCharacterStats\DCSArt\DejoLogo:26:26|t|cff00c0ffDejaCharacterStats|r
 ## Author: Dejablue, Kakjens, loudsoul

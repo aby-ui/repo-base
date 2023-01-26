@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(1867, "DBM-TombofSargeras", nil, 875)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20220116041824")
+mod:SetRevision("20230124052137")
 mod:SetCreatureID(116691, 116689)--Belac (116691), Atrigan (116689)
 mod:SetEncounterID(2048)
 mod:SetBossHPInfoToHighest()
@@ -289,7 +289,7 @@ function mod:SPELL_AURA_APPLIED(args)
 		if self.Options.SetIconOnQuills then
 			self:SetIcon(args.destName, 5)
 		end
-	elseif spellId == 208802 then
+	elseif spellId == 248713 then
 		local amount = args.amount or 1
 		if args:IsPlayer() and amount >= 10 then
 			specWarnSoulCorruption:Show(amount)

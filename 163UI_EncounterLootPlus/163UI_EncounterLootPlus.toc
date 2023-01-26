@@ -1,4 +1,4 @@
-## Interface: 100002
+## Interface: 100005
 ## Title: |cff880303[爱不易]|r [废弃]手册装备搜索
 ## Notes: [废弃]插件改名为Aby开头的, 为了兼容暂时保留
 # SavedVariables: ELPDATA

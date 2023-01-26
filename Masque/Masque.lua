@@ -36,7 +36,7 @@ local Masque = LibStub("AceAddon-3.0"):NewAddon(MASQUE)
 Masque.Core = Core
 
 -- API Version
-local API_VERSION = 100002
+local API_VERSION = 100005
 
 -- Client Version
 local WOW_VERSION = select(4, GetBuildInfo()) or 0

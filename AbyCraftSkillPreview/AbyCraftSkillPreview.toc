@@ -1,4 +1,4 @@
-## Interface: 100002
+## Interface: 100005
 ## Title: AbyCraftSkillPreview
 ## Notes: Freely choose reagents for your crafting recipe, and preview the estimate skill.
 ## Title-zhCN: |cff880303[爱不易]|r AbyUI 材料品质预览

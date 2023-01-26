@@ -54,7 +54,7 @@ local nel = Map({id = 2080, settings = true})
 map.nodes[63695509] = Rare({
     id = 193132,
     quest = 73981,
-    note = L['in_cave'] .. '\n\n' .. L['spawns_hourly'],
+    note = L['spawns_periodically'] .. '\n\n' .. L['in_cave'],
     rewards = {Achievement({id = 16676, criteria = 56045})}
 }) -- Amethyzar the Glittering
 
@@ -64,16 +64,21 @@ map.nodes[58634021] = Rare({
     rewards = {
         Achievement({id = 16676, criteria = 56035}),
         Transmog({item = 200245, slot = L['2h_mace']}), -- Leviathan Lure
-        DC.HighlandDrake.FinnedBack, --
-        DC.CliffsideWylderdrake.FinnedCheek
+        DC.HighlandDrake.FinnedBack, DC.CliffsideWylderdrake.FinnedCheek
     }
 }) -- Anhydros the Tidetaker
 
 map.nodes[54517174] = Rare({ -- review -- required 67030
     id = 193135,
-    quest = 69839,
-    note = L['spawns_hourly'],
-    rewards = {Achievement({id = 16676, criteria = 56041})}
+    quest = 73984,
+    note = L['spawns_periodically'],
+    rewards = {
+        Achievement({id = 16676, criteria = 56041}),
+        Transmog({item = 200259, slot = L['shield']}), -- Forest Dweller's Shield
+        Transmog({item = 200267, slot = L['plate']}), -- Reinforced Garden Tenders
+        Transmog({item = 200229, slot = L['cloth']}), -- Slightly Digested Leggings
+        DC.HighlandDrake.TanHorns, DC.RenewedProtoDrake.SnubSnout
+    }
 }) -- Azra's Prized Peony
 
 map.nodes[28635882] = RareElite({
@@ -93,7 +98,7 @@ map.nodes[28635882] = RareElite({
 map.nodes[52916529] = Rare({
     id = 192738,
     quest = 73890,
-    note = L['brundin_the_dragonbane_note'] .. '\n\n' .. L['spawns_hourly'],
+    note = L['brundin_the_dragonbane_note'],
     rewards = {
         Achievement({id = 16676, criteria = 56038}),
         Transmog({item = 200133, slot = L['fist']}), -- Volcanic Chakram
@@ -150,10 +155,8 @@ map.nodes[29935074] = RareElite({
         Transmog({item = 200683, slot = L['plate']}), -- Legguards of the Deep Strata
         Transmog({item = 200294, slot = L['mail']}), -- Primal Chain Hauberk
         Transmog({item = 200244, slot = L['leather']}), -- Enchanted Muckstompers
-        DC.RenewedProtoDrake.HeavyHorns, --
-        DC.WindborneVelocidrake.ClubTail, --
-        DC.WindborneVelocidrake.ClusterHorns, --
-        DC.CliffsideWylderdrake.BlackHorns
+        DC.RenewedProtoDrake.HeavyHorns, DC.WindborneVelocidrake.ClubTail,
+        DC.WindborneVelocidrake.ClusterHorns, DC.CliffsideWylderdrake.BlackHorns
     },
     pois = {POI({29335248, 30535144})}
 }) -- Char
@@ -234,8 +237,7 @@ map.nodes[52345829] = Rare({ -- review
     rewards = {
         Achievement({id = 16676, criteria = 56033}),
         Transmog({item = 200245, slot = L['2h_mace']}), -- Leviathan Lure
-        DC.HighlandDrake.FinnedBack, --
-        DC.CliffsideWylderdrake.FinnedCheek
+        DC.HighlandDrake.FinnedBack, DC.CliffsideWylderdrake.FinnedCheek
     }
 }) -- Gushgut the Beaksinker
 
@@ -258,14 +260,14 @@ map.nodes[34618275] = Rare({
 map.nodes[39596353] = Rare({ -- review -- required 67030
     id = 186827,
     quest = 74010,
-    note = L['spawns_hourly'],
+    note = L['spawns_periodically'],
     rewards = {Achievement({id = 16676, criteria = 56046})}
 }) -- Magmaton
 
 map.nodes[22207649] = RareElite({ -- required 67030
     id = 193152,
     quest = 74012,
-    note = L['spawns_hourly'],
+    note = L['spawns_periodically'],
     rewards = {
         Achievement({id = 16676, criteria = 56047}),
         Transmog({item = 200192, slot = L['1h_mace']}), -- Handheld Geyser
@@ -293,17 +295,15 @@ map.nodes[56004592] = Rare({
         Achievement({id = 16676, criteria = 56034}),
         Item({item = 200236, note = L['trinket']}), -- Memory of Nulltheria
         Transmog({item = 200310, note = L['cloak']}), -- Stole of the Iron Phantom
-        DC.RenewedProtoDrake.ClubTail, --
-        DC.RenewedProtoDrake.WhiteHorns, --
-        DC.CliffsideWylderdrake.HeavyHorns, --
-        DC.CliffsideWylderdrake.HornedJaw
+        DC.RenewedProtoDrake.ClubTail, DC.RenewedProtoDrake.WhiteHorns,
+        DC.CliffsideWylderdrake.HeavyHorns, DC.CliffsideWylderdrake.HornedJaw
     }
 }) -- Nulltheria the Void Gazer
 
 map.nodes[81485082] = Rare({ -- required 67030
     id = 193118,
     quest = 74017,
-    note = L['spawns_hourly'],
+    note = L['spawns_periodically'],
     rewards = {
         Achievement({id = 16676, criteria = 56043}),
         DC.CliffsideWylderdrake.FinnedNeck
@@ -319,7 +319,7 @@ map.nodes[81485082] = Rare({ -- required 67030
 
 map.nodes[64676939] = Rare({
     id = 192362,
-    quest = 67048, -- 70864 (rare runs away)
+    quest = 70864,
     note = L['hidden_hornswog_hoard_note'],
     rewards = {
         Achievement({id = 16676, criteria = 57852}),
@@ -336,7 +336,7 @@ map.nodes[24005896] = RareElite({
         Achievement({id = 16676, criteria = 56061}),
         Transmog({item = 200169, slot = L['1h_mace']}), -- Protector's Molten Cudgel
         Transmog({item = 200757, slot = L['plate']}), -- Qalashi War-Helm
-        DC.CliffsideWylderdrake.BluntSpikedTail, --
+        DC.CliffsideWylderdrake.BluntSpikedTail,
         DC.CliffsideWylderdrake.HornedNose
     },
     pois = {POI({27226096})} -- Entrance
@@ -360,7 +360,8 @@ map.nodes[46997332] = Rare({
     rewards = {
         Achievement({id = 16676, criteria = 56989}),
         Item({item = 200689, note = L['ring']}) -- Rimetalon Band
-    }
+    },
+    pois = {POI({47727466, 47557369})}
 }) -- Shadeslash Trakken
 
 map.nodes[23755724] = RareElite({ -- required 67030
@@ -390,8 +391,7 @@ map.nodes[42892832] = Rare({
     rewards = {
         Achievement({id = 16676, criteria = 56036}),
         Transmog({item = 200132, slot = L['dagger']}), -- Skewer's Snout
-        DC.CliffsideWylderdrake.FinnedNeck, --
-        DC.WindborneVelocidrake.LargeHeadFin
+        DC.CliffsideWylderdrake.FinnedNeck, DC.WindborneVelocidrake.LargeHeadFin
     },
     pois = {
         Path({
@@ -419,7 +419,7 @@ map.nodes[34578950] = Rare({
 map.nodes[69486653] = Rare({
     id = 193120,
     quest = 74031,
-    note = L['spawns_hourly'],
+    note = L['spawns_periodically'],
     rewards = {
         Achievement({id = 16676, criteria = 56044}),
         Transmog({item = 200209, slot = L['mail']}) -- Firebreather's Cowl
@@ -429,8 +429,11 @@ map.nodes[69486653] = Rare({
 map.nodes[78514999] = Rare({
     id = 193228,
     quest = 73997,
-    note = L['spawns_hourly'],
-    rewards = {Achievement({id = 16676, criteria = 56042})},
+    note = L['spawns_periodically'],
+    rewards = {
+        Achievement({id = 16676, criteria = 56042}),
+        Transmog({item = 200281, slot = L['offhand']}) -- Gorjo's Riding Crop
+    },
     pois = {Path({78825133, 78575081, 78475028, 78514999, 78684964, 78674926})}
 }) -- Snappy (Gorjo the Crab Shackler)
 
@@ -453,8 +456,7 @@ map.nodes[33525576] = RareElite({
         Transmog({item = 200683, slot = L['plate']}), -- Legguards of the Deep Strata
         Transmog({item = 200244, slot = L['leather']}), -- Enchanted Muckstompers
         Item({item = 200563, note = L['trinket']}), -- Primal Ritual Shell
-        DC.WindborneVelocidrake.ClubTail, --
-        DC.CliffsideWylderdrake.BlackHorns
+        DC.WindborneVelocidrake.ClubTail, DC.CliffsideWylderdrake.BlackHorns
     }
 }) -- Turboris
 
@@ -528,10 +530,7 @@ map.nodes[64173289] = Rare({
 map.nodes[54582137] = Rare({
     id = 195915,
     quest = 70648,
-    rewards = {
-        DC.RenewedProtoDrake.ImpalerHorns, --
-        DC.HighlandDrake.ToothyMouth
-    }
+    rewards = {DC.RenewedProtoDrake.ImpalerHorns, DC.HighlandDrake.ToothyMouth}
 }) -- Firava the Rekindler
 
 map.nodes[54728225] = Rare({
@@ -540,8 +539,7 @@ map.nodes[54728225] = Rare({
     rewards = {
         Transmog({item = 200246, slot = L['staff']}), -- Lost Delving Lamp
         Toy({item = 200198}), -- Primalist Prison
-        DC.CliffsideWylderdrake.BlackHorns, --
-        DC.CliffsideWylderdrake.ManedNeck
+        DC.CliffsideWylderdrake.BlackHorns, DC.CliffsideWylderdrake.ManedNeck
     }
 }) -- Klozicc the Ascended
 
@@ -561,7 +559,7 @@ map.nodes[81133794] = Rare({
         Transmog({item = 200244, slot = L['leather']}), -- Enchanted Muckstompers
         Item({item = 200445, note = L['neck']}), -- Lucky Hunting Charm
         Toy({item = 200249}), -- Mage's Chewed Wand
-        DC.CliffsideWylderdrake.HeadMane --
+        DC.CliffsideWylderdrake.HeadMane
     },
     pois = {
         POI({81713719}) -- Entrance
@@ -575,6 +573,18 @@ map.nodes[60598285] = Rare({
         Transmog({item = 200208, slot = L['cloth']}) -- Cloud Coalescing Handwraps
     }
 }) -- Terillod the Devout
+
+map.nodes[42203960] = Rare({
+    id = 186200,
+    quest = 74000,
+    note = L['spawns_periodically'],
+    rewards = {
+        Transmog({item = 200171, slot = L['1h_sword']}), -- Grymheart Blade
+        Transmog({item = 200175, slot = L['2h_mace']}), -- Repurposed Anvil
+        Transmog({item = 200243, slot = L['cloth']}), -- Titanic Scholar's Finery
+        DC.HighlandDrake.HairyCheek
+    }
+}) -- Harkyn Grymstone
 
 -- map.nodes[46795728] = Rare({id = 190718}) -- Monsoo, The Boiling Rage
 
@@ -673,6 +683,38 @@ map.nodes[46713121] = Treasure({
         Toy({item = 202022}) -- Yennu's Kite
     }
 }) -- Yennu's Kite
+
+map.nodes[44607010] = Treasure({
+    label = L['lost_obsidian_cache'],
+    icon = 'chest_gn',
+    quest = 70018,
+    note = L['in_cave'] .. '\n\n' ..
+        format('%s\n\n%s\n\n%s', L['lost_obsidian_cache_step1'],
+            L['lost_obsidian_cache_step2'], L['lost_obsidian_cache_step3']),
+    rewards = {
+        Toy({item = 201933}) -- Black Dragon's Challenge Dummy
+    },
+    pois = {
+        POI({
+            label = '{item:194122}',
+            note = L['lost_obsidian_cache_step1'],
+            color = 'Green',
+            points = {43707170}
+        }), -- Sour Apple
+        POI({
+            label = '{npc:191851}',
+            note = L['lost_obsidian_cache_step2'],
+            color = 'Yellow',
+            points = {43206720}
+        }), -- Blacktalon Shadowclaw
+        POI({
+            label = '{item:198085}',
+            note = L['lost_obsidian_cache_step3'],
+            color = 'Blue',
+            points = {43656957}
+        }) -- Lost Obsidian Cache Key
+    }
+}) -- Lost Obsidian Cache
 
 -------------------------------------------------------------------------------
 
@@ -1326,6 +1368,35 @@ map.nodes[24056927] = Collectible({
 }) -- The Grand Flame's Journal
 
 -------------------------------------------------------------------------------
+------------------- SIEGE ON DRAGONBANE KEEP: SNACK ATTACK --------------------
+-------------------------------------------------------------------------------
+
+map.nodes[30607820] = Collectible({
+    id = 194922,
+    icon = 134062,
+    note = L['snack_attack_note'],
+    group = ns.groups.SNACK_ATTACK,
+    rewards = {
+        Achievement({
+            id = 16410,
+            criteria = {id = 1, qty = true, suffix = L['snack_attack_suffix']}
+        }) -- Siege on Dragonbane Keep: Snack Attack
+    },
+    pois = {
+        POI({
+            30007420, 30007580, 30007660, 30207480, 31007320, 31007500,
+            31207180, 31207400, 31207600, 31207760, 31607300, 31607480,
+            32207100, 32207380, 32407220
+        }), -- Beef Snacks
+        Path({
+            30767844, 30967835, 31137792, 30907722, 30747648, 30677563,
+            30647461, 30777415, 30897392, 31147346, 31387292, 31557246,
+            31617199, 31687130, 31647047, 31497028
+        }) -- Beef Path
+    }
+}) -- Beef
+
+-------------------------------------------------------------------------------
 --------------------------- THE DISGRUNTLED HUNTER ----------------------------
 -------------------------------------------------------------------------------
 
@@ -1427,6 +1498,35 @@ nel.nodes[52408260] = PrettyNeat({
     rewards = {Achievement({id = 16446, criteria = 55392})}
 }) -- Apex Blazewing
 
+map.nodes[60204535 + 1] = PrettyNeat({
+    id = 193217,
+    isRare = true,
+    mapID = map.id,
+    rewards = {Achievement({id = 16446, criteria = 55387})},
+    pois = {
+        Path({
+            47267713, 48927495, 50076925, 50996592, 51946323, 52556211,
+            53726071, 54705959, 55135843, 55195735, 54725544, 53785350,
+            52485131, 51054858, 49934614, 49384420, 49114158, 49643971,
+            50543803, 52013559, 53703482, 55473549, 58333718, 59883845,
+            60373937, 60524059, 60414206, 60204535, 59984844, 60105101,
+            60435274, 61375479, 63175769, 64575919, 66316022, 67826035,
+            68615989, 69305901, 69425829, 68855485, 68285247, 67565009,
+            67344710, 67924499, 68794338, 69324289, 70294270, 71674307,
+            72304359, 73174490, 73394565, 73214666, 72874714, 71474819,
+            70444873, 69284969, 68655076, 68265244
+        })
+    }
+}) -- Drakewing (node coords must be off by 00000001 from Rare)
+
+map.nodes[33127632 + 1] = PrettyNeat({
+    id = 193154,
+    isRare = true,
+    mapID = map.id,
+    note = L['spawns_at_night'],
+    rewards = {Achievement({id = 16446, criteria = 55394})}
+}) -- Forgotten Gryphon (node coords must be off by 00000001 from Rare)
+
 -------------------------------------------------------------------------------
 -------------------------- ONE OF EVERYTHING, PLEASE --------------------------
 -------------------------------------------------------------------------------
@@ -1480,8 +1580,18 @@ map.nodes[16176261] = Collectible({
     label = '{npc:196214}',
     group = ns.groups.STORIES,
     icon = 4549126,
-    -- quest = {70779,70767,70768}, -- TODO
-    -- questCount = true,
+    quest = {
+        -- 70779, Weekly (Targin's Tales) (not need count this one.)
+        -- Week 0: How did you lose your eyesight? (not need count this one.)
+        -- Week 0: Why aren't you with the other djaradin? (not need count this one.)
+        70767, -- Week 1: Tale of the Outsider
+        70770, -- Week 2: Tale of the Elders
+        70772, -- Week 3: Tale of the Warlord
+        70774, -- Week 4: Tale of the Slumbering
+        70776, -- Week 5: The Magma Pact
+        70777 -- Week 6: Tale of the Weakling
+    },
+    questCount = true,
     note = L['all_sides_of_the_story_tarjin_note'],
     rewards = {Achievement({id = 16406, criteria = 3})}
 }) -- Tarjin the Blind
@@ -1492,7 +1602,7 @@ map.nodes[57856680] = Collectible({
     icon = 4549126,
     quest = {
         70132, 70206, 70543, 70544, 70217, 70546, 70547, 70219, 70548, 70223,
-        70134, 70262, 70268
+        70134, 70268
     },
     questCount = true,
     note = L['all_sides_of_the_story_veritistrasz_note'],
@@ -1788,17 +1898,20 @@ local Otto = Class('Otto', Collectible, {
     },
     rewards = {
         Mount({item = 198870, id = 1656}) -- Otto
-    }
+    },
+    pois = {POI({19603650})}
 }) -- Otto
 
 function Otto.getters:note()
-    local function status(id, count)
-        if ns.PlayerHasItem(id, count) then
-            return ns.status.Green(count .. 'x')
+    local function status(id, itemsNeed)
+        local itemsHave = GetItemCount(id, true);
+        if ns.PlayerHasItem(id, itemsNeed) then
+            return ns.status.Green(itemsHave .. '/' .. itemsNeed)
         else
-            return ns.status.Red(count .. 'x')
+            return ns.status.Red(itemsHave .. '/' .. itemsNeed)
         end
     end
+
     local note = status(199338, 75) .. ' ' .. L['otto_note_start1']
     note = note .. '\n\n' .. L['otto_note_start2']
     note = note .. '\n\n' .. status(202072, 100) .. ' ' .. L['otto_note_item1'] -- Frigid Floe Fish
@@ -1807,7 +1920,96 @@ function Otto.getters:note()
     return note .. '\n\n' .. L['otto_note_end']
 end
 
-map.nodes[20333977] = Otto({pois = {POI({19603650})}})
+map.nodes[20333977] = Otto()
+
+--------------------------- MOUNT: LOYAL MAGMAMMOTH ---------------------------
+
+local LOYAL_MAGMAMMOTH_REWARDS = {
+    Achievement({id = 16736}), -- Grand Theft Mammoth
+    Mount({item = 192601, id = 1612}) -- Loyal Magmammoth
+}
+
+local Friendship = Class('Friendship', ns.requirement.Requirement)
+
+function Friendship:Initialize(id, level, label)
+    self.id, self.level, self.label = id, level, label
+end
+
+function Friendship:GetText()
+    local name = GetFactionInfoByID(self.id)
+    local level = self.label
+    return string.format(name .. ' (' .. level .. ')')
+end
+
+function Friendship:IsMet()
+    local standingID = select(3, GetFactionInfoByID(self.id))
+    return standingID >= self.level
+end
+
+-- STEP ONE: ------------------------------------------------------------------
+
+local WrathionQuartermaster = Class('WrathionQuartermaster', Collectible, {
+    icon = 3778175,
+    requires = Friendship(2517, 8, L['loyal_magmammoth_true_friend']), -- Wrathion (True Friend)
+    note = L['loyal_magmammoth_wrathion_quatermaster_note'],
+    fgroup = 'loyal_magmammoth_fgroup',
+    rlabel = ns.status.Gray(L['loyal_magmammoth_step_1']),
+    rewards = LOYAL_MAGMAMMOTH_REWARDS
+}) -- Sturdy Obsidian Glasses
+
+map.nodes[26606240] = WrathionQuartermaster({id = 199020}) -- Atticus Belle <Assistant Quartermaster> (Sturdy Obsidian Glasses)
+map.nodes[25205580] = WrathionQuartermaster({id = 188625}) -- Lorena Belle <Wrathion's Quartermaster> (Sturdy Obsidian Glasses)
+
+local SabellianQuartermaster = Class('SabellianQuartermaster', Collectible, {
+    icon = 4237704,
+    requires = Friendship(2518, 8, L['loyal_magmammoth_true_friend']), -- Sabellian (True Friend)
+    note = L['loyal_magmammoth_sabellian_quatermaster_note'],
+    fgroup = 'loyal_magmammoth_fgroup',
+    rlabel = ns.status.Gray(L['loyal_magmammoth_step_1']),
+    rewards = LOYAL_MAGMAMMOTH_REWARDS
+}) -- Netherforged Lavaproof Boots
+
+map.nodes[24605680] = SabellianQuartermaster({id = 188623}) -- Samia Inkling <Sabellian's Quartermaster> (Netherforged Lavaproof Boots)
+map.nodes[27605620] = SabellianQuartermaster({id = 199036}) -- Xaldrass <Assistant Quartermaster> (Netherforged Lavaproof Boots)
+
+-- STEP TWO: ------------------------------------------------------------------
+
+map.nodes[26405540] = Collectible({
+    id = 191135,
+    icon = 4034835,
+    note = L['loyal_magmammoth_harness_note'],
+    fgroup = 'loyal_magmammoth_fgroup',
+    rlabel = ns.status.Gray(L['loyal_magmammoth_step_2']),
+    requires = {
+        ns.requirement.Item(201840), -- Sturdy Obsidian Glasses
+        ns.requirement.Item(201839) -- Netherforged Lavaproof Boots
+    },
+    rewards = LOYAL_MAGMAMMOTH_REWARDS
+}) -- Yries Lightfingers <Second-Hand Supplies> (Magmammoth Harness)
+
+-- STEP THREE: ----------------------------------------------------------------
+
+local TameMagmammoth = Class('TameMagmammoth', Collectible, {
+    id = 198150,
+    icon = 4034835,
+    note = L['loyal_magmammoth_taming_note'],
+    fgroup = 'loyal_magmammoth_fgroup',
+    rlabel = ns.status.Gray(L['loyal_magmammoth_step_3']),
+    requires = ns.requirement.Item(201837), -- Magmammoth Harness
+    rewards = LOYAL_MAGMAMMOTH_REWARDS
+}) -- Tame Magmammoth
+
+map.nodes[33427207] = TameMagmammoth() -- Burning Ascent
+map.nodes[23667144] = TameMagmammoth() -- Dragonbane Keep
+map.nodes[66342446] = TameMagmammoth() -- Scalecracker Keep
+map.nodes[37104453] = TameMagmammoth() -- Smoldering Perch
+
+---------------- ITEM: SCHEMATIC: TINKER: BREATH OF NELTHARION ----------------
+
+nel.nodes[57407880] = PT.Engineering({
+    id = 199229,
+    rewards = {Item({item = 199229})}
+}) -- Schematic: Tinker: Breath of Neltharion
 
 ----------------------------- MISCELLANEOUS NPCs ------------------------------
 

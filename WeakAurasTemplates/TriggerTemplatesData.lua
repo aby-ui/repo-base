@@ -3424,6 +3424,7 @@ templates.class.MONK = {
         { spell = 196608, type = "buff", unit = "player", talent = 196607 }, -- Eye of the Tiger
         { spell = 215479, type = "buff", unit = "player", talent = 322120 }, -- Shuffle
         { spell = 228563, type = "buff", unit = "player", talent = 196736 }, -- Blackout Combo
+        { spell = 325092, type = "buff", unit = "player", talent = 322510 }, -- Purified Chi
         { spell = 322507, type = "buff", unit = "player", talent = 322507 }, -- Celestial Brew
         { spell = 325153, type = "buff", unit = "player", talent = 325153 }, -- Exploding Keg
         { spell = 325190, type = "buff", unit = "player", talent = 325177 }, -- Celestial Flames
@@ -3912,7 +3913,7 @@ templates.class.DRUID = {
         { spell = 274283, type = "ability", charges = true }, -- Full Moon
         { spell = 319454, type = "ability", buff = true, talent = 319454 }, -- Heart of the Wild
         { spell = 390414, type = "ability", talent = 394013 }, -- Incarnation: Chosen of Elune
-        { spell = 391528, type = "ability", buff = true, talent = 391528 }, -- Convoke the Spirits
+        { spell = 391528, type = "ability", buff = true, talent = 391528, exactSpellId = true }, -- Convoke the Spirits
       },
       icon = 132134
     },
@@ -4061,7 +4062,7 @@ templates.class.DRUID = {
         { spell = 274837, type = "ability", requiresTarget = true, usable = true, talent = 274837 }, -- Feral Frenzy
         { spell = 319454, type = "ability", buff = true, talent = 319454 }, -- Heart of the Wild
         { spell = 325727, type = "ability", requiresTarget = true, talent = 325727 }, -- Adaptive Swarm
-        { spell = 391528, type = "ability", buff = true, talent = 391528 }, -- Convoke the Spirits
+        { spell = 391528, type = "ability", buff = true, talent = 391528, exactSpellId = true }, -- Convoke the Spirits
       },
       icon = 236149
     },
@@ -4199,7 +4200,7 @@ templates.class.DRUID = {
         { spell = 231064, type = "ability", requiresTarget = true, talent = 231064 }, -- Mangle
         { spell = 252216, type = "ability", buff = true, talent = 252216 }, -- Tiger Dash
         { spell = 319454, type = "ability", buff = true, talent = 319454 }, -- Heart of the Wild
-        { spell = 391528, type = "ability", buff = true, talent = 391528 }, -- Convoke the Spirits
+        { spell = 391528, type = "ability", buff = true, talent = 391528, exactSpellId = true }, -- Convoke the Spirits
       },
       icon = 236169
     },
@@ -4349,7 +4350,7 @@ templates.class.DRUID = {
         { spell = 231064, type = "ability", requiresTarget = true, talent = 231064 }, -- Mangle
         { spell = 252216, type = "ability", buff = true, talent = 252216 }, -- Tiger Dash
         { spell = 319454, type = "ability", buff = true, talent = 319454 }, -- Heart of the Wild
-        { spell = 391528, type = "ability", buff = true, talent = 391528 }, -- Convoke the Spirits
+        { spell = 391528, type = "ability", buff = true, talent = 391528, exactSpellId = true }, -- Convoke the Spirits
         { spell = 391888, type = "ability", requiresTarget = true, talent = 391888 }, -- Adaptive Swarm
         { spell = 392160, type = "ability", talent = 392160 }, -- Invigorate
       },

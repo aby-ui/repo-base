@@ -169,13 +169,13 @@ function Postal_QuickAttachLeftButtonClick(classID, subclassID)
 			(bagID == 4) and Postal.db.profile.QuickAttach.EnableBag4 or
 			(bagID == 5) and Postal.db.profile.QuickAttach.EnableBag5
 		then
-			if Postal.WOWClassic or Postal.WOWBCClassic or Postal.WOWWotLKClassic then
+			if Postal.WOWClassic or Postal.WOWBCClassic then
 				numberOfSlots = GetContainerNumSlots(bagID)
 			else
 				numberOfSlots = C_Container.GetContainerNumSlots(bagID)
 			end
 			for slotIndex = 1, numberOfSlots, 1 do
-				if Postal.WOWClassic or Postal.WOWBCClassic or Postal.WOWWotLKClassic then
+				if Postal.WOWClassic or Postal.WOWBCClassic then
 					locked = select(3, GetContainerItemInfo(bagID, slotIndex))
 				else
 					if C_Container and C_Container.GetContainerItemInfo(bagID, slotIndex) then
@@ -186,7 +186,7 @@ function Postal_QuickAttachLeftButtonClick(classID, subclassID)
 					end
 				end
 				if locked == false then
-					if Postal.WOWClassic or Postal.WOWBCClassic or Postal.WOWWotLKClassic then
+					if Postal.WOWClassic or Postal.WOWBCClassic then
 						itemID = select(10, GetContainerItemInfo(bagID, slotIndex))
 					else
 						if C_Container and C_Container.GetContainerItemInfo(bagID, slotIndex) then
@@ -204,7 +204,7 @@ function Postal_QuickAttachLeftButtonClick(classID, subclassID)
 								itemsubclassID = select(13, GetItemInfo(itemID))
 								if itemsubclassID == subclassID or subclassID == -1 then
 										if SendMailNumberOfFreeSlots() > 0 then
-											if Postal.WOWClassic or Postal.WOWBCClassic or Postal.WOWWotLKClassic then
+											if Postal.WOWClassic or Postal.WOWBCClassic then
 												PickupContainerItem(bagID, slotIndex)
 											else
 												C_Container.PickupContainerItem(bagID, slotIndex)

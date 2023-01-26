@@ -4,7 +4,7 @@ local L = LibStub("AceLocale-3.0"):GetLocale("Postal")
 Postal_TradeBlock.description = L["Block incoming trade requests while in a mail session."]
 
 function Postal_TradeBlock:OnEnable()
-	if Postal.WOWClassic or Postal.WOWBCClassic or Postal.WOWWotLKClassic then
+	if Postal.WOWClassic or Postal.WOWBCClassic then
 		self:RegisterEvent("MAIL_SHOW")
 	else
 		Postal_TradeBlock:RegisterEvent("PLAYER_INTERACTION_MANAGER_FRAME_SHOW")
@@ -33,7 +33,7 @@ function Postal_TradeBlock:MAIL_SHOW()
 	PetitionFrame:UnregisterEvent("PETITION_SHOW")
 	if IsAddOnLoaded("Lexan") then return end
 	if GetCVar("BlockTrades") == "0" then
-		if Postal.WOWClassic or Postal.WOWBCClassic or Postal.WOWWotLKClassic then
+		if Postal.WOWClassic or Postal.WOWBCClassic then
 			self:RegisterEvent("MAIL_CLOSED", "Reset")
 		else
 			Postal_TradeBlock:RegisterEvent("PLAYER_INTERACTION_MANAGER_FRAME_HIDE", "Reset")
@@ -44,7 +44,7 @@ function Postal_TradeBlock:MAIL_SHOW()
 end
 
 function Postal_TradeBlock:Reset()
-	if Postal.WOWClassic or Postal.WOWBCClassic or Postal.WOWWotLKClassic then
+	if Postal.WOWClassic or Postal.WOWBCClassic then
 		self:UnregisterEvent("MAIL_CLOSED")
 	else
 		self:UnregisterEvent("PLAYER_INTERACTION_MANAGER_FRAME_HIDE")

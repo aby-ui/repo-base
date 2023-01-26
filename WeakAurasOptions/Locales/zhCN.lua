@@ -58,10 +58,8 @@ local L = WeakAuras.L
 	L["%s total auras"] = "共%s个光环"
 	L["%s Trigger Function"] = "%s 触发器函数"
 	L["%s Untrigger Function"] = "%s 取消触发函数"
-	--[[Translation missing --]]
-	L["%s X offset by %d"] = "%s X offset by %d"
-	--[[Translation missing --]]
-	L["%s Y offset by %d"] = "%s Y offset by %d"
+	L["%s X offset by %d"] = "%s X 轴偏移 %d"
+	L["%s Y offset by %d"] = "%s Y 轴偏移 %d"
 	L["%s Zoom: %d%%"] = "%s 缩放：%d%%"
 	L["%s, Border"] = "%s，边框"
 	L["%s, Offset: %0.2f;%0.2f"] = "%s，偏移：%0.2f; %0.2f"
@@ -136,8 +134,7 @@ Enable this setting if you want this timer to be hidden, or when using a WeakAur
 	L["Align"] = "对齐"
 	L["Alignment"] = "对齐"
 	L["All of"] = "全部"
-	--[[Translation missing --]]
-	L["Allow Full Rotation"] = "Allow Full Rotation"
+	L["Allow Full Rotation"] = "允许完全旋转"
 	L["Alpha"] = "透明度"
 	L["Anchor"] = "锚点"
 	L["Anchor Point"] = "锚点指向"
@@ -174,8 +171,7 @@ Enable this setting if you want this timer to be hidden, or when using a WeakAur
 Off Screen]=] ] = "光环在屏幕外"
 	L["Aura Name"] = "光环名称"
 	L["Aura Name Pattern"] = "光环名称规则匹配"
-	--[[Translation missing --]]
-	L["Aura Order"] = "Aura Order"
+	L["Aura Order"] = "光环顺序"
 	L["Aura received from: %s"] = "从%s处接收光环"
 	L["Aura Type"] = "光环类型"
 	L["Aura: '%s'"] = "光环：'%s'"
@@ -195,8 +191,7 @@ Off Screen]=] ] = "光环在屏幕外"
 	L["Background Texture"] = "背景材质"
 	L["Bar Alpha"] = "进度条透明度"
 	L["Bar Color Settings"] = "进度条颜色设置"
-	--[[Translation missing --]]
-	L["Bar Color/Gradient Start"] = "Bar Color/Gradient Start"
+	L["Bar Color/Gradient Start"] = "进度条颜色/渐变开始颜色"
 	L["Bar Texture"] = "进度条材质"
 	L["Big Icon"] = "大图标"
 	L["Blend Mode"] = "混合模式"
@@ -261,8 +256,7 @@ Off Screen]=] ] = "光环在屏幕外"
 	L["Control-click to select multiple displays"] = "按住 Control 并点击来选择多个光环"
 	L["Controls the positioning and configuration of multiple displays at the same time"] = "同时控制多个图示的位置和设定"
 	L["Convert to..."] = "转换为..."
-	--[[Translation missing --]]
-	L["Cooldown Numbers might be added by WoW. You can configure these in the game settings."] = "Cooldown Numbers might be added by WoW. You can configure these in the game settings."
+	L["Cooldown Numbers might be added by WoW. You can configure these in the game settings."] = "冷却文本可能会被WoW添加。你可以在游戏设置中调整。"
 	L["Cooldown Reduction changes the duration of seconds instead of showing the real time seconds."] = "冷却速度提高将改变每秒的持续时间，而并非显示真实的冷却时间。"
 	L["Copy"] = "拷贝"
 	L["Copy settings..."] = "拷贝设置"
@@ -320,8 +314,6 @@ UNIT_POWER, UNIT_AURA PLAYER_TARGET_CHANGED]=]
 	L["Differences"] = "差异"
 	L["Disabled"] = "禁用"
 	L["Disallow Entry Reordering"] = "不允许重新排列条目"
-	--[[Translation missing --]]
-	L["Discrete Rotation"] = "Discrete Rotation"
 	L["Display"] = "图示"
 	L["Display Name"] = "显示的名字"
 	L["Display Text"] = "图示文字"
@@ -361,15 +353,15 @@ UNIT_POWER, UNIT_AURA PLAYER_TARGET_CHANGED]=]
 	L["Enable \"swipe\" part of the overlay"] = "启用覆盖层的\"刷\""
 	L["Enable Debug Log"] = "启用调试日志"
 	L["Enable Debug Logging"] = "启用调试日志"
-	--[[Translation missing --]]
-	L["Enable Gradient"] = "Enable Gradient"
+	L["Enable Gradient"] = "启用渐变"
 	L["Enable Swipe"] = "启用冷却刷"
 	L["Enable the \"Swipe\" radial overlay"] = "启用冷却刷覆盖层"
 	L["Enabled"] = "启用"
 	L["End Angle"] = "结束角度"
 	L["End of %s"] = "%s 的结尾"
 	L["Enemy nameplate(s) found"] = "已找到的敌方姓名版"
-	L["Enter a Spell ID"] = "输入一个法术 ID"
+	--[[Translation missing --]]
+	L["Enter a Spell ID. You can use the addon idTip to determine spell ids."] = "Enter a Spell ID. You can use the addon idTip to determine spell ids."
 	L["Enter an Aura Name, partial Aura Name, or Spell ID. A Spell ID will match any spells with the same name."] = "输入全部或部分光环名称，或者法术 ID。如果输入法术 ID，则会匹配所有具有相同名称的法术。"
 	L["Enter Author Mode"] = "进入作者模式"
 	L["Enter in a value for the tick's placement."] = "输入进度指示放置位置的值"
@@ -452,10 +444,8 @@ Can use \ to escape -.]=] ] = [=[过滤格式：'名称'，'名称-服务器'，
 	L["Glow External Element"] = "发光外部元素"
 	L["Glow Frame Type"] = "发光框体类型"
 	L["Glow Type"] = "发光类型"
-	--[[Translation missing --]]
-	L["Gradient End"] = "Gradient End"
-	--[[Translation missing --]]
-	L["Gradient Orientation"] = "Gradient Orientation"
+	L["Gradient End"] = "渐变结束颜色"
+	L["Gradient Orientation"] = "渐变方向"
 	L["Green Rune"] = "绿色符文"
 	L["Grid direction"] = "盒方向"
 	L["Group"] = "组"
@@ -584,6 +574,8 @@ Can use \ to escape -.]=] ] = [=[过滤格式：'名称'，'名称-服务器'，
 	L["Matches the height setting of a horizontal bar or width for a vertical bar."] = "符合水平进度条的高度设置，或者垂直进度条的宽度设置。"
 	L["Max"] = "最大"
 	L["Max Length"] = "最大长度"
+	--[[Translation missing --]]
+	L["Media Type"] = "Media Type"
 	L["Medium Icon"] = "中等图标"
 	L["Message"] = "信息"
 	L["Message Prefix"] = "信息前缀"
@@ -721,6 +713,8 @@ Can use \ to escape -.]=] ] = [=[过滤格式：'名称'，'名称-服务器'，
 	L["Row Space"] = "列空间"
 	L["Row Width"] = "列宽度"
 	L["Rows"] = "行"
+	--[[Translation missing --]]
+	L["Run on..."] = "Run on..."
 	L["Same"] = "相同"
 	L["Same texture as Foreground"] = "与前景材质相同"
 	L["Saved Data"] = "已储存数据"
@@ -820,18 +814,13 @@ Can use \ to escape -.]=] ] = [=[过滤格式：'名称'，'名称-服务器'，
 	L["Text Settings"] = "文本设置"
 	L["Texture"] = "材质"
 	L["Texture Info"] = "材质信息"
-	--[[Translation missing --]]
-	L["Texture Rotation"] = "Texture Rotation"
+	L["Texture Rotation"] = "材质旋转"
 	L["Texture Settings"] = "材质设置"
 	L["Texture Wrap"] = "材质折叠"
-	--[[Translation missing --]]
-	L["Texture X Offset"] = "Texture X Offset"
-	--[[Translation missing --]]
-	L["Texture Y Offset"] = "Texture Y Offset"
-	--[[Translation missing --]]
-	L["The addon ElvUI is enabled. It might add cooldown numbers to the swipe. You can configure these in the ElvUI settings"] = "The addon ElvUI is enabled. It might add cooldown numbers to the swipe. You can configure these in the ElvUI settings"
-	--[[Translation missing --]]
-	L["The addon OmniCC is enabled. It might add cooldown numbers to the swipe. You can configure these in the OmniCC settings"] = "The addon OmniCC is enabled. It might add cooldown numbers to the swipe. You can configure these in the OmniCC settings"
+	L["Texture X Offset"] = "材质 X 轴偏移"
+	L["Texture Y Offset"] = "材质 Y 轴偏移"
+	L["The addon ElvUI is enabled. It might add cooldown numbers to the swipe. You can configure these in the ElvUI settings"] = "插件ElvUI已启用。它可能会向冷却刷添加冷却文本。你可以在ElvUI设置中调整。"
+	L["The addon OmniCC is enabled. It might add cooldown numbers to the swipe. You can configure these in the OmniCC settings"] = "插件OmniCC已启用。它可能会向冷却刷添加冷却文本。你可以在OmniCC设置中调整。"
 	L["The duration of the animation in seconds."] = "动画持续秒数"
 	L["The duration of the animation in seconds. The finish animation does not start playing until after the display would normally be hidden."] = "动画时长秒时。直到显示内容可以被正常隐藏之后，结束动画才会播放。"
 	L["The type of trigger"] = "触发器类型"
@@ -904,8 +893,7 @@ It might not work correctly with your version!]=] ] = "此光环由更新版本�
 	L["Use Texture"] = "使用材质"
 	L["Used in Auras:"] = "在下列光环中被使用："
 	L["Used in auras:"] = "在下列光环中被使用："
-	--[[Translation missing --]]
-	L["Uses Texture Coordinates to rotate the texture."] = "Uses Texture Coordinates to rotate the texture."
+	L["Uses Texture Coordinates to rotate the texture."] = "使用材质坐标以旋转材质"
 	L["Uses UnitIsVisible() to check if in range. This is polled every second."] = "使用UnitIsVisible()检查是否在范围内，每秒检查一次。"
 	L["Value %i"] = "值 %i"
 	L["Values are in normalized rgba format."] = "数值为标准化的 RGBA 格式"
@@ -937,6 +925,14 @@ It might not work correctly with your version!]=] ] = "此光环由更新版本�
 	L["You already have this group/aura. Importing will create a duplicate."] = "此组/光环已经存在，继续导入将会创建副本。"
 	L["You are about to delete %d aura(s). |cFFFF0000This cannot be undone!|r Would you like to continue?"] = "正在删除 %d 个光环，|cFFFF0000此操作无法被撤销！|r真的要删除吗?"
 	L["You are about to delete a trigger. |cFFFF0000This cannot be undone!|r Would you like to continue?"] = "你正在删除一个触发器。|cFFFF0000这个操作无法撤销！|r你要继续吗？"
+	--[[Translation missing --]]
+	L[ [=[You can add a comma-separated list of state values here that (when changed) WeakAuras should also run the Grow Code on.
+
+WeakAuras will always run custom grow code if you include 'changed' in this list, or when a region is added, removed, or re-ordered.]=] ] = [=[You can add a comma-separated list of state values here that (when changed) WeakAuras should also run the Grow Code on.
+
+WeakAuras will always run custom grow code if you include 'changed' in this list, or when a region is added, removed, or re-ordered.]=]
+	--[[Translation missing --]]
+	L["You can add a comma-separated list of state values here that (when changed) WeakAuras should also run the sort code on.WeakAuras will always run custom sort code if you include 'changed' in this list, or when a region is added, removed."] = "You can add a comma-separated list of state values here that (when changed) WeakAuras should also run the sort code on.WeakAuras will always run custom sort code if you include 'changed' in this list, or when a region is added, removed."
 	L["Your Saved Snippets"] = "已保存片段"
 	L["Z Offset"] = "Z 偏移"
 	L["Z Rotation"] = "Z轴旋转"

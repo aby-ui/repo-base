@@ -6,6 +6,11 @@ BrowsePanel = Addon:NewModule(CreateFrame('Frame'), 'BrowsePanel', 'AceEvent-3.0
 function BrowsePanel:OnInitialize()
     MainPanel:RegisterPanel(L['查找活动'], self, 5, 100)
 
+    local enabled = C_LFGList.GetLanguageSearchFilter();
+    if GetLocale() ~= "zhCN" then enabled["zhCN"] = true end
+    if GetLocale() ~= "zhTW" then enabled["zhTW"] = true end
+    C_LFGList.SaveLanguageSearchFilter(enabled)
+
     self.filters = {}
 
     local ActivityList = GUI:GetClass('DataGridView'):New(self)

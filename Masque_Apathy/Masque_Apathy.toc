@@ -1,6 +1,10 @@
-## Interface: 100002
+## Interface: 100005
 
+## Author: StormFX
+## Dependencies: Masque
 ## Title: Masque: Apathy
+## Version: 10.0.5
+
 ## Notes: Apathy skin for Masque.
 ## Notes-deDE: Apathy-Skin für Masque.
 ## Notes-esMX: Skin Apathy para Masque.
@@ -10,13 +14,11 @@
 ## Notes-ruRU: Скин Apathy для Masque.
 ## Notes-zhTW: Masque的Apathy皮膚。
 
-## Version: 10.0.2
-## Author: StormFX
-## Dependencies: Masque
-
-## X-Website: https://github.com/SFX-WoW/Masque_Apathy
 ## X-Category: Interface Enhancements
 ## X-Credits: Zeal
+## X-Discord: https://discord.gg/DDVqkd6
+## X-Website: https://github.com/SFX-WoW/Masque_Apathy
+
 ## X-Curse-Project-ID: 13593
 ## X-Wago-ID: PANzJ5N4
 ## X-WoWI-ID: 8870

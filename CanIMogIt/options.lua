@@ -126,7 +126,6 @@ local EVENTS = {
     "UNIT_INVENTORY_CHANGED",
     "PLAYER_SPECIALIZATION_CHANGED",
     "BAG_UPDATE",
-    "BAG_UPDATE_DELAYED",
     "BAG_NEW_ITEMS_UPDATED",
     "QUEST_ACCEPTED",
     "BAG_SLOT_FLAGS_UPDATED",
@@ -155,7 +154,6 @@ end
 local lastOverlayEventCheck = 0
 local overlayEventCheckThreshold = .01 -- once per frame at 100 fps
 local futureOverlayPrepared = false
-local futureBagUpdateDelayed = false
 
 local function futureOverlay(event)
     -- Updates the overlay in ~THE FUTURE~. If the overlay events had multiple
@@ -164,10 +162,6 @@ local function futureOverlay(event)
     local currentTime = GetTime()
     if currentTime - lastOverlayEventCheck > overlayEventCheckThreshold then
         lastOverlayEventCheck = currentTime
-        if futureBagUpdateDelayed then
-            event = "BAG_UPDATE_DELAYED"
-            futureBagUpdateDelayed = false
-        end
         CanIMogIt.frame:ItemOverlayEvents(event)
     end
 end
@@ -205,10 +199,6 @@ CanIMogIt.frame:HookScript("OnEvent", function(self, event, ...)
         lastOverlayEventCheck = currentTime
         self:ItemOverlayEvents(event, ...)
     else
-        -- If the event is BAG_UPDATE_DELAYED, it gets a flag for those looking for that event specifically.
-        if event == "BAG_UPDATE_DELAYED" then
-            futureBagUpdateDelayed = true
-        end
         -- If we haven't already, plan to update the overlay in the future.
         if not futureOverlayPrepared then
             futureOverlayPrepared = true

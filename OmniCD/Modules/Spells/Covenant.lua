@@ -44,7 +44,7 @@ local covenant_db = {
 
 	},
 	["MONK"] = {
-
+		{ spellID = 325216, duration = 60, type = "covenant", spec = 321078 },
 
 		{ spellID = 326860, duration = 180, type = "covenant", spec = 321079 },
 

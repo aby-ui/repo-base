@@ -70,15 +70,15 @@ local function showRealDate(curseDate)
 end
 
 DBM = {
-	Revision = parseCurseDate("20230122054817"),
+	Revision = parseCurseDate("20230124074519"),
 }
 
 local fakeBWVersion, fakeBWHash
 local bwVersionResponseString = "V^%d^%s"
 -- The string that is shown as version
 if isRetail then
-	DBM.DisplayVersion = "10.0.21 alpha"
-	DBM.ReleaseRevision = releaseDate(2023, 1, 17) -- the date of the latest stable version that is available, optionally pass hours, minutes, and seconds for multiple releases in one day
+	DBM.DisplayVersion = "10.0.23 alpha"
+	DBM.ReleaseRevision = releaseDate(2023, 1, 23) -- the date of the latest stable version that is available, optionally pass hours, minutes, and seconds for multiple releases in one day
 	fakeBWVersion, fakeBWHash = 259, "3fbb48c"
 elseif isClassic then
 	DBM.DisplayVersion = "1.14.30 alpha"
@@ -89,8 +89,8 @@ elseif isBCC then
 	DBM.ReleaseRevision = releaseDate(2023, 1, 17) -- the date of the latest stable version that is available, optionally pass hours, minutes, and seconds for multiple releases in one day
 	fakeBWVersion, fakeBWHash = 41, "287b8dd"
 elseif isWrath then
-	DBM.DisplayVersion = "3.4.28 alpha"
-	DBM.ReleaseRevision = releaseDate(2023, 1, 20) -- the date of the latest stable version that is available, optionally pass hours, minutes, and seconds for multiple releases in one day
+	DBM.DisplayVersion = "3.4.30 alpha"
+	DBM.ReleaseRevision = releaseDate(2023, 1, 23) -- the date of the latest stable version that is available, optionally pass hours, minutes, and seconds for multiple releases in one day
 	fakeBWVersion, fakeBWHash = 41, "287b8dd"
 end
 DBM.HighestRelease = DBM.ReleaseRevision --Updated if newer version is detected, used by update nags to reflect critical fixes user is missing on boss pulls
@@ -2666,9 +2666,9 @@ function DBM:GetGossipID()
 	end
 end
 
-function DBM:SelectGossip(gossipOptionID)
+function DBM:SelectGossip(gossipOptionID, confirm)
 	if gossipOptionID and not self.Options.DontAutoGossip then
-		C_GossipInfo.SelectOption(gossipOptionID)
+		C_GossipInfo.SelectOption(gossipOptionID, "", confirm)
 	end
 end
 

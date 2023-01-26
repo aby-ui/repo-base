@@ -1,4 +1,4 @@
-## Interface: 100002
+## Interface: 100005
 ## X-Interface: 100000
 ## Title: Quest Announce
 ## Version: 10.0.0.2

@@ -1,20 +1,23 @@
-## Interface: 100002
+## Interface: 100005
 ## Title: Can I Mog It? |TInterface\Addons\CanIMogIt\Icons\KNOWN:0|t
 ## Author: TorelTwiddler, Ami Yuy
-## Version: 10.0.2v1.45
+## Version: 10.0.5v1.46
 ## Notes: Adds tooltips to items showing if you have learned a transmog appearance.
 ## Notes-deDE: Fügt Gegenständen Tooltips hinzu, ob eine Transmogrifikationsvorlage bereits bekannt ist.
 ## Notes-esES: Añade a la descripción del objeto si se conoce la apariencia.
 ## Notes-esMX: Añade información a items para mostrar si ya conoce esa apariencia transfigurable.
 ## Notes-frFR: Ajoute une infobulle aux objets, indiquant si vous en avez appris l'apparence de transmogrification.
 ## Notes-itIT: Aggiunge un suggerimento, sull'oggetto che stai osservando, se è stato memorizzato nella tua collezione di aspetti.
-## Notes-koKR: 아이템의 형상변환 등록 여부를 툴팁에 표시
-## Notes-ptBR: Adiciona dicas de ferramentas para itens exibindo se você aprendeu uma aparência de transmogrificação
+## Notes-koKR: L["Adds tooltips to items showing if you have learned a transmog appearance."] = "아이템의 형상변환 등록 여부를 툴팁에 표시"
+## Notes-ptBR: Adiciona dicas nos itens mostrando se você aprendeu uma aparência de transmog.
 ## Notes-ruRU: Добавляет предметам подсказку, показывающую, изучен предмет для трансмогрификации или нет.
 ## Notes-zhCN: 物品信息显示你是否已解锁幻化外观
 ## Notes-zhTW: 加入到物品提示顯示你已經收藏一個塑形外觀
 ## X-Category: Transmogrify
-## X-Website: http://mods.curse.com/addons/wow/can-i-mog-it
+## X-Website: https://www.curseforge.com/wow/addons/can-i-mog-it
+## X-Curse-Project-ID: 100617
+## X-WoWI-ID: 24015
+## X-Wago-ID: Qb6mg9GP
 ## SavedVariables: CanIMogItOptions, CanIMogItDatabase
 ## OptionalDeps: AdiBags, ArkInventory, ElvUI, LiteBag, Bagnon, cargBags_Nivaya, Auctionator
 #embeds.xml

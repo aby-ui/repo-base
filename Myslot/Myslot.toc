@@ -1,4 +1,4 @@
-## Interface: 100002
+## Interface: 100005
 ## Title: Myslot
 ## Notes: Myslot is for transferring settings between accounts. Feedback farmer1992@gmail.com
 ## Notes-esES: Myslot sirve para transferir opciones entre distintas cuentas. Comentarios a farmer1992@gmail.com

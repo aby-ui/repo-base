@@ -81,6 +81,19 @@ function RSUtils.CloneTable(src, dest)
 	end
 end
 
+function RSUtils.GetSortedKeysByValue(tbl, sortFunction)
+	local keys = {}
+	for key in pairs(tbl) do
+    	table.insert(keys, key)
+ 	end
+
+  	table.sort(keys, function(a, b)
+    	return sortFunction(tbl[a], tbl[b])
+  	end)
+
+  	return keys
+end
+
 ---============================================================================
 -- Auxiliar utils
 ---============================================================================

@@ -300,7 +300,7 @@ L['lets_bee_friends_step_3'] = 'Bring {item:163699} to {npc:143128} in Boralus.'
 L['lets_bee_friends_step_4'] = 'Bring {item:163702} to {npc:133907} at Mildenhall Meadery.'
 L['lets_bee_friends_step_5'] = 'Complete {quest:53347} for {npc:133907}.'
 
-local luncheon = (UnitFactionGroup('player') == 'Alliance') and '{npc:138221} in Brennadam' or '{npc:138096} in Warfang Hold'
+local luncheon = (ns.faction == 'Alliance') and '{npc:138221} in Brennadam' or '{npc:138096} in Warfang Hold'
 L['these_hills_sing_note'] = 'Open {item:160485} here. Buy one from ' .. luncheon .. ' or loot one from the "Discarded Lunchbox" treasure in Brennadam.'
 
 L['ancient_tidesage_scroll'] = 'Ancient Tidesage Scroll'
@@ -661,7 +661,7 @@ L['options_icons_brutosaurs'] = '{achievement:13029}'
 L['options_icons_brutosaurs_desc'] = 'Display brutosaur locations for the {achievement:13029} achievement.'
 
 local hekd_note = '\n\nTo gain access to {npc:126334}, you need to complete %s.'
-if UnitFactionGroup('player') == 'Horde' then
+if ns.faction == 'Horde' then
     hekd_note = hekd_note:format('{quest:47441} from {npc:127665} in Dazar\'alor followed by {quest:47442} from {npc:126334}')
 else
     hekd_note = hekd_note:format('{quest:51142} from {npc:136562} in Voldun followed by {quest:51145} from {npc:136559}')
@@ -691,20 +691,20 @@ L['options_icons_tales_of_de_loa'] = '{achievement:13036}'
 L['options_icons_tales_of_de_loa_desc'] = 'Display tablet locations for the {achievement:13036} achievement.'
 
 L['jani_note'] = 'Click on the Mysterious Trashpile to reveal {npc:126334}.'
-L['rezan_note'] = ns.color.Red('Inside the Atal\'Dazar dungeon.')
-L['bow_to_your_masters_note'] = 'Bow to the loa of Zandalar (' .. ns.color.Orange('/bow') .. ').'
+L['rezan_note'] = '{note:Inside the {location:Atal\'Dazar} dungeon.}'
+L['bow_to_your_masters_note'] = 'Bow to the loa of Zandalar ({emote/bow}).'
 L['options_icons_bow_to_your_masters'] = '{achievement:13020}'
 L['options_icons_bow_to_your_masters_desc'] = 'Display loa locations for the {achievement:13020} achievement.'
 
 L['alisha_note'] = 'This vendor requires quest progress in Drustvar.'
 L['elijah_note'] = 'This vendor requires quest progress in Drustvar. He begins selling sausage after {quest:47945}.'
-L['raal_note'] = ns.color.Red('Inside the Waycrest Manor dungeon.')
+L['raal_note'] = '{note:Inside the {location:Waycrest Manor} dungeon.}'
 L['sausage_sampler_note'] = 'Eat one of every sausage to earn the achievement.'
 L['options_icons_sausage_sampler'] = '{achievement:13087}'
 L['options_icons_sausage_sampler_desc'] = 'Display vendor locations for the {achievement:13087} achievement.'
 
 -- For Horde, include a note about drinks that must be purchased on the AH
-local horde_sheets = (UnitFactionGroup('player') == 'Horde') and [[ The following drinks are unavailable to Horde and must be purchased on the auction house:
+local horde_sheets = (ns.faction == 'Horde') and [[ The following drinks are unavailable to Horde and must be purchased on the auction house:
 
 • {item:163639}
 • {item:163638}
@@ -722,15 +722,15 @@ L['options_icons_daily_chests'] = 'Chests'
 
 L['supply_chest'] = 'War Supply Chest'
 L['supply_chest_note'] = 'A {npc:135181} or {npc:138694} will fly overhead once every 45 minutes and drop a {npc:135238} at one of three potential drop locations.'
-L['supply_single_drop'] = ns.color.Orange('This flight path always drops the supply crate at this location.')
+L['supply_single_drop'] = '{note:This flight path always drops the supply crate at this location.}'
 L['options_icons_supplies_desc'] = 'Display {npc:135238} drop locations.'
 L['options_icons_supplies'] = '{npc:135238s}'
 
 L['secret_supply_chest'] = 'Secret Supply Chest'
-L['secret_supply_chest_note'] = 'When a faction assault is active, a ' .. ns.color.Yellow('Secret Supply Chest') .. ' can appear at one of these locations for a short time.'
+L['secret_supply_chest_note'] = 'When a faction assault is active, a {object:Secret Supply Chest} can appear at one of these locations for a short time.'
 L['options_icons_secret_supplies'] = 'Secret Supply Chests'
-L['options_icons_secret_supplies_desc'] = 'Display ' .. ns.color.Yellow('Secret Supply Chest') .. ' locations for the {achievement:13317} achievement.'
+L['options_icons_secret_supplies_desc'] = 'Display {object:Secret Supply Chest} locations for the {achievement:13317} achievement.'
 
-L['squirrels_note'] = 'You must use the emote /love on critters not battle pets.'
+L['squirrels_note'] = 'You must use the emote {emote:/love} on critters not battle pets.'
 L['options_icons_squirrels'] = '{achievement:14730}'
 L['options_icons_squirrels_desc'] = 'Display the locations of critters for {achievement:14730} achievement.'

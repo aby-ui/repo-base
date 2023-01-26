@@ -64,7 +64,7 @@ function KT_PROFESSION_RECIPE_TRACKER_MODULE:Update()
 	end
 
 	self.continuableContainer = ContinuableContainer:Create();
-	for _, recipeID in ipairs(C_TradeSkillUI.GetRecipesTracked()) do
+	for _, recipeID in ipairs(C_TradeSkillUI.GetRecipesTracked(false)) do
 		local itemIDs = Professions.CreateRecipeItemIDsForAllBasicReagents(recipeID);
 		for _, item in ipairs(ItemUtil.TransformItemIDsToItems(itemIDs)) do
 			self.continuableContainer:AddContinuable(item);
@@ -75,7 +75,7 @@ function KT_PROFESSION_RECIPE_TRACKER_MODULE:Update()
 		local colorStyle = KT_OBJECTIVE_TRACKER_COLOR["Normal"];
 		local isRecraft = false;
 
-		for _, recipeID in ipairs(C_TradeSkillUI.GetRecipesTracked()) do
+		for _, recipeID in ipairs(C_TradeSkillUI.GetRecipesTracked(false)) do
 			local recipeSchematic = C_TradeSkillUI.GetRecipeSchematic(recipeID, isRecraft);
 			local block = self:GetBlock(recipeID);
 			self:SetBlockHeader(block, recipeSchematic.name);
@@ -132,9 +132,9 @@ end
 function KT_ProfessionsRecipeTracking_Initialize()
 	local function GetAllBasicReagentItemIDs()
 		local itemIDs = {};
-		for _, recipeID in ipairs(C_TradeSkillUI.GetRecipesTracked()) do
+		for _, recipeID in ipairs(C_TradeSkillUI.GetRecipesTracked(false)) do
 			for _, itemID in ipairs(Professions.CreateRecipeItemIDsForAllBasicReagents(recipeID)) do
-				table.insert(itemIDs, itemID);	
+				table.insert(itemIDs, itemID);
 			end
 		end
 		return itemIDs;
@@ -159,7 +159,7 @@ function KT_ProfessionsRecipeTracking_Initialize()
 	EventRegistry:RegisterCallback("TRACKED_RECIPE_UPDATE", OnTrackedRecipeUpdate, KT_PROFESSION_RECIPE_TRACKER_MODULE);
 
 	local function OnSkillLinesChanged(o)
-		for _, recipeID in ipairs(C_TradeSkillUI.GetRecipesTracked()) do
+		for _, recipeID in ipairs(C_TradeSkillUI.GetRecipesTracked(false)) do
 			if not C_TradeSkillUI.IsRecipeProfessionLearned(recipeID) then
 				C_TradeSkillUI.SetRecipeTracked(recipeID, false);
 			end

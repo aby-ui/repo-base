@@ -1,7 +1,7 @@
 --[[
     This file is part of Decursive.
 
-    Decursive (v 2.7.8.13-3-ga7591ae) add-on for World of Warcraft UI
+    Decursive (v 2.7.8.13-6-g740015d) add-on for World of Warcraft UI
     Copyright (C) 2006-2019 John Wellesz (Decursive AT 2072productions.com) ( http://www.2072productions.com/to/decursive.php )
 
     Decursive is free software: you can redistribute it and/or modify
@@ -24,7 +24,7 @@
     Decursive is distributed in the hope that it will be useful,
     but WITHOUT ANY WARRANTY.
 
-    This file was last updated on 2022-12-13T11:47:22Z
+    This file was last updated on 2023-01-25T09:30:32Z
 --]]
 -------------------------------------------------------------------------------
 
@@ -110,7 +110,7 @@ local DebugTextTable    = T._DebugTextTable;
 local Reported          = {};
 
 local UNPACKAGED = "@pro" .. "ject-version@";
-local VERSION = "2.7.8.13-3-ga7591ae";
+local VERSION = "2.7.8.13-6-g740015d";
 
 T._LoadedFiles = {};
 T._LoadedFiles["Dcr_DIAG.lua"] = false; -- here for consistency but useless in this particular file
@@ -313,7 +313,7 @@ do
         _Debug(unpack(TIandBI));
 
 
-        DebugHeader = ("%s\n2.7.8.13-3-ga7591ae  %s(%s)  CT: %0.4f D: %s %s %s BDTHFAd: %s nDrE: %d Embeded: %s W: %d (LA: %d TAMU: %d) TA: %d NDRTA: %d BUIE: %d TI: [dc:%d, lc:%d, y:%d, LEBY:%d, LB:%d, TTE:%u] (%s, %s, %s, %s)"):format(instructionsHeader, -- "%s\n
+        DebugHeader = ("%s\n2.7.8.13-6-g740015d  %s(%s)  CT: %0.4f D: %s %s %s BDTHFAd: %s nDrE: %d Embeded: %s W: %d (LA: %d TAMU: %d) TA: %d NDRTA: %d BUIE: %d TI: [dc:%d, lc:%d, y:%d, LEBY:%d, LB:%d, TTE:%u] (%s, %s, %s, %s)"):format(instructionsHeader, -- "%s\n
         tostring(DC.MyClass), tostring(UnitLevel("player") or "??"), NiceTime(), date(), GetLocale(), -- %s(%s)  CT: %0.4f D: %s %s
         BugGrabber and "BG" .. (T.BugGrabber and "e" or "") or "NBG", -- %s
         tostring(T._BDT_HotFix1_applyed), -- BDTHFAd: %s
@@ -404,7 +404,7 @@ local function PlaySoundFile_RanTooLongheck(message)
 end
 
 local function CheckHHTD_Error(errorm, errorml)
-    if (errorml:find("hhtd") and not errorml:find("\\libs\\"))
+    if (errorml:find("hhtd") and not errorml:find("[\\/]libs[\\/]"))
         or
         (errorml:find("\\libnameplateregistry") and not errorml:find("couldn't open") and not errorml:find("error loading")) then
         _Debug("CheckHHTD_Error()", true);
@@ -500,7 +500,7 @@ function T._onError(event, errorObject)
         and ( T._CatchAllErrors or (
         errorml:find("decursive") and -- first, make a general test to see if it's worth looking further
         (
-           ( not errorml:find("\\libs\\") ) -- errors happpening in something located below Decursive's path but not inside \Libs
+           ( not errorml:find("[\\/]libs[\\/]") ) -- errors happpening in something located below Decursive's path but not inside \Libs
         or ( errorm:find("[\"']Decursive[\"']") ) -- events involving Decursive
         or ( errorm:find("Decursive:") ) -- libraries error involving Decursive (AceLocal)
         or ( errorml:find("decursive%.")) -- for Aceconfig
@@ -614,7 +614,7 @@ function T._DecursiveErrorHandler(err, ...)
     end
 
     local mine = false;
-    if not IsReporting and (T._CatchAllErrors or errl:find("decursive") and not errl:find("\\libs\\")) then
+    if not IsReporting and (T._CatchAllErrors or errl:find("decursive") and not errl:find("[\\/]libs[\\/]")) then
 
         if not continueErrorReporting(errl) then
             return;
@@ -1119,4 +1119,4 @@ do
     end
 end
 
-T._LoadedFiles["Dcr_DIAG.lua"] = "2.7.8.13-3-ga7591ae";
+T._LoadedFiles["Dcr_DIAG.lua"] = "2.7.8.13-6-g740015d";

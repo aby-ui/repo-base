@@ -1,4 +1,4 @@
-## Interface: 100002
+## Interface: 100005
 ## LoadOnDemand: 0
 ## Notes:  增益时间精确到秒，显示施法者等。
 

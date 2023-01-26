@@ -64,7 +64,7 @@ local function FreeBagSpace()
 	local FreeSpace = 0
 	for bagID = 0, 4, 1 do
 		local numberOfFreeSlots, bagType
-		if Postal.WOWClassic or Postal.WOWBCClassic or Postal.WOWWotLKClassic then
+		if Postal.WOWClassic or Postal.WOWBCClassic then
 			numberOfFreeSlots, bagType = GetContainerNumFreeSlots(bagID)
 		else
 			numberOfFreeSlots, bagType = C_Container.GetContainerNumFreeSlots(bagID)
@@ -81,7 +81,7 @@ local function Postal_Inventory_Change(action)
 	if action == 1 then	-- take snap shot of current container free space tables and store
 		wipe(PostalForwardTable)
 		for bagID = 0, 4, 1 do
-			if Postal.WOWClassic or Postal.WOWBCClassic or Postal.WOWWotLKClassic then
+			if Postal.WOWClassic or Postal.WOWBCClassic then
 				table.insert(PostalForwardTable, GetContainerFreeSlots(bagID))
 			else
 				table.insert(PostalForwardTable, C_Container.GetContainerFreeSlots(bagID))
@@ -92,7 +92,7 @@ local function Postal_Inventory_Change(action)
 	if action == 2 then	-- take new snap shot of current container free space tables and compared with stored one
 		wipe(TempTable)
 		for bagID = 0, 4, 1 do
-			if Postal.WOWClassic or Postal.WOWBCClassic or Postal.WOWWotLKClassic then
+			if Postal.WOWClassic or Postal.WOWBCClassic then
 				TempTable = GetContainerFreeSlots(bagID)
 			else
 				TempTable = C_Container.GetContainerFreeSlots(bagID)
@@ -155,7 +155,7 @@ function Postal_Forward_ForwardMailItems(action)
 	if action == 2 then
 		Postal_Forward:UnregisterEvent("BAG_UPDATE_DELAYED","Postal_Forward_ForwardMailItemsEvent")
 		bagID, itemIndex = Postal_Inventory_Change(2)
-		if Postal.WOWClassic or Postal.WOWBCClassic or Postal.WOWWotLKClassic then
+		if Postal.WOWClassic or Postal.WOWBCClassic then
 			PickupContainerItem(bagID, itemIndex)
 		else
 			C_Container.PickupContainerItem(bagID, itemIndex)

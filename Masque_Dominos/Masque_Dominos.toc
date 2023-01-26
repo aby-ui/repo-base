@@ -1,4 +1,4 @@
-## Interface: 100002
+## Interface: 100005
 
 ## Title: Masque: Dominos
 ## Notes: Dominos skin for Masque.

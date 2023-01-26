@@ -122,7 +122,7 @@ end
 function RSGeneralDB.UpdateAlreadyFoundEntityTime(entityID)
 	if (entityID and private.dbglobal.rares_found[entityID]) then
 		private.dbglobal.rares_found[entityID].foundTime = time();
-		RSLogger:PrintDebugMessage(string.format("UpdateAlreadyFoundEntityTime[%s]. Nueva estampa de tiempo (%s)", entityID, RSGeneralDB.GetAlreadyFoundEntity(entityID).foundTime))
+		--RSLogger:PrintDebugMessage(string.format("UpdateAlreadyFoundEntityTime[%s]. Nueva estampa de tiempo (%s)", entityID, RSGeneralDB.GetAlreadyFoundEntity(entityID).foundTime))
 	end
 end
 

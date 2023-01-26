@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(1488, "DBM-Party-Legion", 4, 721)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20230103192955")
+mod:SetRevision("20230124053246")
 mod:SetCreatureID(95675)
 mod:SetEncounterID(1808)
 mod:SetHotfixNoticeRev(20221127000000)
@@ -130,6 +130,7 @@ end
 
 function mod:OnSync(msg, targetname)
 	if msg == "SkovaldRP" and self:AntiSpam(10, 2) then
-		timerRP:Start()
+--		timerRP:Start()
+		DBM:AddMsg("Old RP timer disabled for Jan 23rd hotfix, new timer will be added soon")
 	end
 end

@@ -124,7 +124,7 @@ function Postal_OpenAll:OnEnable()
 		Postal_OpenAllMenuButton:SetFrameLevel(Postal_OpenAllMenuButton:GetFrameLevel() + 1)
 	end
 
-	if Postal.WOWClassic or Postal.WOWBCClassic or Postal.WOWWotLKClassic then
+	if Postal.WOWClassic or Postal.WOWBCClassic then
 		self:RegisterEvent("MAIL_SHOW")
 	else
 		Postal_OpenAll:RegisterEvent("PLAYER_INTERACTION_MANAGER_FRAME_SHOW")
@@ -145,7 +145,7 @@ function Postal_OpenAll:OnDisable()
 end
 
 function Postal_OpenAll:MAIL_SHOW()
-	if Postal.WOWClassic or Postal.WOWBCClassic or Postal.WOWWotLKClassic then
+	if Postal.WOWClassic or Postal.WOWBCClassic then
 		self:RegisterEvent("MAIL_CLOSED", "Reset")
 	else
 		Postal_OpenAll:RegisterEvent("PLAYER_INTERACTION_MANAGER_FRAME_HIDE", "Reset")
@@ -280,7 +280,7 @@ function Postal_OpenAll:ProcessNext()
 			local free=0
 			for bag=0,NUM_BAG_SLOTS do
 				local bagFree, bagFam
-				if Postal.WOWClassic or Postal.WOWBCClassic or Postal.WOWWotLKClassic then
+				if Postal.WOWClassic or Postal.WOWBCClassic then
 					bagFree, bagFam = GetContainerNumFreeSlots(bag)
 				else
 					bagFree, bagFam = C_Container.GetContainerNumFreeSlots(bag)
@@ -308,14 +308,14 @@ function Postal_OpenAll:ProcessNext()
 			if itemID and stackSize and GetItemCount(itemID) > 0 then
 				for bag = 0, NUM_BAG_SLOTS do
 					local ContainerNumSlots
-					if Postal.WOWClassic or Postal.WOWBCClassic or Postal.WOWWotLKClassic then
+					if Postal.WOWClassic or Postal.WOWBCClassic then
 						ContainerNumSlots = GetContainerNumSlots(bag)
 					else
 						ContainerNumSlots = C_Container.GetContainerNumSlots(bag)
 					end
 					for slot = 1, ContainerNumSlots do
 						local count2, link2
-						if Postal.WOWClassic or Postal.WOWBCClassic or Postal.WOWWotLKClassic then
+						if Postal.WOWClassic or Postal.WOWBCClassic then
 							count2 = select(2, GetContainerItemInfo(bag, slot))
 							link2 = select(7, GetContainerItemInfo(bag, slot))
 						else
@@ -400,7 +400,7 @@ function Postal_OpenAll:Reset(event)
 	Postal:DisableInbox()
 	InboxFrame_Update()
 	if event == "MAIL_CLOSED" or event == "PLAYER_LEAVING_WORLD" or (event == "PLAYER_INTERACTION_MANAGER_FRAME_HIDE" and paneType == Enum.PlayerInteractionType.MailInfo) then
-		if Postal.WOWClassic or Postal.WOWBCClassic or Postal.WOWWotLKClassic then
+		if Postal.WOWClassic or Postal.WOWBCClassic then
 			self:UnregisterEvent("MAIL_CLOSED")
 		else
 			self:UnregisterEvent("PLAYER_INTERACTION_MANAGER_FRAME_HIDE")

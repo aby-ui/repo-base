@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(1983, "DBM-AntorusBurningThrone", nil, 946)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20220216092721")
+mod:SetRevision("20230124052137")
 mod:SetCreatureID(122366)
 mod:SetEncounterID(2069)
 --mod:SetBossHPInfoToHighest()
@@ -12,7 +12,7 @@ mod.respawnTime = 29
 mod:RegisterCombat("combat")
 
 mod:RegisterEventsInCombat(
-	"SPELL_CAST_SUCCESS 243960 244093 243999 257644",
+	"SPELL_CAST_SUCCESS 243960 244093 243999 257644 122366",
 	"SPELL_AURA_APPLIED 243961 244042 244094 248732 243968 243977 243980 243973",
 	"SPELL_AURA_REMOVED 244042 244094",
 	"SPELL_PERIODIC_DAMAGE 244005 248740",
@@ -110,8 +110,6 @@ function mod:SPELL_CAST_SUCCESS(args)
 		specWarnDarkFissure:Show()
 		specWarnDarkFissure:Play("watchstep")
 		timerDarkFissureCD:Start()
-	elseif spellId == 122366 then
-		timerMarkedPreyCD:Start()
 	end
 end
 
@@ -132,6 +130,7 @@ function mod:SPELL_AURA_APPLIED(args)
 			end
 		end
 	elseif spellId == 244042 then
+		timerMarkedPreyCD:Start()
 		if args:IsPlayer() then
 			specWarnMarkedPrey:Show()
 			specWarnMarkedPrey:Play("targetyou")

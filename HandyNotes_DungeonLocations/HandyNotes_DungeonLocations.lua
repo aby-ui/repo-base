@@ -307,6 +307,8 @@ local defaults = {
   hideDraenor = false,
   hideBrokenIsles = false,
   hideBfa = false,
+  hideSL = false,
+  hideDF = false,
   show = {
    Dungeon = true,
    Raid = true,
@@ -532,16 +534,18 @@ function Addon:PLAYER_LOGIN()
    set = function(info, v) db[info[#info]] = v self:FullUpdate() HandyNotes:SendMessage("HandyNotes_NotifyUpdate", "DungeonLocations") end,
   },
   hideSL = {
-      type = "toggle",
-      name = HIDE..(LOCALE_zhCN and "" or " ")..EXPANSION_NAME8.."(9.0)",
-      order = 26.81,
-      set = function(info, v) db[info[#info]] = v self:FullUpdate() HandyNotes:SendMessage("HandyNotes_NotifyUpdate", "DungeonLocations") end,
+   type = "toggle",
+   name = L["Hide Shadowlands"],
+   desc = L["Hide all Shadowlands nodes from the map"],
+   order = 26.8,
+   set = function(info, v) db[info[#info]] = v self:FullUpdate() HandyNotes:SendMessage("HandyNotes_NotifyUpdate", "DungeonLocations") end,
   },
   hideDF = {
-      type = "toggle",
-      name = HIDE..(LOCALE_zhCN and "" or " ")..EXPANSION_NAME9.."(10.0)",
-      order = 26.82,
-      set = function(info, v) db[info[#info]] = v self:FullUpdate() HandyNotes:SendMessage("HandyNotes_NotifyUpdate", "DungeonLocations") end,
+   type = "toggle",
+   name = L["Hide Dragonflight"],
+   desc = L["Hide all Dragonflight nodes from the map"],
+   order = 26.9,
+   set = function(info, v) db[info[#info]] = v self:FullUpdate() HandyNotes:SendMessage("HandyNotes_NotifyUpdate", "DungeonLocations") end,
   },
  },
 }
@@ -1237,10 +1241,10 @@ nodes[121] = { -- ZulDrak
  [28508700] = {
   id = 273,
   type = "Dungeon",
- }, -- Drak'Tharon Keep 17402120 Grizzly Hills
- [76202110] = {
-  id = 274,
-  type = "Dungeon",
+}, -- Drak'Tharon Keep 17402120 Grizzly Hills
+[76202110] = {
+ id = 274,
+ type = "Dungeon",
  }, -- Gundrak Left Entrance
  [81302900] = {
   id = 274,
@@ -1957,7 +1961,7 @@ minimap[942][83934677] = {
 		 id = 1176,
 		 type = "Raid",
 		} -- Battle of Dazar'alor
-	end
+   end
 
 --[[nodes[1161] = { } -- Boralus
 nodes[1161][71961540] = {
@@ -1965,6 +1969,135 @@ nodes[1161][71961540] = {
 		 type = "Dungeon",
 		} -- Siege of Boralus
 --	end ]]--
+
+
+-- Shadowlands
+
+if (not self.db.profile.hideDF) then
+nodes[1533] = { } -- Bastion
+nodes[1536] = { } -- Maldraxxus
+nodes[1565] = { } -- Ardenweald
+nodes[1525] = { } -- Revendreth
+nodes[1533] = { } -- Bastion for Zereth Mortis - Sepulcher of the First Ones
+nodes[1565] = { } -- Ardenweald for Tazavesh, the Veiled Market
+nodes[1543] = { } -- The Maw
+ 
+nodes[1533][60007577] = {
+   id = 1182,
+   type = "Dungeon",
+} -- The Necrotic Wake
+   
+nodes[1533][58472870] = {
+   id = 1186,
+   type = "Dungeon",
+  } -- Spires of Ascension
+   
+nodes[1536][59306484] = {
+   id = 1183,
+   type = "Dungeon",
+} -- Plaguefall
+
+nodes[1536][53215314] = {
+   id = 1187,
+   type = "Dungeon",
+} -- Theater of Pain
+
+nodes[1565][35715421] = {
+   id = 1184,
+   type = "Dungeon",
+} -- Mists of Tirna Scithe
+
+nodes[1565][68606598] = {
+   id = 1188,
+   type = "Dungeon",
+} -- De Other Side
+
+nodes[1525][77964852] = {
+   id = 1185,
+   type = "Dungeon",
+ } -- Halls of Atonement
+
+nodes[1525][51093007] = {
+   id = 1189,
+   type = "Dungeon",
+} -- Sanguine Depths
+
+nodes[1565][00003200] = {
+   id = 1194,
+   type = "Dungeon",
+} -- Tazavesh, the Veiled Market
+
+nodes[1533][99999999] = {
+   id = 1195,
+   type = "Raid",
+} -- 	Sepulcher of the First Ones
+
+nodes[1525][45764149] = {
+   id = 1190,
+   type = "Raid",
+} -- 	Castle Nathria 
+
+nodes[1543][68688540] = {
+   id = 1193,
+   type = "Raid",
+} -- 	Sanctum of Domination
+   end
+
+
+-- Dragonflight
+
+if (not self.db.profile.hideDF) then
+nodes[2022] = { } -- The Waking Shores
+nodes[2023] = { } -- Ohn'ahran Plains
+nodes[2024] = { } -- The Azure Span
+nodes[2025] = { } -- Thaldraszus
+nodes[2026] = { } -- The Forbidden Reach
+
+nodes[2022][60007577] = {
+	id = 1202,
+	type = "Dungeon",
+} -- Ruby Life Pools 
+
+nodes[2022][25575695] = {
+   id = 1199,
+   type = "Dungeon",
+} -- Neltharus
+
+nodes[2023][62014244] = {
+	id = 1202,
+	type = "Dungeon",
+} -- The Nokhud Offensive
+
+nodes[2024][11574878] = {
+	id = 1196,
+	type = "Dungeon",
+} -- Brackenhide Hollow
+
+nodes[2024][38896476] = {
+	id = 1203,
+	type = "Dungeon",
+} -- The Azure Vault
+
+nodes[2025][58284235] = {
+	id = 1201,
+	type = "Dungeon",
+} -- Algeth'ar Academy
+
+nodes[2025][59246064] = {
+	id = 1204,
+	type = "Dungeon",
+} -- Halls of Infusion
+
+nodes[2025][73145560] = {
+	id = 1200,
+	type = "Raid",
+} -- Vault of the Incarnates
+
+nodes[15][41801130] = {
+   id = { 1197, 239 },
+	type = "Dungeon",
+} -- Legacy of Tyr - Dragonflight \ Uldaman - Vanilla
+   end
 end
 
 --[[ abyui

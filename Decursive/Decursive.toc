@@ -1,4 +1,4 @@
-## Interface: 100002
+## Interface: 100005
 ## X-Max-Interface: 100002
 ## X-Min-Interface: 11403
 
@@ -18,7 +18,7 @@
 
 ## SavedVariables: DecursiveDB
 
-## Version: 2.7.8.13-3-ga7591ae
+## Version: 2.7.8.13-6-g740015d
 ## Author: John Wellesz
 
 ## X-License: GNU GPL V3
@@ -32,7 +32,7 @@
 
 ## X-Embeds: Ace3, LibQTip-1.0, LibDataBroker-1.1, LibDBIcon-1.0, !BugGrabber, LibDualSpec-1.0
 
-## X-ReleaseDate: "2023-01-10T12:00:52Z"
+## X-ReleaseDate: "2023-01-25T09:35:35Z"
 ## X-Category: Combat
 ## X-Website: http://www.2072productions.com/to/decursive.php
 ## X-Credits: Sylvin (Full french translation), Peter Sun, Ananhaid (ZhTW and zhCN translation), Fenlis, Chkid (koKR translation), Hemathio, Swix, Athariel, StingerSoft (Russian Translation), Freydis88, Floyddotnet, Vilogity, Dessa, Farook (German translation)

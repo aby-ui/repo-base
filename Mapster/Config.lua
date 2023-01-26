@@ -23,27 +23,6 @@ do
 	end
 end
 
-local function showStaticPopupReload()
-	if not StaticPopupDialogs["MAPSTER_RELOAD_UI_SCALING"] then
-		StaticPopupDialogs["MAPSTER_RELOAD_UI_SCALING"] = {
-			text = L["After toggling Map Scaling in Mapster you should reload your UI for the changes to fully take effect. Do you want to reload now?"],
-			button1 = L["Reload Now"],
-			button2 = NO,
-
-			OnAccept = function(f)
-				ReloadUI()
-			end,
-
-			timeout = 0,
-			hideOnEscape = 1,
-			preferredIndex = STATICPOPUP_NUMDIALOGS,
-		}
-	end
-
-	PlaySound(SOUNDKIT.IG_MAINMENU_OPTION)
-	StaticPopup_Show("MAPSTER_RELOAD_UI_SCALING")
-end
-
 local options, moduleOptions = nil, {}
 local function getOptions()
 	if not options then
@@ -94,18 +73,6 @@ local function getOptions()
 							isPercent = true,
 							disabled = function() return not GetCVarBool("mapFade") end,
 						},
-						enableScaling = {
-							order = 5,
-							type = "toggle",
-							name = L["Enable Map Scaling (Can break the UI in WoW 10.0)"],
-							desc = L["Enable the ability to change the scale of the map. Due to issues in WoW 10.0 this can break your UI in unexpected ways."],
-							width = "full",
-							hidden = not WoWRetail,
-							set = function(...)
-								optSetter(...)
-								showStaticPopupReload()
-							end,
-						},
 						scaledesc = {
 							order = 5.1,
 							type = "description",
@@ -118,7 +85,6 @@ local function getOptions()
 							type = "range",
 							min = 0.1, max = 2, bigStep = 0.01,
 							isPercent = true,
-							disabled = function() return WoWRetail and not Mapster.db.profile.enableScaling end,
 						},
 						nl_scale = {
 							order = 6.1,

@@ -1,4 +1,4 @@
-## Interface: 100002
+## Interface: 100005
 ## Version: 22.12.15
 ## Title: TipTacItemRef
 ## Author: Aezay (Earthen Ring EU), Frozn45

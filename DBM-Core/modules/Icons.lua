@@ -346,14 +346,17 @@ do
 end
 
 do
-	local function expireScan(scanId)
+	local function expireScan(scanId, wipeGUID)
 		--clear variables
 		scanExpires[scanId] = nil
 		addsIcon[scanId] = nil
 		addsIconSet[scanId] = nil
 		iconVariables[scanId] = nil
 		scansActive = scansActive - 1
-		--Do not wipe adds GUID table here, it's wiped by :Stop() which is called by EndCombat
+		--Do not wipe adds GUID table here unless explicitely requested by mod, it's wiped by :Stop() which is called by EndCombat
+		if wipeGUID then
+			addsGUIDs[scanId] = nil
+		end
 		if eventsRegistered and scansActive == 0 then--No remaining icon scans
 			eventsRegistered = false
 			module:UnregisterShortTermEvents()
@@ -419,14 +422,14 @@ do
 			if addsIconSet[scanId] >= iconVariables[scanId].maxIcon then--stop scan immediately to save cpu
 				DBM:Unschedule(expireScan, scanId)
 				DBM:Debug("Stopping Successful ScanForMobs for: "..(scanId or "nil"), 2)
-				expireScan(scanId)
+				expireScan(scanId, iconVariables[scanId].wipeGUID)
 				return
 			end
 		end
 		if GetTime() > scanExpires[scanId] then--scan for limited time.
 			DBM:Unschedule(expireScan, scanId)
 			DBM:Debug("Stopping Expired ScanForMobs for: "..(scanId or "nil"), 2)
-			expireScan(scanId)
+			expireScan(scanId, iconVariables[scanId].wipeGUID)
 		end
 	end
 
@@ -482,7 +485,7 @@ do
 		"mouseover", "target", "focus", "targettarget", "mouseovertarget"
 	}
 
-	function module:ScanForMobs(mod, scanId, iconSetMethod, mobIcon, maxIcon, scanTable, scanningTime, optionName, allowFriendly, skipMarked, allAllowed)
+	function module:ScanForMobs(mod, scanId, iconSetMethod, mobIcon, maxIcon, scanTable, scanningTime, optionName, allowFriendly, skipMarked, allAllowed, wipeGUID)
 		if not optionName then optionName = mod.findFastestComputer[1] end
 		if private.canSetIcons[optionName] or (allAllowed and not DBM.Options.DontSetIcons) then
 			--Declare variables.
@@ -500,16 +503,17 @@ do
 			iconVariables[scanId].maxIcon = maxIcon or 8 --We only have 8 icons.
 			iconVariables[scanId].allowFriendly = allowFriendly and true or false
 			iconVariables[scanId].skipMarked = skipMarked and true or false
+			iconVariables[scanId].wipeGUID = wipeGUID and true or false
 			if not scanExpires[scanId] then
 				scanExpires[scanId] = GetTime() + (scanningTime or 8)
-				DBM:Schedule((scanningTime or 8)+1, expireScan, scanId)
+				DBM:Schedule((scanningTime or 8)+1, expireScan, scanId, iconVariables[scanId].wipeGUID)
 			end
 			if scanTable and type(scanTable) == "table" then
 				iconVariables[scanId].scanTable = scanTable
 			end
 			if (iconSetMethod or 0) == 9 then--Force stop scanning
 				DBM:Unschedule(expireScan, scanId)
-				expireScan(scanId)
+				expireScan(scanId, iconVariables[scanId].wipeGUID)
 				return
 			end
 			--Do initial scan now to see if unit we're scaning for already exists (ie they wouldn't fire nameplate added or IEEU for example.

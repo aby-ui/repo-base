@@ -59,15 +59,17 @@ local function InitializeDropdownMenu(level, mapID, coord)
                 end
             }, level)
 
-            if node.group ~= ns.groups.MISC then
-                LibDD:UIDropDownMenu_AddButton({
-                    text = L['context_menu_add_group_tomtom'],
-                    notCheckable = 1,
-                    func = function(button)
-                        ns.tomtom.AddGroupWaypoints(node, mapID, coord)
-                        TomTom:SetClosestWaypoint(false)
-                    end
-                }, level)
+            for i, group in pairs(node.group) do
+                if group ~= ns.groups.MISC then
+                    LibDD:UIDropDownMenu_AddButton({
+                        text = L['context_menu_add_group_tomtom'],
+                        notCheckable = 1,
+                        func = function(button)
+                            ns.tomtom.AddGroupWaypoints(node, mapID, coord)
+                            TomTom:SetClosestWaypoint(false)
+                        end
+                    }, level)
+                end
             end
         end
 

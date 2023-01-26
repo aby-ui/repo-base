@@ -1316,16 +1316,6 @@ function BigDebuffs:AddBigDebuffs(frame)
 end
 
 local pending = {}
-local function checkFrame(frame)
-    if not issecurevariable(frame, "action") and not InCombatLockdown() then
-        frame.action = nil
-        frame:SetAttribute("action");
-    end
-end
-
-for _, frame in ipairs(ActionBarButtonEventsFrame.frames) do
-    if frame.UpdateAction then hooksecurefunc(frame, "UpdateAction", checkFrame) end
-end
 
 hooksecurefunc("CompactUnitFrame_UpdateAll", function(frame)
 	if not BigDebuffs.db.profile then return end

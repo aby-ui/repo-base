@@ -35,7 +35,8 @@ Private.frames = {}
 --- @field CanHaveTooltip fun(data: auraData): boolean
 --- @field ContainsCustomPlaceHolder fun(input: string): boolean
 --- @field ContainsAnyPlaceHolders fun(input: string): boolean
---- @field ContainsPlaceHolders fun(input: string, placeholders: string, checkDoublePercent: boolean): boolean
+--- @field ContainsPlaceHolders fun(input: string, placeholders: string, checkDoublePercent?: boolean): boolean
+--- @field CreateSubscribableObject fun(): SubscribableObject
 --- @field clones table<auraId, table<string, table>>
 --- @field customActionsFunctions table<auraId, table<string, function?>>
 --- @field DebugLog debugLog
@@ -297,8 +298,8 @@ WeakAuras.halfWidth = WeakAuras.normalWidth / 2
 WeakAuras.doubleWidth = WeakAuras.normalWidth * 2
 
 local versionStringFromToc = GetAddOnMetadata("WeakAuras", "Version")
-local versionString = "5.3.4"
-local buildTime = "20230106012503"
+local versionString = "5.3.7"
+local buildTime = "20230125005356"
 
 local flavorFromToc = GetAddOnMetadata("WeakAuras", "X-Flavor")
 local flavorFromTocToNumber = {
@@ -310,7 +311,7 @@ local flavorFromTocToNumber = {
 local flavor = flavorFromTocToNumber[flavorFromToc]
 
 --[==[@debug@
-if versionStringFromToc == "5.3.4" then
+if versionStringFromToc == "5.3.7" then
   versionStringFromToc = "Dev"
   buildTime = "Dev"
 end

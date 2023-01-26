@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2372, "DBM-Nyalotha", nil, 1180)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20220217003806")
+mod:SetRevision("20230124045055")
 mod:SetCreatureID(157253, 157254)--Ka'zir and Tek'ris
 mod:SetEncounterID(2333)
 mod:SetUsedIcons(1, 2, 3, 4, 5, 6)--Refine when max number of mythic Volatile Eruption is known
@@ -16,7 +16,7 @@ mod:RegisterEventsInCombat(
 	"SPELL_CAST_START 307569 307213 307201 310340 307968 307232 313652 307582",
 	"SPELL_CAST_SUCCESS 308178 307232 312868 312710 307635 308360",
 	"SPELL_AURA_APPLIED 307637 313460 307377 307227 313672",
-	"SPELL_AURA_REMOVED 307637",
+	"SPELL_AURA_REMOVED 307637 307583",
 	"SPELL_PERIODIC_DAMAGE 313672",
 	"SPELL_PERIODIC_MISSED 313672"
 )

@@ -58,10 +58,10 @@ function RSEntityPinMixin:OnMouseDown(button)
 		--Toggle state
 		if (IsShiftKeyDown() and IsAltKeyDown()) then
 			if (self.POI.isNpc) then
-				RSConfigDB.SetNpcFiltered(self.POI.entityID, false)
+				RSConfigDB.SetNpcFiltered(self.POI.entityID)
 				self:Hide();
 			elseif (self.POI.isContainer) then
-				RSConfigDB.SetContainerFiltered(self.POI.entityID, false)
+				RSConfigDB.SetContainerFiltered(self.POI.entityID)
 				self:Hide();
 			elseif (self.POI.isEvent) then
 				RSConfigDB.SetEventFiltered(self.POI.entityID, false)

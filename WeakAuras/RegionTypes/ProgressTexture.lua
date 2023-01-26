@@ -126,7 +126,16 @@ local properties = {
   mirror = {
     display = L["Mirror"],
     setter = "SetMirror",
-    type = "bool"
+    type = "bool",
+  },
+  rotation = {
+    display = L["Texture Rotation"],
+    setter = "SetTexRotation",
+    type = "number",
+    min = 0,
+    max = 360,
+    bigStep = 1,
+    default = 0
   }
 }
 
@@ -209,7 +218,7 @@ function spinnerFunctions.SetProgress(self, region, angle1, angle2)
 
   local crop_x = region.crop_x or 1;
   local crop_y = region.crop_y or 1;
-  local texRotation = region.texRotation or 0
+  local texRotation = region.effectiveTexRotation or 0
   local mirror_h = region.mirror_h or false;
   if region.mirror then
     mirror_h = not mirror_h
@@ -687,7 +696,7 @@ local textureFunctions = {
     local region = self.region;
     local crop_x = region.crop_x or 1;
     local crop_y = region.crop_y or 1;
-    local texRotation = region.texRotation or 0
+    local texRotation = region.effectiveTexRotation or 0
     local mirror_h = region.mirror_h or false;
     if region.mirror then
       mirror_h = not mirror_h
@@ -1209,8 +1218,8 @@ local function modify(parent, region, data)
     DoPosition(region)
   end
 
-  function region:Rotate(angle)
-    region.texRotation = angle or 0
+  function region:UpdateEffectiveRotation()
+    region.effectiveTexRotation = region.texAnimationRotation or region.texRotation
     if (data.orientation == "CLOCKWISE" or data.orientation == "ANTICLOCKWISE") then
       region.foregroundSpinner:UpdateSize();
       region.backgroundSpinner:UpdateSize();
@@ -1226,9 +1235,19 @@ local function modify(parent, region, data)
     end
   end
 
-  region:Rotate(data.rotation)
+  function region:SetAnimRotation(angle)
+    region.texAnimationRotation = angle
+    region:UpdateEffectiveRotation()
+  end
 
-  function region:GetRotation()
+  function region:SetTexRotation(angle)
+    region.texRotation = angle
+    region:UpdateEffectiveRotation()
+  end
+
+  region:SetTexRotation(data.rotation)
+
+  function region:GetBaseRotation()
     return region.texRotation
   end
 
@@ -1308,6 +1327,7 @@ local function modify(parent, region, data)
     region.PreShow = nil
   end
 
+  region.TimerTick = nil
   function region:Update()
     local state = region.state
 
@@ -1320,7 +1340,7 @@ local function modify(parent, region, data)
         end
         if region.TimerTick then
           region.TimerTick = nil
-          region:UpdateRegionHasTimerTick()
+          region.subRegionEvents:RemoveSubscriber("TimerTick", region)
         end
         expirationTime = GetTime() + (state.remaining or 0)
       else
@@ -1329,7 +1349,7 @@ local function modify(parent, region, data)
         end
         if not region.TimerTick then
           region.TimerTick = TimerTick
-          region:UpdateRegionHasTimerTick()
+          region.subRegionEvents:AddSubscriber("TimerTick", region, true)
         end
         expirationTime = state.expirationTime and state.expirationTime > 0 and state.expirationTime or math.huge;
       end
@@ -1375,7 +1395,7 @@ local function modify(parent, region, data)
       region:SetValue(value - adjustMin, max - adjustMin);
       if region.TimerTick then
         region.TimerTick = nil
-        region:UpdateRegionHasTimerTick()
+        region.subRegionEvents:RemoveSubscriber("TimerTick", region)
       end
     else
       if region.paused then
@@ -1384,7 +1404,7 @@ local function modify(parent, region, data)
       region:SetTime(0, math.huge)
       if region.TimerTick then
         region.TimerTick = nil
-        region:UpdateRegionHasTimerTick()
+        region.subRegionEvents:RemoveSubscriber("TimerTick", region)
       end
     end
 

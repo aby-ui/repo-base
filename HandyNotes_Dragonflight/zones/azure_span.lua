@@ -7,6 +7,7 @@ local L = ns.locale
 local Map = ns.Map
 
 local Collectible = ns.node.Collectible
+local Node = ns.node.Node
 local NPC = ns.node.NPC
 local PetBattle = ns.node.PetBattle
 local Rare = ns.node.Rare
@@ -28,6 +29,7 @@ local Safari = ns.node.Safari
 local Scoutpack = ns.node.Scoutpack
 local SignalTransmitter = ns.node.SignalTransmitter
 local Squirrel = ns.node.Squirrel
+local TuskarrTacklebox = ns.node.TuskarrTacklebox
 
 local Achievement = ns.reward.Achievement
 local Currency = ns.reward.Currency
@@ -59,24 +61,6 @@ map.nodes[53013563] = Rare({
     }
 }) -- Arcane Devourer
 
--- map.nodes[] = Rare({
---     id = 193255,
---     quest = nil,
---     rewards = {
---         Achievement({id = 16678, criteria = 56123}),
---         Transmog({item = , slot = L['']}) -- Name
---     }
--- }) -- Archmage Cleary
-
--- map.nodes[] = Rare({
---     id = 197411,
---     quest = nil,
---     rewards = {
---         Achievement({id = 16678, criteria = 56130}),
---         Transmog({item = , slot = L['']}) -- Name
---     }
--- }) -- Astray Splasher
-
 map.nodes[55823132] = Rare({
     id = 194210,
     quest = 73867,
@@ -104,11 +88,11 @@ map.nodes[73032680] = Rare({
 
 map.nodes[13584855] = Rare({
     id = 197557,
-    quest = 70893,
-    -- note = L['Bisquis_Note'],
+    quest = 74097,
+    note = L['bisquis_note'],
     rewards = {
-        Achievement({id = 16678, criteria = 55381}),
-        Achievement({id = 16444, criteria = 1})
+        Achievement({id = 16678, criteria = 55381}), --
+        Achievement({id = 16444}) -- Leftovers' Revenge
     }
 }) -- Bisquius
 
@@ -151,14 +135,16 @@ map.nodes[16622798] = Rare({
     }
 }) -- Blue Terror
 
--- map.nodes[] = Rare({
---     id = 194392,
---     quest = 70165,
---     rewards = {
---         Achievement({id = 16678, criteria = 56103}),
---         Transmog({item = , slot = L['']}) -- Name
---     }
--- }) -- Brackle
+map.nodes[08944852] = Rare({
+    id = 194392,
+    quest = 73871,
+    note = L['in_small_cave'],
+    rewards = {
+        Achievement({id = 16678, criteria = 56103}) --
+        -- Transmog({item = , slot = L['']}) -- Name
+    },
+    pois = {POI({08584883})}
+}) -- Brackle
 
 map.nodes[27214490] = Rare({
     id = 193157,
@@ -188,8 +174,7 @@ map.nodes[50043631] = Rare({ -- review
         Achievement({id = 16678, criteria = 56115}),
         Transmog({item = 199026, slot = L['1h_sword']}), -- Fire-Blessed Blade
         Transmog({item = 200310, slot = L['cloak']}), -- Stole of the Iron Phantom
-        DC.RenewedProtoDrake.WhiteHorns, --
-        DC.CliffsideWylderdrake.HornedJaw, --
+        DC.RenewedProtoDrake.WhiteHorns, DC.CliffsideWylderdrake.HornedJaw,
         Item({item = 198070}) -- Tattered Seavine
     },
     pois = {POI({50523672, 49973821, 49223842})}
@@ -225,15 +210,14 @@ map.nodes[14083747] = RareElite({
         Achievement({id = 16678, criteria = 56127}),
         Transmog({item = 200259, slot = L['shield']}), -- Forest Dweller's Shield
         Transmog({item = 200267, slot = L['plate']}), -- Reinforced Garden Tenders
-        DC.RenewedProtoDrake.SnubSnout, --
-        DC.HighlandDrake.TanHorns
+        DC.RenewedProtoDrake.SnubSnout, DC.HighlandDrake.TanHorns
     }
 }) -- Gnarls
 
 map.nodes[32682911] = RareElite({ -- review -- required 67030
     id = 193251,
-    quest = 69885,
-    note = L['spawns_hourly'],
+    quest = 74001,
+    note = L['spawns_periodically'],
     rewards = {
         Achievement({id = 16678, criteria = 56111})
         -- Transmog({item = , slot = L['']}) -- Name
@@ -243,7 +227,7 @@ map.nodes[32682911] = RareElite({ -- review -- required 67030
 map.nodes[19234362] = Rare({ -- required 67030
     id = 193269,
     quest = 74002,
-    note = L['spawns_hourly'],
+    note = L['spawns_periodically'],
     rewards = {
         Achievement({id = 16678, criteria = 56112}),
         Transmog({item = 200206, slot = L['bow']}) -- Behemoth Slayer Greatbow
@@ -260,8 +244,7 @@ map.nodes[16213364] = RareElite({
         Transmog({item = 200266, slot = L['crossbow']}), -- Gnollish Chewtoy Launcher
         Transmog({item = 200283, slot = L['leather']}), -- Gnoll-Gnawed Breeches
         Toy({item = 200178}), -- Infected Ichor
-        DC.CliffsideWylderdrake.Ears, --
-        DC.CliffsideWylderdrake.DualHornedChin
+        DC.CliffsideWylderdrake.Ears, DC.CliffsideWylderdrake.DualHornedChin
     }
 }) -- High Shaman Rotknuckle
 
@@ -270,8 +253,7 @@ map.nodes[36243573] = Rare({
     quest = 73883,
     rewards = {
         Achievement({id = 16678, criteria = 56109}), --
-        DC.HighlandDrake.ClubTail, --
-        DC.WindborneVelocidrake.GrayHorns
+        DC.HighlandDrake.ClubTail, DC.WindborneVelocidrake.GrayHorns
     },
     pois = {Path({35873621, 36243573, 36543508, 36863479})}
 }) -- Mahg the Trampler
@@ -335,11 +317,11 @@ map.nodes[58813260] = Rare({
 
 map.nodes[26494939] = Rare({ -- review -- required 67030
     id = 193149,
-    quest = 72154,
-    note = L['spawns_hourly'],
+    quest = 74030,
+    note = L['spawns_periodically'],
     rewards = {
-        Achievement({id = 16678, criteria = 56110})
-        -- Transmog({item = , slot = L['']}) -- Name
+        Achievement({id = 16678, criteria = 56110}),
+        Transmog({item = 200279, slot = L['plate']}) -- Competitive Throwing Gauntlets
     }
 }) -- Skag the Thrower
 
@@ -352,8 +334,7 @@ map.nodes[10863229] = RareElite({
         Achievement({id = 16678, criteria = 56125}),
         Transmog({item = 200266, slot = L['crossbow']}), -- Gnollish Chewtoy Launcher
         Transmog({item = 200283, slot = L['leather']}), -- Gnoll-Gnawed Breeches
-        DC.HighlandDrake.SpikedClubTail, --
-        DC.CliffsideWylderdrake.Ears
+        DC.HighlandDrake.SpikedClubTail, DC.CliffsideWylderdrake.Ears
     }
 }) -- Snarglebone
 
@@ -432,8 +413,7 @@ map.nodes[23503317] = Rare({
         Transmog({item = 200135, slot = L['2h_sword']}), -- Corroded Greatsword
         Transmog({item = 200245, slot = L['2h_mace']}), -- Leviathan Lure
         Transmog({item = 200187, slot = L['staff']}), -- Rod of Glacial Force
-        DC.HighlandDrake.FinnedBack, --
-        DC.CliffsideWylderdrake.FinnedCheek
+        DC.HighlandDrake.FinnedBack, DC.CliffsideWylderdrake.FinnedCheek
     }
 }) -- Cascade
 
@@ -472,8 +452,7 @@ map.nodes[36723247] = Rare({
     rewards = {
         Transmog({item = 200283, slot = L['leather']}), -- Gnoll-Gnawed Breeches
         Transmog({item = 200266, slot = L['crossbow']}), -- Gnollish Chewtoy Launcher
-        DC.HighlandDrake.SpikedClubTail, --
-        DC.CliffsideWylderdrake.Ears, --
+        DC.HighlandDrake.SpikedClubTail, DC.CliffsideWylderdrake.Ears,
         Item({item = 198048}) -- Titan Training Matrix I
     }
 }) -- Sharpfang
@@ -652,7 +631,8 @@ map.nodes[43703090] = PT.Inscription({
 map.nodes[44606120] = PT.Jewelcrafting({
     id = 201016,
     quest = 70271,
-    note = L['pt_jewel_harmonic_crystal_harmonizer_note']
+    note = L['pt_jewel_harmonic_crystal_harmonizer_note'],
+    pois = {POI({44726215, 44176203, 44686017})}
 }) -- Harmonic Crystal Harmonizer
 
 map.nodes[45006130] = PT.Jewelcrafting({
@@ -709,7 +689,7 @@ map.nodes[17762167] = PM.Engineering({
 
 map.nodes[40146434] = PM.Inscription({
     id = 194840,
-    quest = nil,
+    quest = 70254,
     note = L['pm_script_lydiara_whisperfeather'],
     rewards = {
         Item({item = 190456, note = '25'}), -- Artisan's Mettle
@@ -719,7 +699,7 @@ map.nodes[40146434] = PM.Inscription({
 
 map.nodes[46244076] = PM.Jewelcrafting({
     id = 194841,
-    quest = nil,
+    quest = 70255,
     note = L['pm_jewel_pluutar'],
     rewards = {
         Item({item = 190456, note = '25'}), -- Artisan's Mettle
@@ -909,6 +889,12 @@ map.nodes[72304210] = MagicBoundChest({
 })
 
 -------------------------------------------------------------------------------
+------------------------------ TUSKARR TACKLEBOX ------------------------------
+-------------------------------------------------------------------------------
+
+map.nodes[30512493] = TuskarrTacklebox()
+
+-------------------------------------------------------------------------------
 --------------------------------- DRAGONRACES ---------------------------------
 -------------------------------------------------------------------------------
 
@@ -1052,6 +1038,13 @@ map.nodes[38193815] = PrettyNeat({
     id = 190221,
     rewards = {Achievement({id = 16446, criteria = 55390})}
 }) -- Pine Flicker
+
+map.nodes[16622798 + 1] = PrettyNeat({
+    id = 193259,
+    isRare = true,
+    mapID = map.id,
+    rewards = {Achievement({id = 16446, criteria = 55397})}
+}) -- Blue Terror (node coords must be off by 00000001 from Rare)
 
 -------------------------------------------------------------------------------
 ------------------------------ A LEGENDARY ALBUM ------------------------------
@@ -1238,15 +1231,33 @@ map.nodes[58506660] = ElementalStorm({
 
 ------------------------ MOUNT: TEMPERAMENTAL SKYCLAW -------------------------
 
-map.nodes[19042397] = Collectible({
-    label = '{npc:190892}',
-    note = L['temperamental_skyclaw_note'],
+local TemperamentalSkyclaw = Class('TemperamentalSkyclaw', Collectible, {
+    id = 190892,
     icon = 4218760,
     rewards = {
         Mount({item = 201454, id = 1674}) -- Temperamental Skyclaw
     },
     pois = {POI({58234353, 23074372, 32004400})}
 }) -- Temperamental Skyclaw
+
+function TemperamentalSkyclaw.getters:note()
+    local function status(id, itemsNeed)
+        local itemsHave = GetItemCount(id, true);
+        if ns.PlayerHasItem(id, itemsNeed) then
+            return ns.status.Green(itemsHave .. '/' .. itemsNeed)
+        else
+            return ns.status.Red(itemsHave .. '/' .. itemsNeed)
+        end
+    end
+
+    local note = L['temperamental_skyclaw_note_start']
+    note = note .. '\n\n' .. status(201420, 20) .. ' {item:201420}' -- Gnolan's House Special
+    note = note .. '\n\n' .. status(201421, 20) .. ' {item:201421}' -- Tuskarr Jerky
+    note = note .. '\n\n' .. status(201422, 20) .. ' {item:201422}' -- Flash Frozen Meat
+    return note .. '\n\n' .. L['temperamental_skyclaw_note_end']
+end
+
+map.nodes[19042397] = TemperamentalSkyclaw()
 
 --------------------------- ACHIEVEMENT: SEEING BLUE --------------------------
 
@@ -1290,11 +1301,12 @@ local SnowclawCub = Class('SnowclawCub', Collectible, {
 }) -- Snowclaw Cub
 
 function SnowclawCub.getters:note()
-    local function status(id, count)
-        if ns.PlayerHasItem(id, count) then
-            return ns.status.Green(count .. 'x')
+    local function status(id, itemsNeed)
+        local itemsHave = GetItemCount(id, true);
+        if ns.PlayerHasItem(id, itemsNeed) then
+            return ns.status.Green(itemsHave .. '/' .. itemsNeed)
         else
-            return ns.status.Red(count .. 'x')
+            return ns.status.Red(itemsHave .. '/' .. itemsNeed)
         end
     end
 
@@ -1323,7 +1335,7 @@ map.nodes[66333211] = Collectible({
 
 ------------------- ACHIEVEMENT: THREE MINUTES OR IT'S FREE -------------------
 
-map.nodes[45635482] = Collectible({
+map.nodes[45635482] = Node({
     label = '{item:200949}',
     note = L['the_great_shellkhan_note'],
     icon = 133920,
@@ -1333,6 +1345,65 @@ map.nodes[45635482] = Collectible({
     }
 }) -- Case of Fresh Gleamfish
 
+------------------------- ITEM: MAGICAL SALT CRYSTAL --------------------------
+
+map.nodes[11604106] = Node({
+    label = '{item:201033}',
+    note = L['in_small_cave'] .. ' ' .. L['slurpo_snail_note'],
+    icon = 132780,
+    quest = 74079,
+    rewards = {
+        Item({item = 201033}) -- Magical Salt Crystal
+    },
+    pois = {POI({11084139})} -- Entrance
+}) -- Magical Salt Crystal
+
+----------------------------- TOY: ARTIST'S EASEL -----------------------------
+
+local Ranpiata = Class('Ranpiata', Collectible, {
+    id = 194425,
+    icon = 237053,
+    rewards = {
+        Toy({item = 198474}) -- Artist's Easel
+    },
+    pois = {
+        POI({22133677}) -- Rauvros
+    }
+}) -- Ranpiata
+
+function Ranpiata.getters:note()
+    local function status(questID, questLeg)
+        if C_QuestLog.IsQuestFlaggedCompleted(questID) then
+            return ns.status.Green(questLeg)
+        else
+            return ns.status.Red(questLeg)
+        end
+    end
+
+    local note = '\n' .. status(70166, 1) .. ' ' ..
+                     L['artists_easel_note_step1'] -- The Joy of Painting
+    note = note .. '\n\n' .. status(70168, 2) .. ' ' ..
+               L['artists_easel_note_step2'] -- Sad Little Accidents
+    note = note .. '\n\n' .. status(70170, 3) .. ' ' ..
+               L['artists_easel_note_step3'] -- Beat the Demons Out of It
+    return note .. '\n\n' .. L['artists_easel_note_step4']
+end
+
+map.nodes[07855348] = Ranpiata()
+
+----------------------- TOY: SOMEWHAT-STABILIZED ARCANA -----------------------
+
+map.nodes[46202580] = Collectible({
+    label = '{item:200628}',
+    icon = 136116,
+    note = L['somewhat_stabilized_arcana_note'],
+    quest = {71094, 71095, 71096, 71097},
+    questCount = true,
+    rewards = {
+        Toy({item = 200628}) -- Somewhat-Stabilized Arcana
+    }
+})
+
 ----------------------------- MISCELLANEOUS NPCs ------------------------------
 
 map.nodes[12404920] = NPC({
@@ -1340,7 +1411,7 @@ map.nodes[12404920] = NPC({
     icon = 4638464,
     note = L['elder_poa_note'],
     pois = {
-        POI({12.81, 49.34}) -- Entrance
+        POI({12814934}) -- Entrance
     }
 }) -- Elder Poa (Iskaara Tuskarr Reputation)
 

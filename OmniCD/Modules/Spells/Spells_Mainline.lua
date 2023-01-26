@@ -18,6 +18,7 @@ E.spell_db = {
 
 		{ ["class"]="WARRIOR",["type"]="disarm",["buff"]=236077,["spec"]=true,["name"]="Disarm",["duration"]=45,["icon"]=132343,["spellID"]=236077, },
 		{ ["class"]="WARRIOR",["type"]="externalDefensive",["buff"]=213871,["spec"]=true,["name"]="Bodyguard",["duration"]=15,["icon"]=132359,["spellID"]=213871, },
+		{ ["class"]="WARRIOR",["type"]="offensive",["buff"]=260708,["spec"]=71,["maxRanks"]=1,["name"]="Sweeping Strikes",["duration"]=30,["icon"]=132306,["spellID"]=260708, },
 
 
 
@@ -29,7 +30,7 @@ E.spell_db = {
 
 
 
-		{ ["class"]="WARRIOR",["type"]="offensive",["buff"]=260708,["spec"]=true,["maxRanks"]=1,["name"]="Sweeping Strikes",["ID"]=11,["duration"]=30,["icon"]=132306,["spellID"]=260708, },
+
 
 
 
@@ -242,6 +243,11 @@ E.spell_db = {
 
 
 
+
+
+
+
+
 	},
 	["ROGUE"] = {
 		{ ["class"]="ROGUE",["type"]="cc",["buff"]=207736,["spec"]=true,["name"]="Shadowy Duel",["duration"]=120,["icon"]=1020341,["spellID"]=207736, },
@@ -260,6 +266,7 @@ E.spell_db = {
 		{ ["class"]="ROGUE",["type"]="defensive",["buff"]=11327,["name"]="Vanish",["duration"]=120,["icon"]=132331,["spellID"]=1856, },
 		{ ["class"]="ROGUE",["type"]="offensive",["buff"]=212283,["spec"]=261,["name"]="Symbols of Death",["duration"]=30,["icon"]=252272,["spellID"]=212283, },
 		{ ["class"]="ROGUE",["type"]="other",["buff"]=2983,["name"]="Sprint",["duration"]=120,["icon"]=132307,["spellID"]=2983, },
+		{ ["class"]="ROGUE",["type"]="defensive",["buff"]=1966,["maxRanks"]=1,["name"]="Feint",["duration"]=15,["icon"]=132294,["spellID"]=1966, },
 
 
 		{ ["class"]="ROGUE",["type"]="offensive",["buff"]=385424,["spec"]={385424,321078},["maxRanks"]=1,["name"]="Serrated Bone Spike",["charges"]=3,["ID"]=3,["duration"]=30,["icon"]=3578230,["spellID"]=385424, },
@@ -388,7 +395,7 @@ E.spell_db = {
 
 		{ ["class"]="ROGUE",["type"]="offensive",["buff"]=5938,["spec"]=true,["maxRanks"]=1,["name"]="Shiv",["charges"]=1,["ID"]=121,["duration"]=25,["icon"]=135428,["spellID"]=5938, },
 		{ ["class"]="ROGUE",["type"]="cc",["buff"]=1776,["spec"]=true,["maxRanks"]=1,["name"]="Gouge",["ID"]=122,["duration"]=20,["icon"]=132155,["spellID"]=1776, },
-		{ ["class"]="ROGUE",["type"]="defensive",["buff"]=1966,["spec"]=true,["maxRanks"]=1,["name"]="Feint",["ID"]=123,["duration"]=15,["icon"]=132294,["spellID"]=1966, },
+
 
 
 
@@ -434,6 +441,9 @@ E.spell_db = {
 
 
 		{ ["class"]="ROGUE",["type"]="offensive",["buff"]=385627,["spec"]=true,["maxRanks"]=1,["name"]="Kingsbane",["ID"]=165,["duration"]=60,["icon"]=1259291,["spellID"]=385627, },
+
+
+
 
 
 	},
@@ -647,7 +657,7 @@ E.spell_db = {
 
 		{ ["class"]="MONK",["type"]="externalDefensive",["buff"]=116849,["spec"]=true,["maxRanks"]=1,["name"]="Life Cocoon",["ID"]=27,["duration"]=120,["icon"]=627485,["spellID"]=116849, },
 
-		{ ["class"]="MONK",["type"]="offensive",["buff"]=386276,["spec"]={386276,321078},["maxRanks"]=1,["name"]="Bonedust Brew",["ID"]=29,["duration"]=60,["icon"]=3578227,["spellID"]=386276, },
+		{ ["class"]="MONK",["type"]="offensive",["buff"]=386276,["spec"]=true,["maxRanks"]=1,["name"]="Bonedust Brew",["ID"]=29,["duration"]=60,["icon"]=3578227,["spellID"]=386276, },
 
 
 
@@ -803,6 +813,15 @@ E.spell_db = {
 
 
 		{ ["class"]="MONK",["type"]="defensive",["buff"]=115176,["spec"]=true,["maxRanks"]=1,["name"]="Zen Meditation",["ID"]=169,["duration"]=300,["icon"]=642417,["spellID"]=115176, },
+
+
+
+
+
+
+
+
+
 
 
 
@@ -1039,7 +1058,7 @@ E.spell_db = {
 
 
 
-
+		{ ["class"]="HUNTER",["type"]="offensive",["buff"]=400456,["spec"]=true,["maxRanks"]=1,["name"]="Salvo",["ID"]=18,["duration"]=45,["icon"]=1033904,["spellID"]=400456, },
 
 
 
@@ -1085,7 +1104,7 @@ E.spell_db = {
 
 		{ ["class"]="HUNTER",["type"]="disarm",["buff"]=186387,["spec"]=true,["maxRanks"]=1,["name"]="Bursting Shot",["ID"]=60,["duration"]=30,["icon"]=1376038,["spellID"]=186387, },
 
-		{ ["class"]="HUNTER",["type"]="offensive",["buff"]=260402,["spec"]=true,["maxRanks"]=1,["name"]="Double Tap",["ID"]=62,["duration"]=60,["icon"]=537468,["spellID"]=260402, },
+
 
 
 
@@ -1193,9 +1212,11 @@ E.spell_db = {
 		{ ["class"]="HUNTER",["type"]="offensive",["buff"]=359844,["spec"]=true,["maxRanks"]=1,["name"]="Call of the Wild",["ID"]=154,["duration"]=180,["icon"]=4667415,["spellID"]=359844, },
 
 
+
+
 	},
 	["EVOKER"] = {
-		{ ["class"]="EVOKER",["type"]="offensive",["buff"]=377509,["spec"]=true,["name"]="Dream Projection",["duration"]=90,["icon"]=4622475,["spellID"]=377509, },
+		{ ["class"]="EVOKER",["type"]="offensive",["buff"]=377509,["spec"]=true,["name"]="Dream Projection",["duration"]=60,["icon"]=4622475,["spellID"]=377509, },
 		{ ["class"]="EVOKER",["type"]="offensive",["buff"]=390386,["name"]="Fury of the Aspects",["duration"]=300,["icon"]=4723908,["spellID"]=390386,["pve"]=true, },
 		{ ["class"]="EVOKER",["type"]="defensive",["buff"]=355913,["spec"]=1467,["name"]="Emerald Blossom",["duration"]=30,["icon"]=4622457,["spellID"]=355913, },
 		{ ["class"]="EVOKER",["type"]="counterCC",["buff"]=378464,["spec"]=true,["name"]="Nullifying Shroud",["duration"]=90,["icon"]=135752,["spellID"]=378464, },
@@ -1227,7 +1248,7 @@ E.spell_db = {
 
 
 		{ ["class"]="EVOKER",["type"]="offensive",["buff"]=370537,["spec"]=true,["maxRanks"]=1,["name"]="Stasis",["ID"]=18,["duration"]=90,["icon"]=4630476,["spellID"]=370537, },
-		{ ["class"]="EVOKER",["type"]="offensive",["buff"]=368412,["spec"]=true,["maxRanks"]=1,["name"]="Time of Need",["ID"]=19,["duration"]=90,["icon"]=4630462,["spellID"]=368412, },
+		{ ["class"]="EVOKER",["type"]="offensive",["buff"]=368412,["spec"]=true,["maxRanks"]=1,["name"]="Time of Need",["ID"]=19,["duration"]=60,["icon"]=4630462,["spellID"]=368412, },
 
 
 
@@ -1586,7 +1607,7 @@ E.spell_db = {
 
 		{ ["class"]="DRUID",["type"]="offensive",["buff"]=202425,["spec"]=true,["maxRanks"]=1,["name"]="Warrior of Elune",["ID"]=204,["duration"]=45,["icon"]=135900,["spellID"]=202425, },
 
-		{ ["class"]="DRUID",["type"]="other",["buff"]=202359,["spec"]=true,["maxRanks"]=1,["name"]="Astral Communion",["ID"]=206,["duration"]=60,["icon"]=611423,["spellID"]=202359, },
+		{ ["class"]="DRUID",["type"]="other",["buff"]=202359,["spec"]=400636,["maxRanks"]=1,["name"]="Astral Communion",["ID"]=206,["duration"]=60,["icon"]=611423,["spellID"]=202359, },
 
 
 
@@ -1596,6 +1617,18 @@ E.spell_db = {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+		{ ["class"]="DRUID",["type"]="other",["buff"]=204066,["spec"]=true,["maxRanks"]=1,["name"]="Lunar Beam",["ID"]=227,["duration"]=75,["icon"]=136057,["spellID"]=204066, },
 
 
 	},
@@ -1794,6 +1827,8 @@ E.spell_db = {
 
 
 
+
+
 	},
 	["PRIEST"] = {
 		{ ["class"]="PRIEST",["type"]="offensive",["buff"]=211522,["spec"]=true,["name"]="Psyfiend",["duration"]=45,["icon"]=537021,["spellID"]=211522 },
@@ -1876,7 +1911,7 @@ E.spell_db = {
 		{ ["class"]="PRIEST",["type"]="defensive",["buff"]=391124,["spec"]=true,["maxRanks"]=1,["name"]="Restitution",["ID"]=53,["duration"]=600,["icon"]=1295528,["spellID"]=391124, },
 
 
-		{ ["class"]="PRIEST",["type"]="offensive",["buff"]=372616,["spec"]=true,["maxRanks"]=1,["name"]="Empyreal Blaze",["ID"]=55,["duration"]=60,["icon"]=525023,["spellID"]=372616, },
+		{ ["class"]="PRIEST",["type"]="offensive",["buff"]=372616,["spec"]=true,["maxRanks"]=1,["name"]="Empyreal Blaze",["ID"]=55,["duration"]=60,["icon"]=4667419,["spellID"]=372616, },
 
 
 		{ ["class"]="PRIEST",["type"]="offensive",["buff"]=200183,["spec"]=true,["maxRanks"]=1,["name"]="Apotheosis",["ID"]=58,["duration"]=120,["icon"]=1060983,["spellID"]=200183, },
@@ -2004,6 +2039,9 @@ E.spell_db = {
 
 
 		{ ["class"]="PRIEST",["type"]="other",["buff"]=73325,["spec"]=true,["maxRanks"]=1,["name"]="Leap of Faith",["ID"]=164,["duration"]=90,["icon"]=463835,["spellID"]=73325, },
+
+
+
 
 
 
@@ -2166,7 +2204,7 @@ E.spell_db = {
 
 
 
-		{ ["class"]="PALADIN",["type"]="offensive",["buff"]=216331,["spec"]=true,["maxRanks"]=1,["name"]="Avenging Crusader",["ID"]=115,["duration"]=120,["icon"]=589117,["spellID"]=216331, },
+		{ ["class"]="PALADIN",["type"]="offensive",["buff"]=216331,["spec"]=true,["maxRanks"]=1,["name"]="Avenging Crusader",["ID"]=115,["duration"]=45,["icon"]=589117,["spellID"]=216331, },
 
 
 

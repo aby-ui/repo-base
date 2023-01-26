@@ -1189,7 +1189,7 @@ local function updateNPCGroupCount( gName, gLeader )
 	for mapId,mapFile in pairs( nodes ) do
 		for i,node in ipairs( nodes[mapId] ) do
 			if ( node["group"]:find( "rare" ) or node["group"]:find( "invasion" ) ) then
-				for sIdx, search in ipairs( node["search"] ) do
+				for sIdx, search in ipairs( node["search"] or {} ) do
 					-- first element is the hardfilter
 					if ( sIdx >= 2 and gName:match( search ) ) then
 						--print( "add " .. gName .. " to " .. node["label"] );

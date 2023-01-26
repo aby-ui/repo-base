@@ -71,7 +71,7 @@ local Q1 = Quest({id = {58506, 56374, 56209, 56375, 56472, 56376}})
 -- Forging Onward => Magni's Findings
 local Q2 = Quest({id = {56377, 56536, 56537, 56538, 56539, 56771, 56540}})
 
-if UnitFactionGroup('player') == 'Alliance' then
+if ns.faction == 'Alliance' then
     map.intro = Intro({rewards = {Quest({id = {58496, 58498, 58502}}), Q1, Q2}})
 else
     map.intro = Intro({rewards = {Quest({id = {58582, 58583}}), Q1, Q2}})

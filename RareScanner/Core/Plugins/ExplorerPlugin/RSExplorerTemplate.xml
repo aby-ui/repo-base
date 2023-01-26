@@ -288,19 +288,6 @@
 		  </OnLeave>
         </Scripts>
       </CheckButton>
-      <CheckButton parentKey="FilterWorldmapCheckButton" inherits="ChatConfigCheckButtonTemplate">
-      	<Anchors>
-	      <Anchor point="LEFT" relativeKey="$parent.AutoFilterCheckButton.Text" relativePoint="RIGHT" x="30" y="-2"/>
-    	</Anchors>
-        <Scripts>
-		  <OnEnter>
-		  	self:GetParent():GetParent():ShowTooltip(self)
-		  </OnEnter>
-		  <OnLeave>
-		  	self:GetParent():GetParent():HideTooltip(self)
-		  </OnLeave>
-        </Scripts>
-      </CheckButton>
       <Button parentKey="ApplyFiltersButton" inherits="SharedButtonSmallTemplate">
 	    <Anchors>
 	      <Anchor point="RIGHT" x="-20" y="5" />

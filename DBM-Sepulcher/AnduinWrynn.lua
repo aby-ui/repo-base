@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2469, "DBM-Sepulcher", nil, 1195)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20221206222943")
+mod:SetRevision("20230124042422")
 mod:SetCreatureID(181954)
 mod:SetEncounterID(2546)
 mod:SetUsedIcons(4, 5, 6, 7, 8)
@@ -12,7 +12,7 @@ mod:SetMinSyncRevision(20220405000000)
 mod:RegisterCombat("combat")
 
 mod:RegisterEventsInCombat(
-	"SPELL_CAST_START 362405 361989 365295 361815 362771 363024 365120 365872 365958 365805",
+	"SPELL_CAST_START 362405 361989 365295 361815 362771 363024 365120 365872 365958 365805 365008",
 	"SPELL_CAST_SUCCESS 365030 367631 363133",
 	"SPELL_SUMMON 365039",
 	"SPELL_AURA_APPLIED 362055 364031 361992 361993 365021 362505 362862 365966 366849 363028 367632 362774",
@@ -502,7 +502,7 @@ function mod:SPELL_AURA_APPLIED(args)
 				specWarnDarkZealOther:Play("tauntboss")
 			end
 		end
-	elseif spellId == 362505 then--or spellId == 365216
+	elseif spellId == 362505 then--or 365216
 		timerKingsmourneHungersCD:Stop()
 		timerBlasphemyCD:Stop()
 		timerBefouledBarrierCD:Stop()
@@ -577,7 +577,7 @@ function mod:SPELL_AURA_REMOVED(args)
 		if args:IsPlayer() then
 			yellWickedStarFades:Cancel()
 		end
-	elseif spellId == 362505 then-- or spellId == 365216
+	elseif spellId == 362505 then-- or 365216
 		self.vb.hungersCount = 0
 		self.vb.blastphemyCount = 0
 		self.vb.befouledCount = 0

@@ -1,7 +1,7 @@
-## Interface: 100002
+## Interface: 100005
 ## Title: WeakAuras
 ## Author: The WeakAuras Team
-## Version: 5.3.4
+## Version: 5.3.7
 ## X-Flavor: Mainline
 ## Notes: A powerful, comprehensive utility for displaying graphics and information based on buffs, debuffs, and other triggers.
 ## Notes-esES: Potente y completa aplicación que te permitirá mostrar por pantalla múltiples diseños, basados en beneficios, perjuicios y otros activadores.
@@ -54,6 +54,7 @@ AuraEnvironment.lua
 AuraEnvironmentWrappedSystems.lua
 DebugLog.lua
 Dragonriding.lua
+SubscribableObject.lua
 
 # Region support
 RegionTypes\RegionPrototype.lua

@@ -88,8 +88,12 @@ ns.icons = { -- name => path
     envelope = {Icon('envelope'), Glow('envelope')},
     left_mouse = {Icon('left_mouse'), nil},
     scroll = {Icon('scroll'), Glow('scroll')},
-    world_quest = {Icon('world_quest'), Glow('world_quest')}
+    world_quest = {Icon('world_quest'), Glow('world_quest')},
 
+    check_bl = {Icon('check_blue'), nil},
+    check_gn = {Icon('check_green'), nil},
+    check_gy = {Icon('check_gray'), nil},
+    check_yw = {Icon('check_yellow'), nil}
 }
 
 -------------------------------------------------------------------------------
@@ -103,7 +107,8 @@ local function GetIconPath(name)
 end
 
 local function GetIconLink(name, size, offsetX, offsetY)
-    local link = '|T' .. GetIconPath(name) .. ':' .. size .. ':' .. size
+    local link = '|T' .. GetIconPath(name) .. ':' .. (size or 0) .. ':' ..
+                     (size or 0) -- if size is nil icon will be textHeight
     if offsetX and offsetY then
         link = link .. ':' .. offsetX .. ':' .. offsetY
     end

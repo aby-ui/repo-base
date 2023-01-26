@@ -318,7 +318,7 @@ L['malbog_note'] = 'Talk to {npc:179729} to gain {spell:355078} and follow the f
 L['offering_box_note'] = 'Requires Small Offering Key which can be found on the top of the west side wall of the near by ruins.'
 L['pop_quiz_note'] = 'The Pop Quiz event will spawn randomly on the map. Click on the Abandoned Veilstaff and answer the questions from {npc:180162}.'
 L['razorwing_note'] = 'Hand in 10x {item:187054} dropped by devourers in the area.'
-L['reliwik_note'] = 'Click on the uncorrupted razorwing egg to pull him down.'
+L['reliwik_note'] = 'Click on the Uncorrupted Razorwing Egg to pull him down.'
 L['spectral_bound_chest'] = 'Spectral Bound Chest'
 L['spectral_bound_note'] = 'Click on 3 nearby Spectral Keys to unlock the chest.'
 L['stonecrusher_note'] = 'Talk to {npc:179974} to start the event.'
@@ -673,9 +673,9 @@ L['nexus_area_domination_bridge'] = 'On a bridge south of the Altar of Dominatio
 L['nexus_area_domination_edge'] = 'On the edge atop the Altar of Domination'
 L['nexus_area_domination_room'] = 'In a small room atop the Altar of Domination'
 L['nexus_area_domination_stairs'] = 'Atop the Altar of Domination next to the {npc:173904}'
-L['nexus_area_gorgoa_bank'] = 'On the bank of the Gorgoa (River of Souls)'
+L['nexus_area_gorgoa_bank'] = 'On the bank of the Gorgoa, River of Souls'
 L['nexus_area_gorgoa_middle'] = 'Right in the middle of the river yo!'
-L['nexus_area_gorgoa_mouth'] = 'At the mouth of the Gorgoa (River of Souls)'
+L['nexus_area_gorgoa_mouth'] = 'At the mouth of the Gorgoa, River of Souls'
 L['nexus_area_perdition_wall'] = 'Along the outer wall of Perdition Hold'
 L['nexus_area_torment_rock'] = 'On a rock in the Planes of Torment'
 L['nexus_area_zone_edge'] = 'Along the edge of the zone'
@@ -782,7 +782,7 @@ The {item:185972} can be looted once a week and contains 50 {currency:1906}.
 ]]
 
 L['options_icons_mawsworn_blackguard'] = '{achievement:14742}'
-L['options_icons_mawsworn_blackguard_desc'] = 'Mawsworn Blackguard locations for {achievement:14742}'
+L['options_icons_mawsworn_blackguard_desc'] = '{npc:183173} locations for {achievement:14742}'
 
 L['mawsworn_blackguard'] = 'Mawsworn Blackguard'
 L['mawsworn_blackguard_note'] = 'Easily target a stealthed {npc:183173}:'
@@ -806,8 +806,8 @@ L['night_fae_assault_note'] = 'The {item:185991} can be looted once per assault'
 L['night_fae_assault_quantity_note'] = 'Rift Hidden Cache opened'
 L['kyrian_assault'] = '{quest:63824}'
 L['kyrian_assault_note'] = 'The {item:185993} can be looted once per assault'
-L['kyrian_assault_quantity_note1'] = 'Sly found'
-L['kyrian_assault_quantity_note2'] = 'Dances near forges'
+L['kyrian_assault_quantity_note1'] = '{npc:179096} found'
+L['kyrian_assault_quantity_note2'] = '/dance near forges'
 
 -------------------------------------------------------------------------------
 ---------------------- TORGHAST, THE TOWER OF THE DAMNED ----------------------

@@ -1,7 +1,7 @@
 --[[
     This file is part of Decursive.
 
-    Decursive (v 2.7.8.13-3-ga7591ae) add-on for World of Warcraft UI
+    Decursive (v 2.7.8.13-6-g740015d) add-on for World of Warcraft UI
     Copyright (C) 2006-2019 John Wellesz (Decursive AT 2072productions.com) ( http://www.2072productions.com/to/decursive.php )
 
     Decursive is free software: you can redistribute it and/or modify
@@ -24,7 +24,7 @@
     Decursive is distributed in the hope that it will be useful, but WITHOUT
     ANY WARRANTY.
 
-    This file was last updated on 2020-11-21T16:50:01Z
+    This file was last updated on 2023-01-25T09:34:53Z
 --]]
 -------------------------------------------------------------------------------
 
@@ -331,6 +331,8 @@ L["OPT_HIDEMFS_GROUP"] = "in solo or in party"
 L["OPT_HIDEMFS_GROUP_DESC"] = "Hide the MUF's window when you are not in a raid."
 L["OPT_HIDEMFS_NEVER"] = "Never auto-hide"
 L["OPT_HIDEMFS_NEVER_DESC"] = "Never auto-hide the MUFs' window."
+L["OPT_HIDEMFS_RAID"] = "in raid"
+L["OPT_HIDEMFS_RAID_DESC"] = "Hide the MUF's window when you are in a raid."
 L["OPT_HIDEMFS_SOLO"] = "in solo"
 L["OPT_HIDEMFS_SOLO_DESC"] = "Hide the MUFs' window when you are not part of any kind of group."
 L["OPT_HIDEMUFSHANDLE"] = "Hide the MUFs handle"
@@ -508,4 +510,4 @@ L["UNSTABLERELEASE"] = "Unstable release"
 
 
 
-T._LoadedFiles["enUS.lua"] = "2.7.8.13-3-ga7591ae";
+T._LoadedFiles["enUS.lua"] = "2.7.8.13-6-g740015d";

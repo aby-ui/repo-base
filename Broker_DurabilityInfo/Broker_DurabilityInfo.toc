@@ -1,4 +1,4 @@
-## Interface: 100002
+## Interface: 100005
 ## Title: Broker: DurabilityInfo
 ## Notes: Displays item durability and repair cost.
 ## Version: v1.30

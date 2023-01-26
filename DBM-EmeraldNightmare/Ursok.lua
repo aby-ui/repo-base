@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(1667, "DBM-EmeraldNightmare", nil, 768)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20220116041824")
+mod:SetRevision("20230124052137")
 mod:SetCreatureID(100497)
 mod:SetEncounterID(1841)
 mod:SetUsedIcons(6, 4)
@@ -13,7 +13,7 @@ mod:RegisterCombat("combat")
 mod:RegisterEventsInCombat(
 	"SPELL_CAST_START 197942 197969",
 	"SPELL_CAST_SUCCESS 197943",
-	"SPELL_AURA_APPLIED 198006 197943 205611 204859",
+	"SPELL_AURA_APPLIED 198006 197943 205611 204859 198388",
 	"SPELL_AURA_APPLIED_DOSE 197943",
 	"SPELL_AURA_REMOVED 198006",
 	"SPELL_DAMAGE 205611",

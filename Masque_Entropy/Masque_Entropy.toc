@@ -1,4 +1,4 @@
-## Interface: 100002
+## Interface: 100005
 
 ## Title: Masque: Entropy
 ## Notes: Entropy skins for Masque.
@@ -10,7 +10,7 @@
 ## Notes-ruRU: Скин Entropy для Masque.
 ## Notes-zhTW: Masque的Entropy皮膚。
 
-## Version: 10.0.2
+## Version: 10.0.5
 ## Author: StormFX
 ## Dependencies: Masque
 

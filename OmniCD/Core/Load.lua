@@ -104,6 +104,7 @@ function E:OnEnable()
 	end
 
 	self.enabled = true
+
 end
 
 function E:Refresh(arg)

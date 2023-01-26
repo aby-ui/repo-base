@@ -216,6 +216,7 @@ local unknownTexts = {
 -- Exceptions              --
 -----------------------------
 
+-- This is a list of exceptions with a key of their itemID and a value of what their result should be.
 
 local exceptionItems = {
     [HEAD] = {
@@ -838,11 +839,6 @@ function CanIMogIt:GetItemLinkFromSourceID(sourceID)
 end
 
 
-function CanIMogIt:GetItemQuality(itemID)
-    return select(3, GetItemInfo(itemID))
-end
-
-
 function CanIMogIt:GetItemExpansion(itemID)
     return select(15, GetItemInfo(itemID))
 end
@@ -878,13 +874,22 @@ function CanIMogIt:GetItemSlotName(itemLink)
 end
 
 
+function CanIMogIt:IsItemBattlepet(itemLink)
+    return string.match(itemLink, ".*(battlepet):.*") == "battlepet"
+end
+
+
+function CanIMogIt:IsItemKeystone(itemLink)
+    return string.match(itemLink, ".*(keystone):.*") == "keystone"
+end
+
+
 function CanIMogIt:IsReadyForCalculations(itemLink)
     -- Returns true of the item's GetItemInfo is ready, or if it's a keystone,
     -- or if it's a battlepet.
-    local itemInfo = GetItemInfo(itemLink)
-    local isKeystone = string.match(itemLink, ".*(keystone):.*") == "keystone"
-    local isBattlepet = string.match(itemLink, ".*(battlepet):.*") == "battlepet"
-    if itemInfo or isKeystone or isBattlepet then
+    if GetItemInfo(itemLink)
+        or CanIMogIt:IsItemKeystone(itemLink)
+        or CanIMogIt:IsItemBattlepet(itemLink) then
         return true
     end
     return false
@@ -1204,19 +1209,18 @@ end
 function CanIMogIt:IsTransmogable(itemLink)
     -- Returns whether the item is transmoggable or not.
 
-    -- White items are not transmoggable.
-    local quality = CanIMogIt:GetItemQuality(itemLink)
-    if quality == nil then return end
-    if quality <= 1 then
-        return false
-    end
-
     local is_misc_subclass = CanIMogIt:IsArmorSubClassID(MISC, itemLink)
     if is_misc_subclass and miscArmorExceptions[CanIMogIt:GetItemSlotName(itemLink)] == nil then
         return false
     end
 
     local itemID, _, _, slotName = GetItemInfoInstant(itemLink)
+
+    if CanIMogIt:IsItemBattlepet(itemLink) or CanIMogIt:IsItemKeystone(itemLink) then
+        -- Item is never transmoggable if it's a battlepet or keystone.
+        -- We can't wear battlepets on our heads yet!
+        return false
+    end
 
     -- See if the game considers it transmoggable
     local transmoggable = select(3, C_Transmog.CanTransmogItem(itemID))

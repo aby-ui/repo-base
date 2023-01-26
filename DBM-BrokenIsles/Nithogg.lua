@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(1749, "DBM-BrokenIsles", 1, 822)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20220116041824")
+mod:SetRevision("20230124052137")
 mod:SetCreatureID(107023)
 mod:SetEncounterID(1880)
 mod:SetReCombatTime(20)
@@ -12,7 +12,7 @@ mod:RegisterCombat("combat")
 mod:RegisterEventsInCombat(
 	"SPELL_CAST_START 212867 212852",
 	"SPELL_CAST_SUCCESS 212887",
-	"SPELL_AURA_APPLIED 212943 212852 212884",
+	"SPELL_AURA_APPLIED 212943 212852 212884 212887",
 	"RAID_BOSS_WHISPER",
 	"UNIT_SPELLCAST_SUCCEEDED target focus mouseover"
 )

@@ -29,13 +29,13 @@ local Skins = Core.Skins
 local DEFAULT_SKIN = Core.DEFAULT_SKIN
 
 -- @ Skins\Regions
-local ActionTypes, BaseTypes, RegTypes = Core.ActionTypes, Core.BaseTypes, Core.RegTypes
+local ActionTypes, RegTypes = Core.ActionTypes, Core.RegTypes
 
 -- @ Core\Utility
 local GetColor, GetScale, NoOp = Core.GetColor, Core.GetScale, Core.NoOp
 
 -- @ Core\Core
-local GetRegion, GetSubType, GetType = Core.GetRegion, Core.GetSubType, Core.GetType
+local GetRegion, GetType = Core.GetRegion, Core.GetType
 
 -- @ Core\Button
 local SkinButton = Core.SkinButton
@@ -87,34 +87,15 @@ end
 
 -- Adds or reassigns a button to the group.
 function GMT:AddButton(Button, Regions, Type, Strict)
-	local oType = GetType(Button)
+	local oType, bType = GetType(Button, Type)
 
 	if not oType then
 		if Core.Debug then
-			error("Bad argument to group method 'AddButton'. 'Button' must be a button object.", 2)
+			error("Bad argument to group method 'AddButton'. 'Button' must be a Button, CheckButton or Frame object.", 2)
 		end
 		return
 	elseif oType == "Frame" then
 		Strict = true
-	end
-
-	Type = Type or Button.__MSQ_bType
-
-	local Checked
-
-	if not Type or not RegTypes[Type] then
-		Type = GetType(Button, oType)
-		Checked = true
-	end
-
-	if BaseTypes[Type] and not Checked then
-		Type = GetSubType(Button, Type)
-	end
-
-	Button.__MSQ_bType = Type
-
-	if ActionTypes[Type] then
-		self.ActionButtons = true
 	end
 
 	Regions = Regions or Button.__Regions
@@ -132,12 +113,16 @@ function GMT:AddButton(Button, Regions, Type, Strict)
 
 	Group[Button] = self
 
+	if ActionTypes[bType] then
+		self.ActionButtons = true
+	end
+
 	if type(Regions) ~= "table" then
 		Regions = {}
 	end
 
 	if not Strict then
-		local Layers = RegTypes[Type]
+		local Layers = RegTypes[bType]
 
 		for Layer, Info in pairs(Layers) do
 			local Region = Regions[Layer]
@@ -162,8 +147,12 @@ function GMT:AddButton(Button, Regions, Type, Strict)
 
 	local db = self.db
 
-	if not db.Disabled and not self.Queued then
-		SkinButton(Button, Regions, db.SkinID, db.Backdrop, db.Shadow, db.Gloss, db.Colors, db.Scale, db.Pulse)
+	if not self.Queued then
+		if Parent and not Parent.db.Disabled and db.Disabled then
+			SkinButton(Button, Regions, false)
+		elseif not db.Disabled then
+			SkinButton(Button, Regions, db.SkinID, db.Backdrop, db.Shadow, db.Gloss, db.Colors, db.Scale, db.Pulse)
+		end
 	end
 end
 

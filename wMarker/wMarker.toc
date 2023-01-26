@@ -1,9 +1,9 @@
-## Interface: 100002
+## Interface: 100005
 ## Title: |cffe1a500w|cff69ccf0Marker
-## Notes: I'm going to to get my engineers to invent a combustible lemon that burns your house down! Now with profiles!
+## Notes: I'm going to to get my engineers to invent a combustible lemon that burns your house down! Now with profiles!|cff69ccf0|n|n/wMarker - Options|n/wma - Options|n|n/rc - Ready Check|n/roc - Role Check
 ## Author: Waky
 ## Dependencies: 
-## Version: 3.0.6
+## Version: 3.0.7
 ## SavedVariables: wMarkerAceDB
 ## SavedVariablesPerCharacter: wMarkerDB, wFlaresDB
 

@@ -2705,7 +2705,7 @@ function KT:IsTrackerEmpty(noaddon)
 			self.IsTableEmpty(self.activeTasks) and
 			C_QuestLog.GetNumWorldQuestWatches() == 0 and
 			not self.inScenario and
-			#C_TradeSkillUI.GetRecipesTracked() == 0)
+			#C_TradeSkillUI.GetRecipesTracked(true) == 0 and #C_TradeSkillUI.GetRecipesTracked(false) == 0)
 	if not noaddon then
 		result = (result and not self.AddonPetTracker:IsShown())
 	end

@@ -19,142 +19,142 @@ local _, Core = ...
 local _G, type = _G, type
 
 ----------------------------------------
--- Region Finder
+-- Internal
 ---
 
--- Gets a button region.
-function Core.GetRegion(Button, Info)
-	local Key, Region = Info.Key, nil
-
-	if Key then
-		local Obj = Key and Button[Key]
-
-		if Obj and type(Obj) == "table" then
-			local Type = Obj.GetObjectType and Obj:GetObjectType()
-
-			if Type == Info.Type then
-				Region = Obj
-			end
-		end
-	end
-
-	if not Region then
-		local Func, Name = Info.Func, Info.Name
-
-		if Func then
-			local f = Func and Button[Func]
-			Region = f and f(Button)
-		elseif Name then
-			local n = Button.GetName and Button:GetName()
-			Region = n and _G[n..Name]
-		end
-	end
-
-	return Region
-end
+local BaseTypes, RegTypes = Core.BaseTypes, Core.RegTypes
 
 ----------------------------------------
--- Type Validator
+-- Frame Type
 ---
 
-do
-	-- Valid Types
-	local oTypes = {
-		Button = true,
-		CheckButton = true,
-		Frame = true,
-	}
+-- Frame Types
+local oTypes = {
+	Button = true,
+	CheckButton = true,
+	Frame = true,
+}
 
-	-- Function to check for a sub-type.
-	local function GetSubType(Button, bType, oType)
-		if not Button then return end
+-- Validates and returns the frame type.
+local function GetFrameType(Button)
+	if type(Button) ~= "table" then return end
 
-		local Name = Button.GetName and Button:GetName()
-		local SubType = bType
+	local oType = Button.__MSQ_oType
 
-		if bType == "Action" then
-			if Name then
-				if Name:find("Stance") then
-					SubType = "Stance"
-				elseif Name:find("Possess") then
-					SubType = "Possess"
-				elseif Name:find("Pet") then
-					SubType = "Pet"
+	if not oType then
+		oType = Button.GetObjectType and Button:GetObjectType()
+	end
+
+	-- Validate the frame type.
+	if not oType or not oTypes[oType] then
+		oType = nil
+	end
+
+	Button.__MSQ_oType = oType
+	return oType
+end
+
+-- Returns a sub-type, if applicable.
+local function GetSubType(Button, bType)
+	local Name = Button.GetName and Button:GetName()
+	local SubType = bType
+
+	if bType == "Action" then
+		if Name then
+			if Name:find("Stance") then
+				SubType = "Stance"
+			elseif Name:find("Possess") then
+				SubType = "Possess"
+			elseif Name:find("Pet") then
+				SubType = "Pet"
+			end
+		end
+
+	elseif bType == "Item" then
+		if Name then
+			-- Retail Bag Buttons
+			if Button.SlotHighlightTexture then
+				if Name:find("Backpack") then
+					SubType = "Backpack"
+				elseif Name:find("CharacterBag") then
+					SubType = "BagSlot"
+				elseif Name:find("ReagentBag") then
+					SubType = "ReagentBag"
+				end
+
+			-- Classic Bag Buttons
+			elseif Button.__MSQ_oType == "CheckButton" then
+				if Name:find("Backpack") then
+					SubType = "Backpack"
+				elseif Name:find("CharacterBag") then
+					SubType = "BagSlot"
 				end
 			end
-		elseif bType == "Item" then
-			if Name then
-				-- Retail Bag Buttons
-				if Button.SlotHighlightTexture then
-					if Name:find("Backpack") then
-						SubType = "Backpack"
-					elseif Name:find("CharacterBag") then
-						SubType = "BagSlot"
-					elseif Name:find("ReagentBag") then
-						SubType = "ReagentBag"
-					end
+		end
 
-				-- Classic Bag Buttons
-				elseif Button.__MSQ_oType == "CheckButton" then
-					if Name:find("Backpack") then
-						SubType = "Backpack"
-					elseif Name:find("CharacterBag") then
-						SubType = "BagSlot"
-					end
-				end
+	elseif bType == "Aura" then
+		if Button.DebuffBorder then
+			SubType = Button.auraType or "Aura"
+
+			if SubType == "DeadlyDebuff" then
+				SubType = "Debuff"
+			elseif SubType == "TempEnchant" then
+				SubType = "Enchant"
 			end
-		elseif bType == "Aura" then
+		else
 			local Border = Button.Border or (Name and _G[Name.."Border"])
 
 			if Border then
 				SubType = (Button.symbol and "Debuff") or "Enchant"
 			end
 		end
-		return SubType
 	end
 
-	Core.GetSubType = GetSubType
+	return SubType
+end
 
-	-- Returns a button's object or internal type.
-	function Core.GetType(Button, oType)
-		local Type
+-- Returns a button's internal type.
+function Core.GetType(Button, bType)
+	local oType = GetFrameType(Button)
 
-		if not oType then
-			if type(Button) == "table" then
-				Type = Button.GetObjectType and Button:GetObjectType()
+	-- Exit if the frame type is invalid.
+	if not oType then return end
 
-				if not Type or not oTypes[Type] then
-					Type = nil
-				end
+	bType = bType or Button.__MSQ_bType
 
-				Button.__MSQ_oType = Type
+	-- Invalid/unspecified type.
+	if not bType or not RegTypes[bType] then
+		bType = bType or "Legacy"
+
+		if oType == "CheckButton" then
+			-- Action
+			if Button.HotKey then
+				bType = GetSubType(Button, "Action")
+
+			-- Item
+			-- * Classic bag buttons are CheckButtons.
+			elseif Button.IconBorder then
+				bType = GetSubType(Button, "Item")
 			end
-		else
-			Type = "Legacy"
 
-			if oType == "CheckButton" then
-				-- Action
-				if Button.HotKey then
-					Type = GetSubType(Button, "Action", oType)
+		elseif oType == "Button" then
+			-- Item
+			if Button.IconBorder then
+				bType = GetSubType(Button, "Item")
 
-				-- Item
-				-- * Classic bag buttons are CheckButtons.
-				elseif Button.IconBorder then
-					Type = GetSubType(Button, "Item", oType)
-				end
-			elseif oType == "Button" then
-				-- Item
-				if Button.IconBorder then
-					Type = GetSubType(Button, "Item", oType)
-
-				-- Aura
-				elseif Button.duration then
-					Type = GetSubType(Button, "Aura", oType)
-				end
+			-- Aura
+			elseif Button.duration or Button.Duration then
+				bType = GetSubType(Button, "Aura")
 			end
 		end
-		return Type
+
+	-- Declared as a base type.
+	elseif BaseTypes[bType] then
+		bType = GetSubType(Button, bType)
 	end
+
+	Button.__MSQ_bType = bType
+	return oType, bType
 end
 
 ----------------------------------------
@@ -187,3 +187,38 @@ Core.Queue = {
 }
 
 setmetatable(Core.Queue, {__call = Core.Queue.Add})
+
+----------------------------------------
+-- Region Finder
+---
+
+-- Returns a region for a button based on a template.
+function Core.GetRegion(Button, Info)
+	local Key, Region = Info.Key, nil
+
+	if Key then
+		local Obj = Key and Button[Key]
+
+		if Obj and type(Obj) == "table" then
+			local Type = Obj.GetObjectType and Obj:GetObjectType()
+
+			if Type == Info.Type then
+				Region = Obj
+			end
+		end
+	end
+
+	if not Region then
+		local Func, Name = Info.Func, Info.Name
+
+		if Func then
+			local f = Func and Button[Func]
+			Region = f and f(Button)
+		elseif Name then
+			local n = Button.GetName and Button:GetName()
+			Region = n and _G[n..Name]
+		end
+	end
+
+	return Region
+end

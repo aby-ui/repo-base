@@ -88,6 +88,13 @@ end
 function WorldMapOptionsButtonMixin:AddGroupButton(group, level)
     local map = ns.maps[self:GetParent():GetMapID()]
     local icon, iconLink = group.icon
+    local status = ''
+    if group.achievement then
+        local _, _, _, completed, _, _, _, _, _, _, _, _, earnedByMe =
+            GetAchievementInfo(group.achievement)
+        status = ' ' .. (earnedByMe and ns.GetIconLink('check_gn') or
+                     (completed and ns.GetIconLink('check_bl') or ''))
+    end
 
     if group.name == 'misc' then
         -- find an icon from the misc nodes in the map
@@ -106,7 +113,7 @@ function WorldMapOptionsButtonMixin:AddGroupButton(group, level)
     end
 
     LibDD:UIDropDownMenu_AddButton({
-        text = iconLink .. ' ' .. ns.RenderLinks(group.label, true),
+        text = iconLink .. ' ' .. ns.RenderLinks(group.label, true) .. status,
         isNotRadio = true,
         keepShownOnClick = true,
         hasArrow = true,
